@@ -1,0 +1,115 @@
+name: Build Android APK  
+  
+on:  
+  push:  
+    branches: [ main, master ]  
+  workflow_dispatch:      # Actions sekmesinden elle de başlatabilirsin  
+  
+jobs:  
+  build:  
+    name: Debug APK  
+    runs-on: ubuntu-latest  
+    timeout-minutes: 30  
+  
+    steps:  
+      - name: Checkout  
+        uses: actions/checkout@v4  
+  
+      # Capacitor 7 -> JDK 21 zorunlu. Java'yı Android SDK'dan ÖNCE kur.  
+      - name: Setup Java 21  
+        uses: actions/setup-java@v4  
+        with:  
+          distribution: temurin  
+          java-version: '21'  
+  
+      # Capacitor 7 CLI -> Node 20+ zorunlu. sharp 0.33 de Node 18.17+ ister.  
+      - name: Setup Node 20  
+        uses: actions/setup-node@v4  
+        with:  
+          node-version: '20'  
+  
+      - name: Setup Android SDK  
+        uses: android-actions/setup-android@v3  
+  
+      # sharp: linux-x64 için hazır ikili (@img/sharp-linux-x64) indirilir,  
+      # derleme gerekmez. SVG->PNG için librsvg zaten paketin içinde gelir.  
+      - name: Install dependencies  
+        run: npm install --no-audit --no-fund  
+  
+      - name: Verify sharp can rasterize the SVG  
+        run: |  
+          node -e "  
+          const sharp = require('sharp');  
+          const fs = require('fs');  
+          sharp(fs.readFileSync('www/assets/icons/icon.svg'), { density: 512 })  
+            .resize(192, 192).png().toBuffer()  
+            .then(b => { console.log('sharp OK, test PNG:', b.length, 'bayt'); })  
+            .catch(e => { console.error('sharp SVG render HATASI:', e.message); process.exit(1); });  
+          "  
+  
+      - name: Sanity check (web kaynakları yerinde mi?)  
+        run: |  
+          test -f www/index.html || { echo "www/index.html yok!"; exit 1; }  
+          test -f www/assets/icons/icon.svg || { echo "icon.svg yok!"; exit 1; }  
+          test -f capacitor.config.json || { echo "capacitor.config.json yok!"; exit 1; }  
+          echo "web kaynaklari OK"  
+  
+      - name: Add Android platform  
+        run: |  
+          if [ ! -d android ]; then  
+            npx cap add android  
+          else  
+            echo "android/ zaten var, atlanıyor"  
+          fi  
+  
+      - name: Sync web assets into Android project  
+        run: npx cap sync android  
+  
+      # Capacitor'ın istediği SDK platformunu variables.gradle'dan okuyup kur.  
+      # Sürüm sabitlemiyoruz ki Capacitor 7.x güncellendiğinde de çalışsın.  
+      - name: Install required Android SDK platform  
+        run: |  
+          COMPILE_SDK=$(grep -oP 'compileSdkVersion\s*=\s*\K[0-9]+' android/variables.gradle || echo "35")  
+          echo "compileSdkVersion = $COMPILE_SDK"  
+          yes | sdkmanager --licenses > /dev/null 2>&1 || true  
+          sdkmanager "platforms;android-${COMPILE_SDK}" "platform-tools" || true  
+  
+      - name: Configure Android project (portrait, fullscreen, SVG-ikonlar, isim)  
+        run: node scripts/configure-android.mjs  
+  
+      - name: Build debug APK  
+        run: |  
+          cd android  
+          chmod +x ./gradlew  
+          ./gradlew assembleDebug --no-daemon --stacktrace  
+  
+      - name: Rename APK  
+        run: |  
+          SRC=$(find android/app/build/outputs/apk/debug -name "*.apk" | head -n 1)  
+          if [ -z "$SRC" ]; then echo "APK bulunamadı!"; exit 1; fi  
+          echo "bulunan APK: $SRC"  
+          mkdir -p dist  
+          cp "$SRC" dist/NEON-SURVIVOR-debug.apk  
+          ls -lh dist/  
+  
+      - name: Upload APK artifact  
+        uses: actions/upload-artifact@v4  
+        with:  
+          name: NEON-SURVIVOR-debug-apk  
+          path: dist/NEON-SURVIVOR-debug.apk  
+          retention-days: 30  
+          if-no-files-found: error  
+  
+      - name: Teşhis çıktısı (yalnızca hata durumunda)  
+        if: failure()  
+        run: |  
+          echo "=== ortam ==="  
+          node --version; java -version 2>&1; echo "ANDROID_HOME=$ANDROID_HOME"  
+          echo "=== variables.gradle ==="  
+          cat android/variables.gradle || true  
+          echo "=== AndroidManifest.xml ==="  
+          cat android/app/src/main/AndroidManifest.xml || true  
+          echo "=== styles.xml ==="  
+          cat android/app/src/main/res/values/styles.xml || true  
+          echo "=== MainActivity.java ==="  
+          find android/app/src/main/java -name MainActivity.java -exec cat {} \; || true  
