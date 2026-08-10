@@ -427,6 +427,15 @@ html,body{
 .upgrade-card button:disabled{opacity:.3}
 .unlock-note{margin-top:10px;text-align:center;font-size:10px;color:rgba(234,244,255,.35);letter-spacing:.08em}
 
+.skin-grid{width:min(390px,88vw);display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px;max-height:52vh;overflow:auto;padding:2px}
+.skin-card{padding:14px 10px;border-radius:16px;background:rgba(8,15,34,.88);border:1px solid rgba(34,230,255,.16);text-align:center}
+.skin-card.selected{border-color:#22e6ff;box-shadow:0 0 18px rgba(34,230,255,.18)}
+.skin-preview{width:62px;height:62px;margin:0 auto 9px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.03)}
+.skin-card h3{font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px}
+.skin-card p{font-size:9px;color:rgba(234,244,255,.46);min-height:24px}
+.skin-card button{width:100%;margin-top:8px;min-height:36px;border:1px solid rgba(34,230,255,.3);border-radius:10px;background:rgba(34,230,255,.08);color:#eaf4ff;font-weight:800;font-size:10px}
+.skin-card button:disabled{opacity:.32}
+
 @media(prefers-reduced-motion:reduce){
   *{
     animation:none!important;
@@ -513,6 +522,10 @@ html,body{
 
   <button class="btn ghost" id="b-upgrades">
     Geliştirmeler
+  </button>
+
+  <button class="btn ghost" id="b-skins">
+    Çekirdekler
   </button>
 
 </div>
@@ -638,6 +651,17 @@ html,body{
 
   <button class="btn ghost" id="b-upgrades-back">Geri</button>
 
+</div>
+
+
+<div class="screen" id="scr-skins">
+  <div class="tutorial-title">Neon Çekirdekler</div>
+  <div class="progress-panel">
+    <div class="level-line"><span>Seçili Çekirdek</span><strong id="selected-skin-name">CYAN</strong></div>
+    <div class="currency" id="skin-currency">◆ 0 ÇEKİRDEK</div>
+  </div>
+  <div class="skin-grid" id="skin-grid"></div>
+  <button class="btn ghost" id="b-skins-back">Geri</button>
 </div>
 
 <div class="screen" id="scr-pause">
@@ -808,6 +832,8 @@ const DEFAULTS={
   profileXP:0,
   cores:0,
   upgrades:{speed:0,magnet:0,shield:0,score:0},
+  selectedSkin:"cyan",
+  ownedSkins:{cyan:true},
   soundEnabled:true,
   vibrationEnabled:true
 };
@@ -860,6 +886,10 @@ const Save={
 };
 
 Save.load();
+if(!Save.data.upgrades||typeof Save.data.upgrades!=="object") Save.data.upgrades={speed:0,magnet:0,shield:0,score:0};
+if(!Save.data.ownedSkins||typeof Save.data.ownedSkins!=="object") Save.data.ownedSkins={cyan:true};
+Save.data.ownedSkins.cyan=true;
+if(!Save.data.selectedSkin) Save.data.selectedSkin="cyan";
 
 
 /* =========================================================
@@ -941,6 +971,40 @@ function updateProgressUI(){
   }
   const note=$('unlock-note');
   if(note)note.textContent=level>=5?'Özel çekirdek görünümü açıldı!':'Sonraki özel kilit açma: Seviye 5';
+}
+
+/* =========================================================
+   CORE SKINS
+========================================================= */
+const SKINS=[
+  {id:"cyan",name:"CYAN",level:1,cost:0,outer:"#22e6ff",inner:"#eaf4ff",glow:"#22e6ff",desc:"Klasik Neon çekirdeği."},
+  {id:"violet",name:"VIOLET",level:3,cost:45,outer:"#a05cff",inner:"#f1e8ff",glow:"#a05cff",desc:"Mor enerji halkası."},
+  {id:"solar",name:"SOLAR",level:5,cost:80,outer:"#ffe34d",inner:"#fff8c7",glow:"#ffb52e",desc:"Seviye 5 özel çekirdeği."},
+  {id:"crimson",name:"CRIMSON",level:8,cost:130,outer:"#ff3b6b",inner:"#ffe7ed",glow:"#ff3b6b",desc:"Agresif kırmızı plazma."},
+  {id:"emerald",name:"EMERALD",level:12,cost:190,outer:"#48ff9b",inner:"#e8fff2",glow:"#48ff9b",desc:"Yüksek seviye enerji çekirdeği."},
+  {id:"void",name:"VOID",level:18,cost:300,outer:"#d7b8ff",inner:"#ffffff",glow:"#7a36ff",desc:"Nadir Void çekirdeği."}
+];
+function currentSkin(){ return SKINS.find(x=>x.id===Save.data.selectedSkin)||SKINS[0]; }
+function renderSkins(){
+  const grid=$("skin-grid"); if(!grid)return;
+  const level=Progression.level();
+  $("skin-currency").textContent="◆ "+Save.data.cores+" ÇEKİRDEK";
+  $("selected-skin-name").textContent=currentSkin().name;
+  grid.innerHTML=SKINS.map(sk=>{
+    const owned=!!Save.data.ownedSkins[sk.id];
+    const levelOK=level>=sk.level;
+    const selected=Save.data.selectedSkin===sk.id;
+    let label=selected?"SEÇİLİ":owned?"SEÇ":!levelOK?"SEVİYE "+sk.level:sk.cost+" ◆ AÇ";
+    const disabled=selected||(!owned&&(!levelOK||Save.data.cores<sk.cost));
+    return `<div class="skin-card ${selected?'selected':''}"><div class="skin-preview"><svg width="54" height="54" viewBox="0 0 54 54"><circle cx="27" cy="27" r="20" fill="${sk.outer}" opacity=".13"/><circle cx="27" cy="27" r="12" fill="none" stroke="${sk.outer}" stroke-width="3"/><circle cx="27" cy="27" r="6" fill="${sk.inner}"/></svg></div><h3 style="color:${sk.outer}">${sk.name}</h3><p>${sk.desc}</p><button data-skin="${sk.id}" ${disabled?'disabled':''}>${label}</button></div>`;
+  }).join("");
+  grid.querySelectorAll("button[data-skin]").forEach(b=>b.addEventListener("click",()=>chooseSkin(b.dataset.skin)));
+}
+function chooseSkin(id){
+  const sk=SKINS.find(x=>x.id===id); if(!sk)return;
+  if(Save.data.ownedSkins[id]) Save.data.selectedSkin=id;
+  else { if(Progression.level()<sk.level||Save.data.cores<sk.cost)return; Save.data.cores-=sk.cost; Save.data.ownedSkins[id]=true; Save.data.selectedSkin=id; }
+  Save.save(); Audio_.power(); vibrate(18); updateProgressUI(); renderSkins();
 }
 
 /* =========================================================
@@ -2991,7 +3055,7 @@ function drawPlayer(){
       player.trail.length;
 
     ctx.strokeStyle=
-      `rgba(34,230,255,${t*.32})`;
+      skin.outer+Math.round(t*.32*255).toString(16).padStart(2,"0");
 
     ctx.lineWidth=
       14*t;
@@ -3016,15 +3080,15 @@ function drawPlayer(){
 
   ctx.save();
 
-  ctx.shadowColor=
-    Game.powers.overdrive>0
-      ?"#ffe34d"
-      :"#22e6ff";
+  const skin=currentSkin();
+  const skinOuter=Game.powers.overdrive>0?"#ffe34d":skin.outer;
+  const skinInner=Game.powers.overdrive>0?"#fff8c7":skin.inner;
+
+  ctx.shadowColor=skin.glow;
 
   ctx.shadowBlur=24;
 
-  ctx.fillStyle=
-    "rgba(34,230,255,.15)";
+  ctx.fillStyle=skinOuter+"22";
 
   ctx.beginPath();
 
@@ -3038,8 +3102,7 @@ function drawPlayer(){
 
   ctx.fill();
 
-  ctx.fillStyle=
-    "#eaf4ff";
+  ctx.fillStyle=skinInner;
 
   ctx.beginPath();
 
@@ -3053,10 +3116,7 @@ function drawPlayer(){
 
   ctx.fill();
 
-  ctx.strokeStyle=
-    Game.powers.overdrive>0
-      ?"#ffe34d"
-      :"#22e6ff";
+  ctx.strokeStyle=skinOuter;
 
   ctx.lineWidth=2.5;
 
@@ -3691,6 +3751,7 @@ const $=id=>
 const scrMenu=$("scr-menu");
 const scrHow=$("scr-how");
 const scrUpgrades=$("scr-upgrades");
+const scrSkins=$("scr-skins");
 const scrPause=$("scr-pause");
 const scrOver=$("scr-over");
 
@@ -3745,6 +3806,7 @@ function toMenu(){
 
   hide(scrHow);
   hide(scrUpgrades);
+  hide(scrSkins);
   hide(scrPause);
   hide(scrOver);
 
@@ -3995,6 +4057,9 @@ tap(
 tap($("u-speed"),()=>buyUpgrade("speed"));
 tap($("u-magnet"),()=>buyUpgrade("magnet"));
 tap($("u-shield"),()=>buyUpgrade("shield"));
+tap($("b-skins"),()=>{ hide(scrMenu); hide(scrUpgrades); renderSkins(); show(scrSkins); });
+tap($("b-skins-back"),()=>{ hide(scrSkins); show(scrMenu); updateProgressUI(); });
+
 tap($("u-score"),()=>buyUpgrade("score"));
 
 
@@ -4029,6 +4094,8 @@ tap(
     Save.save();
 
     syncToggles();
+updateProgressUI();
+renderSkins();
 
   }
 );
@@ -4083,6 +4150,8 @@ document.addEventListener(
 
       toMenu();
 
+    }else if(scrSkins.classList.contains("on")){
+      hide(scrSkins); show(scrMenu);
     }else if(
       Game.state===
       STATE.HOW
