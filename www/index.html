@@ -3042,6 +3042,12 @@ function drawPlayer(){
 
   }
 
+  /* skin */
+
+  const skin=currentSkin();
+  const skinOuter=Game.powers.overdrive>0?"#ffe34d":skin.outer;
+  const skinInner=Game.powers.overdrive>0?"#fff8c7":skin.inner;
+
   /* trail */
 
   for(
@@ -3079,10 +3085,6 @@ function drawPlayer(){
   const r=11;
 
   ctx.save();
-
-  const skin=currentSkin();
-  const skinOuter=Game.powers.overdrive>0?"#ffe34d":skin.outer;
-  const skinInner=Game.powers.overdrive>0?"#fff8c7":skin.inner;
 
   ctx.shadowColor=skin.glow;
 
