@@ -80,9 +80,12 @@ html,body{
   backdrop-filter:blur(7px);
   -webkit-backdrop-filter:blur(7px);
   opacity:0;
+  visibility:hidden;
   pointer-events:none;
-  transition:opacity .22s ease;
+  transition:opacity .22s ease, visibility 0s linear .22s;
   z-index:20;
+  overflow-y:auto;
+  overscroll-behavior:contain;
 }
 
 .screen.on{
@@ -674,6 +677,50 @@ html,body{
   </div>
   <div class="skin-grid" id="skin-grid"></div>
   <button class="btn ghost" id="b-skins-back">Geri</button>
+</div>
+
+<!-- IN-RUN LEVEL UP -->
+
+<div class="screen" id="scr-levelup">
+
+  <div class="tutorial-title">Seviye Atladın</div>
+
+  <div class="levelup-sub" id="levelup-sub">Seviye 2 · Bir geliştirme seç</div>
+
+  <div class="levelup-grid">
+
+    <div class="levelup-card">
+      <div class="perk-icon">⚡</div>
+      <h3>Hızlı Çekirdek</h3>
+      <p>Hareket hızını %10 artırır.</p>
+      <button data-perk="speed">HIZI ARTIR</button>
+    </div>
+
+    <div class="levelup-card">
+      <div class="perk-icon">🧲</div>
+      <h3>Enerji Alanı</h3>
+      <p>Magnet çekim mesafesini +80 artırır.</p>
+      <button data-perk="magnet">MAGNETİ GÜÇLENDİR</button>
+    </div>
+
+    <div class="levelup-card">
+      <div class="perk-icon">◆</div>
+      <h3>Skor Çarpanı</h3>
+      <p>Toplanan enerjiden gelen skoru %12 artırır.</p>
+      <button data-perk="score">SKORU ARTIR</button>
+    </div>
+
+    <div class="levelup-card">
+      <div class="perk-icon">🛡</div>
+      <h3>Enerji Kalkanı</h3>
+      <p>Bir sonraki darbeyi engellemek için Shield kazan.</p>
+      <button data-perk="shield">SHIELD AL</button>
+    </div>
+
+  </div>
+
+  <div class="levelup-note">Birini seçmeden oyun devam etmez.</div>
+
 </div>
 
 <div class="screen" id="scr-pause">
@@ -3881,7 +3928,9 @@ function showHow(){
 
   hide(scrMenu);
   hide(scrUpgrades);
+  hide(scrSkins);
   hide(scrPause);
+  hide(scrLevelup);
   hide(scrOver);
 
   show(scrHow);
@@ -3891,10 +3940,13 @@ function showHow(){
 function closeHow(){
 
   hide(scrHow);
+  hide(scrUpgrades);
+  hide(scrSkins);
+  hide(scrPause);
+  hide(scrLevelup);
+  hide(scrOver);
 
-  Game.state=
-    STATE.MENU;
-
+  Game.state=STATE.MENU;
   show(scrMenu);
 
 }
@@ -3903,6 +3955,7 @@ function showUpgrades(){
   Game.state=STATE.MENU;
   hide(scrMenu);
   hide(scrHow);
+  hide(scrSkins);
   hide(scrPause);
   hide(scrLevelup);
   hide(scrOver);
@@ -4136,8 +4189,25 @@ tap(
 tap($("u-speed"),()=>buyUpgrade("speed"));
 tap($("u-magnet"),()=>buyUpgrade("magnet"));
 tap($("u-shield"),()=>buyUpgrade("shield"));
-tap($("b-skins"),()=>{ hide(scrMenu); hide(scrUpgrades); renderSkins(); show(scrSkins); });
-tap($("b-skins-back"),()=>{ hide(scrSkins); show(scrMenu); updateProgressUI(); });
+function showSkins(){
+  Game.state=STATE.MENU;
+  hide(scrMenu);
+  hide(scrHow);
+  hide(scrUpgrades);
+  hide(scrPause);
+  hide(scrLevelup);
+  hide(scrOver);
+  renderSkins();
+  show(scrSkins);
+}
+
+function closeSkins(){
+  hide(scrSkins);
+  toMenu();
+}
+
+tap($("b-skins"),showSkins);
+tap($("b-skins-back"),closeSkins);
 
 tap($("u-score"),()=>buyUpgrade("score"));
 
