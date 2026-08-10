@@ -1,67 +1,67 @@
-/* Neon Survivor — offline cache (cache-first, stale-while-revalidate) */
-const CACHE = "neon-survivor-v1";
+const CACHE = "neon-survivor-v4";
 
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.json",
-  "./assets/icons/icon-192.png",
-  "./assets/icons/icon-512.png",
-  "./assets/icons/icon-maskable-512.png"
+  "./assets/icons/icon.svg"
 ];
 
-self.addEventListener("install", e => {
-  e.waitUntil(
+self.addEventListener("install", event => {
+  event.waitUntil(
     caches.open(CACHE)
-      .then(c =>
-        Promise.allSettled(
-          ASSETS.map(a => c.add(a))
-        )
-      )
+      .then(cache => {
+        return Promise.allSettled(
+          ASSETS.map(asset => cache.add(asset))
+        );
+      })
       .then(() => self.skipWaiting())
   );
 });
 
-self.addEventListener("activate", e => {
-  e.waitUntil(
+self.addEventListener("activate", event => {
+  event.waitUntil(
     caches.keys()
-      .then(keys =>
-        Promise.all(
+      .then(keys => {
+        return Promise.all(
           keys
-            .filter(k => k !== CACHE)
-            .map(k => caches.delete(k))
-        )
-      )
+            .filter(key => key !== CACHE)
+            .map(key => caches.delete(key))
+        );
+      })
       .then(() => self.clients.claim())
   );
 });
 
-self.addEventListener("fetch", e => {
-  if (e.request.method !== "GET") return;
+self.addEventListener("fetch", event => {
+  if (event.request.method !== "GET") return;
 
-  e.respondWith(
-    caches.match(e.request).then(hit => {
-      const net = fetch(e.request)
-        .then(res => {
-          if (
-            res &&
-            res.status === 200 &&
-            res.type === "basic"
-          ) {
-            const copy = res.clone();
+  event.respondWith(
+    caches.match(event.request)
+      .then(cached => {
+        if (cached) {
+          return cached;
+        }
 
-            caches.open(CACHE)
-              .then(c => c.put(e.request, copy))
-              .catch(() => {});
-          }
+        return fetch(event.request)
+          .then(response => {
+            if (
+              response &&
+              response.status === 200 &&
+              response.type === "basic"
+            ) {
+              const copy = response.clone();
 
-          return res;
-        })
-        .catch(() =>
-          hit || caches.match("./index.html")
-        );
+              caches.open(CACHE)
+                .then(cache => cache.put(event.request, copy))
+                .catch(() => {});
+            }
 
-      return hit || net;
-    })
+            return response;
+          })
+          .catch(() => {
+            return caches.match("./index.html");
+          });
+      })
   );
 });
