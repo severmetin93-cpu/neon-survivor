@@ -411,6 +411,22 @@ html,body{
   color:rgba(234,244,255,.6);
 }
 
+
+.progress-panel{width:min(390px,88vw);margin:18px 0 8px;padding:16px;border-radius:18px;background:rgba(8,15,34,.82);border:1px solid rgba(34,230,255,.18)}
+.level-line{display:flex;justify-content:space-between;align-items:center;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:rgba(234,244,255,.55)}
+.level-line strong{color:#22e6ff;font-size:18px}
+.xp-bar{height:7px;margin-top:10px;border-radius:99px;background:rgba(234,244,255,.08);overflow:hidden}
+.xp-fill{height:100%;width:0;background:linear-gradient(90deg,#22e6ff,#a05cff);box-shadow:0 0 12px rgba(34,230,255,.55);transition:width .25s ease}
+.currency{margin-top:9px;text-align:center;color:#ffe34d;font-weight:800;font-size:12px;letter-spacing:.14em}
+.upgrade-grid{width:min(390px,88vw);display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.upgrade-card{padding:14px;border-radius:16px;background:rgba(8,15,34,.88);border:1px solid rgba(34,230,255,.16)}
+.upgrade-card h3{font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.upgrade-card p{font-size:10px;line-height:1.35;color:rgba(234,244,255,.48);min-height:28px}
+.upgrade-card button{width:100%;margin-top:9px;min-height:38px;border:1px solid rgba(34,230,255,.3);border-radius:10px;background:rgba(34,230,255,.08);color:#eaf4ff;font-weight:800;font-size:11px}
+.upgrade-card button:active{transform:scale(.97)}
+.upgrade-card button:disabled{opacity:.3}
+.unlock-note{margin-top:10px;text-align:center;font-size:10px;color:rgba(234,244,255,.35);letter-spacing:.08em}
+
 @media(prefers-reduced-motion:reduce){
   *{
     animation:none!important;
@@ -478,12 +494,25 @@ html,body{
     En iyi skor · 0
   </div>
 
+  <div class="progress-panel">
+    <div class="level-line">
+      <span>Profil Seviyesi</span>
+      <strong id="profile-level">1</strong>
+    </div>
+    <div class="xp-bar"><div class="xp-fill" id="profile-xp-fill"></div></div>
+    <div class="currency" id="profile-currency">◆ 0 ÇEKİRDEK</div>
+  </div>
+
   <button class="btn" id="b-play">
     Oyna
   </button>
 
   <button class="btn ghost" id="b-how">
     Nasıl Oynanır?
+  </button>
+
+  <button class="btn ghost" id="b-upgrades">
+    Geliştirmeler
   </button>
 
 </div>
@@ -571,6 +600,45 @@ html,body{
 </div>
 
 <!-- PAUSE -->
+
+<div class="screen" id="scr-upgrades">
+
+  <div class="tutorial-title">Geliştirmeler</div>
+
+  <div class="progress-panel">
+    <div class="level-line"><span>Profil Seviyesi</span><strong id="upgrade-level">1</strong></div>
+    <div class="xp-bar"><div class="xp-fill" id="upgrade-xp-fill"></div></div>
+    <div class="currency" id="upgrade-currency">◆ 0 ÇEKİRDEK</div>
+  </div>
+
+  <div class="upgrade-grid">
+    <div class="upgrade-card">
+      <h3>Hız</h3>
+      <p>Hareket hızını artırır.</p>
+      <button id="u-speed">YÜKSELT</button>
+    </div>
+    <div class="upgrade-card">
+      <h3>Magnet</h3>
+      <p>Magnet süresini artırır.</p>
+      <button id="u-magnet">YÜKSELT</button>
+    </div>
+    <div class="upgrade-card">
+      <h3>Shield</h3>
+      <p>Shield başlangıç avantajını geliştirir.</p>
+      <button id="u-shield">YÜKSELT</button>
+    </div>
+    <div class="upgrade-card">
+      <h3>Çarpan</h3>
+      <p>Toplanan enerjiden gelen skoru artırır.</p>
+      <button id="u-score">YÜKSELT</button>
+    </div>
+  </div>
+
+  <div class="unlock-note" id="unlock-note">Sonraki özel kilit açma: Seviye 5</div>
+
+  <button class="btn ghost" id="b-upgrades-back">Geri</button>
+
+</div>
 
 <div class="screen" id="scr-pause">
 
@@ -737,6 +805,9 @@ const DEFAULTS={
   gamesPlayed:0,
   highestCombo:1,
   longestSurvival:0,
+  profileXP:0,
+  cores:0,
+  upgrades:{speed:0,magnet:0,shield:0,score:0},
   soundEnabled:true,
   vibrationEnabled:true
 };
@@ -790,6 +861,87 @@ const Save={
 
 Save.load();
 
+
+/* =========================================================
+   PROGRESSION
+========================================================= */
+
+const Progression={
+
+  level(){
+    return 1 + Math.floor(Math.sqrt(Math.max(0,Save.data.profileXP)/100));
+  },
+
+  currentLevelXP(){
+    const l=this.level();
+    return (l-1)*(l-1)*100;
+  },
+
+  nextLevelXP(){
+    const l=this.level();
+    return l*l*100;
+  },
+
+  percent(){
+    const a=this.currentLevelXP();
+    const b=this.nextLevelXP();
+    return clamp((Save.data.profileXP-a)/(b-a),0,1);
+  },
+
+  cost(type){
+    const lv=Save.data.upgrades[type]||0;
+    return 20 + lv*15;
+  },
+
+  addReward(score,energy,time){
+    const xp=Math.max(10,Math.floor(score/25)+Math.floor(time*2));
+    const cores=Math.max(1,Math.floor(energy/3)+Math.floor(time/20));
+    const oldLevel=this.level();
+    Save.data.profileXP+=xp;
+    Save.data.cores+=cores;
+    Save.save();
+    return {xp,cores,level: this.level(),leveled:this.level()>oldLevel};
+  },
+
+  buy(type){
+    const cost=this.cost(type);
+    if(Save.data.cores<cost)return false;
+    Save.data.cores-=cost;
+    Save.data.upgrades[type]=(Save.data.upgrades[type]||0)+1;
+    Save.save();
+    updateProgressUI();
+    return true;
+  }
+
+};
+
+function updateProgressUI(){
+  const level=Progression.level();
+  const pct=Progression.percent()*100;
+  const fill=$('profile-xp-fill');
+  if(fill)fill.style.width=pct+'%';
+  const uf=$('upgrade-xp-fill');
+  if(uf)uf.style.width=pct+'%';
+  const pl=$('profile-level');
+  if(pl)pl.textContent=level;
+  const ul=$('upgrade-level');
+  if(ul)ul.textContent=level;
+  const currency='◆ '+Save.data.cores+' ÇEKİRDEK';
+  const pc=$('profile-currency');
+  if(pc)pc.textContent=currency;
+  const uc=$('upgrade-currency');
+  if(uc)uc.textContent=currency;
+  const buttons={speed:'u-speed',magnet:'u-magnet',shield:'u-shield',score:'u-score'};
+  for(const k in buttons){
+    const b=$(buttons[k]);
+    if(!b)continue;
+    const lv=Save.data.upgrades[k]||0;
+    b.textContent='Lv.'+lv+' · '+Progression.cost(k)+' ◆';
+    b.disabled=Save.data.cores<Progression.cost(k);
+  }
+  const note=$('unlock-note');
+  if(note)note.textContent=level>=5?'Özel çekirdek görünümü açıldı!':'Sonraki özel kilit açma: Seviye 5';
+}
 
 /* =========================================================
    AUDIO
@@ -1854,7 +2006,7 @@ function activatePower(type){
       :type==="nova"
         ?1
         :type==="magnet"
-          ?CFG.power.magnetDuration
+          ?CFG.power.magnetDuration + (Save.data.upgrades.magnet||0)*2
           :CFG.power.overdriveDuration;
 
   emit(
@@ -2268,6 +2420,8 @@ const Game={
 
   flash:0,
 
+  lastReward:{xp:0,cores:0,level:1,leveled:false},
+
   powers:{
     shield:0,
     magnet:0,
@@ -2302,7 +2456,7 @@ const Game={
     this.flash=0;
 
     this.powers={
-      shield:0,
+      shield:Save.data.upgrades.shield>0?1:0,
       magnet:0,
       overdrive:0,
       nova:0
@@ -2449,6 +2603,13 @@ const Game={
         this.time
       );
 
+    const reward=Progression.addReward(
+      final,
+      this.energy,
+      this.time
+    );
+    this.lastReward=reward;
+
     Save.save();
 
     emit(
@@ -2504,10 +2665,12 @@ function update(dt){
 
     /* SCORE */
 
+    const upgradeMultiplier=
+      1 + (Save.data.upgrades.score||0)*0.08;
+
     const multiplier=
-      Game.powers.overdrive>0
-        ?2
-        :1;
+      (Game.powers.overdrive>0?2:1)*
+      upgradeMultiplier;
 
     Game.score+=
       dt*
@@ -3527,6 +3690,7 @@ const $=id=>
 
 const scrMenu=$("scr-menu");
 const scrHow=$("scr-how");
+const scrUpgrades=$("scr-upgrades");
 const scrPause=$("scr-pause");
 const scrOver=$("scr-over");
 
@@ -3580,6 +3744,7 @@ function toMenu(){
   texts.clear();
 
   hide(scrHow);
+  hide(scrUpgrades);
   hide(scrPause);
   hide(scrOver);
 
@@ -3593,6 +3758,7 @@ function toMenu(){
     "En iyi skor · "+
     Save.data.bestScore;
 
+  updateProgressUI();
   updatePowerHUD();
 
 }
@@ -3601,6 +3767,7 @@ function startGame(){
 
   hide(scrMenu);
   hide(scrHow);
+  hide(scrUpgrades);
   hide(scrPause);
   hide(scrOver);
 
@@ -3625,6 +3792,7 @@ function showHow(){
     STATE.HOW;
 
   hide(scrMenu);
+  hide(scrUpgrades);
   hide(scrPause);
   hide(scrOver);
 
@@ -3641,6 +3809,32 @@ function closeHow(){
 
   show(scrMenu);
 
+}
+
+function showUpgrades(){
+  Game.state=STATE.MENU;
+  hide(scrMenu);
+  hide(scrHow);
+  hide(scrPause);
+  hide(scrOver);
+  show(scrUpgrades);
+  updateProgressUI();
+}
+
+function closeUpgrades(){
+  hide(scrUpgrades);
+  toMenu();
+}
+
+function buyUpgrade(type){
+  const ok=Progression.buy(type);
+  if(ok){
+    Audio_.power();
+    vibrate([12,25,12]);
+  }else{
+    Audio_.hit();
+    vibrate(8);
+  }
 }
 
 function pauseGame(){
@@ -3699,6 +3893,12 @@ function showOver(record){
 
   $("o-energy").textContent=
     Game.energy;
+
+  const rewardLine=document.getElementById("record-slot");
+  if(Game.lastReward){
+    const rewardText=`<div style="margin-top:10px;color:#22e6ff;font-size:12px;font-weight:800;letter-spacing:.12em">+${Game.lastReward.xp} XP · +${Game.lastReward.cores} ÇEKİRDEK</div>`;
+    rewardLine.innerHTML += rewardText;
+  }
 
   setTimeout(
     ()=>{
@@ -3781,6 +3981,21 @@ tap(
   pauseBtn,
   pauseGame
 );
+
+tap(
+  $("b-upgrades"),
+  showUpgrades
+);
+
+tap(
+  $("b-upgrades-back"),
+  closeUpgrades
+);
+
+tap($("u-speed"),()=>buyUpgrade("speed"));
+tap($("u-magnet"),()=>buyUpgrade("magnet"));
+tap($("u-shield"),()=>buyUpgrade("shield"));
+tap($("u-score"),()=>buyUpgrade("score"));
 
 
 /* =========================================================
