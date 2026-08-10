@@ -334,8 +334,6 @@ html,body{
   50%{opacity:1;transform:scale(1.04)}
 }
 
-/* POWER UP HUD */
-
 #power-hud{
   position:absolute;
   left:50%;
@@ -395,8 +393,6 @@ html,body{
   font-size:13px;
 }
 
-/* POWER-UP TUTORIAL MINI */
-
 .power-list{
   margin-top:8px;
   padding-top:12px;
@@ -432,8 +428,6 @@ html,body{
 
 <button id="b-pause">II</button>
 
-<!-- POWER HUD -->
-
 <div id="power-hud">
 
   <div class="power-pill" id="p-shield">
@@ -458,15 +452,11 @@ html,body{
 
 </div>
 
-<!-- MENU -->
-
 <div class="screen on" id="scr-menu">
 
   <div class="toggles">
-
     <div class="tgl" id="t-sound">♪</div>
     <div class="tgl" id="t-vibe">≈</div>
-
   </div>
 
   <div class="logo">
@@ -487,8 +477,6 @@ html,body{
   </button>
 
 </div>
-
-<!-- TUTORIAL -->
 
 <div class="screen" id="scr-how">
 
@@ -570,8 +558,6 @@ html,body{
 
 </div>
 
-<!-- PAUSE -->
-
 <div class="screen" id="scr-pause">
 
   <div class="logo" style="font-size:clamp(26px,8vw,40px)">
@@ -591,8 +577,6 @@ html,body{
   </button>
 
 </div>
-
-<!-- GAME OVER -->
 
 <div class="screen" id="scr-over">
 
@@ -642,12 +626,7 @@ html,body{
 <script>
 "use strict";
 
-/* =========================================================
-   CONFIG
-========================================================= */
-
 const CFG={
-
   player:{
     radius:11,
     maxHp:3,
@@ -690,20 +669,16 @@ const CFG={
     spawnMs:13500,
     maxAlive:2,
     radius:12,
-
     shieldDuration:0,
     magnetDuration:8,
     overdriveDuration:8,
-
     overdriveMultiplier:2,
-
     novaRadius:230
   },
 
   fx:{
     maxParticles:220
   }
-
 };
 
 const STATE={
@@ -723,11 +698,6 @@ const clamp=(v,a,b)=>
 
 const lerp=(a,b,t)=>
   a+(b-a)*t;
-
-
-/* =========================================================
-   SAVE
-========================================================= */
 
 const KEY="neon_survivor_v3";
 
@@ -762,9 +732,7 @@ const Save={
           typeof p[k]===
           typeof DEFAULTS[k]
         ){
-
           this.data[k]=p[k];
-
         }
 
       }
@@ -789,11 +757,6 @@ const Save={
 };
 
 Save.load();
-
-
-/* =========================================================
-   AUDIO
-========================================================= */
 
 const Audio_={
 
@@ -999,11 +962,6 @@ function vibrate(p){
 
 }
 
-
-/* =========================================================
-   CANVAS
-========================================================= */
-
 const canvas=
   document.getElementById("game");
 
@@ -1051,11 +1009,6 @@ window.addEventListener(
     setTimeout(resize,120);
   }
 );
-
-
-/* =========================================================
-   POOLS
-========================================================= */
 
 function Pool(factory){
 
@@ -1171,8 +1124,6 @@ const texts=Pool(()=>({
   size:14
 }));
 
-/* POWER-UP OBJECTS */
-
 const powerups=Pool(()=>({
   alive:false,
   x:0,
@@ -1181,11 +1132,6 @@ const powerups=Pool(()=>({
   t:0,
   r:CFG.power.radius
 }));
-
-
-/* =========================================================
-   EFFECTS
-========================================================= */
 
 function emit(
   x,y,n,color,speed,size,life
@@ -1247,6 +1193,7 @@ function updateFX(dt){
     if(p.life<=0){
 
       p.alive=false;
+
       return;
 
     }
@@ -1266,6 +1213,7 @@ function updateFX(dt){
     if(p.life<=0){
 
       p.alive=false;
+
       return;
 
     }
@@ -1275,11 +1223,6 @@ function updateFX(dt){
   });
 
 }
-
-
-/* =========================================================
-   PLAYER
-========================================================= */
 
 const player={
   x:0,
@@ -1296,18 +1239,12 @@ function resetPlayer(){
   player.y=H*.62;
 
   player.hp=3;
-
   player.invuln=0;
   player.shake=0;
 
   player.trail.length=0;
 
 }
-
-
-/* =========================================================
-   INPUT
-========================================================= */
 
 const input={
   active:false,
@@ -1450,11 +1387,6 @@ canvas.addEventListener(
   "touchcancel",
   inputUp
 );
-
-
-/* =========================================================
-   ENEMIES
-========================================================= */
 
 const ENEMIES=[
   {
@@ -1710,11 +1642,6 @@ function updateEnemy(
   }
 
 }
-
-
-/* =========================================================
-   POWER-UP SYSTEM
-========================================================= */
 
 const POWER_TYPES=[
   "shield",
@@ -2002,7 +1929,6 @@ function drawPowerups(){
       "900 10px system-ui";
 
     ctx.textAlign="center";
-
     ctx.textBaseline="middle";
 
     const symbols={
@@ -2023,11 +1949,6 @@ function drawPowerups(){
   });
 
 }
-
-
-/* =========================================================
-   ENERGY
-========================================================= */
 
 function spawnOrb(){
 
@@ -2131,50 +2052,59 @@ function collectOrb(o){
 
 }
 
+/* =========================================================
+   DÜZELTİLMİŞ ENERGY / MAGNET
+   ========================================================= */
+
 function updateOrbs(dt){
 
   orbs.forEach(o=>{
 
     o.t+=dt*2.4;
 
-    let dx=
-      player.x-o.x;
+    /*
+      Normal enerji artık oyuncuya çekilmiyor.
+      Sadece oyuncunun gerçekten üzerine gelmesiyle toplanıyor.
 
-    let dy=
-      player.y-o.y;
+      MAGNET aktifse enerji 220px mesafeden oyuncuya çekiliyor.
+    */
 
-    let d=
-      Math.hypot(dx,dy)||1;
+    if(Game.powers.magnet>0){
 
-    const magnetRange=
-      Game.powers.magnet>0
-        ?220
-        :52;
+      const dx=
+        player.x-o.x;
 
-    if(
-      d<magnetRange
-    ){
+      const dy=
+        player.y-o.y;
 
-      const strength=
-        Game.powers.magnet>0
-          ?13
-          :5;
+      const d=
+        Math.hypot(dx,dy)||1;
 
-      const k=
-        (
-          1-
-          d/magnetRange
-        )*strength;
+      const magnetRange=220;
 
-      o.x+=
-        dx/d*k;
+      if(d<magnetRange){
 
-      o.y+=
-        dy/d*k;
+        const strength=13;
+
+        const k=
+          (
+            1-
+            d/magnetRange
+          )*
+          strength*
+          dt;
+
+        o.x+=
+          dx/d*k;
+
+        o.y+=
+          dy/d*k;
+
+      }
 
     }
 
-    d=
+    const d=
       Math.hypot(
         player.x-o.x,
         player.y-o.y
@@ -2195,39 +2125,21 @@ function updateOrbs(dt){
 
 }
 
-
-/* =========================================================
-   GAME
-========================================================= */
-
 const Game={
 
   state:STATE.MENU,
-
   time:0,
-
   score:0,
-
   level:1,
-
   combo:1,
-
   comboTimer:0,
-
   maxCombo:1,
-
   chain:0,
-
   energy:0,
-
   enemySpawn:.5,
-
   orbSpawn:.2,
-
   powerSpawn:5,
-
   nextLevel:30,
-
   flash:0,
 
   powers:{
@@ -2429,11 +2341,6 @@ const Game={
 
 };
 
-
-/* =========================================================
-   UPDATE
-========================================================= */
-
 function update(dt){
 
   if(
@@ -2464,8 +2371,6 @@ function update(dt){
 
     }
 
-    /* SCORE */
-
     const multiplier=
       Game.powers.overdrive>0
         ?2
@@ -2476,8 +2381,6 @@ function update(dt){
       10*
       Game.combo*
       multiplier;
-
-    /* SPAWN ENEMIES */
 
     Game.enemySpawn-=dt;
 
@@ -2516,8 +2419,6 @@ function update(dt){
 
     }
 
-    /* SPAWN ENERGY */
-
     Game.orbSpawn-=dt;
 
     if(
@@ -2531,8 +2432,6 @@ function update(dt){
         rand(.75,1.25);
 
     }
-
-    /* COMBO */
 
     if(
       Game.comboTimer>0
@@ -2550,8 +2449,6 @@ function update(dt){
       }
 
     }
-
-    /* PLAYER */
 
     if(
       player.invuln>0
@@ -2590,8 +2487,6 @@ function update(dt){
 
     }
 
-    /* ENEMIES */
-
     enemies.forEach(e=>{
 
       updateEnemy(
@@ -2619,9 +2514,7 @@ function update(dt){
     });
 
     updateOrbs(dt);
-
     updatePowerups(dt);
-
     updateActivePowers(dt);
 
     if(Game.flash>0)
@@ -2634,11 +2527,6 @@ function update(dt){
   updateFX(dt);
 
 }
-
-
-/* =========================================================
-   DRAW BACKGROUND
-========================================================= */
 
 let bgTime=0;
 
@@ -2722,11 +2610,6 @@ function drawBackground(dt){
 
 }
 
-
-/* =========================================================
-   DRAW PLAYER
-========================================================= */
-
 function drawPlayer(){
 
   const blink=
@@ -2736,8 +2619,6 @@ function drawPlayer(){
     )%2===0;
 
   if(blink)return;
-
-  /* shield */
 
   if(
     Game.powers.shield>0
@@ -2776,8 +2657,6 @@ function drawPlayer(){
     ctx.restore();
 
   }
-
-  /* trail */
 
   for(
     let i=2;
@@ -2874,11 +2753,6 @@ function drawPlayer(){
   ctx.restore();
 
 }
-
-
-/* =========================================================
-   DRAW ENEMIES
-========================================================= */
 
 function drawEnemies(){
 
@@ -2994,11 +2868,6 @@ function drawEnemies(){
 
 }
 
-
-/* =========================================================
-   DRAW ENERGY
-========================================================= */
-
 function drawOrbs(){
 
   orbs.forEach(o=>{
@@ -3055,11 +2924,6 @@ function drawOrbs(){
 
 }
 
-
-/* =========================================================
-   DRAW FX
-========================================================= */
-
 function drawFX(){
 
   particles.forEach(p=>{
@@ -3115,11 +2979,6 @@ function drawFX(){
   ctx.globalAlpha=1;
 
 }
-
-
-/* =========================================================
-   HUD
-========================================================= */
 
 function drawHUD(){
 
@@ -3194,8 +3053,6 @@ function drawHUD(){
     top+46
   );
 
-  /* COMBO */
-
   if(Game.combo>1){
 
     ctx.textAlign="center";
@@ -3220,8 +3077,6 @@ function drawHUD(){
     ctx.shadowBlur=0;
 
   }
-
-  /* HEALTH */
 
   const y=
     top+58;
@@ -3263,11 +3118,6 @@ function drawHUD(){
   }
 
 }
-
-
-/* =========================================================
-   POWER HUD
-========================================================= */
 
 function updatePowerHUD(){
 
@@ -3340,11 +3190,6 @@ function updatePowerHUD(){
 
 }
 
-
-/* =========================================================
-   RENDER
-========================================================= */
-
 function render(dt){
 
   ctx.save();
@@ -3363,11 +3208,8 @@ function render(dt){
   }
 
   drawBackground(dt);
-
   drawOrbs();
-
   drawPowerups();
-
   drawEnemies();
 
   if(
@@ -3405,11 +3247,6 @@ function render(dt){
 
 }
 
-
-/* =========================================================
-   LOOP
-========================================================= */
-
 let last=0;
 
 function loop(now){
@@ -3436,11 +3273,6 @@ function loop(now){
 }
 
 requestAnimationFrame(loop);
-
-
-/* =========================================================
-   UI
-========================================================= */
 
 const $=id=>
   document.getElementById(id);
@@ -3472,21 +3304,12 @@ function hideHint(){
 }
 
 function showPauseButton(){
-
   pauseBtn.classList.add("show");
-
 }
 
 function hidePauseButton(){
-
   pauseBtn.classList.remove("show");
-
 }
-
-
-/* =========================================================
-   MENU
-========================================================= */
 
 function toMenu(){
 
@@ -3593,9 +3416,7 @@ function resumeGame(){
 }
 
 function quitGame(){
-
   toMenu();
-
 }
 
 function showOver(record){
@@ -3622,21 +3443,18 @@ function showOver(record){
 
   setTimeout(
     ()=>{
+
       if(
         Game.state===
         STATE.OVER
       )
         show(scrOver);
+
     },
     350
   );
 
 }
-
-
-/* =========================================================
-   BUTTONS
-========================================================= */
 
 function tap(node,fn){
 
@@ -3702,11 +3520,6 @@ tap(
   pauseGame
 );
 
-
-/* =========================================================
-   SOUND / VIBRATION
-========================================================= */
-
 const sound=$("t-sound");
 const vibe=$("t-vibe");
 
@@ -3756,11 +3569,6 @@ tap(
 
 syncToggles();
 
-
-/* =========================================================
-   ANDROID BACK
-========================================================= */
-
 document.addEventListener(
   "backbutton",
   e=>{
@@ -3805,21 +3613,9 @@ document.addEventListener(
   false
 );
 
-
-/* =========================================================
-   BOOT
-========================================================= */
-
 resize();
-
 resetPlayer();
-
 toMenu();
-
-
-/* =========================================================
-   SERVICE WORKER
-========================================================= */
 
 if(
   "serviceWorker" in navigator &&
@@ -3845,8 +3641,7 @@ if(
   );
 
 }
-
 </script>
 
 </body>
-      </html>
+  </html>
