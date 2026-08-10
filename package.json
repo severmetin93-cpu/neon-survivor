@@ -1,0 +1,19 @@
+{
+  "name": "neon-survivor",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NEON SURVIVOR - hyper-casual endless survival game (HTML5 Canvas + Capacitor)",
+  "scripts": {
+    "cap:add": "cap add android",
+    "cap:sync": "cap sync android",
+    "android:configure": "node scripts/configure-android.mjs"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.0.0",
+    "@capacitor/app": "^7.0.0",
+    "@capacitor/core": "^7.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.0.0"
+  }
+}

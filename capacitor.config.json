@@ -1,0 +1,15 @@
+{
+  "appId": "com.tumes.neonsurvivor",
+  "appName": "NEON SURVIVOR",
+  "webDir": "www",
+  "android": {
+    "backgroundColor": "#04060f",
+    "allowMixedContent": false,
+    "captureInput": false,
+    "webContentsDebuggingEnabled": true,
+    "adjustMarginsForEdgeToEdge": "disable"
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}
