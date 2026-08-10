@@ -11,7 +11,81 @@
 <link rel="manifest" href="manifest.json">
 <style>
 :root{
-  --bg:#04060f;
+  --bg:#04060f;<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  NEON SURVIVOR - tek kaynak ikon.
+  CI bu dosyadan Android launcher ikonlarini uretir.
+
+  DIKKAT:
+  id="bg" ve id="mark" isimlerini degistirme.
+-->
+<svg xmlns="http://www.w3.org/2000/svg"
+     viewBox="0 0 1024 1024"
+     width="1024"
+     height="1024">
+
+  <defs>
+    <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#223C8C" stop-opacity="0.85"/>
+      <stop offset="55%" stop-color="#12224F" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#04060F" stop-opacity="0"/>
+    </radialGradient>
+
+    <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#EAF4FF" stop-opacity="1"/>
+      <stop offset="45%" stop-color="#22E6FF" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#22E6FF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- ARKA PLAN -->
+  <g id="bg">
+    <rect
+      x="0"
+      y="0"
+      width="1024"
+      height="1024"
+      fill="#04060F"/>
+
+    <circle
+      cx="512"
+      cy="512"
+      r="470"
+      fill="url(#halo)"/>
+  </g>
+
+  <!-- NEON SURVIVOR LOGOSU -->
+  <g id="mark"
+     fill="none"
+     stroke-linejoin="round">
+
+    <polygon
+      points="761.4,656 512,800 262.6,656 262.6,368 512,224 761.4,368"
+      stroke="#22E6FF"
+      stroke-width="36"/>
+
+    <polygon
+      points="675.9,606.6 512,701.2 348.1,606.6 348.1,417.4 512,322.8 675.9,417.4"
+      stroke="#A05CFF"
+      stroke-width="29"/>
+
+    <circle
+      cx="512"
+      cy="512"
+      r="150"
+      fill="url(#coreGlow)"
+      stroke="none"/>
+
+    <circle
+      cx="512"
+      cy="512"
+      r="77"
+      fill="#EAF4FF"
+      stroke="none"/>
+
+  </g>
+
+</svg>
   --bg-2:#0a1024;
   --cyan:#22e6ff;
   --blue:#3b7bff;
@@ -112,6 +186,33 @@ html,body{
 #b-pause.on{display:flex}
 #b-pause:active{background:rgba(34,230,255,.14)}
 
+
+/* ---------- Tutorial / onboarding ---------- */
+#scr-tutorial{z-index:30}
+.tutorial-wrap{width:min(390px,92vw);display:flex;flex-direction:column;align-items:center}
+.tutorial-kicker{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--cyan);margin-bottom:10px}
+.tutorial-title{font-size:clamp(25px,7vw,36px);font-weight:800;letter-spacing:.08em;text-transform:uppercase;text-align:center}
+.tutorial-sub{margin-top:8px;font-size:13px;line-height:1.55;text-align:center;color:rgba(234,244,255,.58);max-width:330px}
+.tutorial-demo{position:relative;width:min(350px,88vw);height:245px;margin:18px 0 14px;overflow:hidden;border:1px solid rgba(34,230,255,.22);border-radius:22px;background:radial-gradient(circle at 50% 50%,rgba(34,230,255,.08),transparent 36%),linear-gradient(rgba(34,230,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(34,230,255,.035) 1px,transparent 1px),#050916;background-size:auto,32px 32px,32px 32px;touch-action:none}
+.td-player{position:absolute;left:50%;top:58%;width:22px;height:22px;border:2px solid var(--cyan);border-radius:50%;transform:translate(-50%,-50%);background:#eaf4ff;box-shadow:0 0 9px var(--cyan),0 0 25px rgba(34,230,255,.5);transition:left .18s ease,top .18s ease}
+.td-player:after{content:"";position:absolute;inset:-10px;border-radius:50%;background:rgba(34,230,255,.08)}
+.td-orb{position:absolute;width:13px;height:13px;border:2px solid var(--cyan);border-radius:50%;box-shadow:0 0 14px var(--cyan);animation:tdPulse 1s ease-in-out infinite}
+.td-orb.rare{border-color:var(--violet);box-shadow:0 0 14px var(--violet)}
+.td-enemy{position:absolute;width:24px;height:24px;border:2px solid var(--danger);transform:rotate(45deg);box-shadow:0 0 12px rgba(255,59,107,.45);animation:tdEnemy 1.2s ease-in-out infinite}
+.td-arrow{position:absolute;left:50%;top:30%;transform:translateX(-50%);font-size:30px;color:var(--cyan);text-shadow:0 0 15px rgba(34,230,255,.75);animation:tdArrow 1s ease-in-out infinite}
+.td-label{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(234,244,255,.48);white-space:nowrap}
+@keyframes tdPulse{0%,100%{transform:scale(.9);opacity:.7}50%{transform:scale(1.25);opacity:1}}
+@keyframes tdEnemy{0%,100%{transform:rotate(45deg) scale(.92)}50%{transform:rotate(45deg) scale(1.08)}}
+@keyframes tdArrow{0%,100%{transform:translate(-50%,0);opacity:.35}50%{transform:translate(-50%,8px);opacity:1}}
+.tutorial-tip{min-height:42px;font-size:13px;line-height:1.5;text-align:center;color:rgba(234,244,255,.72)}
+.tutorial-progress{display:flex;gap:7px;margin:5px 0 4px}
+.t-dot{width:7px;height:7px;border-radius:50%;background:rgba(234,244,255,.18)}
+.t-dot.on{background:var(--cyan);box-shadow:0 0 10px rgba(34,230,255,.7)}
+.tutorial-actions{width:100%;display:flex;gap:10px;margin-top:8px}
+.tutorial-actions .btn{flex:1;width:auto}
+.tutorial-skip{margin-top:11px;background:none;border:0;color:rgba(234,244,255,.38);font-size:12px;letter-spacing:.14em;text-transform:uppercase;padding:8px}
+@media (max-height:680px){.tutorial-demo{height:190px;margin:10px 0}.tutorial-title{font-size:25px}.tutorial-sub{font-size:12px}}
+
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -132,6 +233,34 @@ html,body{
     <div class="logo">Neon<span>Survivor</span></div>
     <div class="tag" id="menu-best">En iyi skor · 0</div>
     <button class="btn" id="b-play">Oyna</button>
+    <button class="btn ghost" id="b-tutorial">Nasıl oynanır?</button>
+  </div>
+
+
+  <!-- TUTORIAL / ONBOARDING -->
+  <div class="screen" id="scr-tutorial">
+    <div class="tutorial-wrap">
+      <div class="tutorial-kicker" id="t-kicker">NEON SURVIVOR · 01</div>
+      <div class="tutorial-title" id="t-title">Hareket et</div>
+      <div class="tutorial-sub" id="t-sub">Parmağını ekranda sürükleyerek enerji çekirdeğini hareket ettir.</div>
+      <div class="tutorial-demo" id="tutorial-demo">
+        <div class="td-arrow" id="td-arrow">↓</div>
+        <div class="td-player" id="td-player"></div>
+        <div class="td-orb" id="td-orb-a" style="left:24%;top:30%"></div>
+        <div class="td-orb rare" id="td-orb-b" style="left:72%;top:68%"></div>
+        <div class="td-enemy" id="td-enemy" style="left:74%;top:25%"></div>
+        <div class="td-label" id="td-label">Hareket etmek için sürükle</div>
+      </div>
+      <div class="tutorial-tip" id="t-tip">Kontrol çok basit: sürükle. Karakter parmağını takip eder.</div>
+      <div class="tutorial-progress">
+        <span class="t-dot on"></span><span class="t-dot"></span><span class="t-dot"></span><span class="t-dot"></span>
+      </div>
+      <div class="tutorial-actions">
+        <button class="btn ghost" id="b-t-prev">Geri</button>
+        <button class="btn" id="b-t-next">İleri</button>
+      </div>
+      <button class="tutorial-skip" id="b-t-skip">Eğitimi atla</button>
+    </div>
   </div>
 
   <!-- PAUSE BUTTON (oyun içi) -->
@@ -738,6 +867,20 @@ function frame(now){
   render(dt);
 }
 
+
+/* Tutorial demo: sürüklenebilir mini alan */
+(function(){
+  const demo=el("tutorial-demo"), p=el("td-player"); let down=false;
+  function move(x,y){
+    const r=demo.getBoundingClientRect();
+    p.style.left=(clamp(x-r.left,20,r.width-20)/r.width*100)+"%";
+    p.style.top=(clamp(y-r.top,20,r.height-20)/r.height*100)+"%";
+  }
+  demo.addEventListener("pointerdown",e=>{down=true;demo.setPointerCapture?.(e.pointerId);move(e.clientX,e.clientY);e.preventDefault()});
+  demo.addEventListener("pointermove",e=>{if(down)move(e.clientX,e.clientY);e.preventDefault()});
+  demo.addEventListener("pointerup",()=>down=false);
+  demo.addEventListener("pointercancel",()=>down=false);
+})();
 /* -------------------------------- UI -------------------------------- */
 const el=id=>document.getElementById(id);
 const scrMenu=el("scr-menu"), scrOver=el("scr-over"), hint=el("hint");
@@ -749,16 +892,20 @@ function hideHint(){ hintHidden=true; hint.classList.add("hide"); }
 function toMenu(){
   Game.state=STATE.MENU;
   enemies.clear(); orbs.clear(); parts.clear(); pops.clear();
-  hide(scrOver); hide(scrPause); show(scrMenu); hideHint();
+  hide(scrOver); hide(scrPause); hide(scrTutorial); show(scrMenu); hideHint();
   btnPause.classList.remove("on");
   el("menu-best").textContent="En iyi skor · "+Save.data.bestScore;
 }
 function startGame(){
-  hide(scrMenu); hide(scrOver); hide(scrPause);
+  hide(scrMenu); hide(scrOver); hide(scrPause); hide(scrTutorial);
   btnPause.classList.add("on");
   Game.start();
   hintHidden=false; hint.classList.remove("hide");
   setTimeout(()=>hideHint(),3200);
+}
+function playFromMenu(){
+  if(!tutorial.seen){tutorial.open();return}
+  startGame();
 }
 function showOver(isRecord){
   btnPause.classList.remove("on");
@@ -770,6 +917,45 @@ function showOver(isRecord){
   el("o-energy").textContent=Game.energy;
   setTimeout(()=>show(scrOver),380);   // ölüm efektinin görünmesi için kısa gecikme
 }
+
+
+/* --------------------------- TUTORIAL --------------------------- */
+const scrTutorial=el("scr-tutorial");
+const tutorial={
+  step:0, seen:false,
+  data:[
+    ["NEON SURVIVOR · 01","Hareket et","Parmağını ekranda sürükleyerek enerji çekirdeğini hareket ettir.","Kontrol çok basit: sürükle. Karakter parmağını takip eder.","Hareket etmek için sürükle",true,true,false,false],
+    ["NEON SURVIVOR · 02","Enerji topla","Mavi enerji kürelerine yaklaş. Yaklaştığında otomatik olarak sana çekilirler.","Topladığın her enerji skorunu artırır. Mor küreler daha değerlidir.","Küreye yaklaş",false,true,true,false],
+    ["NEON SURVIVOR · 03","Düşmanlardan kaç","Kırmızı düşmanlara çarparsan can kaybedersin. Üç canın var.","Sürekli hareket et. Düşmanların arasındaki boşlukları kullan.","KIRMIZI = TEHLİKE",false,false,true,true],
+    ["NEON SURVIVOR · 04","Combo yap","Enerjileri art arda toplarsan combo yükselir ve skor çarpanın büyür.","Combo süresi bitmeden yeni enerji topla. Hedef: yüksek combo + uzun hayatta kalma.","x2  x3  x4  → DAHA YÜKSEK SKOR",false,true,true,true]
+  ],
+  load(){try{this.seen=localStorage.getItem("neon_survivor_tutorial_v1")==="1"}catch(e){}},
+  markSeen(){this.seen=true;try{localStorage.setItem("neon_survivor_tutorial_v1","1")}catch(e){}},
+  open(){this.step=0;hide(scrMenu);hide(scrOver);hide(scrPause);show(scrTutorial);this.render()},
+  closeAndPlay(){this.markSeen();hide(scrTutorial);startGame()},
+  render(){
+    const d=this.data[this.step];
+    el("t-kicker").textContent=d[0]; el("t-title").textContent=d[1]; el("t-sub").textContent=d[2];
+    el("t-tip").textContent=d[3]; el("td-label").textContent=d[4];
+    el("td-arrow").style.display=d[5]?"block":"none";
+    el("td-orb-a").style.display=d[6]?"block":"none";
+    el("td-orb-b").style.display=d[7]?"block":"none";
+    el("td-enemy").style.display=d[8]?"block":"none";
+    document.querySelectorAll(".t-dot").forEach((x,i)=>x.classList.toggle("on",i===this.step));
+    el("b-t-prev").style.visibility=this.step===0?"hidden":"visible";
+    el("b-t-next").textContent=this.step===this.data.length-1?"Oyuna başla":"İleri";
+    this.animateDemo();
+  },
+  animateDemo(){
+    const p=el("td-player");
+    if(this.step===0){p.style.left="38%";p.style.top="58%";setTimeout(()=>{if(this.step===0){p.style.left="62%";p.style.top="42%"}},450)}
+    else if(this.step===1){p.style.left="22%";p.style.top="32%";setTimeout(()=>{if(this.step===1){p.style.left="69%";p.style.top="66%"}},650)}
+    else{p.style.left="45%";p.style.top="60%"}
+  },
+  next(){if(this.step<this.data.length-1){this.step++;this.render()}else this.closeAndPlay()},
+  prev(){if(this.step>0){this.step--;this.render()}}
+};
+tutorial.load();
 
 const scrPause=el("scr-pause"), btnPause=el("b-pause");
 function pauseGame(){
@@ -815,8 +1001,12 @@ document.addEventListener("keydown",e=>{
 function tap(node,fn){
   node.addEventListener("click",e=>{ e.preventDefault(); Audio_.init(); Audio_.resume(); Audio_.button(); fn(); });
 }
-tap(el("b-play"),startGame);
+tap(el("b-play"),playFromMenu);
 tap(el("b-again"),startGame);
+tap(el("b-tutorial"),()=>tutorial.open());
+tap(el("b-t-next"),()=>tutorial.next());
+tap(el("b-t-prev"),()=>tutorial.prev());
+tap(el("b-t-skip"),()=>tutorial.closeAndPlay());
 tap(el("b-menu"),toMenu);
 tap(el("b-resume"),resumeGame);
 tap(el("b-quit"),quitToMenu);
