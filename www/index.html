@@ -69,6 +69,49 @@ html,body{
 }
 .btn.ghost:active{background:rgba(34,230,255,.08)}
 
+.how-list{
+  width:min(380px,88vw);
+  max-height:58vh;
+  overflow:auto;
+  margin-top:20px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  scrollbar-width:none;
+}
+.how-list::-webkit-scrollbar{display:none}
+.how-card{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:13px 14px;
+  border:1px solid rgba(34,230,255,.18);
+  border-radius:15px;
+  background:linear-gradient(135deg,rgba(10,20,48,.88),rgba(4,8,22,.92));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+}
+.how-icon{
+  width:42px;height:42px;min-width:42px;
+  display:grid;place-items:center;
+  border-radius:12px;
+  color:#22e6ff;
+  font-size:22px;
+  background:rgba(34,230,255,.07);
+  border:1px solid rgba(34,230,255,.18);
+}
+.how-card b{
+  display:block;
+  font-size:12px;
+  letter-spacing:.15em;
+  color:#eaf4ff;
+}
+.how-card p{
+  margin-top:4px;
+  font-size:10.5px;
+  line-height:1.45;
+  color:rgba(234,244,255,.55);
+}
+
 .stats{width:min(340px,84vw);margin:26px 0 6px}
 .row{
   display:flex;justify-content:space-between;align-items:baseline;
@@ -132,6 +175,36 @@ html,body{
     <div class="logo">Neon<span>Survivor</span></div>
     <div class="tag" id="menu-best">En iyi skor · 0</div>
     <button class="btn" id="b-play">Oyna</button>
+    <button class="btn ghost" id="b-how">Nasıl oynanır?</button>
+  </div>
+
+  <!-- TUTORIAL -->
+  <div class="screen" id="scr-how">
+    <div class="logo" style="font-size:clamp(28px,8vw,44px)">NASIL <span>OYNANIR?</span></div>
+    <div class="how-list">
+      <div class="how-card">
+        <div class="how-icon">☝</div>
+        <div><b>HAREKET ET</b><p>Parmağını ekranda sürükle. Neon çekirdeğini güvenli bölgede tut.</p></div>
+      </div>
+      <div class="how-card">
+        <div class="how-icon">✦</div>
+        <div><b>ENERJİ TOPLA</b><p>Enerji parçalarının üstünden geçerek onları topla. Normal parçalar sadece yakından alınır.</p></div>
+      </div>
+      <div class="how-card">
+        <div class="how-icon">🧲</div>
+        <div><b>MAGNET</b><p>Magnet aktif olduğunda enerji parçalarını uzaktan kendine çeker.</p></div>
+      </div>
+      <div class="how-card">
+        <div class="how-icon">⚡</div>
+        <div><b>LEVEL ATLA</b><p>Seviye yükselince oyun durur. Üç geliştirmeden birini seç ve hayatta kalmaya devam et.</p></div>
+      </div>
+      <div class="how-card">
+        <div class="how-icon">◇</div>
+        <div><b>DÜŞMANLARDAN KAÇ</b><p>Çarpışmalardan kaçın. Kalkanın varsa bir çarpışmayı engelleyebilirsin.</p></div>
+      </div>
+    </div>
+    <button class="btn" id="b-how-play">Oyuna başla</button>
+    <button class="btn ghost" id="b-how-back">Ana menü</button>
   </div>
 
   <!-- LEVEL UP -->
@@ -749,6 +822,7 @@ function frame(now){
 /* -------------------------------- UI -------------------------------- */
 const el=id=>document.getElementById(id);
 const scrMenu=el("scr-menu"),scrOver=el("scr-over"),hint=el("hint");
+const scrHow=el("scr-how");
 const scrLevelUp=el("scr-levelup"),upgradeList=el("upgrade-list"),levelupNumber=el("levelup-number");
 let hintHidden=true;
 function show(s){ s.classList.add("on"); }
@@ -758,10 +832,16 @@ function hideHint(){ hintHidden=true; hint.classList.add("hide"); }
 function toMenu(){
   Game.state=STATE.MENU;
   enemies.clear(); orbs.clear(); parts.clear(); pops.clear();
-  hide(scrOver); show(scrMenu); hideHint();
+  hide(scrOver); hide(scrHow); hide(scrLevelUp); show(scrMenu); hideHint();
   el("menu-best").textContent="En iyi skor · "+Save.data.bestScore;
 }
+function showHow(){
+  hide(scrMenu); hide(scrOver); hide(scrLevelUp);
+  show(scrHow);
+}
 function startGame(){
+  hide(scrMenu); hide(scrHow); hide(scrOver); hide(scrLevelUp);
+  Game.start();
   hide(scrMenu); hide(scrOver);
   Game.start();
   hintHidden=false; hint.classList.remove("hide");
@@ -809,6 +889,9 @@ function tap(node,fn){
   node.addEventListener("click",e=>{ e.preventDefault(); Audio_.init(); Audio_.resume(); Audio_.button(); fn(); });
 }
 tap(el("b-play"),startGame);
+tap(el("b-how"),showHow);
+tap(el("b-how-play"),startGame);
+tap(el("b-how-back"),toMenu);
 tap(el("b-again"),startGame);
 tap(el("b-menu"),toMenu);
 
