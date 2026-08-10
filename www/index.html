@@ -829,7 +829,10 @@ const CFG={
     maxAlive:28,
     margin:46,
     lifeMs:15000,
-    fadeMs:1200
+    fadeMs:1200,
+    separation:34,
+    separationForce:.72,
+    playerBuffer:58
   },
 
   diff:{
@@ -1826,7 +1829,10 @@ function spawnEnemy(level){
   const type=chooseEnemyType(level);
   const m=ENEMIES[type];
   const margin=CFG.enemy.margin;
-  const side=Math.floor(Math.random()*4);
+
+  /* Savaş yönetmeni: giriş yönlerini dengeli döndürür. */
+  const side=(Game.directorSide + Math.floor(Math.random()*2))%4;
+  Game.directorSide=(Game.directorSide+1)%4;
 
   if(side===0){
     e.x=rand(0,W);
@@ -2055,6 +2061,68 @@ function updateEnemy(e,dt,level){
     e.alive=false;
   }
 
+}
+
+
+/* =========================================================
+   COMBAT DIRECTOR / ENEMY CROWD CONTROL
+========================================================= */
+
+function resolveEnemyCrowding(){
+  const list=[];
+  enemies.forEach(e=>list.push(e));
+
+  for(let i=0;i<list.length;i++){
+    const a=list[i];
+    for(let j=i+1;j<list.length;j++){
+      const b=list[j];
+      const dx=b.x-a.x;
+      const dy=b.y-a.y;
+      const d=Math.hypot(dx,dy)||.001;
+      const minDist=a.r+b.r+CFG.enemy.separation;
+      if(d>=minDist)continue;
+
+      const nx=dx/d;
+      const ny=dy/d;
+      const push=(minDist-d)*.5*CFG.enemy.separationForce;
+      const aWeight=a.type===1?.65:1;
+      const bWeight=b.type===1?.65:1;
+      const total=aWeight+bWeight;
+
+      a.x-=nx*push*(bWeight/total);
+      a.y-=ny*push*(bWeight/total);
+      b.x+=nx*push*(aWeight/total);
+      b.y+=ny*push*(aWeight/total);
+    }
+  }
+}
+
+function applyEnemyPlayerSpacing(){
+  enemies.forEach(e=>{
+    const dx=e.x-player.x;
+    const dy=e.y-player.y;
+    const d=Math.hypot(dx,dy)||.001;
+    if(d<CFG.enemy.playerBuffer && d>e.r+CFG.player.radius){
+      const push=(CFG.enemy.playerBuffer-d)*.035;
+      e.x+=(dx/d)*push;
+      e.y+=(dy/d)*push;
+    }
+  });
+}
+
+function updateCombatDirector(dt){
+  Game.director+=dt;
+  Game.directorPulse-=dt;
+
+  if(Game.directorPulse<=0){
+    Game.directorPulse=Math.max(4.5,8-Game.level*.18)*rand(.8,1.2);
+
+    if(Game.level>=3 && enemies.count()<CFG.enemy.maxAlive-1){
+      const wave=Game.level>=8?2:1;
+      for(let i=0;i<wave;i++)spawnEnemy(Game.level);
+      popText(W/2,H*.18,Game.level>=8?"SALDIRI DALGASI":"DÜŞMAN DALGASI","#ff3b6b",13);
+    }
+  }
 }
 
 
@@ -2544,6 +2612,10 @@ const Game={
 
   nextLevel:30,
 
+  director:0,
+  directorPulse:8,
+  directorSide:0,
+
   flash:0,
 
   lastReward:{xp:0,cores:0,level:1,leveled:false},
@@ -2582,6 +2654,9 @@ const Game={
     this.orbSpawn=.2;
     this.powerSpawn=6;
     this.nextLevel=30;
+    this.director=0;
+    this.directorPulse=8;
+    this.directorSide=Math.floor(Math.random()*4);
 
     this.flash=0;
 
@@ -2927,30 +3002,25 @@ function update(dt){
 
     /* ENEMIES */
 
-    enemies.forEach(e=>{
+    updateCombatDirector(dt);
 
+    enemies.forEach(e=>{
       updateEnemy(
         e,
         dt,
         Game.level
       );
+    });
 
-      const d=
-        Math.hypot(
-          e.x-player.x,
-          e.y-player.y
-        );
+    /* Düşmanlar üst üste binmesin, oyuncunun etrafındaki alan okunabilir kalsın. */
+    resolveEnemyCrowding();
+    applyEnemyPlayerSpacing();
 
-      if(
-        d<
-        e.r+
-        CFG.player.radius
-      ){
-
+    enemies.forEach(e=>{
+      const d=Math.hypot(e.x-player.x,e.y-player.y);
+      if(d<e.r+CFG.player.radius){
         Game.damage();
-
       }
-
     });
 
     updateOrbs(dt);
@@ -3262,6 +3332,22 @@ function drawEnemies(){
     }
 
     ctx.globalAlpha=1;
+
+    /* Çok sıkışan gruplara hafif kırmızı uyarı halkası. */
+    let nearby=0;
+    enemies.forEach(o=>{
+      if(o!==e && Math.hypot(o.x-e.x,o.y-e.y)<58)nearby++;
+    });
+    if(nearby>=3){
+      ctx.globalAlpha=.18;
+      ctx.strokeStyle="#ff3b6b";
+      ctx.lineWidth=1.5;
+      ctx.beginPath();
+      ctx.arc(0,0,e.r+6+Math.sin(e.t*5)*1.5,0,TAU);
+      ctx.stroke();
+      ctx.globalAlpha=1;
+    }
+
     ctx.rotate(e.ang||0);
 
     ctx.shadowColor=m.color;
