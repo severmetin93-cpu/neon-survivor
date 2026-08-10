@@ -390,6 +390,37 @@ html,body{
   border-color:rgba(255,107,59,.5);
 }
 
+/* WEAPON HUD */
+#weapon-hud{
+  position:absolute;
+  left:50%;
+  top:calc(var(--safe-t) + 116px);
+  transform:translateX(-50%);
+  z-index:7;
+  display:flex;
+  gap:5px;
+  pointer-events:none;
+  max-width:94vw;
+  overflow:hidden;
+}
+.weapon-pill{
+  min-width:54px;
+  padding:4px 6px;
+  border-radius:9px;
+  background:rgba(4,6,15,.72);
+  border:1px solid rgba(160,92,255,.24);
+  text-align:center;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  display:none;
+  color:#eaf4ff;
+}
+.weapon-pill.on{display:block}
+.weapon-pill .weapon-level{display:block;margin-top:2px;font-size:11px;color:#22e6ff}
+.weapon-pill .weapon-cool{display:block;margin-top:1px;font-size:8px;color:rgba(234,244,255,.42)}
+
 .power-name{
   display:block;
 }
@@ -447,7 +478,7 @@ html,body{
 .levelup-card{position:relative;padding:16px;border-radius:18px;background:linear-gradient(180deg,rgba(13,24,55,.96),rgba(5,9,22,.96));border:1px solid rgba(34,230,255,.2);text-align:left;box-shadow:0 0 18px rgba(34,230,255,.06)}
 .levelup-card:active{transform:scale(.985)}
 .levelup-card .perk-icon{float:left;width:42px;height:42px;margin-right:12px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(34,230,255,.08);border:1px solid rgba(34,230,255,.25);font-size:19px;color:#22e6ff}
-.levelup-card h3{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#fff;margin:2px 0 5px}
+.levelup-card h3{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#fff;margin:2px 0 5px}.levelup-card h3 small{font-size:9px;color:#22e6ff;letter-spacing:.08em}
 .levelup-card p{font-size:11px;line-height:1.4;color:rgba(234,244,255,.55);min-height:30px}
 .levelup-card button{width:100%;margin-top:12px;min-height:42px;border:1px solid rgba(34,230,255,.3);border-radius:11px;background:linear-gradient(135deg,rgba(34,230,255,.12),rgba(59,123,255,.12));color:#eaf4ff;font-weight:900;font-size:11px;letter-spacing:.1em}
 .levelup-card button:active{transform:scale(.98)}
@@ -498,6 +529,14 @@ html,body{
     <span class="power-time">HAZIR</span>
   </div>
 
+</div>
+
+<!-- WEAPON HUD -->
+<div id="weapon-hud">
+  <div class="weapon-pill" id="w-pulse"><span>Pulse</span><span class="weapon-level">Lv.0</span><span class="weapon-cool">AUTO</span></div>
+  <div class="weapon-pill" id="w-plasma"><span>Plasma</span><span class="weapon-level">Lv.0</span><span class="weapon-cool">AUTO</span></div>
+  <div class="weapon-pill" id="w-arc"><span>Arc</span><span class="weapon-level">Lv.0</span><span class="weapon-cool">AUTO</span></div>
+  <div class="weapon-pill" id="w-nova"><span>Nova</span><span class="weapon-level">Lv.0</span><span class="weapon-cool">AUTO</span></div>
 </div>
 
 <!-- MENU -->
@@ -689,37 +728,37 @@ html,body{
 
   <div class="levelup-sub" id="levelup-sub">Seviye 2 · Bir geliştirme seç</div>
 
-  <div class="levelup-grid">
+  <div class="levelup-grid" id="levelup-grid">
 
-    <div class="levelup-card">
+    <div class="levelup-card" data-slot="0">
       <div class="perk-icon">⚡</div>
-      <h3>Hızlı Çekirdek</h3>
-      <p>Hareket hızını %10 artırır.</p>
-      <button data-perk="speed">HIZI ARTIR</button>
+      <h3>Pulse</h3>
+      <p>Temel enerji topu.</p>
+      <button data-perk="pulse">SEÇ</button>
     </div>
 
-    <div class="levelup-card">
-      <div class="perk-icon">🧲</div>
-      <h3>Enerji Alanı</h3>
-      <p>Magnet çekim mesafesini +80 artırır.</p>
-      <button data-perk="magnet">MAGNETİ GÜÇLENDİR</button>
+    <div class="levelup-card" data-slot="1">
+      <div class="perk-icon">🔵</div>
+      <h3>Plasma</h3>
+      <p>Güçlü ve ağır enerji mermisi.</p>
+      <button data-perk="plasma">SEÇ</button>
     </div>
 
-    <div class="levelup-card">
-      <div class="perk-icon">◆</div>
-      <h3>Skor Çarpanı</h3>
-      <p>Toplanan enerjiden gelen skoru %12 artırır.</p>
-      <button data-perk="score">SKORU ARTIR</button>
+    <div class="levelup-card" data-slot="2">
+      <div class="perk-icon">🟣</div>
+      <h3>Arc</h3>
+      <p>Yakındaki düşmanlar arasında zincirlenir.</p>
+      <button data-perk="arc">SEÇ</button>
     </div>
 
-    <div class="levelup-card">
-      <div class="perk-icon">🛡</div>
-      <h3>Enerji Kalkanı</h3>
-      <p>Bir sonraki darbeyi engellemek için Shield kazan.</p>
-      <button data-perk="shield">SHIELD AL</button>
+    <div class="levelup-card" data-slot="3">
+      <div class="perk-icon">🔥</div>
+      <h3>Nova Burst</h3>
+      <p>Oyuncunun çevresinde patlama.</p>
+      <button data-perk="novaWeapon">SEÇ</button>
     </div>
 
-  </div>
+  </div></div>
 
   <div class="levelup-note">Birini seçmeden oyun devam etmez.</div>
 
@@ -1463,6 +1502,42 @@ const powerups=Pool(()=>({
   r:CFG.power.radius
 }));
 
+/* AUTO WEAPON PROJECTILES */
+const projectiles=Pool(()=>({
+  alive:false,
+  x:0,y:0,
+  vx:0,vy:0,
+  r:4,
+  life:0,
+  damage:1,
+  type:"pulse",
+  color:"#22e6ff",
+  pierce:0,
+  chain:0,
+  targetId:null
+}));
+
+const WEAPONS={
+  pulse:{name:"PULSE",color:"#22e6ff",cooldown:.72,speed:420,damage:1,radius:4,pierce:0,levels:5},
+  plasma:{name:"PLASMA",color:"#3b7bff",cooldown:1.35,speed:300,damage:2.5,radius:7,pierce:1,levels:5},
+  arc:{name:"ARC",color:"#a05cff",cooldown:1.05,speed:520,damage:1.4,radius:3,pierce:0,chain:2,levels:5},
+  novaWeapon:{name:"NOVA",color:"#ff6b3b",cooldown:4.8,speed:0,damage:2.2,radius:0,pierce:99,levels:5}
+};
+
+function weaponLevel(key){ return Game.weapons?.[key]||0; }
+
+function weaponStat(key,level){
+  const w=WEAPONS[key];
+  return {
+    cooldown:w.cooldown*Math.pow(.91,Math.max(0,level-1)),
+    speed:w.speed*(1+Math.max(0,level-1)*.08),
+    damage:w.damage*(1+Math.max(0,level-1)*.32),
+    radius:w.radius+Math.max(0,level-1)*.7,
+    pierce:w.pierce+Math.floor(Math.max(0,level-1)/2),
+    chain:(w.chain||0)+Math.floor(Math.max(0,level-1)/2)
+  };
+}
+
 
 /* =========================================================
    EFFECTS
@@ -1857,6 +1932,7 @@ function spawnEnemy(level){
   e.dashCd=rand(.9,2.2);
   e.telegraph=0;
   e.hitFlash=0;
+  e.hp=m.hp;
 
   const a=Math.atan2(
     player.y-e.y,
@@ -2581,6 +2657,135 @@ function updateOrbs(dt){
 
 
 /* =========================================================
+   WEAPON SYSTEM
+========================================================= */
+
+function nearestEnemy(){
+  let best=null,bestD=Infinity;
+  enemies.forEach(e=>{
+    const d=(e.x-player.x)**2+(e.y-player.y)**2;
+    if(d<bestD){bestD=d;best=e;}
+  });
+  return best;
+}
+
+function damageEnemy(e,amount,color){
+  if(!e.alive)return;
+  e.hp=Math.max(0,(e.hp??1)-amount);
+  e.hitFlash=.18;
+  emit(e.x,e.y,5,color,120,2.2,.25);
+  if(e.hp<=0){
+    e.alive=false;
+    const reward=25*(e.type===1?2:1);
+    Game.score+=reward*Game.combo;
+    Game.chain++;
+    Game.combo=clamp(1+Math.floor(Game.chain/3),1,CFG.combo.maxMult);
+    Game.maxCombo=Math.max(Game.maxCombo,Game.combo);
+    Game.comboTimer=CFG.combo.windowMs/1000;
+    Game.energy+=e.type===1?2:1;
+    emit(e.x,e.y,12,ENEMIES[e.type].color,180,3,.5);
+    popText(e.x,e.y-12,"+"+reward,ENEMIES[e.type].color,12);
+    Audio_.power();
+  }
+}
+
+function fireProjectile(key){
+  const level=weaponLevel(key);
+  if(level<=0)return;
+  const w=WEAPONS[key];
+  const st=weaponStat(key,level);
+  const target=nearestEnemy();
+  if(!target)return;
+
+  if(key==="novaWeapon"){
+    let hit=0;
+    const radius=92+level*18;
+    enemies.forEach(e=>{
+      const d=Math.hypot(e.x-player.x,e.y-player.y);
+      if(d<=radius){damageEnemy(e,st.damage,w.color);hit++;}
+    });
+    emit(player.x,player.y,26,w.color,260,3.2,.55);
+    popText(player.x,player.y-36,"NOVA BURST",w.color,14);
+    if(hit) vibrate(10);
+    return;
+  }
+
+  const p=projectiles.get();
+  const dx=target.x-player.x,dy=target.y-player.y;
+  const d=Math.hypot(dx,dy)||1;
+  p.x=player.x; p.y=player.y;
+  p.vx=dx/d*st.speed; p.vy=dy/d*st.speed;
+  p.r=st.radius; p.life=1.8; p.damage=st.damage;
+  p.type=key; p.color=w.color; p.pierce=st.pierce; p.chain=st.chain;
+  emit(player.x,player.y,3,w.color,80,1.6,.18);
+}
+
+function updateWeapons(dt){
+  if(Game.state!==STATE.PLAYING)return;
+  for(const key of Object.keys(WEAPONS)){
+    const level=weaponLevel(key);
+    if(level<=0)continue;
+    Game.weaponTimers[key]-=dt;
+    if(Game.weaponTimers[key]<=0){
+      fireProjectile(key);
+      Game.weaponTimers[key]=weaponStat(key,level).cooldown;
+    }
+  }
+
+  projectiles.forEach(p=>{
+    p.life-=dt;
+    if(p.life<=0){p.alive=false;return;}
+    p.x+=p.vx*dt; p.y+=p.vy*dt;
+    let spent=false;
+    enemies.forEach(e=>{
+      if(!p.alive||spent||!e.alive)return;
+      const d=Math.hypot(e.x-p.x,e.y-p.y);
+      if(d<=e.r+p.r){
+        damageEnemy(e,p.damage,p.color);
+        if(p.type==="arc" && p.chain>0){
+          let hops=p.chain;
+          enemies.forEach(n=>{
+            if(n!==e && n.alive && hops>0 && Math.hypot(n.x-e.x,n.y-e.y)<105){
+              damageEnemy(n,p.damage*.72,p.color);
+              emit(e.x,e.y,3,p.color,100,1.8,.18);
+              hops--;
+            }
+          });
+        }
+        if(p.pierce>0)p.pierce--;
+        else{p.alive=false;spent=true;}
+      }
+    });
+    if(p.x<-40||p.x>W+40||p.y<-40||p.y>H+40)p.alive=false;
+  });
+}
+
+function drawWeapons(){
+  projectiles.forEach(p=>{
+    ctx.save();
+    ctx.shadowColor=p.color;
+    ctx.shadowBlur=p.type==="plasma"?22:14;
+    ctx.fillStyle=p.color;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,TAU);ctx.fill();
+    if(p.type==="plasma"){
+      ctx.globalAlpha=.28;ctx.beginPath();ctx.arc(p.x,p.y,p.r*2.4,0,TAU);ctx.fill();
+    }
+    ctx.restore();
+  });
+}
+
+function updateWeaponHUD(){
+  for(const key of Object.keys(WEAPONS)){
+    const el=document.getElementById("w-"+(key==="novaWeapon"?"nova":key));
+    if(!el)continue;
+    const level=weaponLevel(key);
+    el.classList.toggle("on",Game.state===STATE.PLAYING && level>0);
+    const lv=el.querySelector(".weapon-level");
+    if(lv)lv.textContent="Lv."+level;
+  }
+}
+
+/* =========================================================
    GAME
 ========================================================= */
 
@@ -2622,6 +2827,9 @@ const Game={
 
   runUpgrades:{speed:0,magnet:0,score:0},
 
+  weapons:{pulse:1,plasma:0,arc:0,novaWeapon:0},
+  weaponTimers:{pulse:.35,plasma:1.0,arc:1.2,novaWeapon:2.5},
+
   powers:{
     shield:0,
     magnet:0,
@@ -2634,6 +2842,7 @@ const Game={
     enemies.clear();
     orbs.clear();
     powerups.clear();
+    projectiles.clear();
     particles.clear();
     texts.clear();
 
@@ -2649,6 +2858,10 @@ const Game={
     this.energy=0;
 
     this.runUpgrades={speed:0,magnet:0,score:0};
+
+    this.weapons={pulse:1,plasma:0,arc:0,novaWeapon:0};
+    this.weaponTimers={pulse:.35,plasma:1.0,arc:1.2,novaWeapon:2.5};
+    projectiles.clear();
 
     this.enemySpawn=.8;
     this.orbSpawn=.2;
@@ -2676,6 +2889,7 @@ const Game={
     showPauseButton();
 
     updatePowerHUD();
+    updateWeaponHUD();
 
   },
 
@@ -3029,10 +3243,13 @@ function update(dt){
 
     updateActivePowers(dt);
 
+    updateWeapons(dt);
+
     if(Game.flash>0)
       Game.flash-=dt*2;
 
     updatePowerHUD();
+    updateWeaponHUD();
 
   }
 
@@ -3829,6 +4046,7 @@ function render(dt){
 
   drawPowerups();
 
+  drawWeapons();
   drawEnemies();
 
   if(
@@ -3960,6 +4178,7 @@ function toMenu(){
   enemies.clear();
   orbs.clear();
   powerups.clear();
+  projectiles.clear();
   particles.clear();
   texts.clear();
 
@@ -3982,6 +4201,7 @@ function toMenu(){
 
   updateProgressUI();
   updatePowerHUD();
+  updateWeaponHUD();
 
 }
 
@@ -4067,32 +4287,54 @@ function buyUpgrade(type){
   }
 }
 
+const RUN_CHOICES={
+  pulse:{icon:"⚡",title:"PULSE",desc:"Enerji mermisinin seviyesini artır.",kind:"weapon"},
+  plasma:{icon:"🔵",title:"PLASMA",desc:"Güçlü, ağır ve delici enerji mermisini aç/geliştir.",kind:"weapon"},
+  arc:{icon:"🟣",title:"ARC",desc:"Düşmanlar arasında zincirlenen saldırıyı aç/geliştir.",kind:"weapon"},
+  novaWeapon:{icon:"🔥",title:"NOVA BURST",desc:"Yakındaki düşmanlara otomatik patlama yapan silahı aç/geliştir.",kind:"weapon"},
+  speed:{icon:"➤",title:"NEON HIZI",desc:"Hareket hızını %10 artır.",kind:"passive"},
+  magnet:{icon:"🧲",title:"ENERJİ ALANI",desc:"Magnet çekim mesafesini +80 artır.",kind:"passive"},
+  score:{icon:"◆",title:"SKOR ÇARPANI",desc:"Bu koşuda skor kazanımını %12 artır.",kind:"passive"},
+  shield:{icon:"🛡",title:"ENERJİ KALKANI",desc:"Bir sonraki darbeyi engellemek için Shield kazan.",kind:"passive"}
+};
+
+function renderLevelChoices(){
+  const grid=document.getElementById("levelup-grid");
+  if(!grid)return;
+  const pool=Object.keys(RUN_CHOICES).filter(k=>{
+    if(RUN_CHOICES[k].kind==="weapon")return weaponLevel(k)<WEAPONS[k].levels;
+    return true;
+  });
+  pool.sort(()=>Math.random()-.5);
+  const choices=pool.slice(0,4);
+  grid.innerHTML=choices.map(key=>{
+    const c=RUN_CHOICES[key];
+    const level=c.kind==="weapon"?weaponLevel(key):(key==="speed"?Game.runUpgrades.speed:key==="magnet"?Game.runUpgrades.magnet:key==="score"?Game.runUpgrades.score:0);
+    return `<div class="levelup-card"><div class="perk-icon">${c.icon}</div><h3>${c.title} <small>Lv.${level+1}</small></h3><p>${c.desc}</p><button data-perk="${key}">SEÇ</button></div>`;
+  }).join("");
+  grid.querySelectorAll("button[data-perk]").forEach(btn=>{
+    tap(btn,()=>chooseRunPerk(btn.dataset.perk));
+  });
+}
+
 function openLevelUp(){
-
   if(Game.state!==STATE.PLAYING)return;
-
   Game.state=STATE.LEVELUP;
   inputUp();
-
-  $("levelup-sub").textContent=
-    "Seviye "+Game.level+" · Bir geliştirme seç";
-
-  hide(scrMenu);
-  hide(scrHow);
-  hide(scrUpgrades);
-  hide(scrSkins);
-  hide(scrPause);
-  hide(scrOver);
+  $("levelup-sub").textContent="Seviye "+Game.level+" · Arsenalini güçlendir";
+  hide(scrMenu);hide(scrHow);hide(scrUpgrades);hide(scrSkins);hide(scrPause);hide(scrOver);
+  renderLevelChoices();
   show(scrLevelup);
-
   vibrate([20,35,20]);
 }
 
 function chooseRunPerk(type){
-
   if(Game.state!==STATE.LEVELUP)return;
-
-  if(type==="speed"){
+  if(RUN_CHOICES[type]?.kind==="weapon"){
+    Game.weapons[type]++;
+    Game.weaponTimers[type]=Math.min(Game.weaponTimers[type]||0,.25);
+    popText(player.x,player.y-34,WEAPONS[type].name+" Lv."+Game.weapons[type],WEAPONS[type].color,16);
+  }else if(type==="speed"){
     Game.runUpgrades.speed++;
     popText(player.x,player.y-34,"HIZ +10%","#22e6ff",16);
   }else if(type==="magnet"){
@@ -4104,15 +4346,13 @@ function chooseRunPerk(type){
   }else if(type==="shield"){
     Game.powers.shield=1;
     popText(player.x,player.y-34,"SHIELD HAZIR","#48d9ff",16);
-  }else{
-    return;
-  }
-
+  }else return;
   Audio_.power();
   vibrate([12,24,12]);
   hide(scrLevelup);
   Game.state=STATE.PLAYING;
   updatePowerHUD();
+  updateWeaponHUD();
 }
 
 function pauseGame(){
@@ -4260,9 +4500,6 @@ tap(
   pauseGame
 );
 
-scrLevelup.querySelectorAll("button[data-perk]").forEach(btn=>{
-  tap(btn,()=>chooseRunPerk(btn.dataset.perk));
-});
 
 tap(
   $("b-upgrades"),
@@ -4424,6 +4661,7 @@ resize();
 resetPlayer();
 
 toMenu();
+updateWeaponHUD();
 
 
 /* =========================================================
