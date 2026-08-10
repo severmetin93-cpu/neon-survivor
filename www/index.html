@@ -343,23 +343,26 @@ html,body{
 
 #power-hud{
   position:absolute;
-  left:50%;
-  top:calc(var(--safe-t) + 76px);
-  transform:translateX(-50%);
+  right:10px;
+  left:auto;
+  top:calc(var(--safe-t) + 86px);
+  transform:none;
   z-index:7;
   display:flex;
-  gap:6px;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:4px;
   pointer-events:none;
 }
 
 .power-pill{
-  min-width:72px;
-  padding:5px 8px;
+  min-width:60px;
+  padding:4px 7px;
   border-radius:10px;
   background:rgba(4,6,15,.7);
   border:1px solid rgba(34,230,255,.22);
   text-align:center;
-  font-size:10px;
+  font-size:8px;
   font-weight:800;
   letter-spacing:.08em;
   text-transform:uppercase;
@@ -390,36 +393,59 @@ html,body{
   border-color:rgba(255,107,59,.5);
 }
 
-/* WEAPON HUD */
+/* COMPACT WEAPON HUD
+   Kenar bölgesinde kalır; oyun alanının görüşünü kapatmaz. */
 #weapon-hud{
   position:absolute;
-  left:50%;
-  top:calc(var(--safe-t) + 116px);
-  transform:translateX(-50%);
+  left:10px;
+  right:auto;
+  top:calc(var(--safe-t) + 118px);
+  transform:none;
   z-index:7;
   display:flex;
+  flex-direction:column;
   gap:5px;
   pointer-events:none;
-  max-width:94vw;
-  overflow:hidden;
 }
 .weapon-pill{
-  min-width:54px;
-  padding:4px 6px;
-  border-radius:9px;
-  background:rgba(4,6,15,.72);
-  border:1px solid rgba(160,92,255,.24);
+  width:43px;
+  min-width:43px;
+  height:35px;
+  padding:3px 2px;
+  border-radius:10px;
+  background:rgba(4,6,15,.68);
+  border:1px solid rgba(160,92,255,.28);
   text-align:center;
-  font-size:9px;
+  font-size:8px;
   font-weight:900;
-  letter-spacing:.06em;
+  letter-spacing:.04em;
   text-transform:uppercase;
   display:none;
   color:#eaf4ff;
+  box-shadow:0 0 10px rgba(34,230,255,.04);
+  backdrop-filter:blur(5px);
 }
 .weapon-pill.on{display:block}
-.weapon-pill .weapon-level{display:block;margin-top:2px;font-size:11px;color:#22e6ff}
-.weapon-pill .weapon-cool{display:block;margin-top:1px;font-size:8px;color:rgba(234,244,255,.42)}
+.weapon-pill>span:first-child{display:block;font-size:9px;line-height:11px;color:#eaf4ff}
+.weapon-pill .weapon-level{display:block;margin-top:1px;font-size:10px;color:#22e6ff;line-height:11px}
+.weapon-pill .weapon-cool{display:none}
+#weapon-hud::after{
+  content:"YETENEKLER";
+  display:block;
+  order:-1;
+  margin-bottom:1px;
+  font-size:7px;
+  letter-spacing:.12em;
+  color:rgba(234,244,255,.28);
+  writing-mode:vertical-rl;
+  transform:rotate(180deg);
+  height:47px;
+  align-self:center;
+}
+@media(max-height:680px){
+  #weapon-hud{top:calc(var(--safe-t) + 104px);gap:3px}
+  .weapon-pill{height:31px;width:40px;min-width:40px}
+}
 
 .power-name{
   display:block;
@@ -428,7 +454,7 @@ html,body{
 .power-time{
   display:block;
   margin-top:2px;
-  font-size:13px;
+  font-size:11px;
 }
 
 /* POWER-UP TUTORIAL MINI */
@@ -863,22 +889,22 @@ const CFG={
   },
 
   enemy:{
-    baseSpeed:52,
-    spawnMs:1500,
-    maxAlive:28,
+    baseSpeed:58,
+    spawnMs:1250,
+    maxAlive:34,
     margin:46,
     lifeMs:15000,
     fadeMs:1200,
     separation:34,
     separationForce:.72,
-    playerBuffer:58
+    playerBuffer:34
   },
 
   diff:{
     stepMs:30000,
-    speedPerLevel:.085,
-    spawnDecay:.90,
-    minSpawnMs:340
+    speedPerLevel:.105,
+    spawnDecay:.94,
+    minSpawnMs:260
   },
 
   power:{
@@ -1518,10 +1544,10 @@ const projectiles=Pool(()=>({
 }));
 
 const WEAPONS={
-  pulse:{name:"PULSE",color:"#22e6ff",cooldown:.72,speed:420,damage:1,radius:4,pierce:0,levels:5},
-  plasma:{name:"PLASMA",color:"#3b7bff",cooldown:1.35,speed:300,damage:2.5,radius:7,pierce:1,levels:5},
-  arc:{name:"ARC",color:"#a05cff",cooldown:1.05,speed:520,damage:1.4,radius:3,pierce:0,chain:2,levels:5},
-  novaWeapon:{name:"NOVA",color:"#ff6b3b",cooldown:4.8,speed:0,damage:2.2,radius:0,pierce:99,levels:5}
+  pulse:{name:"PULSE",color:"#22e6ff",cooldown:.92,speed:390,damage:.82,radius:4,pierce:0,levels:5},
+  plasma:{name:"PLASMA",color:"#3b7bff",cooldown:1.7,speed:285,damage:2.15,radius:7,pierce:1,levels:5},
+  arc:{name:"ARC",color:"#a05cff",cooldown:1.35,speed:500,damage:1.15,radius:3,pierce:0,chain:2,levels:5},
+  novaWeapon:{name:"NOVA",color:"#ff6b3b",cooldown:5.8,speed:0,damage:1.8,radius:0,pierce:99,levels:5}
 };
 
 function weaponLevel(key){ return Game.weapons?.[key]||0; }
@@ -1862,10 +1888,7 @@ const ENEMIES=[
 function chooseEnemyType(level){
 
   const unlocked=
-    Math.min(
-      5,
-      1+Math.floor(level/2)
-    );
+    Math.min(5, 1 + Math.floor((level+1)/2));
 
   /* Erken oyunda Hunter ağırlıklı, ileride diğerleri dengelenir. */
   const weights=[
@@ -1942,7 +1965,7 @@ function spawnEnemy(level){
   const speed=
     CFG.enemy.baseSpeed*
     m.speed*
-    (1+(level-1)*.085);
+    (1+(level-1)*CFG.diff.speedPerLevel);
 
   e.vx=Math.cos(a)*speed;
   e.vy=Math.sin(a)*speed;
@@ -1960,7 +1983,7 @@ function updateEnemy(e,dt,level){
   const speed=
     CFG.enemy.baseSpeed*
     m.speed*
-    (1+(level-1)*.085);
+    (1+(level-1)*CFG.diff.speedPerLevel);
 
   e.t+=dt;
   e.hitFlash=Math.max(0,e.hitFlash-dt*5);
@@ -2193,8 +2216,8 @@ function updateCombatDirector(dt){
   if(Game.directorPulse<=0){
     Game.directorPulse=Math.max(4.5,8-Game.level*.18)*rand(.8,1.2);
 
-    if(Game.level>=3 && enemies.count()<CFG.enemy.maxAlive-1){
-      const wave=Game.level>=8?2:1;
+    if(Game.level>=2 && enemies.count()<CFG.enemy.maxAlive-1){
+      const wave=Game.level>=9?3:Game.level>=6?2:1;
       for(let i=0;i<wave;i++)spawnEnemy(Game.level);
       popText(W/2,H*.18,Game.level>=8?"SALDIRI DALGASI":"DÜŞMAN DALGASI","#ff3b6b",13);
     }
@@ -2782,6 +2805,10 @@ function updateWeaponHUD(){
     el.classList.toggle("on",Game.state===STATE.PLAYING && level>0);
     const lv=el.querySelector(".weapon-level");
     if(lv)lv.textContent="Lv."+level;
+    const name=el.querySelector("span:first-child");
+    if(name){
+      name.textContent=key==="pulse"?"⚡":key==="plasma"?"◉":key==="arc"?"⌁":"✦";
+    }
   }
 }
 
@@ -2863,7 +2890,7 @@ const Game={
     this.weaponTimers={pulse:.35,plasma:1.0,arc:1.2,novaWeapon:2.5};
     projectiles.clear();
 
-    this.enemySpawn=.8;
+    this.enemySpawn=.32;
     this.orbSpawn=.2;
     this.powerSpawn=6;
     this.nextLevel=30;
@@ -2885,6 +2912,8 @@ const Game={
 
     this.state=
       STATE.PLAYING;
+
+    popText(W/2,H*.38,"HAYATTA KAL · ENERJİNİ TOPLA","#22e6ff",13);
 
     showPauseButton();
 
@@ -3107,11 +3136,11 @@ function update(dt){
 
     const enemyEvery=
       Math.max(
-        340,
-        1500*
+        CFG.diff.minSpawnMs,
+        CFG.enemy.spawnMs*
         Math.pow(
-          .90,
-          Game.level-1
+          CFG.diff.spawnDecay,
+          Math.max(0,Game.level-1)
         )
       )/1000;
 
@@ -3124,8 +3153,8 @@ function update(dt){
       );
 
       if(
-        Game.level>=4 &&
-        Math.random()<.22
+        Game.level>=3 &&
+        Math.random()<(Game.level>=7?.38:.24)
       ){
 
         spawnEnemy(
@@ -4288,14 +4317,14 @@ function buyUpgrade(type){
 }
 
 const RUN_CHOICES={
-  pulse:{icon:"⚡",title:"PULSE",desc:"Enerji mermisinin seviyesini artır.",kind:"weapon"},
-  plasma:{icon:"🔵",title:"PLASMA",desc:"Güçlü, ağır ve delici enerji mermisini aç/geliştir.",kind:"weapon"},
-  arc:{icon:"🟣",title:"ARC",desc:"Düşmanlar arasında zincirlenen saldırıyı aç/geliştir.",kind:"weapon"},
-  novaWeapon:{icon:"🔥",title:"NOVA BURST",desc:"Yakındaki düşmanlara otomatik patlama yapan silahı aç/geliştir.",kind:"weapon"},
+  pulse:{icon:"⚡",title:"PULSE",desc:"Otomatik enerji darbesini güçlendir.",kind:"weapon"},
+  plasma:{icon:"🔵",title:"PLASMA",desc:"Yoğun enerji atışını aç/geliştir.",kind:"weapon"},
+  arc:{icon:"🟣",title:"ARC",desc:"Yakındaki hedeflere sıçrayan enerji arkını aç/geliştir.",kind:"weapon"},
+  novaWeapon:{icon:"🔥",title:"NOVA BURST",desc:"Acil durumda çevreye enerji patlaması yapan yeteneği aç/geliştir.",kind:"weapon"},
   speed:{icon:"➤",title:"NEON HIZI",desc:"Hareket hızını %10 artır.",kind:"passive"},
   magnet:{icon:"🧲",title:"ENERJİ ALANI",desc:"Magnet çekim mesafesini +80 artır.",kind:"passive"},
   score:{icon:"◆",title:"SKOR ÇARPANI",desc:"Bu koşuda skor kazanımını %12 artır.",kind:"passive"},
-  shield:{icon:"🛡",title:"ENERJİ KALKANI",desc:"Bir sonraki darbeyi engellemek için Shield kazan.",kind:"passive"}
+  shield:{icon:"🛡",title:"ENERJİ KALKANI",desc:"Tek darbeyi engeller; yalnızca acil durumda kullan.",kind:"passive"}
 };
 
 function renderLevelChoices(){
@@ -4321,7 +4350,7 @@ function openLevelUp(){
   if(Game.state!==STATE.PLAYING)return;
   Game.state=STATE.LEVELUP;
   inputUp();
-  $("levelup-sub").textContent="Seviye "+Game.level+" · Arsenalini güçlendir";
+  $("levelup-sub").textContent="Seviye "+Game.level+" · Enerji çekirdeğini güçlendir";
   hide(scrMenu);hide(scrHow);hide(scrUpgrades);hide(scrSkins);hide(scrPause);hide(scrOver);
   renderLevelChoices();
   show(scrLevelup);
