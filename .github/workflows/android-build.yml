@@ -29,70 +29,92 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Install dependencies
-        run: npm install --no-audit --no-fund
-
-      - name: Verify sharp can rasterize the SVG
+      - name: Install project dependencies
         run: |
-          node -e "
-          const sharp = require('sharp');
-          const fs = require('fs');
+          npm install --include=dev --no-audit --no-fund
 
-          sharp(
-            fs.readFileSync('www/assets/icons/icon.svg'),
-            { density: 512 }
-          )
-          .resize(192, 192)
-          .png()
-          .toBuffer()
-          .then(b => {
-            console.log('sharp OK, test PNG:', b.length, 'bytes');
-          })
-          .catch(e => {
-            console.error('sharp SVG render ERROR:', e.message);
-            process.exit(1);
-          });
-          "
+      - name: Install sharp explicitly
+        run: |
+          npm install --save-dev sharp@0.33.5 --include=dev --no-audit --no-fund
+          node -e "console.log('sharp version:', require('sharp').versions.sharp)"
+
+      - name: Verify sharp can rasterize SVG
+        run: |
+          test -f www/assets/icons/icon.svg || {
+            echo "HATA: www/assets/icons/icon.svg bulunamadi!"
+            exit 1
+          }
+
+          node <<'NODE'
+          const fs = require("fs");
+          const sharp = require("sharp");
+
+          const input = "www/assets/icons/icon.svg";
+
+          console.log("SVG kontrol ediliyor:", input);
+
+          sharp(fs.readFileSync(input), { density: 512 })
+            .resize(192, 192)
+            .png()
+            .toBuffer()
+            .then(buffer => {
+              console.log("SVG -> PNG BASARILI");
+              console.log("PNG boyutu:", buffer.length, "bytes");
+            })
+            .catch(error => {
+              console.error("SVG -> PNG HATASI:");
+              console.error(error);
+              process.exit(1);
+            });
+          NODE
 
       - name: Sanity check
         run: |
           test -f www/index.html || {
-            echo "www/index.html yok!";
-            exit 1;
-          }
-
-          test -f www/assets/icons/icon.svg || {
-            echo "www/assets/icons/icon.svg yok!";
-            exit 1;
+            echo "HATA: www/index.html yok!"
+            exit 1
           }
 
           test -f www/manifest.json || {
-            echo "www/manifest.json yok!";
-            exit 1;
+            echo "HATA: www/manifest.json yok!"
+            exit 1
           }
 
           test -f www/service-worker.js || {
-            echo "www/service-worker.js yok!";
-            exit 1;
+            echo "HATA: www/service-worker.js yok!"
+            exit 1
+          }
+
+          test -f www/assets/icons/icon.svg || {
+            echo "HATA: www/assets/icons/icon.svg yok!"
+            exit 1
           }
 
           test -f capacitor.config.json || {
-            echo "capacitor.config.json yok!";
-            exit 1;
+            echo "HATA: capacitor.config.json yok!"
+            exit 1
           }
 
-          echo "Web kaynaklari OK"
+          test -f scripts/configure-android.mjs || {
+            echo "HATA: scripts/configure-android.mjs yok!"
+            exit 1
+          }
+
+          echo "================================"
+          echo "WEB KAYNAKLARI OK"
+          echo "================================"
 
       - name: Add Android platform
         run: |
           if [ ! -d android ]; then
             npx cap add android
           else
-            echo "android/ zaten var, atlaniyor"
+            echo "android/ zaten var"
           fi
 
-      - name: Sync web assets into Android project
-        run: npx cap sync android
+      - name: Sync web assets
+        run: |
+          npx cap sync android
 
       - name: Install required Android SDK platform
         run: |
@@ -106,33 +128,52 @@ jobs:
             "platforms;android-${COMPILE_SDK}" \
             "platform-tools"
 
-      - name: Configure Android project
-        run: node scripts/configure-android.mjs
+      - name: Configure Android
+        run: |
+          node scripts/configure-android.mjs
 
       - name: Build debug APK
         run: |
           cd android
+
           chmod +x ./gradlew
-          ./gradlew assembleDebug --no-daemon --stacktrace
+
+          ./gradlew assembleDebug \
+            --no-daemon \
+            --stacktrace
+
+      - name: Find APK
+        run: |
+          echo "APK aranıyor..."
+
+          find android/app/build/outputs \
+            -type f \
+            -name "*.apk" \
+            -print
 
       - name: Rename APK
         run: |
-          SRC=$(find android/app/build/outputs/apk/debug -name "*.apk" | head -n 1)
+          SRC=$(find android/app/build/outputs/apk/debug \
+            -type f \
+            -name "*.apk" \
+            | head -n 1)
 
           if [ -z "$SRC" ]; then
-            echo "APK bulunamadi!"
+            echo "HATA: APK bulunamadi!"
             exit 1
           fi
 
-          echo "Bulunan APK: $SRC"
+          echo "Bulunan APK:"
+          echo "$SRC"
 
           mkdir -p dist
 
           cp "$SRC" dist/NEON-SURVIVOR-debug.apk
 
-          ls -lh dist/
+          echo "Final APK:"
+          ls -lh dist/NEON-SURVIVOR-debug.apk
 
-      - name: Upload APK artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: NEON-SURVIVOR-debug-apk
@@ -140,24 +181,33 @@ jobs:
           retention-days: 30
           if-no-files-found: error
 
-      - name: Diagnostic output
+      - name: Diagnostic information
         if: failure()
         run: |
-          echo "=== ENVIRONMENT ==="
+          echo "================================"
+          echo "BUILD HATASI - DIAGNOSTIC"
+          echo "================================"
+
+          echo ""
+          echo "Node:"
           node --version
+
+          echo ""
+          echo "NPM:"
+          npm --version
+
+          echo ""
+          echo "Java:"
           java -version 2>&1
-          echo "ANDROID_HOME=$ANDROID_HOME"
 
-          echo "=== variables.gradle ==="
+          echo ""
+          echo "Sharp:"
+          npm list sharp || true
+
+          echo ""
+          echo "Files:"
+          find www -maxdepth 4 -type f -print || true
+
+          echo ""
+          echo "Android variables:"
           cat android/variables.gradle || true
-
-          echo "=== AndroidManifest.xml ==="
-          cat android/app/src/main/AndroidManifest.xml || true
-
-          echo "=== styles.xml ==="
-          cat android/app/src/main/res/values/styles.xml || true
-
-          echo "=== MainActivity.java ==="
-          find android/app/src/main/java \
-            -name MainActivity.java \
-            -exec cat {} \; || true
