@@ -809,7 +809,7 @@ html,body{
     </div>
   </div>
 
-  <div class="unlock-note" id="unlock-note">Sonraki özel kilit açma: Seviye 5</div>
+  <div class="unlock-note" id="unlock-note">Elite + Boss ödülleri kalıcı ÇEKİRDEK kazandırır.</div>
 
   <button class="btn ghost" id="b-upgrades-back">Geri</button>
 
@@ -947,7 +947,7 @@ html,body{
 "use strict";
 
 /* =========================================================
-   CONFIG · V13 BUILD SYNERGY
+   CONFIG · V14 REWARD LOOP
 ========================================================= */
 
 const CFG={
@@ -1046,6 +1046,8 @@ const DEFAULTS={
   gamesPlayed:0,
   highestCombo:1,
   longestSurvival:0,
+  totalElites:0,
+  bossKills:0,
   profileXP:0,
   cores:0,
   upgrades:{speed:0,magnet:0,shield:0,score:0},
@@ -1104,6 +1106,8 @@ const Save={
 
 Save.load();
 if(!Save.data.upgrades||typeof Save.data.upgrades!=="object") Save.data.upgrades={speed:0,magnet:0,shield:0,score:0};
+if(typeof Save.data.totalElites!=="number") Save.data.totalElites=0;
+if(typeof Save.data.bossKills!=="number") Save.data.bossKills=0;
 if(!Save.data.ownedSkins||typeof Save.data.ownedSkins!=="object") Save.data.ownedSkins={cyan:true};
 Save.data.ownedSkins.cyan=true;
 if(!Save.data.selectedSkin) Save.data.selectedSkin="cyan";
@@ -1187,7 +1191,7 @@ function updateProgressUI(){
     b.disabled=Save.data.cores<Progression.cost(k);
   }
   const note=$('unlock-note');
-  if(note)note.textContent=level>=5?'Özel çekirdek görünümü açıldı!':'Sonraki özel kilit açma: Seviye 5';
+  if(note)note.textContent=level>=5?'Özel çekirdek görünümü açıldı!':'Elite + Boss ödülleri kalıcı ÇEKİRDEK kazandırır.';
 }
 
 /* =========================================================
@@ -1389,6 +1393,20 @@ const Audio_={
       .42,
       55
     );
+
+  },
+
+  rewardMilestone(seconds, cores, label){
+
+    if(this.runMilestones[seconds]) return;
+
+    this.runMilestones[seconds]=true;
+    this.runCoreBonus+=cores;
+
+    emit(player.x,player.y,18,"#ffe34d",170,2.8,.45);
+    popText(W/2,H*.22,label+" · +"+cores+" ÇEKİRDEK","#ffe34d",14);
+    Audio_.power();
+    vibrate([15,25,15]);
 
   },
 
@@ -3030,6 +3048,8 @@ function damageEnemy(e,amount,color){
 
     if(e.boss){
       Game.bossDefeated=true;
+      Game.runBossKills++;
+      Game.runCoreBonus+=25;
       Game.score+=900*Game.combo;
       Game.energy+=12;
       Game.chain+=6;
@@ -3045,6 +3065,8 @@ function damageEnemy(e,amount,color){
 
     }else if(e.elite){
       const reward=180;
+      Game.runElites++;
+      Game.runCoreBonus+=2;
       Game.score+=reward*Game.combo;
       Game.energy+=5;
       Game.chain+=3;
@@ -3230,6 +3252,11 @@ const Game={
 
   lastReward:{xp:0,cores:0,level:1,leveled:false},
 
+  runCoreBonus:0,
+  runMilestones:{90:false,180:false,300:false},
+  runElites:0,
+  runBossKills:0,
+
   runUpgrades:{speed:0,magnet:0,score:0},
 
   weapons:{pulse:1,plasma:0,arc:0,novaWeapon:0},
@@ -3262,6 +3289,10 @@ const Game={
     this.maxCombo=1;
     this.chain=0;
     this.energy=0;
+    this.runCoreBonus=0;
+    this.runMilestones={90:false,180:false,300:false};
+    this.runElites=0;
+    this.runBossKills=0;
 
     this.runUpgrades={speed:0,magnet:0,score:0};
 
@@ -3441,7 +3472,14 @@ const Game={
       this.energy,
       this.time
     );
+
+    reward.cores += this.runCoreBonus;
+    reward.runBonus = this.runCoreBonus;
     this.lastReward=reward;
+
+    Save.data.cores += this.runCoreBonus;
+    Save.data.totalElites += this.runElites;
+    Save.data.bossKills += this.runBossKills;
 
     Save.save();
 
@@ -3489,6 +3527,10 @@ function update(dt){
   ){
 
     Game.time+=dt;
+
+    if(Game.time>=90 && !Game.runMilestones[90]) Game.rewardMilestone(90,3,"İLK EŞİK");
+    if(Game.time>=180 && !Game.runMilestones[180]) Game.rewardMilestone(180,6,"SURVIVOR");
+    if(Game.time>=300 && !Game.runMilestones[300]) Game.rewardMilestone(300,10,"NEON MASTER");
 
     if(
       Game.time>=
@@ -4970,7 +5012,8 @@ function showOver(record){
 
   const rewardLine=document.getElementById("record-slot");
   if(Game.lastReward){
-    const rewardText=`<div style="margin-top:10px;color:#22e6ff;font-size:12px;font-weight:800;letter-spacing:.12em">+${Game.lastReward.xp} XP · +${Game.lastReward.cores} ÇEKİRDEK</div>`;
+    const bonus=Game.lastReward.runBonus||0;
+    const rewardText=`<div style="margin-top:10px;color:#22e6ff;font-size:12px;font-weight:800;letter-spacing:.12em">+${Game.lastReward.xp} XP · +${Game.lastReward.cores} ÇEKİRDEK${bonus?` <span style="color:#ffe34d">(+${bonus} koşu ödülü)</span>`:""}</div>`;
     rewardLine.innerHTML += rewardText;
   }
 
