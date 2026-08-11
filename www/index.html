@@ -426,6 +426,27 @@ html,body{
   backdrop-filter:blur(5px);
 }
 .weapon-pill.on{display:block}
+#build-hud{
+  margin-top:2px;
+  width:43px;
+  min-height:0;
+  font-size:7px;
+  line-height:1.15;
+  text-align:center;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  color:#eaf4ff;
+  opacity:.9;
+}
+#build-hud .build-tag{
+  display:none;
+  padding:4px 3px;
+  margin-top:3px;
+  border-radius:8px;
+  background:rgba(4,6,15,.72);
+  border:1px solid rgba(34,230,255,.25);
+}
+#build-hud .build-tag.on{display:block}
 .weapon-pill>span:first-child{display:block;font-size:9px;line-height:11px;color:#eaf4ff}
 .weapon-pill .weapon-level{display:block;margin-top:1px;font-size:10px;color:#22e6ff;line-height:11px}
 .weapon-pill .weapon-cool{display:none}
@@ -617,7 +638,7 @@ html,body{
   <div class="weapon-pill" id="w-plasma"><span>Plasma</span><span class="weapon-level">Lv.0</span><span class="weapon-cool">AUTO</span></div>
   <div class="weapon-pill" id="w-arc"><span>Arc</span><span class="weapon-level">Lv.0</span><span class="weapon-cool">AUTO</span></div>
   <div class="weapon-pill" id="w-nova"><span>Nova</span><span class="weapon-level">Lv.0</span><span class="weapon-cool">AUTO</span></div>
-</div>
+</div>\n<div id="build-hud" aria-hidden="true"></div>
 
 <div id="boss-hud">
   <div class="boss-name">NEON WARDEN · ELITE CORE</div>
@@ -926,7 +947,7 @@ html,body{
 "use strict";
 
 /* =========================================================
-   CONFIG
+   CONFIG · V13 BUILD SYNERGY
 ========================================================= */
 
 const CFG={
@@ -1625,16 +1646,61 @@ const WEAPONS={
 
 function weaponLevel(key){ return Game.weapons?.[key]||0; }
 
+function buildSynergies(){
+  const w=Game.weapons||{};
+  return {
+    overcharge:w.pulse>=2 && w.plasma>=2,
+    chainReactor:w.pulse>=2 && w.arc>=2,
+    meltdown:w.plasma>=2 && w.novaWeapon>=2
+  };
+}
+
+function weaponEvolution(key,level){
+  return level>=5;
+}
+
 function weaponStat(key,level){
   const w=WEAPONS[key];
-  return {
-    cooldown:w.cooldown*Math.pow(.91,Math.max(0,level-1)),
-    speed:w.speed*(1+Math.max(0,level-1)*.08),
-    damage:w.damage*(1+Math.max(0,level-1)*.32),
-    radius:w.radius+Math.max(0,level-1)*.7,
-    pierce:w.pierce+Math.floor(Math.max(0,level-1)/2),
-    chain:(w.chain||0)+Math.floor(Math.max(0,level-1)/2)
-  };
+  const lv=Math.max(0,level-1);
+  const syn=buildSynergies();
+
+  let cooldown=w.cooldown*Math.pow(.91,lv);
+  let speed=w.speed*(1+lv*.08);
+  let damage=w.damage*(1+lv*.32);
+  let radius=w.radius+lv*.7;
+  let pierce=w.pierce+Math.floor(lv/2);
+  let chain=(w.chain||0)+Math.floor(lv/2);
+
+  /* BUILD SYNERGIES
+     İki silahı birlikte geliştirmek, tek tek geliştirmekten farklı bir
+     sonuç üretir. Böylece oyuncu yalnızca "en güçlü kartı" değil,
+     oluşturduğu build'i düşünür. */
+  if(syn.overcharge){
+    if(key==="pulse"){ damage*=1.12; cooldown*=.92; }
+    if(key==="plasma"){ damage*=1.15; pierce+=1; }
+  }
+
+  if(syn.chainReactor){
+    if(key==="pulse") cooldown*=.90;
+    if(key==="arc"){ chain+=2; damage*=1.10; }
+  }
+
+  if(syn.meltdown){
+    if(key==="plasma"){ damage*=1.10; }
+    if(key==="novaWeapon"){ damage*=1.18; radius+=18; }
+  }
+
+  /* Lv.5 = EVOLUTION. Son seviye artık yalnızca +hasar değil,
+     silahın kendi kimliğini belirginleştirir. */
+  if(weaponEvolution(key,level)){
+    damage*=1.16;
+    cooldown*=.88;
+    radius+=1.5;
+    pierce+=1;
+    chain+=1;
+  }
+
+  return {cooldown,speed,damage,radius,pierce,chain};
 }
 
 
@@ -3092,6 +3158,18 @@ function drawWeapons(){
   });
 }
 
+function updateBuildHUD(){
+  const el=document.getElementById("build-hud");
+  if(!el)return;
+  const syn=buildSynergies();
+  const tags=[];
+  if(syn.overcharge)tags.push('<span class="build-tag on" style="border-color:rgba(34,230,255,.42);color:#22e6ff">OVERCHARGE</span>');
+  if(syn.chainReactor)tags.push('<span class="build-tag on" style="border-color:rgba(160,92,255,.42);color:#a05cff">CHAIN<br>REACTOR</span>');
+  if(syn.meltdown)tags.push('<span class="build-tag on" style="border-color:rgba(255,107,59,.42);color:#ff6b3b">MELTDOWN</span>');
+  el.innerHTML=tags.join("");
+  el.style.display=(Game.state===STATE.PLAYING && tags.length)?"block":"none";
+}
+
 function updateWeaponHUD(){
   for(const key of Object.keys(WEAPONS)){
     const el=document.getElementById("w-"+(key==="novaWeapon"?"nova":key));
@@ -3099,12 +3177,13 @@ function updateWeaponHUD(){
     const level=weaponLevel(key);
     el.classList.toggle("on",Game.state===STATE.PLAYING && level>0);
     const lv=el.querySelector(".weapon-level");
-    if(lv)lv.textContent="Lv."+level;
+    if(lv)lv.textContent="Lv."+level+(level>=5?" ★":"");
     const name=el.querySelector("span:first-child");
     if(name){
       name.textContent=key==="pulse"?"⚡":key==="plasma"?"◉":key==="arc"?"⌁":"✦";
     }
   }
+  updateBuildHUD();
 }
 
 /* =========================================================
@@ -3155,6 +3234,7 @@ const Game={
 
   weapons:{pulse:1,plasma:0,arc:0,novaWeapon:0},
   weaponTimers:{pulse:.65,plasma:1.0,arc:1.2,novaWeapon:2.5},
+  _synergyShown:{},
 
   powers:{
     shield:0,
@@ -3187,6 +3267,7 @@ const Game={
 
     this.weapons={pulse:1,plasma:0,arc:0,novaWeapon:0};
     this.weaponTimers={pulse:.65,plasma:1.0,arc:1.2,novaWeapon:2.5};
+    this._synergyShown={};
     projectiles.clear();
 
     this.enemySpawn=.75;
@@ -4700,10 +4781,10 @@ function buyUpgrade(type){
 }
 
 const RUN_CHOICES={
-  pulse:{icon:"⚡",title:"PULSE",desc:"Otomatik enerji darbesini güçlendir.",kind:"weapon"},
-  plasma:{icon:"🔵",title:"PLASMA",desc:"Yoğun enerji atışını aç/geliştir.",kind:"weapon"},
-  arc:{icon:"🟣",title:"ARC",desc:"Yakındaki hedeflere sıçrayan enerji arkını aç/geliştir.",kind:"weapon"},
-  novaWeapon:{icon:"🔥",title:"NOVA BURST",desc:"Acil durumda çevreye enerji patlaması yapan yeteneği aç/geliştir.",kind:"weapon"},
+  pulse:{icon:"⚡",title:"PULSE",desc:"Otomatik enerji darbesini güçlendir. Plasma ile Lv.2+: OVERCHARGE.",kind:"weapon"},
+  plasma:{icon:"🔵",title:"PLASMA",desc:"Yoğun enerji atışını aç/geliştir. Pulse ile Lv.2+: OVERCHARGE.",kind:"weapon"},
+  arc:{icon:"🟣",title:"ARC",desc:"Yakındaki hedeflere sıçrayan enerji arkını aç/geliştir. Pulse ile Lv.2+: CHAIN REACTOR.",kind:"weapon"},
+  novaWeapon:{icon:"🔥",title:"NOVA BURST",desc:"Acil durumda çevreye enerji patlaması yapan yeteneği aç/geliştir. Plasma ile Lv.2+: MELTDOWN.",kind:"weapon"},
   speed:{icon:"➤",title:"NEON HIZI",desc:"Hareket hızını %10 artır.",kind:"passive"},
   magnet:{icon:"🧲",title:"ENERJİ ALANI",desc:"Magnet çekim mesafesini +80 artır.",kind:"passive"},
   score:{icon:"◆",title:"SKOR ÇARPANI",desc:"Bu koşuda skor kazanımını %12 artır.",kind:"passive"},
@@ -4746,7 +4827,9 @@ function renderLevelChoices(){
   grid.innerHTML=finalChoices.map(key=>{
     const c=RUN_CHOICES[key];
     const level=c.kind==="weapon"?weaponLevel(key):(key==="speed"?Game.runUpgrades.speed:key==="magnet"?Game.runUpgrades.magnet:key==="score"?Game.runUpgrades.score:0);
-    return `<div class="levelup-card"><div class="perk-icon">${c.icon}</div><h3>${c.title} <small>Lv.${level+1}</small></h3><p>${c.desc}</p><button data-perk="${key}">SEÇ</button></div>`;
+    const evolved= c.kind==="weapon" && level>=4;
+    const badge=evolved?'<small style="display:block;color:#ffe34d;margin-top:3px">SONRAKİ SEVİYE · EVOLÜSYON</small>':"";
+    return `<div class="levelup-card"><div class="perk-icon">${c.icon}</div><h3>${c.title} <small>Lv.${level+1}</small></h3>${badge}<p>${c.desc}</p><button data-perk="${key}">SEÇ</button></div>`;
   }).join("");
   grid.querySelectorAll("button[data-perk]").forEach(btn=>{
     tap(btn,()=>chooseRunPerk(btn.dataset.perk));
@@ -4767,9 +4850,36 @@ function openLevelUp(){
 function chooseRunPerk(type){
   if(Game.state!==STATE.LEVELUP)return;
   if(RUN_CHOICES[type]?.kind==="weapon"){
+    const before=Game.weapons[type];
     Game.weapons[type]++;
+    const after=Game.weapons[type];
     Game.weaponTimers[type]=Math.min(Game.weaponTimers[type]||0,.25);
-    popText(player.x,player.y-34,WEAPONS[type].name+" Lv."+Game.weapons[type],WEAPONS[type].color,16);
+
+    if(after>=5 && before<5){
+      popText(player.x,player.y-52,WEAPONS[type].name+" EVOLÜSYON!",WEAPONS[type].color,17);
+      emit(player.x,player.y,24,WEAPONS[type].color,190,3.2,.65);
+    }else{
+      popText(player.x,player.y-34,WEAPONS[type].name+" Lv."+after,WEAPONS[type].color,16);
+    }
+
+    const syn=buildSynergies();
+    if((syn.overcharge && !(Game._synergyShown||{}).overcharge) ||
+       (syn.chainReactor && !(Game._synergyShown||{}).chainReactor) ||
+       (syn.meltdown && !(Game._synergyShown||{}).meltdown)){
+      Game._synergyShown=Game._synergyShown||{};
+      if(syn.overcharge && !Game._synergyShown.overcharge){
+        Game._synergyShown.overcharge=true;
+        setTimeout(()=>popText(player.x,player.y-78,"OVERCHARGE SYNERJİSİ AKTİF","#22e6ff",15),80);
+      }
+      if(syn.chainReactor && !Game._synergyShown.chainReactor){
+        Game._synergyShown.chainReactor=true;
+        setTimeout(()=>popText(player.x,player.y-78,"CHAIN REACTOR AKTİF","#a05cff",15),80);
+      }
+      if(syn.meltdown && !Game._synergyShown.meltdown){
+        Game._synergyShown.meltdown=true;
+        setTimeout(()=>popText(player.x,player.y-78,"MELTDOWN SYNERJİSİ AKTİF","#ff6b3b",15),80);
+      }
+    }
   }else if(type==="speed"){
     Game.runUpgrades.speed++;
     popText(player.x,player.y-34,"HIZ +10%","#22e6ff",16);
@@ -4785,6 +4895,7 @@ function chooseRunPerk(type){
   }else return;
   Audio_.power();
   vibrate([12,24,12]);
+  updateWeaponHUD();
 
   hide(scrLevelup);
   inputUp();
