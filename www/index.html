@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#04060f">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>NEON SURVIVOR V12</title>
+<title>NEON SURVIVOR V14.1</title>
 <link rel="manifest" href="manifest.json">
 
 <style>
@@ -1396,19 +1396,6 @@ const Audio_={
 
   },
 
-  rewardMilestone(seconds, cores, label){
-
-    if(this.runMilestones[seconds]) return;
-
-    this.runMilestones[seconds]=true;
-    this.runCoreBonus+=cores;
-
-    emit(player.x,player.y,18,"#ffe34d",170,2.8,.45);
-    popText(W/2,H*.22,label+" · +"+cores+" ÇEKİRDEK","#ffe34d",14);
-    Audio_.power();
-    vibrate([15,25,15]);
-
-  },
 
   over(){
 
@@ -3258,6 +3245,17 @@ const Game={
   runBossKills:0,
 
   runUpgrades:{speed:0,magnet:0,score:0},
+
+  rewardMilestone(seconds,cores,label){
+    if(this.runMilestones[seconds])return;
+    this.runMilestones[seconds]=true;
+    this.runCoreBonus+=cores;
+
+    emit(player.x,player.y,18,"#ffe34d",170,2.8,.45);
+    popText(W/2,H*.22,label+" · +"+cores+" ÇEKİRDEK","#ffe34d",14);
+    Audio_.power();
+    vibrate([15,25,15]);
+  },
 
   weapons:{pulse:1,plasma:0,arc:0,novaWeapon:0},
   weaponTimers:{pulse:.65,plasma:1.0,arc:1.2,novaWeapon:2.5},
