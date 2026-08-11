@@ -1037,6 +1037,14 @@ const rand=(a,b)=>a+Math.random()*(b-a);
 const clamp=(v,a,b)=>
   v<a?a:(v>b?b:v);
 
+/* Düşman yoğunluğu seviye ile kademeli artar.
+   Erken oyunda ekranı doldurmaz, ilerleyen seviyelerde mevcut 31 sınırına ulaşır. */
+const enemyCapForLevel=level=>
+  Math.min(
+    CFG.enemy.maxAlive,
+    9 + Math.max(1,level)*3
+  );
+
 const lerp=(a,b,t)=>
   a+(b-a)*t;
 
@@ -2069,7 +2077,7 @@ function chooseEnemyType(level){
 }
 
 function spawnElite(level){
-  if(enemies.count()>=CFG.enemy.maxAlive)return;
+  if(enemies.count()>=enemyCapForLevel(level))return;
 
   const e=enemies.get();
   const margin=CFG.enemy.margin+20;
@@ -2110,8 +2118,7 @@ function spawnBoss(){
     Game.bossActive ||
     Game.lastBossLevel>=Game.level ||
     Game.level<5 ||
-    Game.level%5!==0 ||
-    enemies.count()>=CFG.enemy.maxAlive
+    Game.level%5!==0
   )return;
 
   const e=enemies.get();
@@ -2166,7 +2173,7 @@ function spawnEnemy(level){
 
   if(
     enemies.count()>=
-    CFG.enemy.maxAlive
+    enemyCapForLevel(level)
   )return;
 
   const e=enemies.get();
@@ -2580,7 +2587,10 @@ function updateCombatDirector(dt){
     const stage=Math.min(8,Math.floor(Game.time/30));
     Game.directorPulse=Math.max(7,11-stage*.28)*rand(.92,1.08);
 
-    if(stage>=1 && enemies.count()<CFG.enemy.maxAlive-2){
+    if(
+      stage>=1 &&
+      enemies.count()<enemyCapForLevel(Game.level)-2
+    ){
       let wave=1;
       if(stage>=4 && Math.random()<.28)wave=2;
       for(let i=0;i<wave;i++)spawnEnemy(Game.level);
@@ -3636,7 +3646,10 @@ function update(dt){
         Game.time<120 ? .08 :
         Game.time<180 ? .15 : .22;
 
-      if(enemies.count()<CFG.enemy.maxAlive-1 && Math.random()<extraChance){
+      if(
+        enemies.count()<enemyCapForLevel(Game.level)-1 &&
+        Math.random()<extraChance
+      ){
         spawnEnemy(Game.level);
       }
 
