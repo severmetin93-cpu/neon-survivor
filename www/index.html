@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#04060f">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>NEON SURVIVOR V15.5</title>
+<title>NEON SURVIVOR V15.5.1</title>
 <link rel="manifest" href="manifest.json">
 
 <style>
@@ -615,7 +615,7 @@ button,
 </head>
 
 <body>
-<div id="version-badge" aria-hidden="true">V15.5</div>
+<div id="version-badge" aria-hidden="true">V15.5.1</div>
 
 <div id="stage">
 
@@ -659,7 +659,9 @@ button,
   <div class="weapon-pill" id="w-plasma"><span>Plasma</span><span class="weapon-level">Lv.0</span><span class="weapon-cool">AUTO</span></div>
   <div class="weapon-pill" id="w-arc"><span>Arc</span><span class="weapon-level">Lv.0</span><span class="weapon-cool">AUTO</span></div>
   <div class="weapon-pill" id="w-nova"><span>Nova</span><span class="weapon-level">Lv.0</span><span class="weapon-cool">AUTO</span></div>
-</div>\n<div id="build-hud" aria-hidden="true"></div>
+</div>
+
+<div id="build-hud" aria-hidden="true"></div>
 
 <div id="boss-hud">
   <div class="boss-name">NEON WARDEN · ELITE CORE</div>
@@ -855,37 +857,11 @@ button,
 
   <div class="levelup-sub" id="levelup-sub">Seviye 2 · Bir geliştirme seç</div>
 
-  <div class="levelup-grid" id="levelup-grid">
-
-    <div class="levelup-card" data-slot="0">
-      <div class="perk-icon">⚡</div>
-      <h3>Pulse</h3>
-      <p>Temel enerji topu.</p>
-      <button data-perk="pulse">SEÇ</button>
-    </div>
-
-    <div class="levelup-card" data-slot="1">
-      <div class="perk-icon">🔵</div>
-      <h3>Plasma</h3>
-      <p>Güçlü ve ağır enerji mermisi.</p>
-      <button data-perk="plasma">SEÇ</button>
-    </div>
-
-    <div class="levelup-card" data-slot="2">
-      <div class="perk-icon">🟣</div>
-      <h3>Arc</h3>
-      <p>Yakındaki düşmanlar arasında zincirlenir.</p>
-      <button data-perk="arc">SEÇ</button>
-    </div>
-
-    <div class="levelup-card" data-slot="3">
-      <div class="perk-icon">🔥</div>
-      <h3>Nova Burst</h3>
-      <p>Oyuncunun çevresinde patlama.</p>
-      <button data-perk="novaWeapon">SEÇ</button>
-    </div>
-
-  </div></div>
+  <!-- PHASE 0.5 · P0-5
+       Statik kartlar kaldirildi. Bu kartlarin butonlarina hicbir event
+       bagli degildi; renderLevelChoices() hata verirse kosu kilitleniyordu.
+       Kartlar artik SADECE renderLevelChoices() tarafindan uretilir. -->
+  <div class="levelup-grid" id="levelup-grid"></div>
 
   <div class="levelup-note">Birini seçmeden oyun devam etmez.</div>
 
@@ -1048,7 +1024,9 @@ const CFG={
 
 const BALANCE={
 
-  version:"15.3-instrumented",
+  /* PHASE 0.5 · 14 — tek versiyon kaynagi. DOM rozeti ve <title>
+     boot sirasinda bu degerden yazilir. */
+  version:"15.5.1",
 
   /* ---------------------------------------------------------
      FAZ 0 DUZELTME SABITLERI
@@ -1209,6 +1187,8 @@ const BALANCE={
       speedPerLevel:0.018,
       phase2At:0.5,
       phase2Speed:1.22,
+      pulseRange:105,        /* PHASE 0.5 · P0-2 — koddaki 105 buraya tasindi */
+      pulseWarnSec:0.75,     /* PHASE 0.5 · P0-2 — telegraph suresi */
       danger:1.35,
       coreReward:tier=>25+tier*3,
       scoreReward:tier=>900+tier*120
@@ -1339,6 +1319,17 @@ const lateGamePressure=level=>
 const lerp=(a,b,t)=>
   a+(b-a)*t;
 
+/* PHASE 0.5 · 18
+   ONCE: sort(()=>Math.random()-.5) tarafsiz degildir.
+   SONRA: Fisher-Yates. Gameplay degerleri degismedi. */
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    const t=arr[i];arr[i]=arr[j];arr[j]=t;
+  }
+  return arr;
+}
+
 
 /* =========================================================
    SAVE
@@ -1446,14 +1437,16 @@ const Progression={
   },
 
   maxLevel(type){
-    return BALANCE.metaUpgrade.maxLevels[type] ?? Infinity;
+    /* PHASE 0.5 · P0-1 */
+    return BALANCE.player.metaUpgrade.maxLevels[type] ?? Infinity;
   },
 
   cost(type){
     const lv=Save.data.upgrades[type]||0;
-    const base=BALANCE.metaUpgrade.costBase;
-    const step=BALANCE.metaUpgrade.costStep;
-    const curve=BALANCE.metaUpgrade.costCurveStep;
+    /* PHASE 0.5 · P0-1 */
+    const base=BALANCE.player.metaUpgrade.costBase;
+    const step=BALANCE.player.metaUpgrade.costStep;
+    const curve=BALANCE.player.metaUpgrade.costCurveStep;
     return Math.round(base + lv*step + Math.floor(lv/3)*curve);
   },
 
@@ -1777,6 +1770,43 @@ let H=0;
 let DPR=1;
 let SAFE_TOP=0;
 
+/* PHASE 0.5 · P0-3 + M19 */
+let SAFE_LEFT=0;
+let HUD_LEFT=72;
+
+/* #b-pause CSS geometrisinin aynasi:
+   left: calc(var(--safe-l) + 14px);  width/height: 46px
+   Bu degerler CSS'te degisirse burasi da guncellenmeli. */
+const HUD_PAUSE_OFFSET=14;
+const HUD_PAUSE_SIZE=46;
+const HUD_GAP=12;
+
+/* PHASE 0.5 · P0-3
+   ONCE: SAFE_TOP hicbir yerde atanmiyordu, drawHUD hep 0 kullaniyordu.
+   SONRA: gorunmez bir prob elemani ile olculur.
+   NEDEN PROB: --safe-t bir CSS custom property'sidir; getComputedStyle
+   bazi WebView'larda env() cozulmeden ham metin dondurur. CSS'e dokunulmadi. */
+function readSafeInsets(){
+
+  let probe=document.getElementById("safe-probe");
+
+  if(!probe){
+    probe=document.createElement("div");
+    probe.id="safe-probe";
+    probe.style.cssText=
+      "position:fixed;top:0;left:0;"+
+      "width:env(safe-area-inset-left,0px);"+
+      "height:env(safe-area-inset-top,0px);"+
+      "pointer-events:none;visibility:hidden;z-index:-1";
+    document.body.appendChild(probe);
+  }
+
+  const r=probe.getBoundingClientRect();
+
+  return {top:r.height||0,left:r.width||0};
+
+}
+
 function resize(){
 
   DPR=Math.min(
@@ -1796,6 +1826,12 @@ function resize(){
   ctx.setTransform(
     DPR,0,0,DPR,0,0
   );
+
+  /* PHASE 0.5 · P0-3 + M19 */
+  const safe=readSafeInsets();
+  SAFE_TOP=safe.top;
+  SAFE_LEFT=safe.left;
+  HUD_LEFT=SAFE_LEFT+HUD_PAUSE_OFFSET+HUD_PAUSE_SIZE+HUD_GAP;
 
 }
 
@@ -1898,10 +1934,16 @@ const enemies=Pool(()=>({
   fade:1,
   elite:false,
   boss:false,
+  hp:1,
   maxHp:1,
+  telegraph:0,
+  hitFlash:0,
   bossPhase:1,
   bossCd:0,
   bossTelegraph:0,
+  bossTier:0,
+  pulseCd:0,
+  pulseWarn:0,
   eliteSeed:0
 }));
 
@@ -2489,6 +2531,10 @@ function spawnBoss(){
   e.bossCd=Math.max(1.8,2.4-bossTier*.08);
   e.bossTelegraph=0;
   e.bossTier=bossTier;
+  /* PHASE 0.5 · P0-2 — havuzdan gelen eski boss state'i tasinmasin.
+     1.8 degeri eski koddaki (e.pulseCd||1.8) varsayilaniyla ayni. */
+  e.pulseCd=1.8;
+  e.pulseWarn=0;
 
   const a=Math.atan2(player.y-e.y,player.x-e.x);
   const speed=
@@ -2639,15 +2685,36 @@ function updateBossEnemy(e,dt,level){
   e.y+=e.vy*dt;
   e.ang=(e.ang||0)+dt*(e.bossPhase===2?1.9:1.4);
 
-  // Boss arena pressure: a pulsing ring hurts only when it reaches the player.
-  e.pulseCd=(e.pulseCd||1.8)-dt;
-  if(e.pulseCd<=0){
-    e.pulseCd=e.bossPhase===2
-      ?Math.max(2.6,3.2-bossTier*.08)
-      :Math.max(3.5,4.2-bossTier*.08);
-    const d=Math.hypot(player.x-e.x,player.y-e.y);
-    if(d<105) Game.damage();
-    emit(e.x,e.y,16,"#ff3b6b",150,2.5,.45);
+  /* Boss arena pressure: a pulsing ring hurts only when it reaches the player.
+     PHASE 0.5 · P0-2
+     ONCE: pulse hicbir uyari vermeden 105px icindeki oyuncuyu vuruyordu.
+     SONRA: vurustan pulseWarnSec kadar once uyari halkasi cizilir.
+            Vurus SIKLIGI degismedi; vurus ani uyarinin sonuna kaydi. */
+  const bossPulseCfg=BALANCE.enemy.boss;
+
+  if(e.pulseWarn>0){
+
+    e.pulseWarn-=dt;
+
+    if(e.pulseWarn<=0){
+      e.pulseWarn=0;
+      const d=Math.hypot(player.x-e.x,player.y-e.y);
+      if(d<bossPulseCfg.pulseRange) Game.damage();
+      emit(e.x,e.y,16,"#ff3b6b",150,2.5,.45);
+    }
+
+  }else{
+
+    e.pulseCd-=dt;
+
+    if(e.pulseCd<=0){
+      e.pulseCd=e.bossPhase===2
+        ?Math.max(2.6,3.2-bossTier*.08)
+        :Math.max(3.5,4.2-bossTier*.08);
+      e.pulseWarn=bossPulseCfg.pulseWarnSec;
+      Audio_.tone(210,.16,"triangle",.22,150);
+    }
+
   }
 
   if(e.x<-220||e.x>W+220||e.y<-220||e.y>H+220)e.alive=false;
@@ -3036,9 +3103,9 @@ function activatePower(type){
         :type==="magnet"
           ?CFG.power.magnetDuration +
              Math.min(
-               BALANCE.metaUpgrade.magnetLevelCap,
+               BALANCE.player.metaUpgrade.magnetLevelCap,
                Save.data.upgrades.magnet||0
-             )*BALANCE.metaUpgrade.magnetSecPerLevel
+             )*BALANCE.player.metaUpgrade.magnetSecPerLevel
           :CFG.power.overdriveDuration;
 
   emit(
@@ -3209,6 +3276,20 @@ function updateActivePowers(dt){
       Math.max(
         0,
         Game.powers.overdrive-dt
+      );
+
+  }
+
+  /* PHASE 0.5 · P0-6
+     ONCE: activatePower("nova") powers.nova=1 yapiyor, hicbir yer geri
+           sifirlamiyordu. NOVA pill'i kosu sonuna kadar yanik kaliyordu.
+     SONRA: 1 saniyelik gosterge suresi. Patlama davranisi degismedi. */
+  if(Game.powers.nova>0){
+
+    Game.powers.nova=
+      Math.max(
+        0,
+        Game.powers.nova-dt
       );
 
   }
@@ -3904,6 +3985,16 @@ const PowerCurve={
    hicbir mekanik eklenmemistir.
 ========================================================= */
 
+/* PHASE 0.5 · 17
+   ONCE: silah listesi uc yerde elle yaziliydi; yeni silah eklendiginde
+         telemetri onu sessizce gormuyordu.
+   SONRA: WEAPONS anahtarlarindan uretilir. */
+function makeDamageMap(){
+  const m={novaPower:0,other:0};
+  for(const k of Object.keys(WEAPONS))m[k]=0;
+  return m;
+}
+
 const Telemetry={
 
   enabled:false,
@@ -3914,7 +4005,7 @@ const Telemetry={
 
   /* olculen degerler */
   damageDealt:0,
-  damageBySource:{pulse:0,plasma:0,arc:0,novaWeapon:0,novaPower:0,other:0},
+  damageBySource:makeDamageMap(),
   kills:0,
   eliteKills:0,
   bossKills:0,
@@ -3934,7 +4025,7 @@ const Telemetry={
 
   reset(){
     this.damageDealt=0;
-    this.damageBySource={pulse:0,plasma:0,arc:0,novaWeapon:0,novaPower:0,other:0};
+    this.damageBySource=makeDamageMap();
     this.kills=0;this.eliteKills=0;this.bossKills=0;
     this.damageTaken=0;this.energyCollected=0;this.upgradesTaken=0;
     this.movementDistance=0;this.idleTime=0;this.sinceMove=0;
@@ -4065,7 +4156,7 @@ const Telemetry={
     const eff=this.damageDealt/t;
 
     const wc=[];
-    for(const k of ["pulse","plasma","arc","novaWeapon"]){
+    for(const k of Object.keys(WEAPONS)){
       const share=this.damageDealt>0
         ?(this.damageBySource[k]/this.damageDealt*100)
         :0;
@@ -4511,12 +4602,15 @@ function update(dt){
 
     /* SCORE */
 
+    /* PHASE 0.5 · P0-1
+       ONCE: BALANCE.metaUpgrade -> undefined -> TypeError, her karede.
+       SONRA: dogru yol BALANCE.player.metaUpgrade. Deger degismedi. */
     const metaScoreLevel=Math.min(
-      BALANCE.metaUpgrade.scoreLevelCap,
+      BALANCE.player.metaUpgrade.scoreLevelCap,
       Save.data.upgrades.score||0
     );
     const upgradeMultiplier=
-      1 + metaScoreLevel*BALANCE.metaUpgrade.scorePerLevel;
+      1 + metaScoreLevel*BALANCE.player.metaUpgrade.scorePerLevel;
 
     const multiplier=
       (Game.powers.overdrive>0?2:1)*
@@ -4915,7 +5009,12 @@ function drawPlayer(){
 
   ctx.fill();
 
-  ctx.fillStyle="#ffffff";
+  /* PHASE 0.5 · 16
+     ONCE: skinInner hesaplaniyor ama kullanilmiyordu; ic cekirdek her
+           skin'de beyaz, merkez nokta her skin'de cyan idi.
+     SONRA: ic cekirdek skinInner, merkez nokta skinOuter.
+            Dis aura ve glow degismedi. */
+  ctx.fillStyle=skinInner;
   ctx.beginPath();
   ctx.arc(
     player.x,
@@ -4926,8 +5025,8 @@ function drawPlayer(){
   );
   ctx.fill();
 
-  ctx.fillStyle="#22e6ff";
-  ctx.shadowColor="#22e6ff";
+  ctx.fillStyle=skinOuter;
+  ctx.shadowColor=skin.glow;
   ctx.shadowBlur=18;
   ctx.beginPath();
   ctx.arc(player.x,player.y,r*.22,0,TAU);
@@ -4974,6 +5073,32 @@ function drawEnemies(){
         ctx.lineWidth=3;
         ctx.beginPath();ctx.arc(0,0,br+12+Math.sin(e.bossTelegraph*20)*5,0,TAU);ctx.stroke();
         ctx.globalAlpha=1;
+      }
+
+      /* PHASE 0.5 · P0-2 — pulse uyari halkasi.
+         Dis kesikli halka = hasar alani. Daralan halka = carpma yaklasiyor. */
+      if(e.pulseWarn>0){
+        const pw=BALANCE.enemy.boss;
+        const k=Math.max(0,Math.min(1,1-e.pulseWarn/pw.pulseWarnSec));
+        const R=pw.pulseRange;
+
+        ctx.save();
+        ctx.shadowColor="#ff6b3b";
+        ctx.shadowBlur=14;
+
+        ctx.globalAlpha=.20+k*.55;
+        ctx.strokeStyle="#ff6b3b";
+        ctx.lineWidth=2+k*2.5;
+        ctx.setLineDash([9,7]);
+        ctx.lineDashOffset=-e.t*40;
+        ctx.beginPath();ctx.arc(0,0,R,0,TAU);ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.globalAlpha=.28+k*.42;
+        ctx.lineWidth=2;
+        ctx.beginPath();ctx.arc(0,0,R*(1.45-k*.45),0,TAU);ctx.stroke();
+
+        ctx.restore();
       }
 
       ctx.fillStyle="#ff3b6b";
@@ -5310,9 +5435,15 @@ function drawHUD(){
   ctx.font=
     "500 11px system-ui";
 
+  /* PHASE 0.5 · M19
+     ONCE: skor blogu x=18'den ciziliyordu. #b-pause x 14-60 arasini
+           %65 opak arka planla kapliyor ve z-index:8 ile canvas'in
+           ustunde duruyordu; skorun ilk haneleri butonun arkasindaydi.
+     SONRA: x = HUD_LEFT (= safe-l + 14 + 46 + 12). y, font, boyut,
+            renk, hizalama DEGISMEDI. */
   ctx.fillText(
     "SKOR",
-    18,
+    HUD_LEFT,
     top+2
   );
 
@@ -5328,7 +5459,7 @@ function drawHUD(){
         Game.score
       )
     ),
-    18,
+    HUD_LEFT,
     top+32
   );
 
@@ -5486,9 +5617,11 @@ function updatePowerHUD(){
 
     nova:{
       el:"p-nova",
+      /* PHASE 0.5 · P0-6 — pill artik patlama anindan sonra 1 saniye
+         gorunur; "HAZIR" yaniltiyordu. */
       value:
         Game.powers.nova>0
-          ?"HAZIR"
+          ?"AKTİF"
           :""
     }
 
@@ -5503,11 +5636,8 @@ function updatePowerHUD(){
         map[k].el
       );
 
-    const active=
-      k==="shield"||
-      k==="nova"
-        ?Game.powers[k]>0
-        :Game.powers[k]>0;
+    /* PHASE 0.5 — iki dali da ayni olan ternary kaldirildi. */
+    const active=Game.powers[k]>0;
 
     el.classList.toggle(
       "on",
@@ -5812,43 +5942,9 @@ const RUN_CHOICES={
   shield:{icon:"🛡",title:"ENERJİ KALKANI",desc:"Tek darbeyi engeller. En fazla 2 yük.",kind:"passive"}
 };
 
-function renderLevelChoices(){
-  const grid=document.getElementById("levelup-grid");
-  if(!grid)return;
-
-  const available=Object.keys(RUN_CHOICES).filter(k=>{
-    if(RUN_CHOICES[k].kind==="weapon")
-      return weaponLevel(k)<WEAPONS[k].levels;
-    if(k==="shield")
-      return (Game.powers.shield||0)<BALANCE.fixes.metaShieldCap;
-    return true;
-  });
-
-  const ownedWeapons=available.filter(k=>RUN_CHOICES[k].kind==="weapon" && weaponLevel(k)>0);
-  const lockedWeapons=available.filter(k=>RUN_CHOICES[k].kind==="weapon" && weaponLevel(k)===0);
-  const passives=available.filter(k=>RUN_CHOICES[k].kind!=="weapon");
-  const choices=[];
-
-  /* Mevcut bir silahı geliştirmek öncelikli: build dağılmasın. */
-  ownedWeapons.sort(()=>Math.random()-.5);
-  passives.sort(()=>Math.random()-.5);
-  lockedWeapons.sort(()=>Math.random()-.5);
-
-  if(ownedWeapons.length)choices.push(ownedWeapons[0]);
-  if(ownedWeapons.length>1 && Math.random()<.72)choices.push(ownedWeapons[1]);
-  if(passives.length)choices.push(passives[0]);
-
-  /* Yeni silahlar erken oyunda kontrollü açılır. */
-  const unlockChance=Game.level<=4?.35:Game.level<=8?.65:.90;
-  if(lockedWeapons.length && Math.random()<unlockChance)choices.push(lockedWeapons[0]);
-
-  for(const k of available.sort(()=>Math.random()-.5)){
-    if(choices.length>=4)break;
-    if(!choices.includes(k))choices.push(k);
-  }
-
-  const finalChoices=choices.slice(0,4);
-  grid.innerHTML=finalChoices.map(key=>{
+/* PHASE 0.5 · P0-5 — kart uretimi tek yerde toplandi. */
+function renderPerkCards(grid,keys){
+  grid.innerHTML=keys.map(key=>{
     const c=RUN_CHOICES[key];
     const level=c.kind==="weapon"?weaponLevel(key):(key==="speed"?Game.runUpgrades.speed:key==="magnet"?Game.runUpgrades.magnet:key==="score"?Game.runUpgrades.score:0);
     const evolved= c.kind==="weapon" && level>=4;
@@ -5859,6 +5955,69 @@ function renderLevelChoices(){
     tap(btn,()=>chooseRunPerk(btn.dataset.perk));
   });
 }
+
+function renderLevelChoices(){
+  const grid=document.getElementById("levelup-grid");
+  if(!grid)return;
+
+  try{
+
+    const available=Object.keys(RUN_CHOICES).filter(k=>{
+      if(RUN_CHOICES[k].kind==="weapon")
+        return weaponLevel(k)<WEAPONS[k].levels;
+      if(k==="shield")
+        return (Game.powers.shield||0)<BALANCE.fixes.metaShieldCap;
+      return true;
+    });
+
+    const ownedWeapons=available.filter(k=>RUN_CHOICES[k].kind==="weapon" && weaponLevel(k)>0);
+    const lockedWeapons=available.filter(k=>RUN_CHOICES[k].kind==="weapon" && weaponLevel(k)===0);
+    const passives=available.filter(k=>RUN_CHOICES[k].kind!=="weapon");
+    const choices=[];
+
+    /* Mevcut bir silahı geliştirmek öncelikli: build dağılmasın. */
+    shuffle(ownedWeapons);
+    shuffle(passives);
+    shuffle(lockedWeapons);
+
+    if(ownedWeapons.length)choices.push(ownedWeapons[0]);
+    if(ownedWeapons.length>1 && Math.random()<.72)choices.push(ownedWeapons[1]);
+    if(passives.length)choices.push(passives[0]);
+
+    /* Yeni silahlar erken oyunda kontrollü açılır. */
+    const unlockChance=Game.level<=4?.35:Game.level<=8?.65:.90;
+    if(lockedWeapons.length && Math.random()<unlockChance)choices.push(lockedWeapons[0]);
+
+    for(const k of shuffle(available.slice())){
+      if(choices.length>=4)break;
+      if(!choices.includes(k))choices.push(k);
+    }
+
+    renderPerkCards(grid,choices.slice(0,4));
+
+  }catch(err){
+    console.error("renderLevelChoices error:",err);
+    grid.innerHTML="";
+  }
+
+  /* PHASE 0.5 · P0-5 — SON GUVENLIK KATMANI.
+     Ekranda tiklanabilir en az bir kart olmali; aksi halde
+     "Birini secmeden oyun devam etmez" notu kosuyu kilitler. */
+  if(!grid.querySelector("button[data-perk]")){
+    try{
+      renderPerkCards(grid,Object.keys(RUN_CHOICES).slice(0,4));
+    }catch(err2){
+      console.error("fallback perk render failed:",err2);
+      grid.innerHTML=
+        '<div class="levelup-card"><h3>DEVAM</h3>'+
+        '<p>Kart listesi yüklenemedi. Koşuya devam edebilirsin.</p>'+
+        '<button data-perk="pulse">DEVAM ET</button></div>';
+      const b=grid.querySelector("button[data-perk]");
+      if(b)tap(b,()=>chooseRunPerk("pulse"));
+    }
+  }
+}
+
 
 function openLevelUp(){
   if(Game.state!==STATE.PLAYING)return;
@@ -6275,6 +6434,11 @@ document.addEventListener(
 resize();
 
 resetPlayer();
+
+/* PHASE 0.5 · 14 — tum versiyon gostergeleri BALANCE.version'dan gelir. */
+document.title="NEON SURVIVOR V"+BALANCE.version;
+const versionBadge=document.getElementById("version-badge");
+if(versionBadge)versionBadge.textContent="V"+BALANCE.version;
 
 toMenu();
 updateWeaponHUD();
