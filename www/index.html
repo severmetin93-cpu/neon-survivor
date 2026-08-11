@@ -3163,7 +3163,8 @@ function updateActivePowers(dt){
         Game.powers.overdrive-dt
       );
 
-8
+  }
+
 }
 
 function drawPowerups(){
@@ -3389,7 +3390,7 @@ function updateOrbs(dt){
         o.y+=(dy/d)*strength*pull*dt;
       }
     }
-8p
+
     const d=Math.hypot(
       player.x-o.x,
       player.y-o.y
@@ -6224,6 +6225,96 @@ if(
 
 }
 
+</script>
+
+
+<script>
+/* V15.3 HOTFIX: Android WebView menu navigation fallback.
+   Keeps existing game logic intact and only restores menu tab clicks. */
+(function(){
+  function byId(id){ return document.getElementById(id); }
+
+  function hideAll(){
+    [
+      "scr-menu","scr-how","scr-upgrades","scr-skins",
+      "scr-pause","scr-levelup","scr-over"
+    ].forEach(function(id){
+      var el=byId(id);
+      if(el) el.classList.remove("on");
+    });
+  }
+
+  function show(id){
+    var el=byId(id);
+    if(!el) return;
+    hideAll();
+    el.classList.add("on");
+  }
+
+  function safeCall(name){
+    try{
+      if(typeof window[name] === "function"){
+        window[name]();
+        return true;
+      }
+    }catch(err){
+      console.error("V15.3 hotfix:", name, err);
+    }
+    return false;
+  }
+
+  function bind(id, fn){
+    var el=byId(id);
+    if(!el || el.dataset.v153Hotfix==="1") return;
+    el.dataset.v153Hotfix="1";
+    el.addEventListener("click", function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      fn();
+    }, false);
+    el.addEventListener("touchend", function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      fn();
+    }, {passive:false});
+  }
+
+  function install(){
+    bind("b-how", function(){
+      if(!safeCall("showHow")) show("scr-how");
+    });
+
+    bind("b-how-back", function(){
+      if(!safeCall("closeHow")) show("scr-menu");
+    });
+
+    bind("b-upgrades", function(){
+      if(!safeCall("showUpgrades")) show("scr-upgrades");
+    });
+
+    bind("b-upgrades-back", function(){
+      if(!safeCall("closeUpgrades")) show("scr-menu");
+    });
+
+    bind("b-skins", function(){
+      if(!safeCall("showSkins")) show("scr-skins");
+    });
+
+    bind("b-skins-back", function(){
+      if(!safeCall("closeSkins")) show("scr-menu");
+    });
+  }
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded", install, {once:true});
+  }else{
+    install();
+  }
+
+  /* Second pass covers WebViews that finish layout/script initialization late. */
+  setTimeout(install, 250);
+  setTimeout(install, 1000);
+})();
 </script>
 
 </body>
