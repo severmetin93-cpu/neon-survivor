@@ -1162,7 +1162,13 @@ const BALANCE={
 
     /* !!! V15.2 GERCEGI: normal dusman HP'si seviyeyle ARTMIYOR.
        FAZ 4'te bu fonksiyon degisecek. Simdilik sabit 1.0. */
-    hpCurve:level=>1.0,
+    hpCurve:level=>{
+      if(level<=3) return 1 + (level-1)*0.08;
+      if(level<=7) return 1.16 + (level-4)*0.07;
+      if(level<=12) return 1.37 + (level-8)*0.06;
+      if(level<=19) return 1.67 + (level-13)*0.055;
+      return 2.00 + (level-20)*0.045;
+    },
 
     baseSpeed:61,                // CFG.enemy.baseSpeed
     speedPerLevel:0.043,         // CFG.diff.speedPerLevel
@@ -1960,9 +1966,9 @@ function weaponStat(key,level){
   const lv=Math.max(0,level-1);
   const syn=buildSynergies();
 
-  let cooldown=w.cooldown*Math.pow(.91,lv);
-  let speed=w.speed*(1+lv*.08);
-  let damage=w.damage*(1+lv*.32);
+  let cooldown=w.cooldown*Math.pow(.93,lv);
+  let speed=w.speed*(1+lv*.07);
+  let damage=w.damage*(1+lv*.26);
   let radius=w.radius+lv*.7;
   let pierce=w.pierce+Math.floor(lv/2);
   let chain=(w.chain||0)+Math.floor(lv/2);
@@ -1989,8 +1995,8 @@ function weaponStat(key,level){
   /* Lv.5 = EVOLUTION. Son seviye artık yalnızca +hasar değil,
      silahın kendi kimliğini belirginleştirir. */
   if(weaponEvolution(key,level)){
-    damage*=1.16;
-    cooldown*=.88;
+    damage*=1.12;
+    cooldown*=.90;
     radius+=1.5;
     pierce+=1;
     chain+=1;
@@ -2506,12 +2512,13 @@ function spawnEnemy(level){
   e.hitFlash=0;
   e.elite=false;
   e.boss=false;
-  e.maxHp=m.hp;
+  const hpScale=BALANCE.enemy.hpCurve(level);
+  e.maxHp=m.hp*hpScale;
   e.bossPhase=1;
   e.bossCd=0;
   e.bossTelegraph=0;
   e.eliteSeed=0;
-  e.hp=m.hp;
+  e.hp=e.maxHp;
 
   const a=Math.atan2(
     player.y-e.y,
@@ -3803,6 +3810,14 @@ const ThreatPower={
 };
 
 
+/* V15.4 · PHASE 4
+   Power Curve is now gameplay-bound conservatively:
+   - Normal enemy HP scales by difficulty tier.
+   - Weapon damage/cooldown growth is softened.
+   - Weapon evolution spike is softened.
+   - Spawn caps, spawn interval, XP economy, bosses and UI are unchanged.
+   - PlayerPower/ThreatPower remain telemetry; no hidden auto-balancer is used.
+*/
 const PowerCurve={
 
   read(){
