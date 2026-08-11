@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#04060f">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>NEON SURVIVOR</title>
+<title>NEON SURVIVOR V9</title>
 <link rel="manifest" href="manifest.json">
 
 <style>
@@ -869,7 +869,7 @@ const CFG={
   player:{
     radius:11,
     maxHp:3,
-    invulnMs:1100,
+    invulnMs:1200,
     trail:14
   },
 
@@ -889,9 +889,9 @@ const CFG={
   },
 
   enemy:{
-    baseSpeed:58,
-    spawnMs:1250,
-    maxAlive:34,
+    baseSpeed:52,
+    spawnMs:1450,
+    maxAlive:30,
     margin:46,
     lifeMs:15000,
     fadeMs:1200,
@@ -902,9 +902,9 @@ const CFG={
 
   diff:{
     stepMs:30000,
-    speedPerLevel:.105,
-    spawnDecay:.94,
-    minSpawnMs:260
+    speedPerLevel:.028,
+    spawnDecay:.988,
+    minSpawnMs:650
   },
 
   power:{
@@ -1725,10 +1725,9 @@ function inputMove(x,y){
   if(Game.state!==STATE.PLAYING)
     return;
 
+  const baseBoost=1+(Game.runUpgrades.speed||0)*.10;
   const boost=
-    Game.powers.overdrive>0
-      ?1.35
-      :1;
+    baseBoost*(Game.powers.overdrive>0?1.35:1);
 
   player.x=
     clamp(
@@ -1887,16 +1886,19 @@ const ENEMIES=[
 
 function chooseEnemyType(level){
 
-  const unlocked=
-    Math.min(5, 1 + Math.floor((level+1)/2));
+  /* Düşman çeşitliliği kademeli açılır. İlk dakikalar öğrenme alanıdır. */
+  let unlocked=1;
+  if(level>=2)unlocked=2;
+  if(level>=3)unlocked=3;
+  if(level>=4)unlocked=4;
+  if(level>=6)unlocked=5;
 
-  /* Erken oyunda Hunter ağırlıklı, ileride diğerleri dengelenir. */
   const weights=[
-    38, // Hunter
-    18, // Tank
-    18, // Orbiter
-    16, // Dasher
-    10  // Weaver
+    54, // Hunter
+    17, // Tank
+    13, // Orbiter
+    10, // Dasher
+    6   // Weaver
   ];
 
   let total=0;
@@ -2214,12 +2216,19 @@ function updateCombatDirector(dt){
   Game.directorPulse-=dt;
 
   if(Game.directorPulse<=0){
-    Game.directorPulse=Math.max(4.5,8-Game.level*.18)*rand(.8,1.2);
+    // 30 saniyelik kademeli progression: baski yavas ama surekli artar.
+    const stage=Math.min(5,Math.floor(Game.time/30));
+    Game.directorPulse=Math.max(8,12-stage*.35)*rand(.92,1.08);
 
-    if(Game.level>=2 && enemies.count()<CFG.enemy.maxAlive-1){
-      const wave=Game.level>=9?3:Game.level>=6?2:1;
+    if(stage>=1 && enemies.count()<CFG.enemy.maxAlive-2){
+      // Ilk dakikada tek ek dusman, 2. dakikadan sonra ara sira mini dalga.
+      let wave=1;
+      if(stage>=4 && Math.random()<.32)wave=2;
       for(let i=0;i<wave;i++)spawnEnemy(Game.level);
-      popText(W/2,H*.18,Game.level>=8?"SALDIRI DALGASI":"DÜŞMAN DALGASI","#ff3b6b",13);
+
+      if(stage>=3 && Math.random()<.22){
+        popText(W/2,H*.18,"BASKI ARTIYOR","#ff6b3b",11);
+      }
     }
   }
 }
@@ -2855,7 +2864,7 @@ const Game={
   runUpgrades:{speed:0,magnet:0,score:0},
 
   weapons:{pulse:1,plasma:0,arc:0,novaWeapon:0},
-  weaponTimers:{pulse:.35,plasma:1.0,arc:1.2,novaWeapon:2.5},
+  weaponTimers:{pulse:.65,plasma:1.0,arc:1.2,novaWeapon:2.5},
 
   powers:{
     shield:0,
@@ -2887,15 +2896,15 @@ const Game={
     this.runUpgrades={speed:0,magnet:0,score:0};
 
     this.weapons={pulse:1,plasma:0,arc:0,novaWeapon:0};
-    this.weaponTimers={pulse:.35,plasma:1.0,arc:1.2,novaWeapon:2.5};
+    this.weaponTimers={pulse:.65,plasma:1.0,arc:1.2,novaWeapon:2.5};
     projectiles.clear();
 
-    this.enemySpawn=.32;
+    this.enemySpawn=.75;
     this.orbSpawn=.2;
     this.powerSpawn=6;
     this.nextLevel=30;
     this.director=0;
-    this.directorPulse=8;
+    this.directorPulse=12;
     this.directorSide=Math.floor(Math.random()*4);
 
     this.flash=0;
@@ -3097,7 +3106,8 @@ function update(dt){
 
       Game.level++;
 
-      Game.nextLevel+=30;
+      // Her 30 saniyede bir level. Oyuncu guclenirken baski da kucuk adimlarla artar.
+      Game.nextLevel += 30;
 
       popText(
         W/2,
@@ -3134,39 +3144,30 @@ function update(dt){
 
     Game.enemySpawn-=dt;
 
+    const stage=Math.min(6,Math.floor(Game.time/30));
+    const pressure=1+(stage*.035);
     const enemyEvery=
       Math.max(
         CFG.diff.minSpawnMs,
-        CFG.enemy.spawnMs*
-        Math.pow(
-          CFG.diff.spawnDecay,
-          Math.max(0,Game.level-1)
-        )
+        (CFG.enemy.spawnMs*
+        Math.pow(CFG.diff.spawnDecay,Math.max(0,Game.level-1)))/pressure
       )/1000;
 
-    if(
-      Game.enemySpawn<=0
-    ){
+    if(Game.enemySpawn<=0){
 
-      spawnEnemy(
-        Game.level
-      );
+      spawnEnemy(Game.level);
 
-      if(
-        Game.level>=3 &&
-        Math.random()<(Game.level>=7?.38:.24)
-      ){
+      // 2. dakikadan sonra ara sira ikinci dusman; 3. dakikadan sonra daha sik.
+      const extraChance=
+        Game.time<60 ? 0 :
+        Game.time<120 ? .06 :
+        Game.time<180 ? .12 : .18;
 
-        spawnEnemy(
-          Game.level
-        );
-
+      if(enemies.count()<CFG.enemy.maxAlive-1 && Math.random()<extraChance){
+        spawnEnemy(Game.level);
       }
 
-      Game.enemySpawn=
-        enemyEvery*
-        rand(.8,1.2);
-
+      Game.enemySpawn=enemyEvery*rand(.88,1.12);
     }
 
     /* SPAWN ENERGY */
@@ -4330,13 +4331,37 @@ const RUN_CHOICES={
 function renderLevelChoices(){
   const grid=document.getElementById("levelup-grid");
   if(!grid)return;
-  const pool=Object.keys(RUN_CHOICES).filter(k=>{
+
+  const available=Object.keys(RUN_CHOICES).filter(k=>{
     if(RUN_CHOICES[k].kind==="weapon")return weaponLevel(k)<WEAPONS[k].levels;
     return true;
   });
-  pool.sort(()=>Math.random()-.5);
-  const choices=pool.slice(0,4);
-  grid.innerHTML=choices.map(key=>{
+
+  const ownedWeapons=available.filter(k=>RUN_CHOICES[k].kind==="weapon" && weaponLevel(k)>0);
+  const lockedWeapons=available.filter(k=>RUN_CHOICES[k].kind==="weapon" && weaponLevel(k)===0);
+  const passives=available.filter(k=>RUN_CHOICES[k].kind!=="weapon");
+  const choices=[];
+
+  /* Mevcut bir silahı geliştirmek öncelikli: build dağılmasın. */
+  ownedWeapons.sort(()=>Math.random()-.5);
+  passives.sort(()=>Math.random()-.5);
+  lockedWeapons.sort(()=>Math.random()-.5);
+
+  if(ownedWeapons.length)choices.push(ownedWeapons[0]);
+  if(ownedWeapons.length>1 && Math.random()<.72)choices.push(ownedWeapons[1]);
+  if(passives.length)choices.push(passives[0]);
+
+  /* Yeni silahlar erken oyunda kontrollü açılır. */
+  const unlockChance=Game.level<=4?.45:Game.level<=8?.70:1;
+  if(lockedWeapons.length && Math.random()<unlockChance)choices.push(lockedWeapons[0]);
+
+  for(const k of available.sort(()=>Math.random()-.5)){
+    if(choices.length>=4)break;
+    if(!choices.includes(k))choices.push(k);
+  }
+
+  const finalChoices=choices.slice(0,4);
+  grid.innerHTML=finalChoices.map(key=>{
     const c=RUN_CHOICES[key];
     const level=c.kind==="weapon"?weaponLevel(key):(key==="speed"?Game.runUpgrades.speed:key==="magnet"?Game.runUpgrades.magnet:key==="score"?Game.runUpgrades.score:0);
     return `<div class="levelup-card"><div class="perk-icon">${c.icon}</div><h3>${c.title} <small>Lv.${level+1}</small></h3><p>${c.desc}</p><button data-perk="${key}">SEÇ</button></div>`;
