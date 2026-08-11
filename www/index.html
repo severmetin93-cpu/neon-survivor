@@ -615,7 +615,7 @@ button,
 </head>
 
 <body>
-<div id="version-badge" aria-hidden="true">V15.0</div>
+<div id="version-badge" aria-hidden="true">V15.2</div>
 
 <div id="stage">
 
@@ -1009,9 +1009,9 @@ const CFG={
 
   diff:{
     stepMs:30000,
-    speedPerLevel:.045,
+    speedPerLevel:.043,
     spawnDecay:.982,
-    minSpawnMs:450
+    minSpawnMs:430
   },
 
   power:{
@@ -1056,7 +1056,7 @@ const clamp=(v,a,b)=>
 const enemyCapForLevel=level=>
   Math.min(
     CFG.enemy.maxAlive,
-    6 + Math.max(1,level)*2.5
+    8 + Math.max(1,level)*2.5
   );
 
 /*
@@ -1672,7 +1672,7 @@ const projectiles=Pool(()=>({
   vx:0,vy:0,
   r:4,
   life:0,
-  damage:1,
+  damage:0.92,
   type:"pulse",
   color:"#3d6cff",
   pierce:0,
@@ -1681,10 +1681,10 @@ const projectiles=Pool(()=>({
 }));
 
 const WEAPONS={
-  pulse:{name:"PULSE",color:"#22e6ff",cooldown:.92,speed:390,damage:.82,radius:4,pierce:0,levels:5},
-  plasma:{name:"PLASMA",color:"#ff5a36",cooldown:1.7,speed:285,damage:2.15,radius:7,pierce:1,levels:5},
-  arc:{name:"ARC",color:"#9b4dff",cooldown:1.35,speed:500,damage:1.15,radius:3,pierce:0,chain:2,levels:5},
-  novaWeapon:{name:"NOVA",color:"#ff6b3b",cooldown:5.8,speed:0,damage:1.8,radius:0,pierce:99,levels:5}
+  pulse:{name:"PULSE",color:"#22e6ff",cooldown:.92,speed:390,damage:0.754,radius:4,pierce:0,levels:5},
+  plasma:{name:"PLASMA",color:"#ff5a36",cooldown:1.7,speed:285,damage:1.978,radius:7,pierce:1,levels:5},
+  arc:{name:"ARC",color:"#9b4dff",cooldown:1.35,speed:500,damage:1.058,radius:3,pierce:0,chain:2,levels:5},
+  novaWeapon:{name:"NOVA",color:"#ff6b3b",cooldown:5.8,speed:0,damage:1.656,radius:0,pierce:99,levels:5}
 };
 
 function weaponLevel(key){ return Game.weapons?.[key]||0; }
@@ -3380,7 +3380,7 @@ const Game={
     this.runUpgrades={speed:0,magnet:0,score:0};
 
     this.weapons={pulse:1,plasma:0,arc:0,novaWeapon:0};
-    this.weaponTimers={pulse:.65,plasma:1.0,arc:1.2,novaWeapon:2.5};
+    this.weaponTimers={pulse:.72,plasma:1.08,arc:1.30,novaWeapon:2.70};
     this._synergyShown={};
     projectiles.clear();
 
@@ -3649,7 +3649,7 @@ function update(dt){
     const multiplier=
       (Game.powers.overdrive>0?2:1)*
       upgradeMultiplier*
-      (1+(Game.runUpgrades.score||0)*0.12);
+      (1+(Game.runUpgrades.score||0)*0.09);
 
     Game.score+=
       dt*
@@ -4307,7 +4307,7 @@ function drawOrbs(){
     const s=o.r*.78*p;
 
     ctx.beginPath();
-    ctx.moveTo(o.x,o.y-s*1.25);
+    ctx.moveTo(o.x,o.y-s*1.20);
     ctx.lineTo(o.x+s*.82,o.y);
     ctx.lineTo(o.x,o.y+s*1.25);
     ctx.lineTo(o.x-s*.82,o.y);
