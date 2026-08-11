@@ -509,6 +509,12 @@ html,body{
 .levelup-card button{width:100%;margin-top:12px;min-height:42px;border:1px solid rgba(34,230,255,.3);border-radius:11px;background:linear-gradient(135deg,rgba(34,230,255,.12),rgba(59,123,255,.12));color:#eaf4ff;font-weight:900;font-size:11px;letter-spacing:.1em}
 .levelup-card button:active{transform:scale(.98)}
 .levelup-note{margin-top:14px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(234,244,255,.35);text-align:center}
+#run-countdown{position:absolute;inset:0;z-index:35;display:none;align-items:center;justify-content:center;flex-direction:column;pointer-events:none;background:rgba(4,6,15,.18)}
+#run-countdown.on{display:flex}
+.countdown-ring{position:absolute;width:142px;height:142px;border-radius:50%;border:2px solid rgba(34,230,255,.32);box-shadow:0 0 34px rgba(34,230,255,.16),inset 0 0 30px rgba(34,230,255,.06);animation:countPulse 1s ease-out}
+.countdown-label{font-size:11px;font-weight:800;letter-spacing:.32em;color:rgba(234,244,255,.58);margin-bottom:8px}
+.countdown-number{font-size:64px;line-height:1;font-weight:900;color:#eaf4ff;text-shadow:0 0 24px rgba(34,230,255,.75)}
+@keyframes countPulse{from{transform:scale(.72);opacity:.15}to{transform:scale(1.12);opacity:0}}
 
 @media(prefers-reduced-motion:reduce){
   *{
@@ -790,6 +796,12 @@ html,body{
 
 </div>
 
+<div id="run-countdown" aria-hidden="true">
+  <div class="countdown-ring"></div>
+  <div class="countdown-label">HAZIRLAN</div>
+  <div class="countdown-number" id="run-countdown-number">1</div>
+</div>
+
 <div class="screen" id="scr-pause">
 
   <div class="logo" style="font-size:clamp(26px,8vw,40px)">
@@ -889,9 +901,9 @@ const CFG={
   },
 
   enemy:{
-    baseSpeed:52,
-    spawnMs:1450,
-    maxAlive:30,
+    baseSpeed:54,
+    spawnMs:1400,
+    maxAlive:31,
     margin:46,
     lifeMs:15000,
     fadeMs:1200,
@@ -902,8 +914,8 @@ const CFG={
 
   diff:{
     stepMs:30000,
-    speedPerLevel:.028,
-    spawnDecay:.988,
+    speedPerLevel:.032,
+    spawnDecay:.984,
     minSpawnMs:650
   },
 
@@ -932,6 +944,7 @@ const STATE={
   HOW:"HOW",
   PLAYING:"PLAYING",
   LEVELUP:"LEVELUP",
+  COUNTDOWN:"COUNTDOWN",
   PAUSED:"PAUSED",
   OVER:"OVER"
 };
@@ -2852,6 +2865,7 @@ const Game={
   powerSpawn:5,
 
   nextLevel:30,
+  countdown:0,
 
   director:0,
   directorPulse:8,
@@ -2903,6 +2917,7 @@ const Game={
     this.orbSpawn=.2;
     this.powerSpawn=6;
     this.nextLevel=30;
+    this.countdown=0;
     this.director=0;
     this.directorPulse=12;
     this.directorSide=Math.floor(Math.random()*4);
@@ -3091,6 +3106,21 @@ const Game={
 ========================================================= */
 
 function update(dt){
+
+  if(Game.state===STATE.COUNTDOWN){
+    Game.countdown-=dt;
+    if(runCountdownNumber){
+      runCountdownNumber.textContent=Math.max(1,Math.ceil(Game.countdown));
+    }
+    if(Game.countdown<=0){
+      Game.countdown=0;
+      Game.state=STATE.PLAYING;
+      runCountdown.classList.remove("on");
+      showPauseButton();
+      hintHidden=false;
+    }
+    return;
+  }
 
   if(
     Game.state===
@@ -4161,6 +4191,8 @@ const scrSkins=$("scr-skins");
 const scrPause=$("scr-pause");
 const scrLevelup=$("scr-levelup");
 const scrOver=$("scr-over");
+const runCountdown=$("run-countdown");
+const runCountdownNumber=$("run-countdown-number");
 
 const hint=$("hint");
 const pauseBtn=$("b-pause");
@@ -4218,6 +4250,7 @@ function toMenu(){
   hide(scrPause);
   hide(scrLevelup);
   hide(scrOver);
+  runCountdown.classList.remove("on");
 
   show(scrMenu);
 
@@ -4243,6 +4276,7 @@ function startGame(){
   hide(scrPause);
   hide(scrLevelup);
   hide(scrOver);
+  runCountdown.classList.remove("on");
 
   Game.start();
 
@@ -4403,8 +4437,17 @@ function chooseRunPerk(type){
   }else return;
   Audio_.power();
   vibrate([12,24,12]);
+
   hide(scrLevelup);
-  Game.state=STATE.PLAYING;
+  inputUp();
+  hidePauseButton();
+
+  Game.countdown=1.0;
+  Game.state=STATE.COUNTDOWN;
+
+  runCountdownNumber.textContent="1";
+  runCountdown.classList.add("on");
+
   updatePowerHUD();
   updateWeaponHUD();
 }
