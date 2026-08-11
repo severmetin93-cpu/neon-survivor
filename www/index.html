@@ -995,7 +995,7 @@ const CFG={
 
   diff:{
     stepMs:30000,
-    speedPerLevel:.052,
+    speedPerLevel:.045,
     spawnDecay:.982,
     minSpawnMs:450
   },
@@ -1042,8 +1042,17 @@ const clamp=(v,a,b)=>
 const enemyCapForLevel=level=>
   Math.min(
     CFG.enemy.maxAlive,
-    9 + Math.max(1,level)*3
+    6 + Math.max(1,level)*2.5
   );
+
+/*
+  Geç oyun baskısı:
+  Level 1-9 mevcut tempoyu korur.
+  Level 10+ sayıyı artırmak yerine davranışsal baskıyı
+  küçük adımlarla yükseltir. Böylece ekran gereksiz dolmaz.
+*/
+const lateGamePressure=level=>
+  1 + Math.max(0,level-9)*.018;
 
 const lerp=(a,b,t)=>
   a+(b-a)*t;
@@ -2105,7 +2114,11 @@ function spawnElite(level){
   e.eliteSeed=Math.random()*TAU;
 
   const a=Math.atan2(player.y-e.y,player.x-e.x);
-  const speed=CFG.enemy.baseSpeed*1.08*(1+(level-1)*CFG.diff.speedPerLevel);
+  const speed=
+    CFG.enemy.baseSpeed*
+    1.08*
+    (1+(level-1)*CFG.diff.speedPerLevel)*
+    lateGamePressure(level);
   e.vx=Math.cos(a)*speed;
   e.vy=Math.sin(a)*speed;
 
@@ -2145,7 +2158,7 @@ function spawnBoss(){
   e.hitFlash=0;
 
   // Every 5 levels the next Warden gets a meaningful power increase.
-  e.maxHp=100 + (bossTier-1)*35 + Game.level*2;
+  e.maxHp=100 + (bossTier-1)*45 + Game.level*2.5;
   e.hp=e.maxHp;
   e.bossPhase=1;
   e.bossCd=Math.max(1.8,2.4-bossTier*.08);
@@ -2155,7 +2168,7 @@ function spawnBoss(){
   const a=Math.atan2(player.y-e.y,player.x-e.x);
   const speed=
     CFG.enemy.baseSpeed*
-    (.54+bossTier*.018)*
+    (.54+bossTier*.022)*
     (1+(Game.level-1)*.018);
 
   e.vx=Math.cos(a)*speed;
@@ -2226,7 +2239,8 @@ function spawnEnemy(level){
   const speed=
     CFG.enemy.baseSpeed*
     m.speed*
-    (1+(level-1)*CFG.diff.speedPerLevel);
+    (1+(level-1)*CFG.diff.speedPerLevel)*
+    lateGamePressure(level);
 
   e.vx=Math.cos(a)*speed;
   e.vy=Math.sin(a)*speed;
@@ -2585,7 +2599,13 @@ function updateCombatDirector(dt){
   Game.directorPulse-=dt;
   if(Game.directorPulse<=0){
     const stage=Math.min(8,Math.floor(Game.time/30));
-    Game.directorPulse=Math.max(7,11-stage*.28)*rand(.92,1.08);
+    Game.directorPulse=
+      Math.max(
+        6.2,
+        (11-stage*.28)/
+        (1+Math.max(0,Game.level-9)*.012)
+      )*
+      rand(.92,1.08);
 
     if(
       stage>=1 &&
