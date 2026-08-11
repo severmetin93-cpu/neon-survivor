@@ -1034,6 +1034,259 @@ const CFG={
 
 };
 
+/* =========================================================
+   FAZ 1 · BALANCE — MERKEZI VERI MODELI
+
+   Bu blok V15.2'nin dagink balans sabitlerini TEK yere toplar.
+   ONEMLI: Bu fazda BALANCE bir AYNA'dir. Degerler mevcut oyunun
+   birebir aynisidir ve oyun mantigi bu bloktan OKUMAZ.
+   Tek istisna: BALANCE.fixes — FAZ 0 hata duzeltmelerinin sabitleri.
+
+   FAZ 4'te weaponStat / spawnEnemy / director bu bloktan okumaya
+   baslayacak. O ana kadar burayi degistirmek oyunu degistirmez.
+========================================================= */
+
+const BALANCE={
+
+  version:"15.3-instrumented",
+
+  /* ---------------------------------------------------------
+     FAZ 0 DUZELTME SABITLERI
+     Bu alt blok, davranisa etki eden TEK BALANCE alanidir.
+     --------------------------------------------------------- */
+  fixes:{
+    /* 0.3 — kalici hiz upgrade'i hicbir yerde okunmuyordu */
+    metaSpeedPerLevel:0.04,
+    metaSpeedCap:0.20,          // kalici ham stat siniri (max +%20)
+    /* 0.4 — kalici kalkan Lv2+ sifir fayda veriyordu */
+    metaShieldCap:2,
+    /* 0.2 — nova power-up boss'u odulsuz siliyor ve run'i kilitliyordu */
+    novaBossDamageRatio:0.20,   // boss maxHp'sinin yuzdesi olarak hasar
+    /* 0.5 — kart metni %12 diyordu, kod %9 veriyordu */
+    runScorePerStack:0.12
+  },
+
+  /* ---------------------------------------------------------
+     TIER TANIMLARI
+     Su an SADECE telemetri etiketlemesi icin kullaniliyor.
+     --------------------------------------------------------- */
+  tiers:[
+    {id:"basic",        name:"BASIC",        from:1,  to:3,    targetRatio:1.18},
+    {id:"intermediate", name:"INTERMEDIATE", from:4,  to:7,    targetRatio:1.15},
+    {id:"advanced",     name:"ADVANCED",     from:8,  to:12,   targetRatio:1.13},
+    {id:"expert",       name:"EXPERT",       from:13, to:19,   targetRatio:1.11},
+    {id:"master",       name:"MASTER",       from:20, to:9999, targetRatio:1.10}
+  ],
+
+  tierOf(level){
+    for(const t of this.tiers){
+      if(level>=t.from && level<=t.to)return t;
+    }
+    return this.tiers[this.tiers.length-1];
+  },
+
+  targetRatio(level){
+    return this.tierOf(level).targetRatio;
+  },
+
+  /* ---------------------------------------------------------
+     OYUNCU TARAFI — V15.2 aynasi
+     --------------------------------------------------------- */
+  player:{
+
+    baseHp:3,                    // CFG.player.maxHp
+    invulnMs:900,                // CFG.player.invulnMs
+
+    /* weaponStat() icindeki sabitler */
+    weapon:{
+      damagePerLevel:0.32,       // (1 + lv*0.32)
+      cooldownPerLevel:0.91,     // 0.91^lv
+      speedPerLevel:0.08,
+      radiusPerLevel:0.7,
+      pierceDivisor:2,           // floor(lv/2)
+      chainDivisor:2,            // floor(lv/2)
+      evolutionLevel:5,
+      evolution:{damage:1.16,cooldown:0.88,radius:1.5,pierce:1,chain:1},
+      arcChainFalloff:0.72,      // zincir sicramasi hasar orani
+      arcChainRange:105,
+      novaRadiusBase:92,
+      novaRadiusPerLevel:18
+    },
+
+    /* buildSynergies() + weaponStat() sinerji bloklari */
+    synergy:{
+      overcharge:{needs:{pulse:2,plasma:2},
+        pulse:{damage:1.12,cooldown:0.92},
+        plasma:{damage:1.15,pierce:1}},
+      chainReactor:{needs:{pulse:2,arc:2},
+        pulse:{cooldown:0.90},
+        arc:{chain:2,damage:1.10}},
+      meltdown:{needs:{plasma:2,novaWeapon:2},
+        plasma:{damage:1.10},
+        novaWeapon:{damage:1.18,radius:18}}
+    },
+
+    /* run ici kartlar */
+    runUpgrade:{
+      speedPerStack:0.10,        // inputMove baseBoost
+      magnetPerStack:80,         // updateOrbs magnetRange
+      scorePerStack:0.12,        // FIX 0.5 ile kart metnine hizalandi
+      speedStackSoftCap:null     // FAZ 4 adayi — su an sinirsiz
+    },
+
+    /* kalici upgrade'ler */
+    metaUpgrade:{
+      speedPerLevel:0.04,        // FIX 0.3 ile aktif edildi
+      speedCap:0.20,
+      magnetSecPerLevel:2,       // activatePower magnet suresi
+      shieldCap:2,               // FIX 0.4
+      scorePerLevel:0.08,
+      costBase:20,
+      costStep:15                // Progression.cost = 20 + lv*15
+    }
+  },
+
+  /* ---------------------------------------------------------
+     DUSMAN TARAFI — V15.2 aynasi
+     --------------------------------------------------------- */
+  enemy:{
+
+    /* ENEMIES[] dizisinin balans yuzu */
+    types:[
+      {id:"hunter",  hp:1, speed:1.00, weight:54, unlockLevel:1, danger:1.00},
+      {id:"tank",    hp:2, speed:0.62, weight:17, unlockLevel:2, danger:1.05},
+      {id:"orbiter", hp:1, speed:1.08, weight:13, unlockLevel:3, danger:1.10},
+      {id:"dasher",  hp:1, speed:0.78, weight:10, unlockLevel:4, danger:1.20},
+      {id:"weaver",  hp:1, speed:1.18, weight:6,  unlockLevel:6, danger:1.15}
+    ],
+
+    /* !!! V15.2 GERCEGI: normal dusman HP'si seviyeyle ARTMIYOR.
+       FAZ 4'te bu fonksiyon degisecek. Simdilik sabit 1.0. */
+    hpCurve:level=>1.0,
+
+    baseSpeed:61,                // CFG.enemy.baseSpeed
+    speedPerLevel:0.043,         // CFG.diff.speedPerLevel
+    lateGameFrom:9,              // lateGamePressure()
+    lateGamePerLevel:0.018,
+
+    capBase:8,                   // enemyCapForLevel()
+    capPerLevel:2.5,
+    capMax:31,                   // CFG.enemy.maxAlive
+
+    elite:{
+      hpBase:5,                  // 5 + floor(level/5)
+      hpPerFiveLevels:1,
+      firstAt:150,               // Game.nextEliteAt
+      everySec:90,
+      speedMult:1.08,
+      danger:1.35,
+      coreReward:2,
+      scoreReward:180
+    },
+
+    boss:{
+      everyLevels:5,
+      hpBase:100,                // 100 + (tier-1)*45 + level*2.5
+      hpPerTier:45,
+      hpPerLevel:2.5,
+      speedBase:0.54,
+      speedPerTier:0.022,
+      speedPerLevel:0.018,
+      phase2At:0.5,
+      phase2Speed:1.22,
+      danger:1.35,
+      coreReward:tier=>25+tier*3,
+      scoreReward:tier=>900+tier*120
+    }
+  },
+
+  /* ---------------------------------------------------------
+     SPAWN — V15.2 aynasi
+     --------------------------------------------------------- */
+  spawn:{
+    baseMs:1000,                 // CFG.enemy.spawnMs
+    decay:0.982,                 // CFG.diff.spawnDecay
+    minMs:430,                   // CFG.diff.minSpawnMs
+    pressurePerStage:0.035,
+    stageMax:6,
+    stageSec:30,                 // CFG.diff.stepMs
+    extraChance:[
+      {beforeSec:60,  chance:0},
+      {beforeSec:120, chance:0.08},
+      {beforeSec:180, chance:0.15},
+      {beforeSec:1e9, chance:0.22}
+    ],
+    director:{
+      baseSec:11,
+      perStage:0.28,
+      minSec:6.2,
+      lateGameFrom:9,
+      lateGamePerLevel:0.012,
+      doubleWaveFromStage:4,
+      doubleWaveChance:0.28
+    }
+  },
+
+  /* ---------------------------------------------------------
+     EKONOMI — V15.2 aynasi
+     --------------------------------------------------------- */
+  economy:{
+    xpPerScore:1/25,             // floor(score/25)
+    xpPerSecond:2,               // floor(time*2)
+    xpMin:10,
+    coresPerEnergy:1/3,          // floor(energy/3)
+    coresPerSecond:1/20,         // floor(time/20)
+    coresMin:1,
+    profileXpCurve:level=>level*level*100,
+    milestones:{90:3,180:6,300:10},
+    comboWindowSec:2.6,
+    comboMax:9,
+    comboPerChain:3
+  },
+
+  /* ---------------------------------------------------------
+     GELECEK MIMARI — SADECE ILKE KAYDI, RUNTIME ETKISI YOK
+     Bu blok hicbir kod tarafindan okunmaz. FAZ 6 icin sozlesme.
+     --------------------------------------------------------- */
+  future:{
+
+    competitive:{
+      /* powerRating: build/meta gucunu temsil eder.
+         SATIN ALINAMAZ. Sadece oynanarak kazanilan
+         ilerlemeden (silah/core/synergy/karakter) hesaplanir. */
+      powerRating:{purchasable:false, sources:["run_performance","unlocked_content","account_progress"]},
+
+      /* leagueRating: yalnizca oyun performansindan hesaplanir.
+         Satin alinamaz, cosmetic veya subscription ile degismez. */
+      leagueRating:{purchasable:false, cosmeticEffect:false, subscriptionEffect:false,
+                    sources:["run_performance"]},
+
+      separateFields:true,       // powerRating !== leagueRating
+      clan:{plannedOnly:true},
+      season:{plannedOnly:true},
+      leaderboard:{basedOn:"leagueRating"}
+    },
+
+    monetization:{
+      allowed:["cosmetic","skin","visual_effects","profile_customization","ui_themes","banners","emotes","non_competitive_convenience"],
+      forbidden:["purchasable_power","purchasable_power_rating","purchasable_league_rating","competitive_advantage","pay_to_win"],
+      permanentRawStatCapPct:15  // kalici ham stat toplam ust siniri
+    }
+  }
+
+};
+
+/* BALANCE salt-okunur olmali: yanlislikla mutasyonu engelle. */
+(function deepFreeze(o){
+  if(!o||typeof o!=="object")return;
+  Object.getOwnPropertyNames(o).forEach(k=>{
+    const v=o[k];
+    if(v&&typeof v==="object")deepFreeze(v);
+  });
+  Object.freeze(o);
+})(BALANCE);
+
+
 const STATE={
   MENU:"MENU",
   HOW:"HOW",
@@ -1907,7 +2160,22 @@ function inputMove(x,y){
   if(Game.state!==STATE.PLAYING)
     return;
 
-  const baseBoost=1+(Game.runUpgrades.speed||0)*.10;
+  Telemetry.onMove(dx,dy);   /* FAZ 3 */
+
+  /* FAZ 0 · FIX 0.3
+     ONCE: Save.data.upgrades.speed HICBIR yerde okunmuyordu.
+           Oyuncu kalici "NEON HIZI" upgrade'ine cekirdek harciyor,
+           karsiliginda hicbir sey almiyordu.
+     SONRA: seviye basina +%4, toplamda +%20 ile sinirli.
+            Sinir, "kalici ham stat cok sinirli olsun" ilkesinin
+            geregidir; run ici kartlar (%10/stack) etkilenmedi. */
+  const metaSpeed=
+    Math.min(
+      BALANCE.fixes.metaSpeedCap,
+      (Save.data.upgrades.speed||0)*BALANCE.fixes.metaSpeedPerLevel
+    );
+
+  const baseBoost=1+(Game.runUpgrades.speed||0)*.10+metaSpeed;
   const boost=
     baseBoost*(Game.powers.overdrive>0?1.35:1);
 
@@ -2590,7 +2858,14 @@ function applyEnemyPlayerSpacing(){
 
 function updateCombatDirector(dt){
   Game.director+=dt;
-  Game.directorPulse-=dt;
+
+  /* FAZ 0 · FIX 0.1
+     ONCE: Game.directorPulse bu fonksiyonda IKI kez azaltiliyordu
+           (burada ve asagidaki dalga blogunda). Dalgalar formulun
+           ongordugunun 2 kati siklikta geliyordu (~%8 fazla spawn).
+     SONRA: tek azaltma asagidaki dalga blogunda birakildi.
+     GERI ALMA: asagidaki "Game.directorPulse-=dt;" satirinin
+                bir kopyasini buraya geri koymak yeterli. */
 
   // Elites keep their existing cadence, but never spawn on top of an active boss.
   if(Game.time>=Game.nextEliteAt && !Game.bossActive){
@@ -2705,9 +2980,13 @@ function activatePower(type){
   const c=
     POWER_INFO[type].color;
 
+  /* FAZ 0 · FIX 0.4c
+     Kalkan artik birden fazla yuk tasiyabildigi icin, power-up
+     toplamak mevcut yuku DUSURMEMELI. Tek yuklu durumda sonuc
+     V15.2 ile ayni (1). */
   Game.powers[type]=
     type==="shield"
-      ?1
+      ?Math.max(Game.powers.shield||0,1)
       :type==="nova"
         ?1
         :type==="magnet"
@@ -2754,18 +3033,51 @@ function activatePower(type){
         d<=CFG.power.novaRadius
       ){
 
-        destroyed++;
+        /* FAZ 0 · FIX 0.2
+           ONCE: e.alive=false tum dusmanlar icin calisiyordu.
+                 Boss bu yolla silindiginde damageEnemy() hic
+                 cagrilmadigi icin Game.bossActive true KALIYORDU.
+                 Sonuc: run'in geri kalaninda ne elite ne boss
+                 spawn olabiliyordu (elite spawn'i !bossActive
+                 sartina bagli) ve boss odulu de kayboluyordu.
+           SONRA: boss ve elite normal olum yolundan (damageEnemy)
+                  gecer. Boss aninda olmez, maxHp'sinin
+                  BALANCE.fixes.novaBossDamageRatio kadarini yer. */
 
-        emit(
-          e.x,e.y,
-          10,
-          ENEMIES[e.type].color,
-          190,
-          3,
-          .55
-        );
+        if(e.boss){
 
-        e.alive=false;
+          damageEnemy(
+            e,
+            (e.maxHp||1)*BALANCE.fixes.novaBossDamageRatio,
+            POWER_INFO.nova.color,
+            "novaPower"
+          );
+
+        }else if(e.elite){
+
+          damageEnemy(
+            e,
+            (e.hp??1),
+            POWER_INFO.nova.color,
+            "novaPower"
+          );
+
+        }else{
+
+          destroyed++;
+
+          emit(
+            e.x,e.y,
+            10,
+            ENEMIES[e.type].color,
+            190,
+            3,
+            .55
+          );
+
+          e.alive=false;
+
+        }
 
       }
 
@@ -2851,8 +3163,7 @@ function updateActivePowers(dt){
         Game.powers.overdrive-dt
       );
 
-  }
-
+8
 }
 
 function drawPowerups(){
@@ -2986,6 +3297,8 @@ function collectOrb(o){
   Game.energy+=
     o.rare?3:1;
 
+  Telemetry.onEnergy(o.rare?3:1);   /* FAZ 3 */
+
   Game.chain++;
 
   Game.combo=
@@ -3076,7 +3389,7 @@ function updateOrbs(dt){
         o.y+=(dy/d)*strength*pull*dt;
       }
     }
-
+8p
     const d=Math.hypot(
       player.x-o.x,
       player.y-o.y
@@ -3104,8 +3417,16 @@ function nearestEnemy(){
   return best;
 }
 
-function damageEnemy(e,amount,color){
+/* FAZ 3 · 4. parametre "src" eklendi (opsiyonel, varsayilan yok).
+   Sadece telemetri atifi icin kullanilir; hasar hesabina etkisi yoktur.
+   Eski 3 parametreli cagrilar aynen calisir. */
+function damageEnemy(e,amount,color,src){
   if(!e.alive)return;
+
+  Telemetry.onDamageDealt(
+    Math.min(amount,(e.hp??1)),
+    src||"other"
+  );
 
   e.hp=Math.max(0,(e.hp??1)-amount);
   e.hitFlash=.18;
@@ -3114,6 +3435,8 @@ function damageEnemy(e,amount,color){
 
   if(e.hp<=0){
     e.alive=false;
+
+    Telemetry.onKill(e);   /* FAZ 3 · olcum kancasi */
 
     if(e.boss){
       Game.bossActive=false;
@@ -3179,7 +3502,7 @@ function fireProjectile(key){
     const radius=92+level*18;
     enemies.forEach(e=>{
       const d=Math.hypot(e.x-player.x,e.y-player.y);
-      if(d<=radius){damageEnemy(e,st.damage,w.color);hit++;}
+      if(d<=radius){damageEnemy(e,st.damage,w.color,"novaWeapon");hit++;}
     });
     emit(player.x,player.y,26,w.color,260,3.2,.55);
     popText(player.x,player.y-36,"NOVA BURST",w.color,14);
@@ -3218,12 +3541,12 @@ function updateWeapons(dt){
       if(!p.alive||spent||!e.alive)return;
       const d=Math.hypot(e.x-p.x,e.y-p.y);
       if(d<=e.r+p.r){
-        damageEnemy(e,p.damage,p.color);
+        damageEnemy(e,p.damage,p.color,p.type);
         if(p.type==="arc" && p.chain>0){
           let hops=p.chain;
           enemies.forEach(n=>{
             if(n!==e && n.alive && hops>0 && Math.hypot(n.x-e.x,n.y-e.y)<105){
-              damageEnemy(n,p.damage*.72,p.color);
+              damageEnemy(n,p.damage*.72,p.color,p.type);
               emit(e.x,e.y,3,p.color,100,1.8,.18);
               hops--;
             }
@@ -3278,6 +3601,459 @@ function updateWeaponHUD(){
   }
   updateBuildHUD();
 }
+
+/* =========================================================
+   FAZ 2 · POWER MODELLERI  (SALT OKUMA)
+
+   PlayerPower.calculate() ve ThreatPower.calculate() oyunun
+   guncel durumunu OLCER. Hicbir spawn / hasar / zorluk karari
+   bu modellere bagli DEGILDIR. FAZ 4'e kadar bu blok
+   silinse bile oyun aynen calisir.
+========================================================= */
+
+const PowerModel={
+
+  /* Ekranda ayni anda vurulabilir gercekci hedef kumesi. */
+  clusterSize(level){
+    return clamp(2+level*0.25,2,6);
+  },
+
+  /* chooseEnemyType() ile ayni kilit tablosu. */
+  unlockedCount(level){
+    let n=1;
+    for(const t of BALANCE.enemy.types){
+      if(level>=t.unlockLevel)n=Math.max(n,BALANCE.enemy.types.indexOf(t)+1);
+    }
+    return n;
+  },
+
+  avgEnemyHp(level){
+    const n=this.unlockedCount(level);
+    let w=0,hp=0;
+    for(let i=0;i<n;i++){
+      const t=BALANCE.enemy.types[i];
+      w+=t.weight;
+      hp+=t.weight*t.hp;
+    }
+    return (hp/w)*BALANCE.enemy.hpCurve(level);
+  },
+
+  avgEnemyDanger(level){
+    const n=this.unlockedCount(level);
+    let w=0,d=0;
+    for(let i=0;i<n;i++){
+      const t=BALANCE.enemy.types[i];
+      w+=t.weight;
+      d+=t.weight*t.danger;
+    }
+    return d/w;
+  },
+
+  enemySpeedMult(level){
+    return (1+(level-1)*BALANCE.enemy.speedPerLevel)*lateGamePressure(level);
+  },
+
+  /* update() + updateCombatDirector() spawn formullerinin aynasi. */
+  spawnRate(level,time){
+    const t=time??Game.time;
+    const stage=Math.min(BALANCE.spawn.stageMax,Math.floor(t/BALANCE.spawn.stageSec));
+    const pressure=1+stage*BALANCE.spawn.pressurePerStage;
+
+    const every=Math.max(
+      BALANCE.spawn.minMs,
+      (BALANCE.spawn.baseMs*Math.pow(BALANCE.spawn.decay,Math.max(0,level-1)))/pressure
+    )/1000;
+
+    let extra=0;
+    for(const e of BALANCE.spawn.extraChance){
+      if(t<e.beforeSec){extra=e.chance;break;}
+    }
+
+    let rate=(1+extra)/every;
+
+    const d=BALANCE.spawn.director;
+    const st=Math.min(8,Math.floor(t/BALANCE.spawn.stageSec));
+    const pulse=Math.max(
+      d.minSec,
+      (d.baseSec-st*d.perStage)/(1+Math.max(0,level-d.lateGameFrom)*d.lateGamePerLevel)
+    );
+    const wave=1+(st>=d.doubleWaveFromStage?d.doubleWaveChance:0);
+    rate+=wave/pulse;
+
+    return rate;
+  },
+
+  enemiesInRadius(r){
+    let n=0;
+    enemies.forEach(e=>{
+      if(Math.hypot(e.x-player.x,e.y-player.y)<=r)n++;
+    });
+    return n;
+  }
+
+};
+
+
+const PlayerPower={
+
+  /* Kalici + run ici hareket bonusunun toplami. */
+  speedBonus(){
+    const meta=Math.min(
+      BALANCE.fixes.metaSpeedCap,
+      (Save.data.upgrades.speed||0)*BALANCE.fixes.metaSpeedPerLevel
+    );
+    return (Game.runUpgrades.speed||0)*BALANCE.player.runUpgrade.speedPerStack+meta;
+  },
+
+  calculate(){
+
+    const level=Game.level;
+    const avgHp=PowerModel.avgEnemyHp(level);
+    const cluster=PowerModel.clusterSize(level);
+    const wc=BALANCE.player.weapon;
+
+    let clearRate=0,rawDps=0;
+    const perWeapon={};
+
+    for(const key of Object.keys(WEAPONS)){
+
+      const lv=weaponLevel(key);
+      if(lv<=0){perWeapon[key]={level:0,dps:0,clear:0};continue;}
+
+      const st=weaponStat(key,lv);
+      const dps=st.damage/st.cooldown;
+
+      let targets;
+      if(key==="novaWeapon"){
+        const r=wc.novaRadiusBase+lv*wc.novaRadiusPerLevel;
+        targets=Math.min(cluster,Math.max(1,PowerModel.enemiesInRadius(r)));
+      }else{
+        targets=Math.min(cluster,(st.pierce+1)+(st.chain||0)*wc.arcChainFalloff);
+      }
+
+      /* Hasar tasindigi icin degil, ARTIK hasar israf oldugu icin
+         ayrik model kullaniyoruz: hasar < HP ise birden fazla
+         vurus gerekir. */
+      const hitsNeeded=Math.max(1,Math.ceil(avgHp/Math.max(.001,st.damage)));
+      const clear=targets/(st.cooldown*hitsNeeded);
+
+      perWeapon[key]={level:lv,dps,clear,targets,hitsNeeded};
+      rawDps+=dps;
+      clearRate+=clear;
+
+    }
+
+    /* Taban 1.0: tam can, kalkan yok, hiz yigini yok. */
+    const survival=Math.pow(
+      Math.max(0,(player.hp+(Game.powers.shield||0))/BALANCE.player.baseHp),
+      .5
+    );
+
+    const mobility=Math.pow(1+Math.min(.30,this.speedBonus()),.5);
+
+    return {
+      level,avgHp,cluster,
+      rawDps,clearRate,
+      survival,mobility,
+      perWeapon,
+      synergies:buildSynergies(),
+      value:clearRate*survival*mobility
+    };
+
+  }
+
+};
+
+
+const ThreatPower={
+
+  calculate(){
+
+    const level=Game.level;
+    const spawnRate=PowerModel.spawnRate(level);
+
+    const baseHp=PowerModel.avgEnemyHp(level);
+
+    /* Elite'i spawn akisina yayilmis ek HP olarak modelle. */
+    const el=BALANCE.enemy.elite;
+    const eliteHp=el.hpBase+Math.floor(level/5)*el.hpPerFiveLevels;
+    const elitePerSec=Game.time>=el.firstAt?eliteHp/el.everySec:0;
+    const effHp=baseHp+(spawnRate>0?elitePerSec/spawnRate:0);
+
+    const speedMult=PowerModel.enemySpeedMult(level);
+    const behavior=PowerModel.avgEnemyDanger(level);
+    const danger=Math.pow(speedMult,.6)*behavior*(Game.bossActive?1.35:1);
+
+    const alive=enemies.count();
+    const ref=Math.max(4,enemyCapForLevel(level)*.6);
+    const density=clamp(alive/ref,.75,1.25);
+
+    return {
+      level,spawnRate,
+      baseHp,effHp,eliteHp,
+      speedMult,behavior,danger,
+      alive,cap:enemyCapForLevel(level),density,
+      bossActive:Game.bossActive,
+      value:spawnRate*effHp*danger*density
+    };
+
+  }
+
+};
+
+
+const PowerCurve={
+
+  read(){
+    const pp=PlayerPower.calculate();
+    const tp=ThreatPower.calculate();
+    const target=BALANCE.targetRatio(Game.level);
+    const ratio=tp.value>0?pp.value/tp.value:0;
+    return {
+      pp,tp,ratio,target,
+      tier:BALANCE.tierOf(Game.level),
+      delta:target>0?(ratio/target-1):0
+    };
+  }
+
+};
+
+
+/* =========================================================
+   FAZ 3 · TELEMETRY  (GELISTIRICI MODU)
+
+   Uretim UI'inda GORUNMEZ. Acmak icin: menude "NEON SURVIVOR"
+   yazisina 5 kez dokun. Tercih localStorage'da saklanir.
+   Kapaliyken hicbir DOM islemi yapilmaz.
+
+   AFK metrikleri sadece OLCUM icindir. Oyunu cezalandiran
+   hicbir mekanik eklenmemistir.
+========================================================= */
+
+const Telemetry={
+
+  enabled:false,
+  dom:null,
+  acc:0,
+  taps:0,
+  tapAt:0,
+
+  /* olculen degerler */
+  damageDealt:0,
+  damageBySource:{pulse:0,plasma:0,arc:0,novaWeapon:0,novaPower:0,other:0},
+  kills:0,
+  eliteKills:0,
+  bossKills:0,
+  damageTaken:0,
+  energyCollected:0,
+  upgradesTaken:0,
+
+  /* AFK metrikleri */
+  movementDistance:0,
+  idleTime:0,
+  sinceMove:0,
+  damageTakenWhileIdle:0,
+  killsWhileIdle:0,
+  xpCollectedWhileIdle:0,
+
+  idleThreshold:0.35,
+
+  reset(){
+    this.damageDealt=0;
+    this.damageBySource={pulse:0,plasma:0,arc:0,novaWeapon:0,novaPower:0,other:0};
+    this.kills=0;this.eliteKills=0;this.bossKills=0;
+    this.damageTaken=0;this.energyCollected=0;this.upgradesTaken=0;
+    this.movementDistance=0;this.idleTime=0;this.sinceMove=0;
+    this.damageTakenWhileIdle=0;this.killsWhileIdle=0;this.xpCollectedWhileIdle=0;
+    this.acc=0;
+  },
+
+  isIdle(){
+    return this.sinceMove>=this.idleThreshold;
+  },
+
+  /* ---- olcum kancalari ---- */
+
+  onDamageDealt(amount,src){
+    if(!(amount>0))return;
+    this.damageDealt+=amount;
+    if(this.damageBySource[src]===undefined)this.damageBySource.other+=amount;
+    else this.damageBySource[src]+=amount;
+  },
+
+  onKill(e){
+    this.kills++;
+    if(e.boss)this.bossKills++;
+    else if(e.elite)this.eliteKills++;
+    if(this.isIdle())this.killsWhileIdle++;
+  },
+
+  onDamageTaken(){
+    this.damageTaken++;
+    if(this.isIdle())this.damageTakenWhileIdle++;
+  },
+
+  onEnergy(amount){
+    this.energyCollected+=amount;
+    if(this.isIdle())this.xpCollectedWhileIdle+=amount;
+  },
+
+  onUpgrade(){
+    this.upgradesTaken++;
+  },
+
+  onMove(dx,dy){
+    const d=Math.abs(dx)+Math.abs(dy);
+    if(d<=0)return;
+    this.movementDistance+=d;
+    this.sinceMove=0;
+  },
+
+  /* ---- acma/kapama ---- */
+
+  loadPref(){
+    try{
+      this.enabled=localStorage.getItem("ns_debug")==="1";
+    }catch(err){this.enabled=false;}
+    if(!this.enabled&&this.dom)this.dom.style.display="none";
+  },
+
+  toggle(){
+    this.enabled=!this.enabled;
+    try{
+      localStorage.setItem("ns_debug",this.enabled?"1":"0");
+    }catch(err){}
+    if(this.dom)this.dom.style.display=this.enabled?"block":"none";
+    try{
+      popText(W/2,H*.5,this.enabled?"DEBUG AÇIK":"DEBUG KAPALI","#7dff3a",15);
+      vibrate(this.enabled?[15,25,15]:12);
+    }catch(err){}
+  },
+
+  registerToggle(node){
+    if(!node)return;
+    node.addEventListener("click",()=>{
+      const now=performance.now();
+      if(now-this.tapAt>1200)this.taps=0;
+      this.tapAt=now;
+      this.taps++;
+      if(this.taps>=5){this.taps=0;this.toggle();}
+    });
+  },
+
+  ensureDom(){
+    if(this.dom)return;
+    const d=document.createElement("div");
+    d.id="debug-panel";
+    d.style.cssText=
+      "position:fixed;left:8px;bottom:calc(var(--safe-b,0px) + 8px);"+
+      "z-index:15;pointer-events:none;display:none;"+
+      "width:min(272px,68vw);padding:7px 9px;border-radius:9px;"+
+      "background:rgba(4,6,15,.82);border:1px solid rgba(125,255,58,.28);"+
+      "color:#dfeaf5;font:600 8.5px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace;"+
+      "letter-spacing:.02em;white-space:pre;overflow:hidden";
+    document.body.appendChild(d);
+    this.dom=d;
+  },
+
+  /* ---- her karede cagrilir ---- */
+
+  update(dt){
+
+    this.sinceMove+=dt;
+    if(this.isIdle())this.idleTime+=dt;
+
+    if(!this.enabled)return;
+
+    this.acc+=dt;
+    if(this.acc<.2)return;
+    this.acc=0;
+
+    this.ensureDom();
+    this.dom.style.display="block";
+    this.dom.textContent=this.report();
+
+  },
+
+  report(){
+
+    const c=PowerCurve.read();
+    const t=Math.max(.001,Game.time);
+    const mins=t/60;
+
+    const projScore=Math.round(Game.score);
+    const projXp=Math.max(
+      BALANCE.economy.xpMin,
+      Math.floor(projScore*BALANCE.economy.xpPerScore)+
+      Math.floor(t*BALANCE.economy.xpPerSecond)
+    );
+
+    const eff=this.damageDealt/t;
+
+    const wc=[];
+    for(const k of ["pulse","plasma","arc","novaWeapon"]){
+      const share=this.damageDealt>0
+        ?(this.damageBySource[k]/this.damageDealt*100)
+        :0;
+      const lv=weaponLevel(k);
+      wc.push(" "+k.replace("Weapon","").padEnd(7)+
+              "Lv"+lv+"  "+share.toFixed(0).padStart(3)+"%  "+
+              c.pp.perWeapon[k].clear.toFixed(2)+" k/s");
+    }
+
+    const syn=Object.keys(c.pp.synergies).filter(k=>c.pp.synergies[k]);
+
+    const status=c.ratio<c.target*.9?"ZAYIF"
+                :c.ratio>c.target*1.25?"ASIRI GUCLU"
+                :"HEDEFTE";
+
+    return (
+"NEON SURVIVOR · DEBUG "+BALANCE.version+"\n"+
+"────────────────────────────\n"+
+"POWER   player "+c.pp.value.toFixed(2)+"   threat "+c.tp.value.toFixed(2)+"\n"+
+"RATIO   "+c.ratio.toFixed(2)+"  hedef "+c.target.toFixed(2)+
+        "  ("+(c.delta>=0?"+":"")+(c.delta*100).toFixed(0)+"%)  "+status+"\n"+
+"LEVEL   "+Game.level+"  ·  "+c.tier.name+"\n"+
+"────────────────────────────\n"+
+"DPS     ham "+c.pp.rawDps.toFixed(2)+"   efektif "+eff.toFixed(2)+"\n"+
+"CLEAR   "+c.pp.clearRate.toFixed(2)+" kill/s   spawn "+c.tp.spawnRate.toFixed(2)+"/s\n"+
+"ENEMY   "+c.tp.alive+"/"+c.tp.cap.toFixed(0)+
+        "  yogunluk "+c.tp.density.toFixed(2)+
+        "  ortHP "+c.tp.effHp.toFixed(2)+"\n"+
+"THREAT  hiz x"+c.tp.speedMult.toFixed(2)+
+        "  davranis x"+c.tp.behavior.toFixed(2)+
+        "  tehdit x"+c.tp.danger.toFixed(2)+"\n"+
+"────────────────────────────\n"+
+"SILAH KATKISI (olculen hasar payi)\n"+
+wc.join("\n")+"\n"+
+"PASIF   survival x"+c.pp.survival.toFixed(2)+
+        "  mobility x"+c.pp.mobility.toFixed(2)+"\n"+
+"        hiz+"+(PlayerPower.speedBonus()*100).toFixed(0)+"%"+
+        "  magnet+"+((Game.runUpgrades.magnet||0)*80)+
+        "  skor+"+((Game.runUpgrades.score||0)*12)+"%\n"+
+"SYNERGY "+(syn.length?syn.join(", "):"-")+"\n"+
+"────────────────────────────\n"+
+"RUN     sure "+t.toFixed(1)+"s   HP "+player.hp+
+        "   kalkan "+(Game.powers.shield||0)+"\n"+
+"        kill "+this.kills+" (elite "+this.eliteKills+
+        " boss "+this.bossKills+")\n"+
+"        alinan hasar "+this.damageTaken+
+        "   enerji "+this.energyCollected+"\n"+
+"        XP/dk "+(projXp/Math.max(.05,mins)).toFixed(0)+
+        "   kart/dk "+(this.upgradesTaken/Math.max(.05,mins)).toFixed(2)+"\n"+
+"────────────────────────────\n"+
+"AFK     hareket "+this.movementDistance.toFixed(0)+"px"+
+        "   idle "+this.idleTime.toFixed(1)+"s ("+
+        (this.idleTime/t*100).toFixed(0)+"%)\n"+
+"        idle'da: hasar "+this.damageTakenWhileIdle+
+        "  kill "+this.killsWhileIdle+
+        "  enerji "+this.xpCollectedWhileIdle
+    );
+
+  }
+
+};
+
 
 /* =========================================================
    GAME
@@ -3364,6 +4140,8 @@ const Game={
 
     resetPlayer();
 
+    Telemetry.reset();   /* FAZ 3 */
+
     this.time=0;
     this.score=0;
     this.level=1;
@@ -3400,7 +4178,17 @@ const Game={
     this.flash=0;
 
     this.powers={
-      shield:Save.data.upgrades.shield>0?1:0,
+      /* FAZ 0 · FIX 0.4b
+         ONCE: Save.data.upgrades.shield>0?1:0 — Lv2, Lv3, Lv4...
+               hicbir ek fayda vermiyordu ama maliyeti artmaya
+               devam ediyordu (20 -> 35 -> 50 -> 65 cekirdek).
+         SONRA: seviye basina 1 yuk, BALANCE.fixes.metaShieldCap (2)
+                ile sinirli. Lv0 -> 0, Lv1 -> 1 (V15.2 ile ayni),
+                Lv2+ -> 2. */
+      shield:Math.min(
+        BALANCE.fixes.metaShieldCap,
+        Save.data.upgrades.shield||0
+      ),
       magnet:0,
       overdrive:0,
       nova:0
@@ -3432,7 +4220,11 @@ const Game={
       this.powers.shield>0
     ){
 
-      this.powers.shield=0;
+      /* FAZ 0 · FIX 0.4a
+         ONCE: tek darbe TUM kalkan yukunu siliyordu (=0).
+         SONRA: darbe basina tek yuk harcanir. Tek yuklu oyuncu
+                icin davranis V15.2 ile ayni (1 -> 0). */
+      this.powers.shield--;
 
       player.invuln=
         CFG.player.invulnMs/1000;
@@ -3466,6 +4258,8 @@ const Game={
     }
 
     player.hp--;
+
+    Telemetry.onDamageTaken();   /* FAZ 3 */
 
     player.invuln=
       CFG.player.invulnMs/1000;
@@ -3649,7 +4443,10 @@ function update(dt){
     const multiplier=
       (Game.powers.overdrive>0?2:1)*
       upgradeMultiplier*
-      (1+(Game.runUpgrades.score||0)*0.09);
+      /* FAZ 0 · FIX 0.5
+         ONCE: kod 0.09 (%9), kart metni "%12 artir" diyordu.
+         SONRA: kart metni dogru kabul edildi, kod ona hizalandi. */
+      (1+(Game.runUpgrades.score||0)*BALANCE.fixes.runScorePerStack);
 
     Game.score+=
       dt*
@@ -3794,6 +4591,8 @@ function update(dt){
     updateActivePowers(dt);
 
     updateWeapons(dt);
+
+    Telemetry.update(dt);   /* FAZ 3 · sadece olcum + debug paneli */
 
     if(Game.flash>0)
       Game.flash-=dt*2;
@@ -5021,9 +5820,12 @@ function chooseRunPerk(type){
     Game.runUpgrades.score++;
     popText(player.x,player.y-34,"SKOR +12%","#ffe34d",16);
   }else if(type==="shield"){
-    Game.powers.shield=1;
+    /* FAZ 0 · FIX 0.4d — bkz. 0.4c */
+    Game.powers.shield=Math.max(Game.powers.shield||0,1);
     popText(player.x,player.y-34,"SHIELD HAZIR","#48d9ff",16);
   }else return;
+  Telemetry.onUpgrade();   /* FAZ 3 */
+
   Audio_.power();
   vibrate([12,24,12]);
   updateWeaponHUD();
@@ -5382,6 +6184,15 @@ resetPlayer();
 
 toMenu();
 updateWeaponHUD();
+
+/* FAZ 3 · debug modu: menudeki "NEON SURVIVOR" yazisina 5 kez dokun.
+   Menu ekrani kapaliyken .screen pointer-events:none oldugu icin
+   oyun sirasinda bu alan dokunus almaz — oynanisa etkisi yoktur. */
+Telemetry.loadPref();
+Telemetry.registerToggle(
+  document.querySelector("#scr-menu .logo")
+);
+if(Telemetry.enabled)Telemetry.ensureDom();
 
 
 /* =========================================================
