@@ -1636,7 +1636,7 @@ const projectiles=Pool(()=>({
   life:0,
   damage:1,
   type:"pulse",
-  color:"#22e6ff",
+  color:"#3d6cff",
   pierce:0,
   chain:0,
   targetId:null
@@ -1644,8 +1644,8 @@ const projectiles=Pool(()=>({
 
 const WEAPONS={
   pulse:{name:"PULSE",color:"#22e6ff",cooldown:.92,speed:390,damage:.82,radius:4,pierce:0,levels:5},
-  plasma:{name:"PLASMA",color:"#3b7bff",cooldown:1.7,speed:285,damage:2.15,radius:7,pierce:1,levels:5},
-  arc:{name:"ARC",color:"#a05cff",cooldown:1.35,speed:500,damage:1.15,radius:3,pierce:0,chain:2,levels:5},
+  plasma:{name:"PLASMA",color:"#ff5a36",cooldown:1.7,speed:285,damage:2.15,radius:7,pierce:1,levels:5},
+  arc:{name:"ARC",color:"#9b4dff",cooldown:1.35,speed:500,damage:1.15,radius:3,pierce:0,chain:2,levels:5},
   novaWeapon:{name:"NOVA",color:"#ff6b3b",cooldown:5.8,speed:0,damage:1.8,radius:0,pierce:99,levels:5}
 };
 
@@ -2014,7 +2014,7 @@ const ENEMIES=[
     name:"DASHER",
     r:13,
     speed:.78,
-    color:"#ff3b6b",
+    color:"#ff2f68",
     hp:1
   },
 
@@ -2023,7 +2023,7 @@ const ENEMIES=[
     name:"WEAVER",
     r:10,
     speed:1.18,
-    color:"#48ff9b",
+    color:"#45d66f",
     hp:1
   }
 ];
@@ -2973,8 +2973,8 @@ function collectOrb(o){
 
   const c=
     o.rare
-      ?"#a05cff"
-      :"#22e6ff";
+      ?"#ff4fd8"
+      :"#7dff3a";
 
   emit(
     o.x,o.y,
@@ -3938,6 +3938,19 @@ function drawPlayer(){
 
   const r=11;
 
+  // Oyuncunun benzersiz görsel imzası: cyan aura + beyaz çekirdek.
+  ctx.save();
+  ctx.globalAlpha=.34+.08*Math.sin(performance.now()/120);
+  ctx.strokeStyle="#22e6ff";
+  ctx.shadowColor="#22e6ff";
+  ctx.shadowBlur=26;
+  ctx.lineWidth=1.8;
+  ctx.beginPath();
+  ctx.arc(player.x,player.y,19.5+Math.sin(performance.now()/180)*1.2,0,TAU);
+  ctx.stroke();
+  ctx.restore();
+
+
   ctx.save();
 
   ctx.shadowColor=skin.glow;
@@ -3958,36 +3971,23 @@ function drawPlayer(){
 
   ctx.fill();
 
-  ctx.fillStyle=skinInner;
-
+  ctx.fillStyle="#ffffff";
   ctx.beginPath();
-
   ctx.arc(
     player.x,
     player.y,
-    r*.55,
+    r*.62,
     0,
     TAU
   );
-
   ctx.fill();
 
-  ctx.strokeStyle=skinOuter;
-
-  ctx.lineWidth=2.5;
-
+  ctx.fillStyle="#22e6ff";
+  ctx.shadowColor="#22e6ff";
+  ctx.shadowBlur=18;
   ctx.beginPath();
-
-  ctx.arc(
-    player.x,
-    player.y,
-    r,
-    0,
-    TAU
-  );
-
-  ctx.stroke();
-
+  ctx.arc(player.x,player.y,r*.22,0,TAU);
+  ctx.fill();
   ctx.restore();
 
 }
@@ -4235,8 +4235,8 @@ function drawOrbs(){
 
     const c=
       o.rare
-        ?"#a05cff"
-        :"#22e6ff";
+        ?"#ff4fd8"
+        :"#7dff3a";
 
     const p=
       1+
@@ -4249,34 +4249,36 @@ function drawOrbs(){
 
     ctx.fillStyle=c;
 
+    // XP kristali: oyuncu/düşman siluetlerinden ayrı.
+    const s=o.r*.78*p;
+
     ctx.beginPath();
-
-    ctx.arc(
-      o.x,
-      o.y,
-      o.r*.5*p,
-      0,
-      TAU
-    );
-
+    ctx.moveTo(o.x,o.y-s*1.25);
+    ctx.lineTo(o.x+s*.82,o.y);
+    ctx.lineTo(o.x,o.y+s*1.25);
+    ctx.lineTo(o.x-s*.82,o.y);
+    ctx.closePath();
     ctx.fill();
 
-    ctx.strokeStyle=c;
-
-    ctx.lineWidth=1.5;
-
-    ctx.globalAlpha=.65;
-
+    ctx.globalAlpha=.92;
+    ctx.fillStyle="#ffffff";
     ctx.beginPath();
+    ctx.moveTo(o.x,o.y-s*.72);
+    ctx.lineTo(o.x+s*.28,o.y);
+    ctx.lineTo(o.x,o.y+s*.72);
+    ctx.lineTo(o.x-s*.28,o.y);
+    ctx.closePath();
+    ctx.fill();
 
-    ctx.arc(
-      o.x,
-      o.y,
-      o.r*p,
-      0,
-      TAU
-    );
-
+    ctx.globalAlpha=.72;
+    ctx.strokeStyle=c;
+    ctx.lineWidth=1.8;
+    ctx.beginPath();
+    ctx.moveTo(o.x,o.y-s*1.42);
+    ctx.lineTo(o.x+s*.96,o.y);
+    ctx.lineTo(o.x,o.y+s*1.42);
+    ctx.lineTo(o.x-s*.96,o.y);
+    ctx.closePath();
     ctx.stroke();
 
     ctx.restore();
@@ -4643,8 +4645,7 @@ function render(dt){
       0,0,W,H
     );
 
-  }
-
+88
 }
 
 
