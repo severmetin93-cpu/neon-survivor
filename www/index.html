@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#04060f">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>NEON SURVIVOR V9</title>
+<title>NEON SURVIVOR V12</title>
 <link rel="manifest" href="manifest.json">
 
 <style>
@@ -429,6 +429,54 @@ html,body{
 .weapon-pill>span:first-child{display:block;font-size:9px;line-height:11px;color:#eaf4ff}
 .weapon-pill .weapon-level{display:block;margin-top:1px;font-size:10px;color:#22e6ff;line-height:11px}
 .weapon-pill .weapon-cool{display:none}
+#boss-hud{
+  position:absolute;
+  top:calc(var(--safe-t) + 70px);
+  left:50%;
+  transform:translateX(-50%);
+  width:min(320px,72vw);
+  z-index:8;
+  display:none;
+  pointer-events:none;
+  text-align:center;
+}
+#boss-hud.on{display:block}
+.boss-name{
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.24em;
+  color:#ff3b6b;
+  text-shadow:0 0 12px rgba(255,59,107,.55);
+  margin-bottom:5px;
+}
+.boss-bar{
+  height:7px;
+  border-radius:99px;
+  overflow:hidden;
+  background:rgba(234,244,255,.09);
+  border:1px solid rgba(255,59,107,.28);
+  box-shadow:0 0 14px rgba(255,59,107,.12);
+}
+.boss-fill{
+  height:100%;
+  width:100%;
+  background:linear-gradient(90deg,#ff3b6b,#ff6b3b);
+  box-shadow:0 0 12px rgba(255,59,107,.65);
+  transition:width .12s linear;
+}
+.elite-badge{
+  position:absolute;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  z-index:6;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.14em;
+  color:#ffe34d;
+  text-shadow:0 0 10px rgba(255,227,77,.8);
+  white-space:nowrap;
+}
+
 #weapon-hud::after{
   content:"YETENEKLER";
   display:block;
@@ -569,6 +617,11 @@ html,body{
   <div class="weapon-pill" id="w-plasma"><span>Plasma</span><span class="weapon-level">Lv.0</span><span class="weapon-cool">AUTO</span></div>
   <div class="weapon-pill" id="w-arc"><span>Arc</span><span class="weapon-level">Lv.0</span><span class="weapon-cool">AUTO</span></div>
   <div class="weapon-pill" id="w-nova"><span>Nova</span><span class="weapon-level">Lv.0</span><span class="weapon-cool">AUTO</span></div>
+</div>
+
+<div id="boss-hud">
+  <div class="boss-name">NEON WARDEN · ELITE CORE</div>
+  <div class="boss-bar"><div class="boss-fill" id="boss-fill"></div></div>
 </div>
 
 <!-- MENU -->
@@ -1495,7 +1548,14 @@ const enemies=Pool(()=>({
   orbit:0,
   dashCd:0,
   dashing:0,
-  fade:1
+  fade:1,
+  elite:false,
+  boss:false,
+  maxHp:1,
+  bossPhase:1,
+  bossCd:0,
+  bossTelegraph:0,
+  eliteSeed:0
 }));
 
 const orbs=Pool(()=>({
@@ -1930,6 +1990,84 @@ function chooseEnemyType(level){
   return 0;
 }
 
+function spawnElite(level){
+  if(enemies.count()>=CFG.enemy.maxAlive)return;
+
+  const e=enemies.get();
+  const margin=CFG.enemy.margin+20;
+  const side=(Game.directorSide+Math.floor(Math.random()*2))%4;
+  Game.directorSide=(Game.directorSide+1)%4;
+
+  if(side===0){e.x=rand(0,W);e.y=-margin;}
+  else if(side===1){e.x=W+margin;e.y=rand(0,H);}
+  else if(side===2){e.x=rand(0,W);e.y=H+margin;}
+  else {e.x=-margin;e.y=rand(0,H);}
+
+  e.type=0;
+  e.elite=true;
+  e.boss=false;
+  e.r=16;
+  e.t=Math.random()*TAU;
+  e.fade=1;
+  e.orbit=Math.random()<.5?1:-1;
+  e.dashing=0;
+  e.dashCd=rand(.8,1.6);
+  e.telegraph=0;
+  e.hitFlash=0;
+  e.maxHp=5+Math.floor(level/5);
+  e.hp=e.maxHp;
+  e.eliteSeed=Math.random()*TAU;
+
+  const a=Math.atan2(player.y-e.y,player.x-e.x);
+  const speed=CFG.enemy.baseSpeed*1.08*(1+(level-1)*CFG.diff.speedPerLevel);
+  e.vx=Math.cos(a)*speed;
+  e.vy=Math.sin(a)*speed;
+
+  emit(e.x,e.y,18,"#ffe34d",180,3.2,.7);
+  popText(e.x,e.y-26,"ELITE","#ffe34d",14);
+}
+
+function spawnBoss(){
+  if(Game.bossSpawned || Game.bossDefeated || enemies.count()>=CFG.enemy.maxAlive)return;
+
+  const e=enemies.get();
+  const margin=90;
+  const side=Game.directorSide%4;
+  Game.directorSide=(Game.directorSide+1)%4;
+
+  if(side===0){e.x=W*.5;e.y=-margin;}
+  else if(side===1){e.x=W+margin;e.y=H*.5;}
+  else if(side===2){e.x=W*.5;e.y=H+margin;}
+  else {e.x=-margin;e.y=H*.5;}
+
+  e.type=0;
+  e.elite=false;
+  e.boss=true;
+  e.r=31;
+  e.t=0;
+  e.fade=1;
+  e.orbit=1;
+  e.dashing=0;
+  e.dashCd=2.8;
+  e.telegraph=0;
+  e.hitFlash=0;
+  e.maxHp=52+Game.level*3;
+  e.hp=e.maxHp;
+  e.bossPhase=1;
+  e.bossCd=2.4;
+  e.bossTelegraph=0;
+
+  const a=Math.atan2(player.y-e.y,player.x-e.x);
+  const speed=CFG.enemy.baseSpeed*.52*(1+(Game.level-1)*.018);
+  e.vx=Math.cos(a)*speed;
+  e.vy=Math.sin(a)*speed;
+
+  Game.bossSpawned=true;
+  emit(e.x,e.y,38,"#ff3b6b",220,4,.9);
+  popText(W/2,H*.22,"NEON WARDEN","#ff3b6b",22);
+  vibrate([35,45,35]);
+}
+
 function spawnEnemy(level){
 
   if(
@@ -1970,6 +2108,13 @@ function spawnEnemy(level){
   e.dashCd=rand(.9,2.2);
   e.telegraph=0;
   e.hitFlash=0;
+  e.elite=false;
+  e.boss=false;
+  e.maxHp=m.hp;
+  e.bossPhase=1;
+  e.bossCd=0;
+  e.bossTelegraph=0;
+  e.eliteSeed=0;
   e.hp=m.hp;
 
   const a=Math.atan2(
@@ -1987,9 +2132,90 @@ function spawnEnemy(level){
 
 }
 
+function updateEliteEnemy(e,dt,level){
+  const dx=player.x-e.x, dy=player.y-e.y;
+  const dist=Math.hypot(dx,dy)||1;
+  const speed=CFG.enemy.baseSpeed*1.08*(1+(level-1)*CFG.diff.speedPerLevel);
+  e.t+=dt;
+  e.hitFlash=Math.max(0,e.hitFlash-dt*5);
+  const tx=-dy/dist, ty=dx/dist;
+  const weave=Math.sin(e.t*4.2+e.eliteSeed)*.24;
+  e.vx=lerp(e.vx,(dx/dist*.92+tx*weave)*speed,.065);
+  e.vy=lerp(e.vy,(dy/dist*.92+ty*weave)*speed,.065);
+  e.x+=e.vx*dt;
+  e.y+=e.vy*dt;
+  e.ang=(e.ang||0)+dt*2.8;
+  if(e.x<-180||e.x>W+180||e.y<-180||e.y>H+180)e.alive=false;
+}
+
+function updateBossEnemy(e,dt,level){
+  const dx=player.x-e.x, dy=player.y-e.y;
+  const dist=Math.hypot(dx,dy)||1;
+  e.t+=dt;
+  e.hitFlash=Math.max(0,e.hitFlash-dt*5);
+
+  if(e.hp<=e.maxHp*.5)e.bossPhase=2;
+
+  const phaseSpeed=e.bossPhase===2?1.22:1;
+  const speed=CFG.enemy.baseSpeed*.52*phaseSpeed*(1+(level-1)*.018);
+
+  if(e.bossTelegraph>0){
+    e.bossTelegraph-=dt;
+    e.vx*=Math.pow(.86,dt*60);
+    e.vy*=Math.pow(.86,dt*60);
+    if(e.bossTelegraph<=0){
+      const aimX=player.x-e.x, aimY=player.y-e.y;
+      const aimD=Math.hypot(aimX,aimY)||1;
+      e.dashing=.52;
+      e.vx=aimX/aimD*speed*4.4;
+      e.vy=aimY/aimD*speed*4.4;
+      emit(e.x,e.y,18,"#ff3b6b",230,3.5,.5);
+      vibrate(12);
+    }
+  }else if(e.dashing>0){
+    e.dashing-=dt;
+  }else{
+    e.bossCd-=dt;
+    const tx=-dy/dist, ty=dx/dist;
+    const str=e.bossPhase===2?.30:.20;
+    e.vx=lerp(e.vx,(dx/dist*.82+tx*str)*speed,.045);
+    e.vy=lerp(e.vy,(dy/dist*.82+ty*str)*speed,.045);
+    if(e.bossCd<=0 && dist<430){
+      e.bossTelegraph=.62;
+      e.bossCd=e.bossPhase===2?2.1:3.0;
+      e.vx*=.35;e.vy*=.35;
+    }
+  }
+
+  e.x+=e.vx*dt;
+  e.y+=e.vy*dt;
+  e.ang=(e.ang||0)+dt*(e.bossPhase===2?1.9:1.4);
+
+  // Boss arena pressure: a pulsing ring hurts only when it reaches the player.
+  e.pulseCd=(e.pulseCd||1.8)-dt;
+  if(e.pulseCd<=0){
+    e.pulseCd=e.bossPhase===2?3.2:4.2;
+    const d=Math.hypot(player.x-e.x,player.y-e.y);
+    if(d<105) Game.damage();
+    emit(e.x,e.y,16,"#ff3b6b",150,2.5,.45);
+  }
+
+  if(e.x<-220||e.x>W+220||e.y<-220||e.y>H+220)e.alive=false;
+}
+
 function updateEnemy(e,dt,level){
 
   const m=ENEMIES[e.type];
+
+  if(e.boss){
+    updateBossEnemy(e,dt,level);
+    return;
+  }
+
+  if(e.elite){
+    updateEliteEnemy(e,dt,level);
+    return;
+  }
 
   const dx=player.x-e.x;
   const dy=player.y-e.y;
@@ -2228,18 +2454,29 @@ function updateCombatDirector(dt){
   Game.director+=dt;
   Game.directorPulse-=dt;
 
+  // First elite: 2:30. After that, roughly every 90 seconds.
+  if(Game.time>=Game.nextEliteAt && Game.time<300 && !Game.bossSpawned){
+    spawnElite(Game.level);
+    Game.nextEliteAt+=90;
+    popText(W/2,H*.18,"ELITE GİRİYOR","#ffe34d",13);
+  }
+
+  // First boss at 5:00. It is one deliberate encounter, not a permanent spam source.
+  if(Game.time>=300 && !Game.bossSpawned && !Game.bossDefeated){
+    spawnBoss();
+  }
+
+  Game.directorPulse-=dt;
   if(Game.directorPulse<=0){
-    // 30 saniyelik kademeli progression: baski yavas ama surekli artar.
-    const stage=Math.min(5,Math.floor(Game.time/30));
-    Game.directorPulse=Math.max(8,12-stage*.35)*rand(.92,1.08);
+    const stage=Math.min(8,Math.floor(Game.time/30));
+    Game.directorPulse=Math.max(7,11-stage*.28)*rand(.92,1.08);
 
     if(stage>=1 && enemies.count()<CFG.enemy.maxAlive-2){
-      // Ilk dakikada tek ek dusman, 2. dakikadan sonra ara sira mini dalga.
       let wave=1;
-      if(stage>=4 && Math.random()<.32)wave=2;
+      if(stage>=4 && Math.random()<.28)wave=2;
       for(let i=0;i<wave;i++)spawnEnemy(Game.level);
 
-      if(stage>=3 && Math.random()<.22){
+      if(stage>=4 && Math.random()<.16){
         popText(W/2,H*.18,"BASKI ARTIYOR","#ff6b3b",11);
       }
     }
@@ -2716,23 +2953,59 @@ function nearestEnemy(){
 
 function damageEnemy(e,amount,color){
   if(!e.alive)return;
+
   e.hp=Math.max(0,(e.hp??1)-amount);
   e.hitFlash=.18;
-  emit(e.x,e.y,5,color,120,2.2,.25);
+
+  emit(e.x,e.y,e.boss?8:e.elite?6:5,color,120,e.boss?2.8:2.2,.25);
+
   if(e.hp<=0){
     e.alive=false;
-    const reward=25*(e.type===1?2:1);
-    Game.score+=reward*Game.combo;
-    Game.chain++;
-    Game.combo=clamp(1+Math.floor(Game.chain/3),1,CFG.combo.maxMult);
-    Game.maxCombo=Math.max(Game.maxCombo,Game.combo);
-    Game.comboTimer=CFG.combo.windowMs/1000;
-    Game.energy+=e.type===1?2:1;
-    emit(e.x,e.y,12,ENEMIES[e.type].color,180,3,.5);
-    popText(e.x,e.y-12,"+"+reward,ENEMIES[e.type].color,12);
-    Audio_.power();
+
+    if(e.boss){
+      Game.bossDefeated=true;
+      Game.score+=900*Game.combo;
+      Game.energy+=12;
+      Game.chain+=6;
+      Game.combo=clamp(1+Math.floor(Game.chain/3),1,CFG.combo.maxMult);
+      Game.maxCombo=Math.max(Game.maxCombo,Game.combo);
+      Game.comboTimer=CFG.combo.windowMs/1000;
+
+      emit(e.x,e.y,70,"#ff3b6b",360,5,1.1);
+      emit(e.x,e.y,45,"#22e6ff",300,4,1);
+      popText(W/2,H*.25,"WARDEN YOK EDİLDİ","#ffe34d",20);
+      Audio_.power();
+      vibrate([40,50,40,70]);
+
+    }else if(e.elite){
+      const reward=180;
+      Game.score+=reward*Game.combo;
+      Game.energy+=5;
+      Game.chain+=3;
+      Game.combo=clamp(1+Math.floor(Game.chain/3),1,CFG.combo.maxMult);
+      Game.maxCombo=Math.max(Game.maxCombo,Game.combo);
+      Game.comboTimer=CFG.combo.windowMs/1000;
+
+      emit(e.x,e.y,28,"#ffe34d",250,4,.8);
+      popText(e.x,e.y-18,"ELITE +"+reward,"#ffe34d",14);
+      Audio_.power();
+      vibrate([18,25,18]);
+
+    }else{
+      const reward=25*(e.type===1?2:1);
+      Game.score+=reward*Game.combo;
+      Game.chain++;
+      Game.combo=clamp(1+Math.floor(Game.chain/3),1,CFG.combo.maxMult);
+      Game.maxCombo=Math.max(Game.maxCombo,Game.combo);
+      Game.comboTimer=CFG.combo.windowMs/1000;
+      Game.energy+=e.type===1?2:1;
+      emit(e.x,e.y,12,ENEMIES[e.type].color,180,3,.5);
+      popText(e.x,e.y-12,"+"+reward,ENEMIES[e.type].color,12);
+      Audio_.power();
+    }
   }
 }
+
 
 function fireProjectile(key){
   const level=weaponLevel(key);
@@ -2870,6 +3143,9 @@ const Game={
   director:0,
   directorPulse:8,
   directorSide:0,
+  nextEliteAt:150,
+  bossSpawned:false,
+  bossDefeated:false,
 
   flash:0,
 
@@ -2921,6 +3197,9 @@ const Game={
     this.director=0;
     this.directorPulse=12;
     this.directorSide=Math.floor(Math.random()*4);
+    this.nextEliteAt=150;
+    this.bossSpawned=false;
+    this.bossDefeated=false;
 
     this.flash=0;
 
@@ -2943,6 +3222,7 @@ const Game={
 
     updatePowerHUD();
     updateWeaponHUD();
+    updateBossHUD();
 
   },
 
@@ -3310,6 +3590,7 @@ function update(dt){
 
     updatePowerHUD();
     updateWeaponHUD();
+    updateBossHUD();
 
   }
 
@@ -3569,6 +3850,61 @@ function drawEnemies(){
 
     ctx.save();
     ctx.translate(e.x,e.y);
+
+    if(e.boss){
+      const br=e.r*(1+Math.sin(e.t*2.2)*.035);
+      ctx.shadowColor="#ff3b6b";
+      ctx.shadowBlur=34;
+      ctx.strokeStyle="#ff3b6b";
+      ctx.lineWidth=4;
+      ctx.fillStyle="rgba(40,5,18,.82)";
+      ctx.beginPath();
+      ctx.arc(0,0,br,0,TAU);
+      ctx.fill();ctx.stroke();
+
+      ctx.globalAlpha=.55;
+      ctx.strokeStyle="#a05cff";
+      ctx.lineWidth=2;
+      ctx.beginPath();ctx.arc(0,0,br*1.38,-e.t*.8,e.t*.8);ctx.stroke();
+      ctx.globalAlpha=1;
+
+      if(e.bossTelegraph>0){
+        ctx.globalAlpha=.45+Math.sin(e.bossTelegraph*35)*.22;
+        ctx.strokeStyle="#ffe34d";
+        ctx.lineWidth=3;
+        ctx.beginPath();ctx.arc(0,0,br+12+Math.sin(e.bossTelegraph*20)*5,0,TAU);ctx.stroke();
+        ctx.globalAlpha=1;
+      }
+
+      ctx.fillStyle="#ff3b6b";
+      ctx.beginPath();ctx.arc(0,0,br*.32,0,TAU);ctx.fill();
+      ctx.restore();
+      return;
+    }
+
+    if(e.elite){
+      const er=e.r*(1+Math.sin(e.t*4)*.05);
+      ctx.shadowColor="#ffe34d";
+      ctx.shadowBlur=26;
+      ctx.strokeStyle="#ffe34d";
+      ctx.lineWidth=3;
+      ctx.fillStyle="rgba(25,20,4,.78)";
+      ctx.beginPath();ctx.arc(0,0,er,0,TAU);ctx.fill();ctx.stroke();
+      ctx.strokeStyle="#ff3b6b";
+      ctx.lineWidth=1.5;
+      ctx.beginPath();ctx.arc(0,0,er*.62,e.t,-e.t+Math.PI);ctx.stroke();
+      ctx.fillStyle="#ffe34d";
+      ctx.beginPath();ctx.arc(0,0,er*.22,0,TAU);ctx.fill();
+
+      // Elite HP bar
+      ctx.fillStyle="rgba(4,6,15,.8)";
+      ctx.fillRect(-22,-er-11,44,4);
+      ctx.fillStyle="#ffe34d";
+      ctx.fillRect(-22,-er-11,44*Math.max(0,e.hp/e.maxHp),4);
+
+      ctx.restore();
+      return;
+    }
 
     if(e.type===3 && e.telegraph>0){
 
@@ -4007,6 +4343,17 @@ function drawHUD(){
    POWER HUD
 ========================================================= */
 
+function updateBossHUD(){
+  const hud=document.getElementById("boss-hud");
+  const fill=document.getElementById("boss-fill");
+  if(!hud||!fill)return;
+  let boss=null;
+  enemies.forEach(e=>{if(e.alive&&e.boss)boss=e;});
+  const on=!!boss && Game.state===STATE.PLAYING;
+  hud.classList.toggle("on",on);
+  if(boss)fill.style.width=(Math.max(0,boss.hp/boss.maxHp)*100).toFixed(1)+"%";
+}
+
 function updatePowerHUD(){
 
   const map={
@@ -4265,6 +4612,7 @@ function toMenu(){
   updateProgressUI();
   updatePowerHUD();
   updateWeaponHUD();
+  updateBossHUD();
 
 }
 
