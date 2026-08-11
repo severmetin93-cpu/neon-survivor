@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#04060f">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>NEON SURVIVOR V14.1</title>
+<title>NEON SURVIVOR V15.4</title>
 <link rel="manifest" href="manifest.json">
 
 <style>
@@ -615,7 +615,7 @@ button,
 </head>
 
 <body>
-<div id="version-badge" aria-hidden="true">V15.2</div>
+<div id="version-badge" aria-hidden="true">V15.4</div>
 
 <div id="stage">
 
@@ -3811,12 +3811,9 @@ const ThreatPower={
 
 
 /* V15.4 · PHASE 4
-   Power Curve is now gameplay-bound conservatively:
-   - Normal enemy HP scales by difficulty tier.
-   - Weapon damage/cooldown growth is softened.
-   - Weapon evolution spike is softened.
-   - Spawn caps, spawn interval, XP economy, bosses and UI are unchanged.
-   - PlayerPower/ThreatPower remain telemetry; no hidden auto-balancer is used.
+   Normal enemy HP now scales by difficulty tier.
+   Weapon growth is softened to keep PlayerPower near ThreatPower.
+   Spawn caps/intervals, XP, bosses, economy and menu/UI logic remain unchanged.
 */
 const PowerCurve={
 
@@ -5961,7 +5958,7 @@ function tap(node,fn){
        300 ms koruması çift çalışmayı engeller. */
     if(now-lastFire<300)return;
     lastFire=now;
-8p
+
     try{
       Audio_.init();
       Audio_.resume();
