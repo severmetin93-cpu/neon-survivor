@@ -962,7 +962,7 @@ const CFG={
   player:{
     radius:11,
     maxHp:3,
-    invulnMs:950,
+    invulnMs:900,
     trail:14
   },
 
@@ -982,8 +982,8 @@ const CFG={
   },
 
   enemy:{
-    baseSpeed:58,
-    spawnMs:1040,
+    baseSpeed:61,
+    spawnMs:1000,
     maxAlive:31,
     margin:46,
     lifeMs:15000,
@@ -995,9 +995,9 @@ const CFG={
 
   diff:{
     stepMs:30000,
-    speedPerLevel:.047,
+    speedPerLevel:.052,
     spawnDecay:.982,
-    minSpawnMs:470
+    minSpawnMs:450
   },
 
   power:{
@@ -5081,9 +5081,10 @@ function tap(node,fn){
 
   if(!node)return;
 
-  let lastPointer=0;
+  let lastFire=0;
 
   const fire=e=>{
+
     if(e){
       e.preventDefault();
       e.stopPropagation();
@@ -5091,28 +5092,39 @@ function tap(node,fn){
 
     const now=performance.now();
 
-    /* Android WebView bazı sürümlerde click olayını geciktirebildiği
-       için ana etkileşimi pointerup üzerinden yürütüyoruz. */
-    if(now-lastPointer<250)return;
-    lastPointer=now;
+    /* Pointer + click aynı dokunuşta birlikte gelebilir.
+       300 ms koruması çift çalışmayı engeller. */
+    if(now-lastFire<300)return;
+    lastFire=now;
 
     try{
       Audio_.init();
       Audio_.resume();
       Audio_.button();
     }catch(err){
-      /* Ses sistemi butonların çalışmasını asla engellemesin. */
+      /* Ses hatası UI etkileşimini engellemez. */
     }
 
-    fn();
+    try{
+      fn();
+    }catch(err){
+      console.error("UI action error:",err);
+    }
   };
 
+  /*
+    Android WebView uyumluluğu:
+    pointerup'a güvenmek yerine click'i HER ZAMAN bağlıyoruz.
+    Desteklenen cihazlarda pointerup da dinleniyor.
+  */
   if(window.PointerEvent){
     node.addEventListener("pointerup",fire,{passive:false});
-  }else{
-    node.addEventListener("touchend",fire,{passive:false});
-    node.addEventListener("click",fire);
   }
+
+  node.addEventListener("click",fire,{passive:false});
+
+  /* Bazı eski WebView'larda click oluşmadan touchend gelir. */
+  node.addEventListener("touchend",fire,{passive:false});
 
 }
 
