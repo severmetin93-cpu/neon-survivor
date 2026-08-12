@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#04060f">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>NORYVX V16.5.0</title>
+<title>NORYVX V16.6.0</title>
 <link rel="manifest" href="manifest.json">
 
 <style>
@@ -721,7 +721,7 @@ button,
 </head>
 
 <body>
-<div id="version-badge" aria-hidden="true">V16.5.0 · PHASE 4A GAMEPLAY</div>
+<div id="version-badge" aria-hidden="true">V16.6.0 · PHASE 4A GAMEPLAY</div>
 
 <div id="stage">
 
@@ -1147,7 +1147,7 @@ const BALANCE={
 
   /* PHASE 0.5 · 14 — tek versiyon kaynagi. DOM rozeti ve <title>
      boot sirasinda bu degerden yazilir. */
-  version:"16.5.0",
+  version:"16.6.0",
 
   /* ---------------------------------------------------------
      FAZ 0 DUZELTME SABITLERI
@@ -5555,12 +5555,66 @@ function drawPlayer(){
     bodyW=9.5; bodyH=14.5; shoulder=12.5; head=5.6;
   }
 
+  /* =========================================================
+     PHASE 4C — VANGUARD VISUAL OVERHAUL
+     Collision radius unchanged. Only render scale/detail changes.
+     The visual is deliberately built from layered armor pieces so
+     it remains crisp on the existing canvas and cheap on mobile.
+  ========================================================= */
+  const visualScale=archId.includes("vanguard") ? 1.24 : 1;
+  ctx.scale(visualScale,visualScale);
+
   /* back/armor */
   ctx.shadowColor=skin.glow;
   ctx.shadowBlur=18;
   ctx.fillStyle="rgba(5,10,24,.96)";
   ctx.strokeStyle=skinOuter;
   ctx.lineWidth=1.5;
+
+  /* Vanguard: broad shoulder frame + reactor backpack + chest plate. */
+  if(archId.includes("vanguard")){
+    ctx.save();
+
+    /* rear reactor pack */
+    ctx.fillStyle="rgba(3,8,20,.98)";
+    ctx.strokeStyle="#79dfff";
+    ctx.lineWidth=1.3;
+    ctx.shadowColor=skin.glow;
+    ctx.shadowBlur=15;
+    ctx.beginPath();
+    ctx.roundRect(-bodyW*.82,-bodyH*.10,bodyW*1.64,bodyH*.72,3);
+    ctx.fill();ctx.stroke();
+
+    /* reactor core */
+    ctx.fillStyle=skinInner;
+    ctx.shadowColor=skin.glow;
+    ctx.shadowBlur=12;
+    ctx.beginPath();
+    ctx.arc(0,bodyH*.18,2.2,0,TAU);
+    ctx.fill();
+
+    /* heavy shoulder plates */
+    ctx.fillStyle="rgba(8,16,34,.98)";
+    ctx.strokeStyle="#9edfff";
+    ctx.lineWidth=1.5;
+    ctx.beginPath();
+    ctx.roundRect(-shoulder-2,-bodyH*.39,bodyW*.72,7,2.5);
+    ctx.roundRect(shoulder-bodyW*.72+2,-bodyH*.39,bodyW*.72,7,2.5);
+    ctx.fill();ctx.stroke();
+
+    /* shoulder edge lights */
+    ctx.strokeStyle=skinOuter;
+    ctx.lineWidth=1;
+    ctx.globalAlpha=.8;
+    ctx.beginPath();
+    ctx.moveTo(-shoulder-1,-bodyH*.25);
+    ctx.lineTo(-shoulder+bodyW*.45,-bodyH*.25);
+    ctx.moveTo(shoulder- bodyW*.45,-bodyH*.25);
+    ctx.lineTo(shoulder+1,-bodyH*.25);
+    ctx.stroke();
+
+    ctx.restore();
+  }
 
   /* legs */
   ctx.beginPath();
@@ -5578,6 +5632,33 @@ function drawPlayer(){
   ctx.roundRect(-shoulder,-bodyH*.34,bodyW*.55,6,2.5);
   ctx.roundRect(shoulder-bodyW*.55,-bodyH*.34,bodyW*.55,6,2.5);
   ctx.fill();ctx.stroke();
+
+  /* Vanguard chest plate + forearm guards */
+  if(archId.includes("vanguard")){
+    ctx.fillStyle="rgba(8,17,35,.98)";
+    ctx.strokeStyle="#9edfff";
+    ctx.lineWidth=1.2;
+    ctx.beginPath();
+    ctx.roundRect(-bodyW*.78,-bodyH*.18,bodyW*1.56,bodyH*.55,2.5);
+    ctx.fill();ctx.stroke();
+
+    ctx.fillStyle=skinInner;
+    ctx.shadowColor=skin.glow;
+    ctx.shadowBlur=8;
+    ctx.globalAlpha=.9;
+    ctx.beginPath();
+    ctx.roundRect(-1.3,-bodyH*.03,2.6,bodyH*.22,1);
+    ctx.fill();
+
+    ctx.globalAlpha=1;
+    ctx.fillStyle="rgba(4,10,23,.98)";
+    ctx.strokeStyle=skinOuter;
+    ctx.lineWidth=1;
+    ctx.beginPath();
+    ctx.roundRect(-shoulder*.78,-bodyH*.02,2.8,8,1.5);
+    ctx.roundRect(shoulder*.78-2.8,-bodyH*.02,2.8,8,1.5);
+    ctx.fill();ctx.stroke();
+  }
 
   /* helmet */
   ctx.fillStyle="rgba(2,7,18,.98)";
@@ -5637,6 +5718,39 @@ function drawPlayer(){
     ctx.beginPath();
     ctx.arc(0,0,18,Math.PI-t,Math.PI*.35-t);
     ctx.stroke();
+  }
+
+  /* Vanguard signature: compact forearm shield emitters. */
+  if(archId.includes("vanguard")){
+    ctx.save();
+    ctx.strokeStyle="#9edfff";
+    ctx.fillStyle="rgba(34,230,255,.12)";
+    ctx.shadowColor=skin.glow;
+    ctx.shadowBlur=12;
+    ctx.lineWidth=1.3;
+    ctx.globalAlpha=.86;
+
+    ctx.beginPath();
+    ctx.moveTo(-shoulder*.9,1);
+    ctx.lineTo(-shoulder*1.28,5);
+    ctx.lineTo(-shoulder*.82,7);
+    ctx.lineTo(-shoulder*.58,2);
+    ctx.closePath();
+    ctx.fill();ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(shoulder*.9,1);
+    ctx.lineTo(shoulder*1.28,5);
+    ctx.lineTo(shoulder*.82,7);
+    ctx.lineTo(shoulder*.58,2);
+    ctx.closePath();
+    ctx.fill();ctx.stroke();
+
+    ctx.globalAlpha=.42;
+    ctx.beginPath();
+    ctx.arc(0,bodyH*.28,bodyW*1.55,.12,Math.PI-.12);
+    ctx.stroke();
+    ctx.restore();
   }
 
   ctx.restore();
