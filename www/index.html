@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#04060f">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>NORYVX V16.3.5</title>
+<title>NORYVX V16.4.0</title>
 <link rel="manifest" href="manifest.json">
 
 <style>
@@ -682,10 +682,41 @@ button,
      Tanimladigi .nvx34-* siniflari HTML'de HIC kullanilmiyordu
      (yarim kalmis ikinci bir karakter secim denemesi). -->
 
+
+<style id="noryvx-phase4a-css">
+#run-wave-hud{
+  position:fixed;
+  top:calc(var(--safe-t) + 8px);
+  left:50%;
+  transform:translateX(-50%);
+  z-index:18;
+  min-width:112px;
+  padding:6px 10px;
+  border:1px solid rgba(34,230,255,.18);
+  border-radius:10px;
+  background:rgba(4,10,25,.78);
+  box-shadow:0 0 18px rgba(34,230,255,.06);
+  text-align:center;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .2s ease;
+}
+#run-wave-hud.on{opacity:1}
+#run-wave-hud .wave-label{
+  display:block;font-size:7px;letter-spacing:.18em;color:rgba(234,244,255,.42)
+}
+#run-wave-hud .wave-value{
+  display:block;margin-top:2px;font-size:13px;font-weight:950;letter-spacing:.12em;color:#22e6ff
+}
+#run-wave-hud .wave-pressure{
+  display:block;margin-top:2px;font-size:7px;color:rgba(234,244,255,.48)
+}
+</style>
+
 </head>
 
 <body>
-<div id="version-badge" aria-hidden="true">V16.3.5 · PHASE 3 CHARACTER SELECTION</div>
+<div id="version-badge" aria-hidden="true">V16.4.0 · PHASE 4A GAMEPLAY</div>
 
 <div id="stage">
 
@@ -732,6 +763,13 @@ button,
 </div>
 
 <div id="build-hud" aria-hidden="true"></div>
+
+
+<div id="run-wave-hud" aria-hidden="true">
+  <span class="wave-label">DALGA</span>
+  <span class="wave-value" id="run-wave-value">1</span>
+  <span class="wave-pressure" id="run-wave-pressure">BASKI %0</span>
+</div>
 
 <div id="boss-hud">
   <div class="boss-name">NEON WARDEN · ELITE CORE</div>
@@ -1104,7 +1142,7 @@ const BALANCE={
 
   /* PHASE 0.5 · 14 — tek versiyon kaynagi. DOM rozeti ve <title>
      boot sirasinda bu degerden yazilir. */
-  version:"16.3.5",
+  version:"16.4.0",
 
   /* ---------------------------------------------------------
      FAZ 0 DUZELTME SABITLERI
@@ -4706,6 +4744,13 @@ const Game={
   directorPulse:8,
   directorSide:0,
   nextEliteAt:150,
+
+  /* PHASE 4A — explicit 30s wave progression.
+     Existing spawn pressure remains the source of truth; wave is a
+     readable gameplay state layered on top of it. */
+  wave:1,
+  lastAnnouncedWave:1,
+
   bossActive:false,
   bossDefeated:false,
   lastBossLevel:0,
@@ -4812,6 +4857,8 @@ const Game={
     this.directorPulse=12;
     this.directorSide=Math.floor(Math.random()*4);
     this.nextEliteAt=150;
+    this.wave=1;
+    this.lastAnnouncedWave=1;
     this.bossActive=false;
     this.bossDefeated=false;
     this.lastBossLevel=0;
@@ -4851,6 +4898,7 @@ const Game={
     updatePowerHUD();
     updateWeaponHUD();
     updateBossHUD();
+    updateWaveHUD();
 
   },
 
@@ -5099,6 +5147,21 @@ function update(dt){
 
     Game.time+=dt;
 
+    /* PHASE 4A — every 30 seconds becomes an explicit wave.
+       This does not replace the existing spawn formulas; it exposes
+       their stage progression to the player and announces transitions. */
+    const nextWave=Math.floor(Game.time/30)+1;
+    if(nextWave>Game.wave){
+      Game.wave=nextWave;
+      if(Game.wave!==Game.lastAnnouncedWave){
+        Game.lastAnnouncedWave=Game.wave;
+        popText(W/2,H*.22,"DALGA "+Game.wave,"#22e6ff",20);
+        emit(player.x,player.y,18,"#22e6ff",160,2.8,.45);
+        Audio_.power();
+        vibrate([12,24,12]);
+      }
+    }
+
     if(Game.time>=90 && !Game.runMilestones[90]) Game.rewardMilestone(90,3,"İLK EŞİK");
     if(Game.time>=180 && !Game.runMilestones[180]) Game.rewardMilestone(180,6,"SURVIVOR");
     if(Game.time>=300 && !Game.runMilestones[300]) Game.rewardMilestone(300,10,"NEON MASTER");
@@ -5300,6 +5363,7 @@ function update(dt){
 
     updatePowerHUD();
     updateWeaponHUD();
+    updateWaveHUD();
     updateBossHUD();
 
   }
@@ -6095,6 +6159,27 @@ function drawHUD(){
    POWER HUD
 ========================================================= */
 
+
+function updateWaveHUD(){
+  const hud=document.getElementById("run-wave-hud");
+  const value=document.getElementById("run-wave-value");
+  const pressure=document.getElementById("run-wave-pressure");
+  if(!hud||!value||!pressure)return;
+
+  const active=Game.state===STATE.PLAYING ||
+               Game.state===STATE.COUNTDOWN ||
+               Game.state===STATE.LEVELUP;
+
+  hud.classList.toggle("on",active);
+
+  const wave=Math.max(1,Game.wave||1);
+  const stage=Math.max(0,wave-1);
+  const pressurePct=Math.min(100,Math.round(stage*3.5));
+
+  value.textContent=String(wave);
+  pressure.textContent="BASKI %"+pressurePct;
+}
+
 function updateBossHUD(){
   const hud=HUD.el("boss-hud");
   const fill=HUD.el("boss-fill");
@@ -6862,6 +6947,18 @@ function chooseRunPerk(type){
   Audio_.power();
   vibrate([12,24,12]);
   updateWeaponHUD();
+
+  /* PHASE 4A — queued level-ups are consumed one at a time.
+     A multi-threshold XP event must never silently discard choices. */
+  if((Game._pendingLevelUps||0)>0){
+    Game._pendingLevelUps--;
+    renderLevelChoices();
+    $("levelup-sub").textContent=
+      "Seviye "+Game.level+" · Run XP "+Math.floor(Game.runXP)+" / "+
+      (Game.nextRunXP===Infinity?"MAX":Game.nextRunXP);
+    updateWaveHUD();
+    return;
+  }
 
   hide(scrLevelup);
   inputUp();
