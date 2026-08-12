@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#04060f">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>NEON SURVIVOR V15.5.2</title>
+<title>NORYVX V16.3.2</title>
 <link rel="manifest" href="manifest.json">
 
 <style>
@@ -629,10 +629,29 @@ button,
 .p2-tab{min-height:38px;border:1px solid rgba(34,230,255,.2);border-radius:10px;background:rgba(34,230,255,.05);color:#eaf4ff;font-weight:900;font-size:10px}
 .p2-tab.on{background:rgba(34,230,255,.16);border-color:rgba(34,230,255,.5)}
 </style>
+
+<style id="noryvx-phase3-css">
+#scr-phase3{overflow:auto;padding-bottom:28px}
+.p3-wrap{width:min(430px,92vw);margin:0 auto}
+.p3-card{background:rgba(8,15,34,.90);border:1px solid rgba(34,230,255,.14);border-radius:16px;padding:12px;margin:8px 0}
+.p3-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.p3-btn{min-height:48px;border:1px solid rgba(34,230,255,.22);border-radius:11px;background:rgba(34,230,255,.06);color:#eaf4ff;font-weight:900;font-size:10px}
+.p3-btn.on{border-color:rgba(34,230,255,.75);background:rgba(34,230,255,.18)}
+.p3-k{font-size:9px;letter-spacing:.12em;color:rgba(234,244,255,.52);text-transform:uppercase}
+.p3-v{font-size:20px;font-weight:900}
+.p3-desc{font-size:10px;line-height:1.45;color:rgba(234,244,255,.68);margin-top:5px}
+.p3-bar{height:7px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden;margin-top:7px}
+.p3-fill{height:100%;background:linear-gradient(90deg,#22e6ff,#a05cff)}
+.p3-row{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.p3-chip{padding:4px 7px;border-radius:7px;background:rgba(160,92,255,.12);border:1px solid rgba(160,92,255,.25);font-size:9px;font-weight:900}
+.p3-skill{padding:10px;border:1px solid rgba(255,255,255,.07);border-radius:11px;background:rgba(255,255,255,.025);margin-top:7px}
+.p3-skill button{margin-top:7px;width:100%;min-height:34px;border:1px solid rgba(34,230,255,.2);border-radius:8px;background:rgba(34,230,255,.06);color:#eaf4ff;font-size:9px;font-weight:900}
+</style>
+
 </head>
 
 <body>
-<div id="version-badge" aria-hidden="true">V16.2.0 · PHASE 2</div>
+<div id="version-badge" aria-hidden="true">V16.3.2 · PHASE 3</div>
 
 <div id="stage">
 
@@ -714,7 +733,8 @@ button,
     <div class="currency" id="profile-currency">◆ 0 ÇEKİRDEK</div>
   </div>
 
-  <button class="btn" id="b-play">
+  <button class="btn ghost" id="b-phase3">KARAKTER GELİŞİMİ</button>
+<button class="btn" id="b-play">
     Oyna
   </button>
 
@@ -884,6 +904,41 @@ button,
   <button class="btn ghost" id="b-skins-back">Geri</button>
 </div>
 
+
+<div class="screen" id="scr-phase3">
+  <div class="tutorial-title">KARAKTER GELİŞİMİ</div>
+  <div class="tag">V16.3.2 · PHASE 3</div>
+  <div class="p3-wrap">
+    <div class="p3-card">
+      <div class="p3-row">
+        <div><div class="p3-k">Karakter Seviyesi</div><div class="p3-v" id="p3-level">Lv.1</div></div>
+        <span class="p3-chip" id="p3-archetype">VANGUARD</span>
+      </div>
+      <div class="p3-k" id="p3-xp">0 / 80 XP</div>
+      <div class="p3-bar"><div class="p3-fill" id="p3-xp-fill"></div></div>
+      <div class="p3-desc" id="p3-desc"></div>
+    </div>
+    <div class="p3-card">
+      <div class="p3-row"><div><div class="p3-k">Archetype</div><div class="p3-v">Seç</div></div><span class="p3-chip" id="p3-points">0 SP</span></div>
+      <div class="p3-grid" style="margin-top:9px">
+        <button class="p3-btn" data-p3-arch="vanguard">VANGUARD<br><small>Dayanıklılık</small></button>
+        <button class="p3-btn" data-p3-arch="striker">STRIKER<br><small>Hasar/Hız</small></button>
+        <button class="p3-btn" data-p3-arch="controller">CONTROLLER<br><small>Kontrol</small></button>
+        <button class="p3-btn" id="p3-reset-run">RUN RESET</button>
+      </div>
+    </div>
+    <div class="p3-card">
+      <div class="p3-row"><div><div class="p3-k">Mastery</div><div class="p3-v">Silah Ustalığı</div></div><span class="p3-chip" id="p3-mastery-total">0</span></div>
+      <div id="p3-mastery-list"></div>
+    </div>
+    <div class="p3-card">
+      <div class="p3-row"><div><div class="p3-k">Skill Tree</div><div class="p3-v">Kalıcı Yetenekler</div></div><span class="p3-chip" id="p3-skill-points">0 SP</span></div>
+      <div id="p3-skill-list"></div>
+    </div>
+    <button class="btn ghost" id="b-phase3-back">Geri</button>
+  </div>
+</div>
+
 <!-- IN-RUN LEVEL UP -->
 
 <div class="screen" id="scr-levelup">
@@ -1002,7 +1057,7 @@ const BALANCE={
 
   /* PHASE 0.5 · 14 — tek versiyon kaynagi. DOM rozeti ve <title>
      boot sirasinda bu degerden yazilir. */
-  version:"16.2.0",
+  version:"16.3.2",
 
   /* ---------------------------------------------------------
      FAZ 0 DUZELTME SABITLERI
@@ -1345,6 +1400,31 @@ const BALANCE={
   Object.freeze(o);
 })(BALANCE);
 
+
+/* =========================================================
+   PHASE 3 — KARAKTER BAGLANTI NOKTALARI
+
+   Varsayilanlar NOTR: Phase 3 runtime hic yuklenmezse oyun
+   V16.2.0 ile birebir ayni davranir. Phase 3 yuklenince bu
+   nesnenin metodlarini kendi hesaplariyla degistirir.
+
+   Neden bu desen: Phase 3 ayri bir script blogunda ve
+   ana script'in ic degiskenlerine (magnetRange, player.hpMax)
+   disaridan ulasamiyor. Tek bir notr arayuz, monkey-patch
+   zincirinden hem daha okunabilir hem daha az kirilgan.
+========================================================= */
+const CHAR={
+  /* Oyuncunun maksimum cani (kesirli olabilir). */
+  maxHp(){ return BALANCE.player.baseHp; },
+  /* Bir darbenin goturdugu can miktari (1 = normal). */
+  damageTaken(){ return 1; },
+  /* Enerji cekim menzili carpani. */
+  magnetMult(){ return 1; },
+  /* Silah cooldown carpani (1 = degisiklik yok). */
+  cooldownMult(){ return 1; },
+  /* Silah/etki yaricapi eki (piksel). */
+  radiusBonus(){ return 0; }
+};
 
 const STATE={
   MENU:"MENU",
@@ -2374,6 +2454,7 @@ const player={
   x:0,
   y:0,
   hp:3,
+  hpMax:3,
   invuln:0,
   shake:0,
   trail:[]
@@ -2384,7 +2465,12 @@ function resetPlayer(){
   player.x=W/2;
   player.y=H*.62;
 
-  player.hp=3;
+  /* PHASE 3F — GORUNEN can her zaman TAMSAYI ve her zaman baseHp.
+     Karakterin maxHp carpani (or. Vanguard 1.10) cana degil, darbe
+     basina maliyete uygulanir (bkz. Game.damage). Boylece HUD'daki
+     3 can noktasi ve tum tamsayi mantigi korunur. */
+  player.hpMax=Math.max(1,Math.round(BALANCE.player.baseHp));
+  player.hp=player.hpMax;
 
   player.invuln=0;
   player.shake=0;
@@ -3743,10 +3829,12 @@ function updateOrbs(dt){
         0,
         magnetStacks-BALANCE.player.runUpgrade.magnetStackSoftCap
       );
+      /* PHASE 3 — karakter/skill pickup carpani. Notr durumda x1. */
       const magnetRange=
-        220+
+        (220+
         fullMagnetStacks*BALANCE.player.runUpgrade.magnetPerStack+
-        extraMagnetStacks*BALANCE.player.runUpgrade.postCapMagnet;
+        extraMagnetStacks*BALANCE.player.runUpgrade.postCapMagnet)*
+        CHAR.magnetMult();
 
       if(d<magnetRange){
         const strength=520;
@@ -4237,7 +4325,9 @@ const ThreatPower={
       speedMult,behavior,danger,
       alive,cap:enemyCapForLevel(level),density,
       bossActive:Game.bossActive,
-      value:spawnRate*effHp*danger*density
+      buildScale:(typeof p2ThreatScale==="function"?p2ThreatScale():1),
+      value:spawnRate*effHp*danger*density*
+            (typeof p2ThreatScale==="function"?p2ThreatScale():1)
     };
 
   }
@@ -4508,7 +4598,7 @@ wc.join("\n")+"\n"+
         "  skor+"+((Game.runUpgrades.score||0)*12)+"%\n"+
 "SYNERGY "+(syn.length?syn.join(", "):"-")+"\n"+
 "────────────────────────────\n"+
-"RUN     sure "+t.toFixed(1)+"s   HP "+player.hp+
+"RUN     sure "+t.toFixed(1)+"s   HP "+player.hp.toFixed(2)+"/"+(player.hpMax||3).toFixed(2)+
         "   kalkan "+(Game.powers.shield||0)+"\n"+
 "        kill "+this.kills+" (elite "+this.eliteKills+
         " boss "+this.bossKills+")\n"+
@@ -4574,6 +4664,10 @@ const Game={
   lastBossLevel:0,
 
   flash:0,
+
+  /* PHASE 3F — kesirli hasar birikimi (milibirim, 1000 = 1 can).
+     RUN durumudur; Save'e yazilmaz, Game.start() sifirlar. */
+  hpAcc:0,
 
   lastReward:{xp:0,cores:0,level:1,leveled:false},
 
@@ -4677,6 +4771,9 @@ const Game={
 
     this.flash=0;
 
+    /* PHASE 3F — her run basinda biriktirici sifirlanir. */
+    this.hpAcc=0;
+
     this.powers={
       /* FAZ 0 · FIX 0.4b
          ONCE: Save.data.upgrades.shield>0?1:0 — Lv2, Lv3, Lv4...
@@ -4757,7 +4854,50 @@ const Game={
 
     }
 
-    player.hp--;
+    /* PHASE 3F — DETERMINISTIK KESIRLI HASAR BIRIKTIRICISI
+
+       SORUN: arketiplerin yuzdelik savunma statlari (Vanguard
+       damageTaken 0.90 ve maxHp 1.10) 3 canlik TAMSAYI bir HP
+       modelinde dogrudan ifade edilemez.
+
+       ONCEKI DENEME (hatali): player.hp kesirli yapilmisti
+       (3 -> 3.3 -> 2.4 ...). Bu, HUD'daki can noktasi sayisini
+       3'ten 4'e cikariyor ve oyunun tum tamsayi can mantigini
+       bozuyordu.
+
+       SONRA: gorunen can TAMSAYI kalir. Hasar milibirim
+       (1/1000 can) cinsinden TAMSAYI olarak birikir; birikim
+       1000'e ulastiginda gercek can 1 duser.
+
+       maxHp carpani ayri bir can havuzu yerine darbe basina
+       maliyeti dusurerek modellenir. Matematiksel olarak esdeger:
+         dayanilan darbe sayisi = maxHp / darbeBasinaHasar
+       Vanguard: 0.90 * (3 / 3.3) = 0.818 can/darbe
+                 3 / 0.818 = 3.67  ->  4 darbe dayanir
+
+       NOTR DURUM: damageTaken()=1 ve maxHp()=baseHp iken adim tam
+       1000'dir, yani her darbe tam 1 can goturur. V16.2.0 ile
+       BIREBIR ayni davranis.
+
+       DETERMINIZM: tamsayi aritmetigi kullanilir. Kayan nokta
+       birikmesi yoktur; ayni arketip + ayni yetenekler her zaman
+       ayni darbe dizisini uretir.
+
+       KAPSAM: bu birikim RUN durumudur. Game.start() sifirlar ve
+       hicbir zaman Save'e yazilmaz (Save.data'dan bagimsizdir). */
+    const HP_UNIT=1000;
+    const charMaxHp=Math.max(.001,CHAR.maxHp());
+    const perHit=Math.max(0,CHAR.damageTaken())*
+                 (BALANCE.player.baseHp/charMaxHp);
+    const hpStep=Math.max(0,Math.round(HP_UNIT*perHit));
+
+    if(!Number.isFinite(this.hpAcc))this.hpAcc=0;
+    this.hpAcc+=hpStep;
+
+    const hpLoss=Math.floor(this.hpAcc/HP_UNIT);
+    this.hpAcc-=hpLoss*HP_UNIT;
+
+    if(hpLoss>0)player.hp-=hpLoss;
 
     Telemetry.onDamageTaken();   /* FAZ 3 */
 
@@ -4789,9 +4929,10 @@ const Game={
     );
 
     if(
-      player.hp<=0
+      player.hp<=1e-9
     ){
 
+      player.hp=0;
       this.over();
 
     }
@@ -5859,9 +6000,14 @@ function drawHUD(){
   const y=
     top+58;
 
+  /* PHASE 3F — can noktasi sayisi player.hpMax'tan gelir ve TAMSAYIDIR.
+     ceil() yalnizca savunma amaclidir; normalde deger zaten tamsayi. */
+  const hpMax=Math.max(1,Math.ceil(player.hpMax||BALANCE.player.baseHp));
+  const hpFull=Math.max(0,Math.ceil(player.hp-1e-9));
+
   for(
     let i=0;
-    i<3;
+    i<hpMax;
     i++
   ){
 
@@ -5875,7 +6021,7 @@ function drawHUD(){
       TAU
     );
 
-    if(i<player.hp){
+    if(i<hpFull){
 
       ctx.fillStyle=
         "#22e6ff";
@@ -6168,9 +6314,14 @@ function startGame(){
   hide(scrMenu);
   hide(scrHow);
   hide(scrUpgrades);
+  hide(scrSkins);
   hide(scrPause);
   hide(scrLevelup);
   hide(scrOver);
+  /* PHASE 3D — karakter ekrani da kapanmali. Bu ekran startGame()
+     yazildiginda yoktu; RUN RESET oyunu ekranin ALTINDA basliyordu. */
+  const scrPhase3=document.getElementById("scr-phase3");
+  if(scrPhase3)hide(scrPhase3);
   runCountdown.classList.remove("on");
 
   Game.start();
@@ -6262,11 +6413,22 @@ const RUN_CHOICES={
    The build is runtime-authoritative for the current run.
    No online state, no monetization, no Phase 3+ systems.
 ========================================================= */
+/* PHASE 3E · H-7 — RARITY OLCEKLEMESI YENIDEN DENGELENDI.
+
+   ONCE: rarity yalnizca silah seviyesinden turuyordu (ekstra secim
+   maliyeti yok) ama hem hasara hem cooldown'a carpan uyguluyordu.
+   Olculen: Lv5 tek silah x2.21-2.35 DPS, tam build x2.48. Lv4->Lv5
+   gecisi tek adimda DPS'i neredeyse ikiye katliyordu — "ayni build
+   her durumda en iyi olmamali" ilkesinin tersi ve AFK riski.
+
+   SONRA: carpanlar dusuruldu ve cooldown ikinci kez odullendirilmiyor
+   (asagidaki cooldown satirina bakiniz). Rarity artik silah kimligini
+   belirginlestiren bir katman, DPS'in ana kaynagi degil. */
 const P2_RARITY={
   COMMON:{mult:1.00,label:"COMMON"},
-  RARE:{mult:1.08,label:"RARE"},
-  EPIC:{mult:1.18,label:"EPIC"},
-  LEGENDARY:{mult:1.30,label:"LEGENDARY"}
+  RARE:{mult:1.06,label:"RARE"},
+  EPIC:{mult:1.12,label:"EPIC"},
+  LEGENDARY:{mult:1.20,label:"LEGENDARY"}
 };
 
 const P2_PASSIVE_MAX={speed:4,magnet:4,score:3,shield:2};
@@ -6332,6 +6494,21 @@ function p2BuildPower(){
   return Math.round(power);
 }
 
+/* PHASE 3E · H-8 — BUILDPOWER ARTIK GAMEPLAY'E BAGLI.
+
+   ONCE: p2BuildPower() bir guc skoru uretiyor, ekrana yaziliyor ve
+   baska hicbir sistem tarafindan OKUNMUYORDU.
+
+   SONRA: ThreatPower'a adaptif bir katsayi olarak baglanir. Guclu bir
+   build kuran oyuncu biraz daha fazla baski gorur; zayif build cezalandirilmaz.
+   Sinirlar BALANCE.phase1.enemy.adaptiveMin/Max ile ayni felsefede
+   dar tutuldu ki Phase 1 egrisini ezmesin. */
+function p2ThreatScale(){
+  const bp=Game.buildPower||0;
+  /* 0 guc -> x1.00 ; ~600 guc (tam build) -> x1.12 tavan */
+  return Math.min(1.12,1+Math.max(0,bp)/5000);
+}
+
 function p2ApplySelection(type){
   if(!Game.build)Game.build=p2DefaultBuild();
   const c=RUN_CHOICES[type];
@@ -6349,7 +6526,9 @@ function p2WeaponStatModifiers(key,st){
   const rarity=P2_RARITY[Game.build.rarity[key]||"COMMON"]||P2_RARITY.COMMON;
   const rm=rarity.mult;
   st.damage*=rm;
-  st.cooldown*=Math.pow(.985,Math.max(0,(rm-1)*100));
+  /* PHASE 3E · H-7 — rarity artik cooldown'u AYRICA hizlandirmiyor.
+     ONCE: .985^((rm-1)*100) — LEGENDARY'de cooldown x0.635 demekti,
+     hasar carpaniyla birlikte tek basina x2.05 DPS uretiyordu. */
   if(rarity.label==="RARE")st.radius+=.25;
   if(rarity.label==="EPIC"){st.radius+=.5;st.pierce+=1;}
   if(rarity.label==="LEGENDARY"){st.radius+=1;st.pierce+=1;st.chain+=1;}
@@ -6359,16 +6538,19 @@ function p2WeaponStatModifiers(key,st){
     if(key==="arc"){st.damage*=1.07;st.chain+=2;}
     if(key==="novaWeapon"){st.damage*=1.15;st.radius+=20;}
   }
-  const syn=p2Synergies();
-  if(syn.overcharge){
-    if(key==="pulse"){st.damage*=1.05;st.cooldown*=.94;}
-    if(key==="plasma"){st.damage*=1.07;st.pierce+=1;}
-  }
-  if(syn.chainReactor){
-    if(key==="pulse")st.cooldown*=.94;
-    if(key==="arc"){st.damage*=1.06;st.chain+=1;}
-  }
-  if(syn.meltdown && key==="novaWeapon"){st.damage*=1.10;st.radius+=12;}
+  /* PHASE 3E · H-6 — SINERJI CIFT UYGULAMASI KALDIRILDI.
+
+     ONCE: buildSynergies() ana weaponStat icinde sinerjileri uyguluyordu,
+     ardindan p2Synergies() BIREBIR AYNI kosulla (pulse>=2 && plasma>=2 vb.)
+     ikinci kez uyguluyordu. Olculen sonuc: OVERCHARGE x1.217 uzerine
+     x1.361 daha = toplam x1.657. Iki silahi Lv2'ye cikarmak tek silaha
+     yatirim yapmaya gore orantisiz guclu hale geliyordu.
+
+     SONRA: tek kaynak buildSynergies() (ana weaponStat). Buradaki kopya
+     silindi. p2Synergies() yalnizca p2BuildPower ve UI icin duruyor —
+     stat uretmiyor.
+
+     GERI ALMA: bu blogu yukaridaki eski haliyle degistirmek yeterli. */
   return st;
 }
 
@@ -6476,11 +6658,17 @@ setTimeout(p2BindUI,1000);
 /* PHASE 1.5 — kart rarity/build identity. Statlar mevcut sistemden gelir;
    rarity sadece seçim ağırlığı ve sunum katmanıdır. */
 function cardRarity(key){
+  /* PHASE 3E · H-10 — ESIK/DEGER ESLEMESI DUZELTILDI.
+     ONCE: legendaryFromLevel(15) -> "EPIC", epicFromLevel(8) -> "RARE"
+     donduruyordu; rareFromLevel(4) hic okunmuyordu ve seviye tabanli
+     hicbir yol "LEGENDARY" uretmiyordu. */
   const lv=Game.level;
   const c=RUN_CHOICES[key];
+  const b=BALANCE.phase1.build;
   if(c && c.kind==="weapon" && weaponLevel(key)>=4) return "LEGENDARY";
-  if(lv>=BALANCE.phase1.build.legendaryFromLevel && c && c.kind==="weapon") return "EPIC";
-  if(lv>=BALANCE.phase1.build.epicFromLevel) return "RARE";
+  if(lv>=b.legendaryFromLevel) return "LEGENDARY";
+  if(lv>=b.epicFromLevel) return "EPIC";
+  if(lv>=b.rareFromLevel) return "RARE";
   return "COMMON";
 }
 
@@ -6992,6 +7180,10 @@ document.addEventListener(
 
       toMenu();
 
+    }else if(document.getElementById("scr-phase3") &&
+             document.getElementById("scr-phase3").classList.contains("on")){
+      /* PHASE 3D — karakter ekrani geri tusunu tanir. */
+      hide(document.getElementById("scr-phase3")); show(scrMenu);
     }else if(scrSkins.classList.contains("on")){
       hide(scrSkins); show(scrMenu);
     }else if(
@@ -7021,7 +7213,7 @@ resize();
 resetPlayer();
 
 /* PHASE 0.5 · 14 — tum versiyon gostergeleri BALANCE.version'dan gelir. */
-document.title="NEON SURVIVOR V"+BALANCE.version;
+document.title="NORYVX V"+BALANCE.version;
 const versionBadge=document.getElementById("version-badge");
 if(versionBadge)versionBadge.textContent="V"+BALANCE.version;
 
@@ -7091,7 +7283,7 @@ if(
     if(!el) return;
     hideAll();
     el.classList.add("on");
-  }9
+  }
 
   function safeCall(name){
     try{
@@ -7173,6 +7365,288 @@ if(
   /* Second pass covers WebViews that finish layout/script initialization late. */
   setTimeout(install, 250);
   setTimeout(install, 1000);
+})();
+</script>
+
+
+<script id="noryvx-phase3-runtime">
+(function(){
+"use strict";
+const P3_KEY="noryvx_phase3_v1";
+const P3={
+  archetypes:{
+    vanguard:{name:"VANGUARD",desc:"Dayanıklılık odaklı. Hasar alımını azaltır ve maksimum canı artırır.",damage:1.00,damageTaken:.90,speed:1.00,control:1.00,maxHp:1.10},
+    striker:{name:"STRIKER",desc:"Saldırı odaklı. Silah hasarı ve hareket hızını artırır.",damage:1.08,damageTaken:1.00,speed:1.05,control:1.00,maxHp:1.00},
+    controller:{name:"CONTROLLER",desc:"Kontrol odaklı. Cooldown, alan ve pickup etkilerini güçlendirir.",damage:1.00,damageTaken:1.00,speed:1.00,control:1.10,maxHp:1.00}
+  },
+  /* PHASE 3C — Mastery esikleri.
+     Mastery, o silahla KOSU BOYUNCA verilen kumulatif hasardan kazanilir.
+     Yeni bir olcum sistemi eklenmedi: Telemetry.damageBySource zaten
+     silah basina hasari koşu boyunca topluyor; kosu sonunda kalici
+     masteryXP'ye eklenir. */
+  masteryThresholds:[1500,5000,13000,30000,65000],
+  skills:{
+    pulse_mastery:{name:"Pulse Mastery",desc:"Pulse hasarı +2%.",type:"weapon",weapon:"pulse",max:5},
+    plasma_mastery:{name:"Plasma Mastery",desc:"Plasma hasarı +2%.",type:"weapon",weapon:"plasma",max:5},
+    arc_mastery:{name:"Arc Mastery",desc:"Arc hasarı +2%.",type:"weapon",weapon:"arc",max:5},
+    nova_mastery:{name:"Nova Mastery",desc:"Nova hasarı +2%.",type:"weapon",weapon:"novaWeapon",max:5},
+    survivor:{name:"Survivor",desc:"Maksimum can +3%.",type:"hp",max:5},
+    focus:{name:"Focus",desc:"Cooldown %1 azalır.",type:"cooldown",max:5},
+    magnetism:{name:"Magnetism",desc:"Pickup çekim alanı +4%.",type:"magnet",max:5}
+  }
+};
+function p3Load(){
+  try{
+    const x=JSON.parse(localStorage.getItem(P3_KEY)||"null");
+    if(x)return Object.assign({archetype:"vanguard",level:1,xp:0,skillPoints:0,skills:{},mastery:{},masteryXP:{}},x);
+  }catch(e){}
+  return {archetype:"vanguard",level:1,xp:0,skillPoints:0,skills:{},mastery:{},masteryXP:{}};
+}
+const P3S=p3Load();
+function p3Save(){try{localStorage.setItem(P3_KEY,JSON.stringify(P3S));}catch(e){}}
+function p3Need(l){return Math.floor(100*Math.pow(l,1.45));}
+function p3AddXP(n){
+  n=Math.max(0,Math.floor(n||0)); if(!n)return;
+  P3S.xp+=n;
+  while(P3S.level<50 && P3S.xp>=p3Need(P3S.level)){
+    P3S.xp-=p3Need(P3S.level);P3S.level++;P3S.skillPoints++;
+  }
+  p3Save();p3Render();
+}
+function p3SkillRank(id){return Math.max(0,Math.min(P3.skills[id]?.max||0,P3S.skills[id]||0));}
+
+/* PHASE 3C — kumulatif hasardan mastery rutbesi. */
+function p3MasteryRank(key){
+  const xp=Math.max(0,P3S.masteryXP?.[key]||0);
+  let r=0;
+  for(const t of P3.masteryThresholds){ if(xp>=t)r++; else break; }
+  return Math.min(5,r);
+}
+
+/* Kosu sonunda cagrilir: o kosuda her silahla verilen hasari
+   kalici masteryXP'ye ekler ve rutbeleri yeniden hesaplar. */
+function p3AwardMastery(){
+  if(typeof Telemetry==="undefined"||!Telemetry.damageBySource)return 0;
+  if(!P3S.masteryXP)P3S.masteryXP={};
+  let gained=0;
+  for(const k of ["pulse","plasma","arc","novaWeapon"]){
+    const dmg=Math.max(0,Math.floor(Telemetry.damageBySource[k]||0));
+    if(!dmg)continue;
+    P3S.masteryXP[k]=(P3S.masteryXP[k]||0)+dmg;
+    gained+=dmg;
+    const before=P3S.mastery[k]||0;
+    const after=p3MasteryRank(k);
+    if(after>before)P3S.mastery[k]=after;
+  }
+  return gained;
+}
+function p3TotalMastery(){return ["pulse","plasma","arc","novaWeapon"].reduce((a,k)=>a+p3MasteryRank(k),0);}
+function p3MasteryBonus(key){return 1+Math.min(.10,p3MasteryRank(key)*.02);}
+function p3SkillDamageBonus(key){
+  const id=key+"_mastery";
+  return 1+Math.min(.10,p3SkillRank(id)*.02);
+}
+function p3Archetype(){return P3.archetypes[P3S.archetype]||P3.archetypes.vanguard;}
+
+/* =========================================================
+   PHASE 3A/3B — KARAKTER -> GAMEPLAY BAGLANTILARI
+
+   Asagidaki dort fonksiyon ana script'teki notr CHAR arayuzune
+   baglanir. Boylece arketip ve yetenekler yalnizca weaponStat'i
+   degil, gercek can / hasar / pickup sistemlerini de etkiler.
+========================================================= */
+
+/* Maksimum can. Kesirli birakilir; HUD yukari yuvarlar, hasar
+   sistemi kesirli havuzdan duser. 3 canlik bir oyunda yuzdelik
+   statlarin anlam kazanmasinin tek yolu bu. */
+function p3MaxHp(){
+  const base=(typeof BALANCE!=="undefined")?BALANCE.player.baseHp:3;
+  const a=p3Archetype();
+  const survivor=1+p3SkillRank("survivor")*.03;   /* yetenek tanimi: +%3 */
+  return base*a.maxHp*survivor;
+}
+
+/* Bir darbenin goturdugu can. Vanguard 0.90 -> ayni can havuzuyla
+   daha fazla darbe dayanir. */
+function p3DamageTaken(){
+  return Math.max(.5,p3Archetype().damageTaken);
+}
+
+/* Pickup/magnet menzili. Magnetism yetenegi ARTIK burada
+   (once yanlislikla silah mermi yaricapina ekleniyordu) ve
+   Controller'in "pickup" vaadi de buraya baglandi. */
+function p3MagnetMult(){
+  const a=p3Archetype();
+  const skill=1+p3SkillRank("magnetism")*.04;     /* yetenek tanimi: +%4 */
+  return skill*a.control;
+}
+
+/* Cooldown. Focus yetenegi + Controller'in "cooldown" vaadi.
+   Taban 0.85 ile sinirli ki Phase 1-2 dengesini ezmesin. */
+function p3CooldownMult(){
+  const a=p3Archetype();
+  const focus=p3SkillRank("focus")*.01;           /* yetenek tanimi: -%1 */
+  const control=(a.control-1)*.5;                 /* 1.10 -> -%5 */
+  return Math.max(.85,1-focus-control);
+}
+
+/* "Alan" — Controller'in ucuncu vaadi. */
+function p3RadiusBonus(){
+  return (p3Archetype().control-1)*8;             /* 1.10 -> +0.8 px */
+}
+
+if(typeof CHAR!=="undefined"){
+  CHAR.maxHp=p3MaxHp;
+  CHAR.damageTaken=p3DamageTaken;
+  CHAR.magnetMult=p3MagnetMult;
+  CHAR.cooldownMult=p3CooldownMult;
+  CHAR.radiusBonus=p3RadiusBonus;
+}
+
+function p3Render(){
+  const a=p3Archetype(),need=p3Need(P3S.level);
+  const l=document.getElementById("p3-level"),x=document.getElementById("p3-xp"),f=document.getElementById("p3-xp-fill");
+  if(!l)return;
+  l.textContent="Lv."+P3S.level;
+  x.textContent=P3S.xp+" / "+need+" XP";
+  f.style.width=Math.min(100,P3S.xp/need*100)+"%";
+  document.getElementById("p3-archetype").textContent=a.name;
+  document.getElementById("p3-desc").textContent=a.desc;
+  document.getElementById("p3-points").textContent=P3S.skillPoints+" SP";
+  document.getElementById("p3-skill-points").textContent=P3S.skillPoints+" SP";
+  document.getElementById("p3-mastery-total").textContent=p3TotalMastery();
+  document.querySelectorAll("[data-p3-arch]").forEach(b=>b.classList.toggle("on",b.dataset.p3Arch===P3S.archetype));
+  const ml=document.getElementById("p3-mastery-list");
+  ml.innerHTML=["pulse","plasma","arc","novaWeapon"].map(k=>{
+    const v=p3MasteryRank(k);
+    const mxp=Math.max(0,P3S.masteryXP?.[k]||0);
+    const nx=P3.masteryThresholds[v];
+    const pv=v>0?P3.masteryThresholds[v-1]:0;
+    const pct=nx?Math.min(100,Math.max(0,(mxp-pv)/(nx-pv)*100)):100;
+    const sub=nx?(mxp+" / "+nx+" hasar"):"MAKS";
+    return `<div class="p3-skill"><div class="p3-row"><b>${k.toUpperCase()}</b><span class="p3-chip">${v}/5</span></div><div class="p3-k">+${v*2}% hasar · ${sub}</div><div class="p3-bar"><div class="p3-fill" style="width:${pct}%"></div></div></div>`;
+  }).join("");
+  const sl=document.getElementById("p3-skill-list");
+  sl.innerHTML=Object.keys(P3.skills).map(id=>{
+    const s=P3.skills[id],v=p3SkillRank(id);
+    return `<div class="p3-skill"><div class="p3-row"><b>${s.name}</b><span class="p3-chip">${v}/${s.max}</span></div><div class="p3-desc">${s.desc}</div><button data-p3-skill="${id}" ${P3S.skillPoints<=0||v>=s.max?"disabled":""}>${v>=s.max?"MAX":"1 SP HARCAY"} </button></div>`;
+  }).join("");
+  p3BindSkills();
+}
+function p3SetArch(a){if(!P3.archetypes[a])return;P3S.archetype=a;p3Save();p3Render();}
+function p3Spend(id){
+  const s=P3.skills[id];if(!s||P3S.skillPoints<=0||p3SkillRank(id)>=s.max)return;
+  P3S.skillPoints--;P3S.skills[id]=p3SkillRank(id)+1;p3Save();p3Render();
+}
+/* PHASE 3D — ortak giris katmani.
+   ONCE: .onclick atamasi kullaniliyordu; paylasilan tapShouldFire
+   dedupe'una girmiyordu ve skill butonlarinda touchend hic yoktu
+   (click uretmeyen eski WebView'larda SP harcanamiyordu). */
+function p3Attach(node,fn,withAudio){
+  if(!node)return;
+  if(withAudio&&typeof tap==="function"){tap(node,fn);return;}
+  if(typeof bindSimple==="function"){bindSimple(node,fn);return;}
+  node.onclick=e=>{if(e&&e.preventDefault)e.preventDefault();fn();};
+  node.ontouchend=e=>{if(e&&e.preventDefault)e.preventDefault();fn();};
+}
+
+function p3BindSkills(){
+  document.querySelectorAll("[data-p3-skill]").forEach(b=>{
+    if(b.dataset.p3Bound)return;
+    b.dataset.p3Bound="1";
+    p3Attach(b,()=>p3Spend(b.dataset.p3Skill),false);
+  });
+}
+/* PHASE 3D — ekran gecisleri artik Game.state ile uyumlu.
+   ONCE: yalnizca .screen siniflari elle degistiriliyordu; Game.state
+   guncellenmedigi icin oyun PLAYING'de kalabiliyor ve Android geri
+   tusu bu ekrani tanimiyordu. SONRA: showUpgrades()/closeUpgrades()
+   ile ayni desen. */
+function p3Open(){
+  if(typeof Game!=="undefined"&&typeof STATE!=="undefined")Game.state=STATE.MENU;
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));
+  document.getElementById("scr-phase3").classList.add("on");
+  p3Render();
+}
+function p3Back(){
+  document.getElementById("scr-phase3").classList.remove("on");
+  if(typeof toMenu==="function")toMenu();
+  else{const m=document.getElementById("scr-menu");if(m)m.classList.add("on");}
+}
+function p3Bind(){
+  const menu=document.getElementById("b-phase3");
+  if(menu&&!menu.dataset.p3Bound){menu.dataset.p3Bound="1";p3Attach(menu,p3Open,true);}
+
+  document.querySelectorAll("[data-p3-arch]").forEach(b=>{
+    if(b.dataset.p3Bound)return;
+    b.dataset.p3Bound="1";
+    p3Attach(b,()=>p3SetArch(b.dataset.p3Arch),false);
+  });
+
+  const back=document.getElementById("b-phase3-back");
+  if(back&&!back.dataset.p3Bound){back.dataset.p3Bound="1";p3Attach(back,p3Back,true);}
+
+  /* PHASE 3D — RUN RESET artik startGame() cagiriyor.
+     ONCE: Game.start() dogrudan cagriliyordu; state PLAYING oluyor ama
+     ekranlar gizlenmiyordu, oyun karakter ekraninin ALTINDA basliyordu.
+     Ayrica native confirm() yerine oyunun kendi deseni kullaniliyor. */
+  const reset=document.getElementById("p3-reset-run");
+  if(reset&&!reset.dataset.p3Bound){
+    reset.dataset.p3Bound="1";
+    p3Attach(reset,()=>{
+      if(typeof startGame==="function")startGame();
+      else if(typeof Game!=="undefined")Game.start();
+    },true);
+  }
+}
+window.NORYVX_P3={state:P3S,addXP:p3AddXP,save:p3Save,render:p3Render,archetype:p3Archetype};
+window.NORYVX_P3_READY=true;
+
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",p3Bind,{once:true});else p3Bind();
+setTimeout(p3Bind,300);setTimeout(p3Bind,1000);
+
+/* Apply character progression to real weapon stats, while keeping the
+   progression bounded so it cannot overwhelm Phase 1–2 balance. */
+/* PHASE 3A · BL-1 duzeltmesi
+   ONCE: window.weaponStat / window.Game uzerinden yamalaniyordu.
+   weaponStat bir FONKSIYON BILDIRIMI oldugu icin global nesneye
+   yazilir ve window uzerinden gorunur; ancak Game bir CONST'tur ve
+   global LEKSIK ortamda yasar, window'a yazilmaz. Bu yuzden
+   "if(window.Game)" kosulu HIC saglanmiyordu ve karakter XP yamasi
+   kurulmuyordu (level 1'de kilitli, SP hic uretilmiyor, kayit yok).
+   SONRA: her iki yama da typeof ile leksik bagi kontrol ediyor. */
+if(typeof weaponStat==="function"){
+  const oldWeaponStat=weaponStat;
+  weaponStat=function(key,level){
+    const st=oldWeaponStat(key,level);
+    const a=p3Archetype();
+    const dmg=a.damage*p3MasteryBonus(key)*p3SkillDamageBonus(key);
+    st.damage*=Math.min(1.22,dmg);
+    st.speed*=a.speed;
+    /* PHASE 3A/3B — control artik focus'a bagimli DEGIL.
+       Arketip tanimi: "Cooldown, alan ve pickup etkilerini guclendirir".
+       Bu ucu de burada ve CHAR.magnetMult icinde baglanir. */
+    st.cooldown*=p3CooldownMult();
+    st.radius+=p3RadiusBonus();
+    st._characterLevel=P3S.level;
+    st._archetype=a.name;
+    return st;
+  };
+}
+
+/* Award permanent character XP only from completed/ended runs. */
+if(typeof Game!=="undefined"&&typeof Game.over==="function"){
+  const oldOver=Game.over.bind(Game);
+  Game.over=function(){
+    const time=Math.max(0,Game.time||0),score=Math.max(0,Game.score||0);
+    /* PHASE 3C — mastery, XP'den ONCE islenir: oldOver() calistiginda
+       Telemetry hala o kosunun hasar dagilimini tutuyor olmali. */
+    p3AwardMastery();
+    p3AddXP(Math.max(10,Math.floor(time*1.5+score/100)));
+    p3Save();
+    return oldOver();
+  };
+}
 })();
 </script>
 
