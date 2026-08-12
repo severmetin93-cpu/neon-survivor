@@ -648,10 +648,25 @@ button,
 .p3-skill button{margin-top:7px;width:100%;min-height:34px;border:1px solid rgba(34,230,255,.2);border-radius:8px;background:rgba(34,230,255,.06);color:#eaf4ff;font-size:9px;font-weight:900}
 </style>
 
+
+<style id="noryvx-p3-selection-css">
+.p3-select-grid{display:grid;grid-template-columns:1fr;gap:9px;margin-top:10px}
+.p3-char-card{position:relative;text-align:left;padding:13px;border-radius:15px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(145deg,rgba(10,18,38,.96),rgba(5,10,24,.96));color:#eaf4ff;min-height:92px}
+.p3-char-card.selected{border-color:rgba(34,230,255,.85);box-shadow:0 0 0 1px rgba(34,230,255,.18),0 0 22px rgba(34,230,255,.10)}
+.p3-char-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.p3-char-name{font-size:14px;font-weight:950;letter-spacing:.06em}
+.p3-char-role{font-size:9px;color:rgba(234,244,255,.58);margin-top:3px}
+.p3-char-stats{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.p3-char-stat{font-size:8px;padding:4px 6px;border-radius:6px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.06)}
+.p3-selected-mark{font-size:8px;font-weight:950;letter-spacing:.08em;color:#22e6ff}
+.p3-active-banner{display:flex;justify-content:space-between;align-items:center;padding:9px 10px;border-radius:10px;background:rgba(34,230,255,.07);border:1px solid rgba(34,230,255,.15);margin-bottom:8px}
+.p3-active-banner b{font-size:10px}
+</style>
+
 </head>
 
 <body>
-<div id="version-badge" aria-hidden="true">V16.3.2 · PHASE 3</div>
+<div id="version-badge" aria-hidden="true">V16.3.3 · PHASE 3 CHARACTER SELECTION</div>
 
 <div id="stage">
 
@@ -919,13 +934,26 @@ button,
       <div class="p3-desc" id="p3-desc"></div>
     </div>
     <div class="p3-card">
-      <div class="p3-row"><div><div class="p3-k">Archetype</div><div class="p3-v">Seç</div></div><span class="p3-chip" id="p3-points">0 SP</span></div>
-      <div class="p3-grid" style="margin-top:9px">
-        <button class="p3-btn" data-p3-arch="vanguard">VANGUARD<br><small>Dayanıklılık</small></button>
-        <button class="p3-btn" data-p3-arch="striker">STRIKER<br><small>Hasar/Hız</small></button>
-        <button class="p3-btn" data-p3-arch="controller">CONTROLLER<br><small>Kontrol</small></button>
-        <button class="p3-btn" id="p3-reset-run">RUN RESET</button>
+      <div class="p3-active-banner">
+        <div><div class="p3-k">Aktif Karakter</div><b id="p3-active-name">VANGUARD</b></div>
+        <span class="p3-chip" id="p3-points">0 SP</span>
       </div>
+      <div class="p3-k">Karakter Seçimi</div>
+      <div class="p3-select-grid">
+        <button class="p3-char-card" data-p3-arch="vanguard">
+          <div class="p3-char-top"><div><div class="p3-char-name">VANGUARD</div><div class="p3-char-role">Tank / Dayanıklılık</div></div><span class="p3-selected-mark" data-p3-selected="vanguard"></span></div>
+          <div class="p3-char-stats"><span class="p3-char-stat">MAX HP +10%</span><span class="p3-char-stat">HASAR ALIMI -10%</span></div>
+        </button>
+        <button class="p3-char-card" data-p3-arch="striker">
+          <div class="p3-char-top"><div><div class="p3-char-name">STRIKER</div><div class="p3-char-role">Assault / Hız</div></div><span class="p3-selected-mark" data-p3-selected="striker"></span></div>
+          <div class="p3-char-stats"><span class="p3-char-stat">HASAR +8%</span><span class="p3-char-stat">HIZ +5%</span></div>
+        </button>
+        <button class="p3-char-card" data-p3-arch="controller">
+          <div class="p3-char-top"><div><div class="p3-char-name">CONTROLLER</div><div class="p3-char-role">Control / Alan</div></div><span class="p3-selected-mark" data-p3-selected="controller"></span></div>
+          <div class="p3-char-stats"><span class="p3-char-stat">CONTROL +10%</span><span class="p3-char-stat">COOLDOWN ETKİSİ</span></div>
+        </button>
+      </div>
+      <button class="p3-btn" id="p3-reset-run" style="width:100%;margin-top:9px">RUN RESET</button>
     </div>
     <div class="p3-card">
       <div class="p3-row"><div><div class="p3-k">Mastery</div><div class="p3-v">Silah Ustalığı</div></div><span class="p3-chip" id="p3-mastery-total">0</span></div>
@@ -1057,7 +1085,7 @@ const BALANCE={
 
   /* PHASE 0.5 · 14 — tek versiyon kaynagi. DOM rozeti ve <title>
      boot sirasinda bu degerden yazilir. */
-  version:"16.3.2",
+  version:"16.3.3",
 
   /* ---------------------------------------------------------
      FAZ 0 DUZELTME SABITLERI
@@ -7515,7 +7543,16 @@ function p3Render(){
   document.getElementById("p3-points").textContent=P3S.skillPoints+" SP";
   document.getElementById("p3-skill-points").textContent=P3S.skillPoints+" SP";
   document.getElementById("p3-mastery-total").textContent=p3TotalMastery();
-  document.querySelectorAll("[data-p3-arch]").forEach(b=>b.classList.toggle("on",b.dataset.p3Arch===P3S.archetype));
+  document.querySelectorAll("[data-p3-arch]").forEach(b=>{
+    const active=b.dataset.p3Arch===P3S.archetype;
+    b.classList.toggle("on",active);
+    b.classList.toggle("selected",active);
+  });
+  const activeName=document.getElementById("p3-active-name");
+  if(activeName)activeName.textContent=a.name;
+  document.querySelectorAll("[data-p3-selected]").forEach(m=>{
+    m.textContent=m.dataset.p3Selected===P3S.archetype?"AKTİF":"";
+  });
   const ml=document.getElementById("p3-mastery-list");
   ml.innerHTML=["pulse","plasma","arc","novaWeapon"].map(k=>{
     const v=p3MasteryRank(k);
