@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#04060f">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>NEON SURVIVOR V17.0.0 · PHASE 2–5</title>
+<title>NEON SURVIVOR V15.5.2</title>
 <link rel="manifest" href="manifest.json">
 
 <style>
@@ -613,32 +613,26 @@ button,
 }
 </style>
 
-<style id="noryvx-phase25-css">
-#scr-phase25{overflow:auto;padding-bottom:28px}
-.p25-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;width:min(420px,92vw);margin:8px 0}
-.p25-tab{min-height:38px;border:1px solid rgba(34,230,255,.22);border-radius:10px;background:rgba(34,230,255,.06);color:#eaf4ff;font-weight:900;font-size:10px}
-.p25-tab.on{background:rgba(34,230,255,.18);border-color:rgba(34,230,255,.55)}
-.p25-panel{width:min(420px,92vw);background:rgba(8,15,34,.88);border:1px solid rgba(34,230,255,.14);border-radius:16px;padding:12px}
-.p25-card{padding:11px;border-radius:12px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);margin-bottom:8px}
-.p25-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.p25-grid button,.p25-card button{width:100%;min-height:38px;border:1px solid rgba(34,230,255,.25);border-radius:10px;background:rgba(34,230,255,.07);color:#eaf4ff;font-weight:800;font-size:10px}
-.p25-grid button.on{border-color:#22e6ff;background:rgba(34,230,255,.16)}
-.p25-kicker{font-size:9px;letter-spacing:.12em;color:rgba(234,244,255,.5);text-transform:uppercase}
-.p25-value{font-size:18px;font-weight:900;color:#eaf4ff}
-.p25-row{display:flex;justify-content:space-between;gap:10px;align-items:center}
-.p25-bar{height:6px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:6px}
-.p25-fill{height:100%;background:linear-gradient(90deg,#22e6ff,#a05cff)}
-.p25-chip{display:inline-block;padding:4px 7px;border-radius:7px;background:rgba(160,92,255,.12);border:1px solid rgba(160,92,255,.25);font-size:9px;font-weight:900;margin:2px}
-#p25-mode-note{font-size:10px;line-height:1.45;color:rgba(234,244,255,.65)}
-#p25-build-list,#p25-character-list{max-height:38vh;overflow:auto}
-.p25-danger{color:#ff6b8b}
-.p25-good{color:#70f0ff}
+<style id="noryvx-phase2-css">
+.p2-build-panel{width:min(420px,92vw);max-height:72vh;overflow:auto;padding-bottom:14px}
+.p2-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.p2-stat{padding:12px;border-radius:13px;background:rgba(8,15,34,.88);border:1px solid rgba(34,230,255,.14)}
+.p2-k{font-size:9px;letter-spacing:.13em;color:rgba(234,244,255,.45);text-transform:uppercase}
+.p2-v{font-size:18px;font-weight:900;color:#eaf4ff;margin-top:3px}
+.p2-item{padding:11px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);margin-bottom:7px}
+.p2-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.p2-badge{font-size:8px;font-weight:900;letter-spacing:.1em;padding:4px 6px;border-radius:7px;border:1px solid rgba(34,230,255,.22);background:rgba(34,230,255,.06)}
+.p2-badge.rare{color:#48d9ff}.p2-badge.epic{color:#c28cff}.p2-badge.legendary{color:#ffe34d}
+.p2-muted{font-size:9px;color:rgba(234,244,255,.48);line-height:1.35;margin-top:4px}
+.p2-syn{display:inline-block;margin:3px 3px 0 0;padding:5px 7px;border-radius:7px;background:rgba(160,92,255,.1);border:1px solid rgba(160,92,255,.25);font-size:8px;font-weight:900;color:#e8d9ff}
+.p2-tabs{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:8px 0}
+.p2-tab{min-height:38px;border:1px solid rgba(34,230,255,.2);border-radius:10px;background:rgba(34,230,255,.05);color:#eaf4ff;font-weight:900;font-size:10px}
+.p2-tab.on{background:rgba(34,230,255,.16);border-color:rgba(34,230,255,.5)}
 </style>
-
 </head>
 
 <body>
-<div id="version-badge" aria-hidden="true">V17.0.0 · PHASE 2–5</div>
+<div id="version-badge" aria-hidden="true">V16.2.0 · PHASE 2</div>
 
 <div id="stage">
 
@@ -728,11 +722,10 @@ button,
     Nasıl Oynanır?
   </button>
 
+  <button class="btn ghost" id="b-build">BUILD & SİLAHLAR</button>
   <button class="btn ghost" id="b-upgrades">
     Geliştirmeler
   </button>
-
-  <button class="btn ghost" id="b-phase25">Gelişim Merkezi</button>
 
   <button class="btn ghost" id="b-skins">
     Çekirdekler
@@ -824,6 +817,23 @@ button,
 
 <!-- PAUSE -->
 
+
+<div class="screen" id="scr-build">
+  <div class="tutorial-title">BUILD LAB</div>
+  <div class="tag">PHASE 2 · BUILD & COMBAT</div>
+  <div class="p2-summary">
+    <div class="p2-stat"><div class="p2-k">BUILD POWER</div><div class="p2-v" id="p2-build-power">0</div></div>
+    <div class="p2-stat"><div class="p2-k">SYNERGIES</div><div class="p2-v" id="p2-syn-count">0</div></div>
+  </div>
+  <div class="p2-tabs">
+    <button class="p2-tab on" data-p2-tab="weapons">SİLAHLAR</button>
+    <button class="p2-tab" data-p2-tab="passives">PASİFLER</button>
+  </div>
+  <div class="p2-build-panel" id="p2-weapons-panel"></div>
+  <div class="p2-build-panel" id="p2-passives-panel" style="display:none"></div>
+  <button class="btn ghost" id="b-build-back">Geri</button>
+</div>
+
 <div class="screen" id="scr-upgrades">
 
   <div class="tutorial-title">Geliştirmeler</div>
@@ -872,48 +882,6 @@ button,
   </div>
   <div class="skin-grid" id="skin-grid"></div>
   <button class="btn ghost" id="b-skins-back">Geri</button>
-</div>
-
-
-<div class="screen" id="scr-phase25">
-  <div class="tutorial-title">GELİŞİM MERKEZİ</div>
-  <div class="tag">PHASE 2–5 · OFFLINE CORE</div>
-  <div class="p25-tabs">
-    <button class="p25-tab on" data-p25-tab="build">BUILD</button>
-    <button class="p25-tab" data-p25-tab="character">KARAKTER</button>
-    <button class="p25-tab" data-p25-tab="mode">MOD</button>
-  </div>
-  <div class="p25-panel" id="p25-build-panel">
-    <div class="p25-row"><div><div class="p25-kicker">Build Power</div><div class="p25-value" id="p25-build-power">0</div></div><div id="p25-build-tags"></div></div>
-    <div id="p25-build-list" style="margin-top:10px"></div>
-  </div>
-  <div class="p25-panel" id="p25-character-panel" style="display:none">
-    <div class="p25-row"><div><div class="p25-kicker">Karakter</div><div class="p25-value" id="p25-char-level">Lv.1</div></div><div class="p25-kicker" id="p25-char-xp">0 XP</div></div>
-    <div class="p25-bar"><div class="p25-fill" id="p25-char-fill"></div></div>
-    <div class="p25-grid" style="margin-top:10px">
-      <button data-p25-arch="vanguard">VANGUARD</button>
-      <button data-p25-arch="striker">STRIKER</button>
-      <button data-p25-arch="controller">CONTROLLER</button>
-      <button data-p25-skill="mastery">+ MASTERY</button>
-    </div>
-    <div id="p25-character-list" style="margin-top:10px"></div>
-  </div>
-  <div class="p25-panel" id="p25-mode-panel" style="display:none">
-    <div class="p25-grid">
-      <button data-p25-mode="survival">SURVIVAL</button>
-      <button data-p25-mode="bossrush">BOSS RUSH</button>
-      <button data-p25-mode="endless">ENDLESS</button>
-      <button data-p25-mode="challenge">CHALLENGE</button>
-      <button data-p25-mode="daily">DAILY</button>
-      <button data-p25-mode="weekly">WEEKLY</button>
-    </div>
-    <div class="p25-card" style="margin-top:10px">
-      <div class="p25-kicker">Seçili mod</div>
-      <div class="p25-value" id="p25-mode-name">SURVIVAL</div>
-      <div id="p25-mode-note"></div>
-    </div>
-  </div>
-  <button class="btn ghost" id="b-phase25-back">Geri</button>
 </div>
 
 <!-- IN-RUN LEVEL UP -->
@@ -1034,7 +1002,7 @@ const BALANCE={
 
   /* PHASE 0.5 · 14 — tek versiyon kaynagi. DOM rozeti ve <title>
      boot sirasinda bu degerden yazilir. */
-  version:"17.0.0",
+  version:"16.2.0",
 
   /* ---------------------------------------------------------
      FAZ 0 DUZELTME SABITLERI
@@ -6289,6 +6257,222 @@ const RUN_CHOICES={
   shield:{icon:"🛡",title:"ENERJİ KALKANI",desc:"Tek darbeyi engeller. En fazla 2 yük.",kind:"passive"}
 };
 
+/* =========================================================
+   NORYVX PHASE 2 — REAL BUILD & COMBAT
+   The build is runtime-authoritative for the current run.
+   No online state, no monetization, no Phase 3+ systems.
+========================================================= */
+const P2_RARITY={
+  COMMON:{mult:1.00,label:"COMMON"},
+  RARE:{mult:1.08,label:"RARE"},
+  EPIC:{mult:1.18,label:"EPIC"},
+  LEGENDARY:{mult:1.30,label:"LEGENDARY"}
+};
+
+const P2_PASSIVE_MAX={speed:4,magnet:4,score:3,shield:2};
+
+function p2DefaultBuild(){
+  return {
+    rarity:{pulse:"COMMON",plasma:"COMMON",arc:"COMMON",novaWeapon:"COMMON"},
+    passives:{speed:0,magnet:0,score:0,shield:0},
+    evolutions:{pulse:false,plasma:false,arc:false,novaWeapon:false}
+  };
+}
+
+function p2ResetBuild(){
+  Game.build=p2DefaultBuild();
+  Game.buildPower=0;
+}
+
+function p2RarityFor(key){
+  const level=weaponLevel(key);
+  if(level>=5)return "LEGENDARY";
+  if(level>=4)return "EPIC";
+  if(level>=2)return "RARE";
+  return "COMMON";
+}
+
+function p2RefreshRarity(key){
+  if(!Game.build)Game.build=p2DefaultBuild();
+  if(RUN_CHOICES[key]?.kind==="weapon"){
+    const computed=p2RarityFor(key);
+    const old=Game.build.rarity[key]||"COMMON";
+    const rank={COMMON:0,RARE:1,EPIC:2,LEGENDARY:3};
+    if(rank[computed]>rank[old])Game.build.rarity[key]=computed;
+    Game.build.evolutions[key]=weaponLevel(key)>=5;
+  }
+}
+
+function p2Synergies(){
+  const w=Game.weapons||{};
+  return {
+    overcharge:w.pulse>=2 && w.plasma>=2,
+    chainReactor:w.pulse>=2 && w.arc>=2,
+    meltdown:w.plasma>=2 && w.novaWeapon>=2
+  };
+}
+
+function p2BuildPower(){
+  const w=Game.weapons||{};
+  const b=Game.build||p2DefaultBuild();
+  const rarityPower={COMMON:0,RARE:18,EPIC:40,LEGENDARY:75};
+  let power=0;
+  for(const k of Object.keys(WEAPONS)){
+    const lv=w[k]||0;
+    power+=lv*22+(rarityPower[b.rarity?.[k]||"COMMON"]||0);
+    if(b.evolutions?.[k])power+=55;
+  }
+  for(const k of Object.keys(P2_PASSIVE_MAX)){
+    power+=(b.passives?.[k]||0)*12;
+  }
+  const syn=p2Synergies();
+  power+=syn.overcharge?40:0;
+  power+=syn.chainReactor?40:0;
+  power+=syn.meltdown?48:0;
+  return Math.round(power);
+}
+
+function p2ApplySelection(type){
+  if(!Game.build)Game.build=p2DefaultBuild();
+  const c=RUN_CHOICES[type];
+  if(!c)return;
+  if(c.kind==="weapon"){
+    p2RefreshRarity(type);
+  }else{
+    Game.build.passives[type]=Math.max(Game.build.passives[type]||0,Game.runUpgrades[type]||0);
+  }
+  Game.buildPower=p2BuildPower();
+}
+
+function p2WeaponStatModifiers(key,st){
+  if(!Game.build)return st;
+  const rarity=P2_RARITY[Game.build.rarity[key]||"COMMON"]||P2_RARITY.COMMON;
+  const rm=rarity.mult;
+  st.damage*=rm;
+  st.cooldown*=Math.pow(.985,Math.max(0,(rm-1)*100));
+  if(rarity.label==="RARE")st.radius+=.25;
+  if(rarity.label==="EPIC"){st.radius+=.5;st.pierce+=1;}
+  if(rarity.label==="LEGENDARY"){st.radius+=1;st.pierce+=1;st.chain+=1;}
+  if(Game.build.evolutions[key]){
+    if(key==="pulse"){st.damage*=1.08;st.speed*=1.10;st.pierce+=1;}
+    if(key==="plasma"){st.damage*=1.12;st.pierce+=1;}
+    if(key==="arc"){st.damage*=1.07;st.chain+=2;}
+    if(key==="novaWeapon"){st.damage*=1.15;st.radius+=20;}
+  }
+  const syn=p2Synergies();
+  if(syn.overcharge){
+    if(key==="pulse"){st.damage*=1.05;st.cooldown*=.94;}
+    if(key==="plasma"){st.damage*=1.07;st.pierce+=1;}
+  }
+  if(syn.chainReactor){
+    if(key==="pulse")st.cooldown*=.94;
+    if(key==="arc"){st.damage*=1.06;st.chain+=1;}
+  }
+  if(syn.meltdown && key==="novaWeapon"){st.damage*=1.10;st.radius+=12;}
+  return st;
+}
+
+function p2RenderBuild(){
+  const power=$("p2-build-power"),synCount=$("p2-syn-count");
+  if(!power)return;
+  power.textContent=Game.buildPower||p2BuildPower();
+  const syn=p2Synergies();
+  const active=Object.keys(syn).filter(k=>syn[k]);
+  synCount.textContent=active.length;
+
+  const wp=$("p2-weapons-panel");
+  const pp=$("p2-passives-panel");
+  if(wp){
+    wp.innerHTML=Object.keys(WEAPONS).map(k=>{
+      const lv=weaponLevel(k),r=(Game.build?.rarity?.[k]||"COMMON");
+      const evolved=Game.build?.evolutions?.[k];
+      const s=weaponStat(k,Math.max(1,lv||1));
+      return `<div class="p2-item">
+        <div class="p2-row"><b>${WEAPONS[k].name}</b><span class="p2-badge ${r.toLowerCase()}">${r}</span></div>
+        <div class="p2-muted">Seviye ${lv}/${WEAPONS[k].levels} · Hasar ${s.damage.toFixed(2)} · Cooldown ${s.cooldown.toFixed(2)}s${evolved?" · EVOLUTION":""}</div>
+      </div>`;
+    }).join("");
+  }
+  if(pp){
+    pp.innerHTML=Object.keys(P2_PASSIVE_MAX).map(k=>{
+      const lv=Game.build?.passives?.[k]||0;
+      return `<div class="p2-item"><div class="p2-row"><b>${RUN_CHOICES[k].title}</b><span>${lv}/${P2_PASSIVE_MAX[k]}</span></div><div class="p2-muted">${RUN_CHOICES[k].desc}</div></div>`;
+    }).join("");
+    if(active.length)pp.innerHTML+=`<div class="p2-item"><b>AKTİF SYNERGY</b><div style="margin-top:5px">${active.map(x=>`<span class="p2-syn">${x.toUpperCase()}</span>`).join("")}</div></div>`;
+  }
+}
+
+function p2OpenBuild(){
+  hide(scrMenu);hide(scrHow);hide(scrUpgrades);hide(scrSkins);hide(scrPause);hide(scrLevelup);hide(scrOver);
+  show($("scr-build"));
+  p2RenderBuild();
+}
+
+function p2CloseBuild(){
+  hide($("scr-build"));
+  show(scrMenu);
+}
+
+/* Hook existing weaponStat without replacing its core balance formula. */
+const p2BaseWeaponStat=weaponStat;
+weaponStat=function(key,level){
+  const st=p2BaseWeaponStat(key,level);
+  return p2WeaponStatModifiers(key,st);
+};
+
+/* Hook chooseRunPerk after the original function updates real run state. */
+const p2BaseChooseRunPerk=chooseRunPerk;
+chooseRunPerk=function(type){
+  p2BaseChooseRunPerk(type);
+  p2ApplySelection(type);
+  p2RenderBuild();
+};
+
+/* Build is reset exactly once at run start, preserving V16.1.0 progression. */
+const p2BaseGameStart=Game.start.bind(Game);
+Game.start=function(){
+  p2BaseGameStart();
+  p2ResetBuild();
+  /* Starting PULSE is part of the base build, but remains COMMON until upgraded. */
+  p2RefreshRarity("pulse");
+  Game.buildPower=p2BuildPower();
+};
+
+/* Build screen event wiring. */
+function p2BindUI(){
+  const b=$("b-build");
+  if(b && !b.dataset.p2Bound){
+    b.dataset.p2Bound="1";
+    b.addEventListener("click",p2OpenBuild);
+    b.addEventListener("touchend",e=>{e.preventDefault();p2OpenBuild();},{passive:false});
+  }
+  const back=$("b-build-back");
+  if(back && !back.dataset.p2Bound){
+    back.dataset.p2Bound="1";
+    back.addEventListener("click",p2CloseBuild);
+    back.addEventListener("touchend",e=>{e.preventDefault();p2CloseBuild();},{passive:false});
+  }
+  document.querySelectorAll("[data-p2-tab]").forEach(tab=>{
+    if(tab.dataset.p2Bound)return;
+    tab.dataset.p2Bound="1";
+    tab.addEventListener("click",()=>{
+      document.querySelectorAll("[data-p2-tab]").forEach(x=>x.classList.remove("on"));
+      tab.classList.add("on");
+      const weapons=$("p2-weapons-panel"),passives=$("p2-passives-panel");
+      const isW=tab.dataset.p2Tab==="weapons";
+      weapons.style.display=isW?"block":"none";
+      passives.style.display=isW?"none":"block";
+      p2RenderBuild();
+    });
+  });
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",p2BindUI,{once:true});
+else p2BindUI();
+setTimeout(p2BindUI,300);
+setTimeout(p2BindUI,1000);
+
+
+
 /* PHASE 1.5 — kart rarity/build identity. Statlar mevcut sistemden gelir;
    rarity sadece seçim ağırlığı ve sunum katmanıdır. */
 function cardRarity(key){
@@ -6839,7 +7023,7 @@ resetPlayer();
 /* PHASE 0.5 · 14 — tum versiyon gostergeleri BALANCE.version'dan gelir. */
 document.title="NEON SURVIVOR V"+BALANCE.version;
 const versionBadge=document.getElementById("version-badge");
-if(versionBadge)versionBadge.textContent="V"+BALANCE.version+" · PHASE 2–5";
+if(versionBadge)versionBadge.textContent="V"+BALANCE.version;
 
 toMenu();
 updateWeaponHUD();
@@ -6907,7 +7091,7 @@ if(
     if(!el) return;
     hideAll();
     el.classList.add("on");
-  }
+  }9
 
   function safeCall(name){
     try{
@@ -6989,665 +7173,6 @@ if(
   /* Second pass covers WebViews that finish layout/script initialization late. */
   setTimeout(install, 250);
   setTimeout(install, 1000);
-})();
-</script>
-
-
-<script id="noryvx-phase25-runtime">
-/* =========================================================
-   NORYVX V17.0.0 — PHASE 2–5 INTEGRATED OFFLINE CORE
-   Phase 6–8 intentionally excluded.
-   This layer is the V17.0.0 client-only Phase 2–5 integrated build, based on V16.1.0.
-========================================================= */
-(function(){
-"use strict";
-
-const P25_KEY="noryvx_phase25_v1";
-const P25={
-  version:"17.0.0",
-  rarity:{
-    COMMON:{mult:1.00,color:"#aeb8c8"},
-    RARE:{mult:1.08,color:"#48d9ff"},
-    EPIC:{mult:1.17,color:"#a05cff"},
-    LEGENDARY:{mult:1.28,color:"#ffe34d"}
-  },
-  archetypes:{
-    vanguard:{name:"VANGUARD",desc:"Daha dayanıklı. Hasar alımını azaltır.",damage:1.00,damageTaken:.88,speed:1.00,control:1.00},
-    striker:{name:"STRIKER",desc:"Silah hasarı ve hareketi öne çıkar.",damage:1.08,damageTaken:1.00,speed:1.04,control:1.00},
-    controller:{name:"CONTROLLER",desc:"Cooldown, magnet ve alan kontrolünü güçlendirir.",damage:1.00,damageTaken:1.00,speed:1.00,control:1.08}
-  },
-  modes:{
-    survival:{name:"SURVIVAL",note:"Standart dengeli koşu. Temel progression.",spawn:1,cap:1,hp:1,speed:1,bossEvery:5,map:"neon"},
-    bossrush:{name:"BOSS RUSH",note:"Daha az normal düşman, daha sık boss baskısı.",spawn:.72,cap:.78,hp:1.08,speed:1.04,bossEvery:3,map:"core"},
-    endless:{name:"ENDLESS",note:"Lv40 sonrası sınırsız scaling. Master tier baskısı.",spawn:.96,cap:1.06,hp:1.06,speed:1.05,bossEvery:5,map:"void"},
-    challenge:{name:"CHALLENGE",note:"Seed'li özel koşu. Kısıt + ödül.",spawn:1.04,cap:1.0,hp:1.08,speed:1.08,bossEvery:5,map:"storm"},
-    daily:{name:"DAILY",note:"Günün sabit seed'i ve günlük modifier'ı.",spawn:1.02,cap:1.0,hp:1.05,speed:1.05,bossEvery:5,map:"daily"},
-    weekly:{name:"WEEKLY",note:"Haftalık sabit seed. Daha uzun mastery odaklı koşu.",spawn:.98,cap:1.04,hp:1.10,speed:1.06,bossEvery:5,map:"weekly"}
-  },
-  maps:{
-    neon:{name:"NEON DISTRICT",bg:["#04060f","rgba(34,230,255,.08)"],event:"none"},
-    core:{name:"CORE VAULT",bg:["#08040f","rgba(255,107,59,.09)"],event:"boss"},
-    void:{name:"VOID GRID",bg:["#03050b","rgba(160,92,255,.09)"],event:"endless"},
-    storm:{name:"ION STORM",bg:["#04080f","rgba(72,217,255,.10)"],event:"storm"},
-    daily:{name:"DAILY SECTOR",bg:["#05070f","rgba(255,227,77,.07)"],event:"daily"},
-    weekly:{name:"WEEKLY SECTOR",bg:["#06040f","rgba(160,92,255,.08)"],event:"weekly"}
-  },
-  content:{
-    events:{
-      meteor:{at:75,duration:12,spawnRate:1.18},
-      blackout:{at:150,duration:10,spawnRate:1.12},
-      overdrive:{at:225,duration:10,spawnRate:.90},
-      eliteSurge:{at:300,duration:15,spawnRate:1.20}
-    },
-    elite:{
-      berserker:{speed:1.28,hp:.82,danger:1.20},
-      juggernaut:{speed:.72,hp:1.65,danger:1.30},
-      phase:{speed:1.06,hp:1.00,danger:1.18},
-      leech:{speed:1.00,hp:1.18,danger:1.24}
-    }
-  }
-};
-
-function p25Load(){
-  try{
-    const raw=JSON.parse(localStorage.getItem(P25_KEY)||"null");
-    if(!raw)throw 0;
-    return Object.assign({
-      archetype:"vanguard",charLevel:1,charXP:0,mastery:{pulse:0,plasma:0,arc:0,novaWeapon:0},
-      skillPoints:0,mode:"survival",challengeSeed:0,selectedMap:"neon",bestModes:{}
-    },raw);
-  }catch(e){
-    return {archetype:"vanguard",charLevel:1,charXP:0,mastery:{pulse:0,plasma:0,arc:0,novaWeapon:0},
-      skillPoints:0,mode:"survival",challengeSeed:0,selectedMap:"neon",bestModes:{}};
-  }
-}
-let P25S=p25Load();
-function p25Save(){try{localStorage.setItem(P25_KEY,JSON.stringify(P25S));}catch(e){}}
-
-function p25LevelXP(lv){return Math.floor(80*Math.pow(Math.max(1,lv),1.55));}
-function p25AddCharXP(amount){
-  if(!Number.isFinite(amount)||amount<=0)return;
-  P25S.charXP+=amount;
-  let gained=0;
-  while(P25S.charLevel<50 && P25S.charXP>=p25LevelXP(P25S.charLevel)){
-    P25S.charXP-=p25LevelXP(P25S.charLevel);
-    P25S.charLevel++;
-    P25S.skillPoints++;
-    gained++;
-  }
-  if(gained) setTimeout(()=>p25RenderCharacter(),0);
-  p25Save();
-}
-
-function p25Archetype(){return P25.archetypes[P25S.archetype]||P25.archetypes.vanguard;}
-function p25Mode(){return P25.modes[P25S.mode]||P25.modes.survival;}
-
-function p25SeedFor(mode){
-  const d=new Date();
-  if(mode==="daily")return d.getUTCFullYear()*10000+(d.getUTCMonth()+1)*100+d.getUTCDate();
-  if(mode==="weekly"){
-    const one=Date.UTC(d.getUTCFullYear(),0,1);
-    return Math.floor((Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate())-one)/604800000);
-  }
-  if(mode==="challenge")return 730201;
-  return 0;
-}
-
-function p25Rarity(key){
-  const lv=Game.level||1;
-  const wl=typeof weaponLevel==="function"?weaponLevel(key):0;
-  if(RUN_CHOICES[key]?.kind==="weapon" && wl>=5)return "LEGENDARY";
-  if(lv>=15)return "LEGENDARY";
-  if(lv>=8)return "EPIC";
-  if(lv>=4)return "RARE";
-  return "COMMON";
-}
-
-/* Real build state, not merely a visual badge. */
-function p25BuildState(){
-  const w=Game.weapons||{};
-  const b=Game.runBuild||{rarity:{},passivePower:0};
-  let power=0;
-  Object.keys(w).forEach(k=>{
-    if(w[k]>0){
-      const r=P25.rarity[b.rarity?.[k]||p25Rarity(k)]||P25.rarity.COMMON;
-      power += w[k]*20*r.mult;
-    }
-  });
-  power += (b.passivePower||0)*8;
-  const syn=typeof buildSynergies==="function"?buildSynergies():{};
-  if(syn.overcharge)power+=28;
-  if(syn.chainReactor)power+=28;
-  if(syn.meltdown)power+=30;
-  return {power:Math.round(power),rarity:b.rarity||{},synergy:syn};
-}
-
-/* Rarity now changes actual run power. */
-const p25OriginalWeaponStat=window.weaponStat;
-window.weaponStat=function(key,level){
-  const base=p25OriginalWeaponStat(key,level);
-  const b=Game.runBuild||{};
-  const rarity=b.rarity?.[key]||p25Rarity(key);
-  const rm=P25.rarity[rarity]?.mult||1;
-  const arch=p25Archetype();
-  const charLevelBonus=1+Math.min(.15,((P25S.charLevel-1)*.006));
-  const mastery=1+Math.min(.12,(P25S.mastery?.[key]||0)*.02);
-  const mode=p25Mode();
-  const damageMult=rm*mastery*arch.damage*charLevelBonus;
-  const cooldownMult=(P25S.archetype==="controller"?.92:1);
-  return Object.assign({},base,{
-    damage:base.damage*damageMult,
-    cooldown:base.cooldown*cooldownMult,
-    speed:base.speed*(arch.speed||1),
-    radius:base.radius+(rarity==="LEGENDARY"?1.5:rarity==="EPIC"?.8:rarity==="RARE"?.35:0),
-    _p25Rarity:rarity,
-    _p25BuildPower:p25BuildState().power,
-    _p25Mode:mode.name
-  });
-};
-
-/* Evolution adds a real weapon-specific behavior/stat identity. */
-function p25EvolutionBonus(key,st){
-  if(!st||weaponLevel(key)<5)return st;
-  if(key==="pulse"){st.pierce+=1;st.speed*=1.08;}
-  if(key==="plasma"){st.pierce+=2;st.damage*=1.06;}
-  if(key==="arc"){st.chain+=2;st.damage*=1.04;}
-  if(key==="novaWeapon"){st.radius+=24;st.damage*=1.08;}
-  return st;
-}
-const p25WeaponStat2=window.weaponStat;
-window.weaponStat=function(key,level){return p25EvolutionBonus(key,p25WeaponStat2(key,level));};
-
-/* Level-up cards now apply rarity to the actual build. */
-const p25OriginalChoose=window.chooseRunPerk;
-window.chooseRunPerk=function(type){
-  const rarity=type&&RUN_CHOICES[type]?.kind==="weapon"?p25Rarity(type):p25Rarity(type);
-  const before=Game.runBuild||{rarity:{},passivePower:0};
-  if(!Game.runBuild)Game.runBuild={rarity:{},passivePower:0};
-  if(RUN_CHOICES[type]?.kind==="weapon"){
-    Game.runBuild.rarity[type]=rarity;
-  }else{
-    Game.runBuild.rarity[type]=rarity;
-    Game.runBuild.passivePower=(Game.runBuild.passivePower||0)+
-      (rarity==="LEGENDARY"?4:rarity==="EPIC"?3:rarity==="RARE"?2:1);
-  }
-  p25Save();
-  return p25OriginalChoose(type);
-};
-
-/* Start with clean run build and apply character/mode state. */
-const p25OriginalStart=Game.start.bind(Game);
-Game.start=function(){
-  p25OriginalStart();
-  Game.runBuild={rarity:{pulse:"COMMON"},passivePower:0};
-  Game.p25Mode=P25S.mode;
-  Game.p25Map=P25S.selectedMap||p25Mode().map;
-  Game.p25EventClock=0;
-  Game.p25BossClock=0;
-  const arch=p25Archetype();
-  if(arch.damageTaken<1)Game.p25DamageTaken=arch.damageTaken; else Game.p25DamageTaken=1;
-  /* Character progression gives controlled starting identity, not runaway power. */
-  if(P25S.charLevel>1){
-    Game.runUpgrades.speed=Math.min(1,Game.runUpgrades.speed+Math.min(.4,(P25S.charLevel-1)*.004));
-  }
-  p25RenderBuild();
-  p25RenderMode();
-};
-
-/* Character XP is earned by performance, not purchased. */
-const p25OriginalOver=Game.over.bind(Game);
-Game.over=function(){
-  const score=Math.max(0,Game.score||0);
-  const time=Math.max(0,Game.time||0);
-  const xp=Math.floor(time*2+score/60+(Game.runBossKills||0)*35+(Game.runElites||0)*12);
-  p25AddCharXP(Math.max(10,xp));
-  P25S.bestModes[P25S.mode]=Math.max(P25S.bestModes[P25S.mode]||0,score);
-  p25Save();
-  return p25OriginalOver();
-};
-
-/* Archetype damage mitigation is real. */
-const p25OriginalDamage=Game.damage.bind(Game);
-Game.damage=function(){
-  if(Game.p25DamageTaken&&Game.p25DamageTaken<1){
-    const before=player.hp;
-    const oldShield=Game.powers?.shield||0;
-    p25OriginalDamage();
-    if(player.hp<before && oldShield<=0){
-      player.hp=Math.min(before,player.hp+1-(1-Game.p25DamageTaken));
-      /* Avoid fractional HP: mitigation can cancel this hit probabilistically. */
-      if(Math.random()<Game.p25DamageTaken){
-        player.hp=before;
-      }
-    }
-  }else return p25OriginalDamage();
-};
-
-/* Modes: real spawn/cap/content modifiers. */
-const p25OriginalCap=window.enemyCapForLevel;
-window.enemyCapForLevel=function(level){
-  const base=p25OriginalCap(level);
-  const m=p25Mode();
-  return Math.max(5,Math.min(31,Math.round(base*m.cap)));
-};
-const p25OriginalChooseEnemy=window.chooseEnemyType;
-window.chooseEnemyType=function(level){
-  const type=p25OriginalChooseEnemy(level);
-  if(P25S.mode==="bossrush" && Math.random()<.20 && level>=3)return 0;
-  if(P25S.mode==="challenge" && Math.random()<.18 && level>=4)return Math.min(3,type+1);
-  return type;
-};
-
-const p25OriginalSpawn=window.spawnEnemy;
-window.spawnEnemy=function(level){
-  const before=enemies.count();
-  p25OriginalSpawn(level);
-  if(enemies.count()>before){
-    let last=null; enemies.forEach(e=>{if(e.alive)last=e;});
-    if(last){
-      const m=p25Mode();
-      last.maxHp*=m.hp; last.hp=last.maxHp;
-      last.speed*=m.speed;
-      if(P25S.mode==="challenge")last.r*=1.03;
-    }
-  }
-};
-
-/* Elite modifiers are real stat changes on elite spawn. */
-const p25OriginalElite=window.spawnElite;
-window.spawnElite=function(level){
-  p25OriginalElite(level);
-  let last=null;enemies.forEach(e=>{if(e.alive&&e.elite&&!e.boss)last=e;});
-  if(!last)return;
-  const names=Object.keys(P25.content.elite);
-  const idx=(Game.runElites+Math.floor(Game.time/30))%names.length;
-  const mod=names[idx],cfg=P25.content.elite[mod];
-  last.p25Modifier=mod;
-  last.maxHp*=cfg.hp;last.hp=last.maxHp;last.speed*=cfg.speed;
-  last.p25Danger=cfg.danger;
-  if(mod==="phase")last.p25PhaseTimer=2.5;
-};
-
-/* Boss Rush creates additional boss pressure without changing normal mode. */
-const p25OriginalDirector=window.updateCombatDirector;
-window.updateCombatDirector=function(dt){
-  p25OriginalDirector(dt);
-  /* Mode spawn pressure is applied to the next director interval. */
-  const mm=p25Mode();
-  if(Game.enemySpawn>0 && mm.spawn!==1)Game.enemySpawn*=mm.spawn;
-  if(P25S.mode==="bossrush" && Game.state===STATE.PLAYING && !Game.bossActive && Game.time>=Game.p25BossClock){
-    if(Game.level>=3){
-      try{spawnBoss();}catch(e){}
-      Game.p25BossClock=Game.time+42;
-    }
-  }
-  /* Live events are lightweight and deterministic per mode. */
-  if(Game.state===STATE.PLAYING){
-    const t=Math.floor(Game.time);
-    if(t===75 || t===150 || t===225 || t===300){
-      const evt=t===75?"meteor":t===150?"blackout":t===225?"overdrive":"eliteSurge";
-      Game.p25Event=evt;
-      Game.p25EventUntil=Game.time+(P25.content.events[evt]?.duration||10);
-    }
-    if(Game.p25EventUntil && Game.time>Game.p25EventUntil)Game.p25Event="";
-  }
-};
-
-/* Background maps are real visual/content variations. */
-const p25OriginalBackground=window.drawBackground;
-window.drawBackground=function(dt){
-  const m=P25.maps[Game.p25Map||P25S.selectedMap||"neon"]||P25.maps.neon;
-  p25OriginalBackground(dt);
-  ctx.save();
-  ctx.globalAlpha=.55;
-  const g=ctx.createRadialGradient(W*.5,H*.35,0,W*.5,H*.35,Math.max(W,H)*.75);
-  g.addColorStop(0,m.bg[1]);g.addColorStop(1,"rgba(0,0,0,0)");
-  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
-  if(Game.p25Event==="blackout"){
-    ctx.fillStyle="rgba(0,0,0,.28)";ctx.fillRect(0,0,W,H);
-  }
-  if(Game.p25Event==="meteor"){
-    ctx.strokeStyle="rgba(255,107,59,.16)";ctx.lineWidth=2;
-    for(let i=0;i<4;i++){const y=(bgTime*80+i*120)%H;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y-70);ctx.stroke();}
-  }
-  if(Game.p25Event==="overdrive"){
-    ctx.strokeStyle="rgba(255,227,77,.14)";ctx.lineWidth=1;
-    ctx.strokeRect(12,12,W-24,H-24);
-  }
-  ctx.restore();
-};
-
-/* Game mode selection UI. */
-function p25Show(){
-  hide(scrMenu);hide(scrHow);hide(scrUpgrades);hide(scrSkins);hide(scrPause);hide(scrOver);hide(scrLevelup);
-  Game.state=STATE.MENU;
-  show(document.getElementById("scr-phase25"));
-  p25RenderAll();
-}
-function p25Close(){hide(document.getElementById("scr-phase25"));toMenu();}
-function p25RenderBuild(){
-  const s=p25BuildState();
-  const bp=document.getElementById("p25-build-power"),tags=document.getElementById("p25-build-tags"),list=document.getElementById("p25-build-list");
-  if(!bp)return;
-  bp.textContent=s.power;
-  tags.innerHTML=Object.keys(s.synergy).filter(k=>s.synergy[k]).map(k=>`<span class="p25-chip">${k.replace(/([A-Z])/g," $1").toUpperCase()}</span>`).join("");
-  list.innerHTML=Object.keys(Game.weapons||{}).filter(k=>Game.weapons[k]>0).map(k=>{
-    const r=s.rarity[k]||p25Rarity(k);
-    return `<div class="p25-card"><div class="p25-row"><b>${WEAPONS[k]?.name||k}</b><span class="p25-chip">${r}</span></div><div class="p25-kicker">LEVEL ${Game.weapons[k]} · MASTERY ${P25S.mastery[k]||0}</div></div>`;
-  }).join("")||'<div class="p25-kicker">Koşu sırasında build burada oluşur.</div>';
-}
-function p25RenderCharacter(){
-  const a=p25Archetype(), need=p25LevelXP(P25S.charLevel);
-  const lv=document.getElementById("p25-char-level"),xp=document.getElementById("p25-char-xp"),fill=document.getElementById("p25-char-fill"),list=document.getElementById("p25-character-list");
-  if(!lv)return;
-  lv.textContent="Lv."+P25S.charLevel+" · "+a.name;
-  xp.textContent=Math.floor(P25S.charXP)+" / "+need+" XP";
-  fill.style.width=Math.min(100,P25S.charXP/need*100)+"%";
-  document.querySelectorAll("[data-p25-arch]").forEach(b=>b.classList.toggle("on",b.dataset.p25Arch===P25S.archetype));
-  list.innerHTML=`<div class="p25-card"><b>${a.name}</b><div class="p25-kicker">${a.desc}</div><div style="margin-top:7px">Skill Points: <b>${P25S.skillPoints}</b></div></div>`+
-    Object.keys(P25S.mastery).map(k=>`<div class="p25-card"><div class="p25-row"><span>${WEAPONS[k]?.name||k}</span><span>Mastery ${P25S.mastery[k]||0}</span></div><div class="p25-bar"><div class="p25-fill" style="width:${Math.min(100,(P25S.mastery[k]||0)*5)}%"></div></div></div>`).join("");
-}
-function p25RenderMode(){
-  const m=p25Mode(),n=document.getElementById("p25-mode-name"),note=document.getElementById("p25-mode-note");
-  if(!n)return;
-  n.textContent=m.name;note.textContent=m.note+" · Harita: "+(P25.maps[m.map]?.name||m.map);
-  document.querySelectorAll("[data-p25-mode]").forEach(b=>b.classList.toggle("on",b.dataset.p25Mode===P25S.mode));
-}
-function p25RenderAll(){p25RenderBuild();p25RenderCharacter();p25RenderMode();}
-
-function p25Init(){
-  const menu=document.getElementById("b-phase25");
-  if(menu)menu.addEventListener("click",e=>{e.preventDefault();p25Show();});
-  const back=document.getElementById("b-phase25-back");
-  if(back)back.addEventListener("click",p25Close);
-  document.querySelectorAll("[data-p25-tab]").forEach(b=>b.addEventListener("click",()=>{
-    document.querySelectorAll(".p25-tab").forEach(x=>x.classList.remove("on"));b.classList.add("on");
-    const t=b.dataset.p25Tab;
-    document.getElementById("p25-build-panel").style.display=t==="build"?"block":"none";
-    document.getElementById("p25-character-panel").style.display=t==="character"?"block":"none";
-    document.getElementById("p25-mode-panel").style.display=t==="mode"?"block":"none";
-    p25RenderAll();
-  }));
-  document.querySelectorAll("[data-p25-mode]").forEach(b=>b.addEventListener("click",()=>{
-    P25S.mode=b.dataset.p25Mode;P25S.selectedMap=P25.modes[P25S.mode].map;p25Save();p25RenderMode();
-  }));
-  document.querySelectorAll("[data-p25-arch]").forEach(b=>b.addEventListener("click",()=>{
-    P25S.archetype=b.dataset.p25Arch;p25Save();p25RenderCharacter();
-  }));
-  const sk=document.querySelector("[data-p25-skill]");
-  if(sk)sk.addEventListener("click",()=>{
-    if(P25S.skillPoints<=0)return;
-    P25S.skillPoints--;
-    const keys=Object.keys(P25S.mastery);
-    const k=keys[(P25S.charLevel+P25S.skillPoints)%keys.length];
-    P25S.mastery[k]=(P25S.mastery[k]||0)+1;
-    p25Save();p25RenderCharacter();
-  });
-  p25RenderAll();
-}
-
-/* Make level-up rarity materially visible and real. */
-const p25OriginalRender=window.renderPerkCards;
-window.renderPerkCards=function(grid,keys){
-  const wrapped=keys.map(k=>{
-    const r=p25Rarity(k);
-    return k;
-  });
-  p25OriginalRender(grid,wrapped);
-};
-
-/* Add character mastery from weapon usage without altering core telemetry. */
-const p25OriginalUpdateWeapons=window.updateWeapons;
-window.updateWeapons=function(dt){
-  p25OriginalUpdateWeapons(dt);
-  if(Game.state===STATE.PLAYING){
-    for(const k of Object.keys(Game.weapons||{})){
-      if(Game.weapons[k]>0 && Math.random()<dt*.035)P25S.mastery[k]=Math.min(20,(P25S.mastery[k]||0)+1);
-    }
-  }
-};
-
-/* Endless: once the original level cap is reached, pressure continues
-   through a bounded virtual tier instead of freezing. */
-const p25OriginalTierOf=BALANCE.tierOf;
-BALANCE.tierOf=function(level){
-  if(P25S.mode==="endless" && level>40){
-    return {id:"master_endless",name:"MASTER+",from:41,to:9999,targetRatio:1.06};
-  }
-  return p25OriginalTierOf.call(BALANCE,level);
-};
-BALANCE.targetRatio=function(level){return BALANCE.tierOf(level).targetRatio;};
-
-/* Refresh the development center when returning to menu. */
-const p25OldToMenu=window.toMenu;
-window.toMenu=function(){
-  const r=p25OldToMenu.apply(this,arguments);
-  setTimeout(p25RenderAll,0);
-  return r;
-};
-
-
-window.NORYVX_P25_READY=true;
-window.NORYVX_P25={
-  state:P25S,
-  save:p25Save,
-  renderAll:p25RenderAll,
-  renderBuild:p25RenderBuild,
-  renderCharacter:p25RenderCharacter,
-  renderMode:p25RenderMode,
-  setMode:function(mode){
-    if(!P25.modes[mode])return false;
-    P25S.mode=mode;
-    P25S.selectedMap=P25.modes[mode].map;
-    p25Save(); p25RenderMode(); return true;
-  },
-  setArchetype:function(a){
-    if(!P25.archetypes[a])return false;
-    P25S.archetype=a;
-    p25Save(); p25RenderCharacter(); return true;
-  },
-  addMastery:function(){
-    if(P25S.skillPoints<=0)return false;
-    P25S.skillPoints--;
-    const keys=Object.keys(P25S.mastery);
-    const k=keys[(P25S.charLevel+P25S.skillPoints)%keys.length];
-    P25S.mastery[k]=(P25S.mastery[k]||0)+1;
-    p25Save(); p25RenderCharacter(); return true;
-  }
-};
-
-if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",p25Init,{once:true});
-else p25Init();
-
-})();
-</script>
-
-
-<script id="noryvx-phase25-safe-ui">
-(function(){
-"use strict";
-function p25Screen(){
-  return document.getElementById("scr-phase25");
-}
-function p25HideOthers(){
-  ["scr-menu","scr-how","scr-upgrades","scr-skins","scr-pause","scr-over","scr-levelup"].forEach(function(id){
-    var el=document.getElementById(id);
-    if(el)el.classList.remove("on");
-  });
-}
-function p25OpenSafe(){
-  var el=p25Screen();
-  if(!el)return;
-  p25HideOthers();
-  el.classList.add("on");
-  try{ if(typeof p25RenderAll==="function")p25RenderAll(); }catch(e){}
-}
-function p25BackSafe(){
-  var el=p25Screen();
-  if(el)el.classList.remove("on");
-  var menu=document.getElementById("scr-menu");
-  if(menu)menu.classList.add("on");
-  try{ if(typeof toMenu==="function")toMenu(); }catch(e){}
-}
-function p25Bind(){
-  var b=document.getElementById("b-phase25");
-  if(b){
-    b.onclick=function(ev){
-      ev.preventDefault();
-      ev.stopPropagation();
-      p25OpenSafe();
-      return false;
-    };
-  }
-  var back=document.getElementById("b-phase25-back");
-  if(back){
-    back.onclick=function(ev){
-      ev.preventDefault();
-      ev.stopPropagation();
-      p25BackSafe();
-      return false;
-    };
-  }
-  document.querySelectorAll("[data-p25-tab]").forEach(function(tab){
-    tab.onclick=function(){
-      document.querySelectorAll("[data-p25-tab]").forEach(function(x){x.classList.remove("on");});
-      tab.classList.add("on");
-      var t=tab.getAttribute("data-p25-tab");
-      var a=document.getElementById("p25-build-panel");
-      var c=document.getElementById("p25-character-panel");
-      var m=document.getElementById("p25-mode-panel");
-      if(a)a.style.display=t==="build"?"block":"none";
-      if(c)c.style.display=t==="character"?"block":"none";
-      if(m)m.style.display=t==="mode"?"block":"none";
-      try{if(typeof p25RenderAll==="function")p25RenderAll();}catch(e){}
-    };
-  });
-}
-if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",p25Bind,{once:true});
-else p25Bind();
-})();
-</script>
-
-
-<script id="noryvx-phase25-android-delegated-touch">
-(function(){
-"use strict";
-var bound=false,last=0;
-
-function showTab(name){
-  var panels={build:"p25-build-panel",character:"p25-character-panel",mode:"p25-mode-panel"};
-  document.querySelectorAll("[data-p25-tab]").forEach(function(x){
-    x.classList.toggle("on",x.getAttribute("data-p25-tab")===name);
-  });
-  Object.keys(panels).forEach(function(k){
-    var p=document.getElementById(panels[k]);
-    if(p)p.style.display=(k===name)?"block":"none";
-  });
-  if(window.NORYVX_P25)window.NORYVX_P25.renderAll();
-}
-
-function mode(name){
-  if(window.NORYVX_P25){
-    window.NORYVX_P25.setMode(name);
-  }else{
-    try{
-      var st=JSON.parse(localStorage.getItem("noryvx_phase25_v1")||"{}");
-      st.mode=name; localStorage.setItem("noryvx_phase25_v1",JSON.stringify(st));
-    }catch(e){}
-  }
-  document.querySelectorAll("[data-p25-mode]").forEach(function(x){
-    x.classList.toggle("on",x.getAttribute("data-p25-mode")===name);
-  });
-  var data={
-    survival:["SURVIVAL","Standart dengeli koşu. Temel progression.","NEON DISTRICT"],
-    bossrush:["BOSS RUSH","Daha az normal düşman, daha sık boss baskısı.","CORE VAULT"],
-    endless:["ENDLESS","Lv40 sonrası sınırsız scaling. Master tier baskısı.","VOID GRID"],
-    challenge:["CHALLENGE","Seed'li özel koşu. Kısıt + ödül.","ION STORM"],
-    daily:["DAILY","Günün sabit seed'i ve günlük modifier'ı.","DAILY SECTOR"],
-    weekly:["WEEKLY","Haftalık sabit seed. Daha uzun mastery odaklı koşu.","WEEKLY SECTOR"]
-  }[name];
-  if(data){
-    var n=document.getElementById("p25-mode-name"),note=document.getElementById("p25-mode-note");
-    if(n)n.textContent=data[0];
-    if(note)note.textContent=data[1]+" · Harita: "+data[2];
-  }
-}
-
-function arch(name){
-  if(window.NORYVX_P25)window.NORYVX_P25.setArchetype(name);
-  else{
-    try{
-      var st=JSON.parse(localStorage.getItem("noryvx_phase25_v1")||"{}");
-      st.archetype=name; localStorage.setItem("noryvx_phase25_v1",JSON.stringify(st));
-    }catch(e){}
-  }
-  document.querySelectorAll("[data-p25-arch]").forEach(function(x){
-    x.classList.toggle("on",x.getAttribute("data-p25-arch")===name);
-  });
-}
-
-function bind(){
-  if(bound)return;
-  var root=document.getElementById("scr-phase25");
-  if(!root)return;
-  bound=true;
-
-  root.querySelectorAll("[data-p25-tab]").forEach(function(b){
-    b.onclick=function(e){e.preventDefault();e.stopPropagation();showTab(b.getAttribute("data-p25-tab"));return false;};
-    b.ontouchend=function(e){e.preventDefault();e.stopPropagation();showTab(b.getAttribute("data-p25-tab"));return false;};
-  });
-  root.querySelectorAll("[data-p25-mode]").forEach(function(b){
-    b.onclick=function(e){e.preventDefault();e.stopPropagation();mode(b.getAttribute("data-p25-mode"));return false;};
-    b.ontouchend=function(e){e.preventDefault();e.stopPropagation();mode(b.getAttribute("data-p25-mode"));return false;};
-  });
-  root.querySelectorAll("[data-p25-arch]").forEach(function(b){
-    b.onclick=function(e){e.preventDefault();e.stopPropagation();arch(b.getAttribute("data-p25-arch"));return false;};
-    b.ontouchend=function(e){e.preventDefault();e.stopPropagation();arch(b.getAttribute("data-p25-arch"));return false;};
-  });
-  var skill=root.querySelector("[data-p25-skill]");
-  if(skill){
-    var doSkill=function(e){
-      e.preventDefault();e.stopPropagation();
-      if(window.NORYVX_P25)window.NORYVX_P25.addMastery();
-      return false;
-    };
-    skill.onclick=doSkill;skill.ontouchend=doSkill;
-  }
-}
-
-function open(){
-  var root=document.getElementById("scr-phase25");
-  if(!root)return;
-  document.querySelectorAll(".screen").forEach(function(x){
-    if(x!==root)x.classList.remove("on");
-  });
-  root.classList.add("on");
-  bind();
-  showTab(document.querySelector("[data-p25-tab].on")?.getAttribute("data-p25-tab")||"build");
-}
-
-function back(){
-  var root=document.getElementById("scr-phase25");if(root)root.classList.remove("on");
-  var menu=document.getElementById("scr-menu");if(menu)menu.classList.add("on");
-}
-
-function init(){
-  bind();
-  var menu=document.getElementById("b-phase25");
-  if(menu){
-    menu.onclick=function(e){e.preventDefault();e.stopPropagation();open();return false;};
-    menu.ontouchend=function(e){e.preventDefault();e.stopPropagation();open();return false;};
-  }
-  var backBtn=document.getElementById("b-phase25-back");
-  if(backBtn){
-    backBtn.onclick=function(e){e.preventDefault();e.stopPropagation();back();return false;};
-    backBtn.ontouchend=function(e){e.preventDefault();e.stopPropagation();back();return false;};
-  }
-}
-if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});
-else init();
-setTimeout(init,300);
-setTimeout(init,1000);
 })();
 </script>
 
