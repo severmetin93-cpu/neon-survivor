@@ -5472,19 +5472,11 @@ function drawBackground(dt){
      laneStep / laneOffset degiskenleri sadece bu blokta
      kullaniliyordu, birlikte kaldirildi. */
 
-  /* Neon lane accents, sparse for mobile performance. */
-  ctx.save();
-  ctx.lineWidth=1.5;
-  ctx.globalAlpha=.35+.08*Math.sin(bgTime*2.2);
-  for(let i=0;i<5;i++){
-    const x=((i*W/4)+bgTime*(9+i*2))%(W+80)-40;
-    ctx.strokeStyle=i%2?"#22e6ff":"#a05cff";
-    ctx.beginPath();
-    ctx.moveTo(x,H*.22);
-    ctx.lineTo(x-35,H);
-    ctx.stroke();
-  }
-  ctx.restore();
+  /* NOT: "Neon lane accents" seritleri de KALDIRILDI.
+     5 adet parlak cyan/mor diyagonal serit ciziyordu.
+     Neon atmosferi seritlerden degil, korunan katmanlardan geliyor:
+     horizon glow, bina pencere isiklari, oyuncu isik havuzu,
+     sis bantlari. */
 
   /* Player-centered light pool */
   const px=player.x||W/2;
@@ -5525,10 +5517,14 @@ function drawBackground(dt){
   ctx.fillStyle=vignette;
   ctx.fillRect(0,0,W,H);
 
-  /* Very subtle animated scanline texture */
-  ctx.fillStyle="rgba(255,255,255,.012)";
-  const scan=(bgTime*18)%4;
-  for(let y=scan;y<H;y+=4) ctx.fillRect(0,y,W,1);
+  /* NOT: "Animated scanline texture" katmani da KALDIRILDI.
+     Her karede 4 pikselde bir yatay 1px cizgi ciziyor ve bu
+     cizgiler asagi kayiyordu; telefon ekraninda kayan yatay serit
+     olarak goruluyordu. Ayrica kare basina ~210 fillRect demekti.
+     Geri istenirse eski hali:
+       ctx.fillStyle="rgba(255,255,255,.012)";
+       const scan=(bgTime*18)%4;
+       for(let y=scan;y<H;y+=4) ctx.fillRect(0,y,W,1);          */
 }
 
 
