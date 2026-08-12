@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#04060f">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>NEON SURVIVOR V15.5.2</title>
+<title>NEON SURVIVOR V17.0.0 · PHASE 2–5</title>
 <link rel="manifest" href="manifest.json">
 
 <style>
@@ -1034,7 +1034,7 @@ const BALANCE={
 
   /* PHASE 0.5 · 14 — tek versiyon kaynagi. DOM rozeti ve <title>
      boot sirasinda bu degerden yazilir. */
-  version:"16.1.0",
+  version:"17.0.0",
 
   /* ---------------------------------------------------------
      FAZ 0 DUZELTME SABITLERI
@@ -6839,7 +6839,7 @@ resetPlayer();
 /* PHASE 0.5 · 14 — tum versiyon gostergeleri BALANCE.version'dan gelir. */
 document.title="NEON SURVIVOR V"+BALANCE.version;
 const versionBadge=document.getElementById("version-badge");
-if(versionBadge)versionBadge.textContent="V"+BALANCE.version;
+if(versionBadge)versionBadge.textContent="V"+BALANCE.version+" · PHASE 2–5";
 
 toMenu();
 updateWeaponHUD();
@@ -6997,7 +6997,7 @@ if(
 /* =========================================================
    NORYVX V17.0.0 — PHASE 2–5 INTEGRATED OFFLINE CORE
    Phase 6–8 intentionally excluded.
-   This layer is client-only and designed to sit on V16.1.0.
+   This layer is the V17.0.0 client-only Phase 2–5 integrated build, based on V16.1.0.
 ========================================================= */
 (function(){
 "use strict";
