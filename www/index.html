@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#04060f">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>NORYVX V16.4.2</title>
+<title>NORYVX V16.5.0</title>
 <link rel="manifest" href="manifest.json">
 
 <style>
@@ -721,7 +721,7 @@ button,
 </head>
 
 <body>
-<div id="version-badge" aria-hidden="true">V16.4.2 · PHASE 4A GAMEPLAY</div>
+<div id="version-badge" aria-hidden="true">V16.5.0 · PHASE 4A GAMEPLAY</div>
 
 <div id="stage">
 
@@ -1147,7 +1147,7 @@ const BALANCE={
 
   /* PHASE 0.5 · 14 — tek versiyon kaynagi. DOM rozeti ve <title>
      boot sirasinda bu degerden yazilir. */
-  version:"16.4.2",
+  version:"16.5.0",
 
   /* ---------------------------------------------------------
      FAZ 0 DUZELTME SABITLERI
@@ -5473,153 +5473,175 @@ function drawPlayer(){
 
   const blink=
     player.invuln>0 &&
-    (
-      performance.now()/70|0
-    )%2===0;
+    (performance.now()/70|0)%2===0;
 
   if(blink)return;
 
-  /* shield */
+  /* =========================================================
+     PHASE 4B — KARAKTER GÖRSEL SİSTEMİ
+     Arketip artık yalnızca stat değiştirmiyor; oyun içindeki
+     oyuncu siluetini de değiştiriyor.
+  ========================================================= */
 
-  if(
-    Game.powers.shield>0
-  ){
+  const arch=
+    window.NORYVX_P3 &&
+    typeof window.NORYVX_P3.archetype==="function"
+      ? window.NORYVX_P3.archetype()
+      : {id:"vanguard",name:"VANGUARD"};
 
-    ctx.save();
-
-    ctx.strokeStyle=
-      "#48d9ff";
-
-    ctx.shadowColor=
-      "#48d9ff";
-
-    ctx.shadowBlur=24;
-
-    ctx.lineWidth=2;
-
-    ctx.globalAlpha=
-      .65+
-      Math.sin(
-        performance.now()/100
-      )*.15;
-
-    ctx.beginPath();
-
-    ctx.arc(
-      player.x,
-      player.y,
-      23,
-      0,
-      TAU
-    );
-
-    ctx.stroke();
-
-    ctx.restore();
-
-  }
-
-  /* skin */
+  const archId=
+    String(arch.id||arch.key||arch.name||"vanguard").toLowerCase();
 
   const skin=currentSkin();
   const skinOuter=Game.powers.overdrive>0?"#ffe34d":skin.outer;
   const skinInner=Game.powers.overdrive>0?"#fff8c7":skin.inner;
 
-  /* trail */
-
-  for(
-    let i=2;
-    i<player.trail.length;
-    i+=2
-  ){
-
-    const t=
-      i/
-      player.trail.length;
-
-    ctx.strokeStyle=
-      skin.outer+Math.round(t*.32*255).toString(16).padStart(2,"0");
-
-    ctx.lineWidth=
-      14*t;
-
+  /* shield */
+  if(Game.powers.shield>0){
+    ctx.save();
+    ctx.strokeStyle="#48d9ff";
+    ctx.shadowColor="#48d9ff";
+    ctx.shadowBlur=24;
+    ctx.lineWidth=2;
+    ctx.globalAlpha=.65+Math.sin(performance.now()/100)*.15;
     ctx.beginPath();
-
-    ctx.moveTo(
-      player.trail[i-2],
-      player.trail[i-1]
-    );
-
-    ctx.lineTo(
-      player.trail[i],
-      player.trail[i+1]
-    );
-
+    ctx.arc(player.x,player.y,29,0,TAU);
     ctx.stroke();
-
+    ctx.restore();
   }
 
-  const r=11;
+  /* movement trail */
+  for(let i=2;i<player.trail.length;i+=2){
+    const t=i/player.trail.length;
+    ctx.strokeStyle=
+      skin.outer+
+      Math.round(t*.32*255).toString(16).padStart(2,"0");
+    ctx.lineWidth=14*t;
+    ctx.beginPath();
+    ctx.moveTo(player.trail[i-2],player.trail[i-1]);
+    ctx.lineTo(player.trail[i],player.trail[i+1]);
+    ctx.stroke();
+  }
 
-  // Oyuncunun benzersiz görsel imzası: cyan aura + beyaz çekirdek.
+  const t=performance.now()/1000;
+  const pulse=1+Math.sin(t*5)*.035;
+
   ctx.save();
-  ctx.globalAlpha=.34+.08*Math.sin(performance.now()/120);
-  ctx.strokeStyle="#22e6ff";
-  ctx.shadowColor="#22e6ff";
-  ctx.shadowBlur=26;
-  ctx.lineWidth=1.8;
-  ctx.beginPath();
-  ctx.arc(player.x,player.y,19.5+Math.sin(performance.now()/180)*1.2,0,TAU);
-  ctx.stroke();
-  ctx.restore();
+  ctx.translate(player.x,player.y);
 
-
-  ctx.save();
-
+  /* Ground aura */
+  ctx.globalAlpha=.24+.06*Math.sin(t*4);
+  ctx.strokeStyle=skinOuter;
   ctx.shadowColor=skin.glow;
-
-  ctx.shadowBlur=24;
-
-  ctx.fillStyle=skinOuter+"22";
-
+  ctx.shadowBlur=22;
+  ctx.lineWidth=1.6;
   ctx.beginPath();
+  ctx.arc(0,0,22*pulse,0,TAU);
+  ctx.stroke();
+  ctx.globalAlpha=1;
 
-  ctx.arc(
-    player.x,
-    player.y,
-    r*2.1,
-    0,
-    TAU
-  );
+  /*
+    Top-down cyber-soldier silhouette.
+    Vanguard = ağır zırh / geniş omuz
+    Striker = daha ince / agresif ön kol
+    Controller = teknoloji halkaları / sensör çekirdeği
+  */
+  let bodyW=8, bodyH=13, shoulder=11, head=5.2;
+  if(archId.includes("striker")){
+    bodyW=6.7; bodyH=13.5; shoulder=9; head=5;
+  }else if(archId.includes("controller")){
+    bodyW=7.2; bodyH=12.5; shoulder=9.5; head=5;
+  }else{
+    bodyW=9.5; bodyH=14.5; shoulder=12.5; head=5.6;
+  }
 
-  ctx.fill();
-
-  /* PHASE 0.5 · 16
-     ONCE: skinInner hesaplaniyor ama kullanilmiyordu; ic cekirdek her
-           skin'de beyaz, merkez nokta her skin'de cyan idi.
-     SONRA: ic cekirdek skinInner, merkez nokta skinOuter.
-            Dis aura ve glow degismedi. */
-  ctx.fillStyle=skinInner;
-  ctx.beginPath();
-  ctx.arc(
-    player.x,
-    player.y,
-    r*.62,
-    0,
-    TAU
-  );
-  ctx.fill();
-
-  ctx.fillStyle=skinOuter;
+  /* back/armor */
   ctx.shadowColor=skin.glow;
   ctx.shadowBlur=18;
+  ctx.fillStyle="rgba(5,10,24,.96)";
+  ctx.strokeStyle=skinOuter;
+  ctx.lineWidth=1.5;
+
+  /* legs */
   ctx.beginPath();
-  ctx.arc(player.x,player.y,r*.22,0,TAU);
+  ctx.roundRect(-bodyW*.72,5,bodyW*.55,10,2);
+  ctx.roundRect(bodyW*.17,5,bodyW*.55,10,2);
+  ctx.fill();ctx.stroke();
+
+  /* torso */
+  ctx.beginPath();
+  ctx.roundRect(-bodyW,-bodyH*.35,bodyW*2,bodyH,3.5);
+  ctx.fill();ctx.stroke();
+
+  /* shoulder armor */
+  ctx.beginPath();
+  ctx.roundRect(-shoulder,-bodyH*.34,bodyW*.55,6,2.5);
+  ctx.roundRect(shoulder-bodyW*.55,-bodyH*.34,bodyW*.55,6,2.5);
+  ctx.fill();ctx.stroke();
+
+  /* helmet */
+  ctx.fillStyle="rgba(2,7,18,.98)";
+  ctx.beginPath();
+  ctx.arc(0,-bodyH*.72,head,0,TAU);
+  ctx.fill();ctx.stroke();
+
+  /* visor */
+  ctx.fillStyle=skinInner;
+  ctx.shadowColor=skin.glow;
+  ctx.shadowBlur=12;
+  ctx.beginPath();
+  ctx.roundRect(-head*.72,-bodyH*.76,head*1.44,head*.38,1.5);
   ctx.fill();
+
+  /* TUMES/NORYVX-style core mark */
+  ctx.strokeStyle=skinOuter;
+  ctx.lineWidth=1.4;
+  ctx.shadowColor=skin.glow;
+  ctx.shadowBlur=10;
+  ctx.beginPath();
+  ctx.moveTo(0,-1.8);
+  ctx.lineTo(-3.1,1.8);
+  ctx.lineTo(0,.8);
+  ctx.lineTo(3.1,1.8);
+  ctx.stroke();
+
+  /* class-specific silhouette details */
+  if(archId.includes("vanguard")){
+    ctx.strokeStyle="#9edfff";
+    ctx.lineWidth=2;
+    ctx.globalAlpha=.72;
+    ctx.beginPath();
+    ctx.arc(0,-bodyH*.28,bodyW*1.25,Math.PI*1.08,Math.PI*1.92);
+    ctx.stroke();
+  }
+
+  if(archId.includes("striker")){
+    ctx.strokeStyle="#ff4fd8";
+    ctx.lineWidth=1.4;
+    ctx.globalAlpha=.8;
+    ctx.beginPath();
+    ctx.moveTo(-shoulder,-1);
+    ctx.lineTo(-shoulder-6,5);
+    ctx.moveTo(shoulder,-1);
+    ctx.lineTo(shoulder+6,5);
+    ctx.stroke();
+  }
+
+  if(archId.includes("controller")){
+    ctx.strokeStyle="#b56cff";
+    ctx.lineWidth=1.2;
+    ctx.globalAlpha=.72;
+    ctx.beginPath();
+    ctx.arc(0,0,16+Math.sin(t*3)*1.5,-t,t+Math.PI*1.25);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(0,0,18,Math.PI-t,Math.PI*.35-t);
+    ctx.stroke();
+  }
+
   ctx.restore();
 
 }
-
 
 /* =========================================================
    DRAW ENEMIES
