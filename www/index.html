@@ -7426,6 +7426,36 @@ window.toMenu=function(){
   return r;
 };
 
+
+window.NORYVX_P25_READY=true;
+window.NORYVX_P25={
+  state:P25S,
+  save:p25Save,
+  renderAll:p25RenderAll,
+  renderBuild:p25RenderBuild,
+  renderCharacter:p25RenderCharacter,
+  renderMode:p25RenderMode,
+  setMode:function(mode){
+    if(!P25.modes[mode])return false;
+    P25S.mode=mode;
+    P25S.selectedMap=P25.modes[mode].map;
+    p25Save(); p25RenderMode(); return true;
+  },
+  setArchetype:function(a){
+    if(!P25.archetypes[a])return false;
+    P25S.archetype=a;
+    p25Save(); p25RenderCharacter(); return true;
+  },
+  addMastery:function(){
+    if(P25S.skillPoints<=0)return false;
+    P25S.skillPoints--;
+    const keys=Object.keys(P25S.mastery);
+    const k=keys[(P25S.charLevel+P25S.skillPoints)%keys.length];
+    P25S.mastery[k]=(P25S.mastery[k]||0)+1;
+    p25Save(); p25RenderCharacter(); return true;
+  }
+};
+
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",p25Init,{once:true});
 else p25Init();
 
@@ -7502,66 +7532,122 @@ else p25Bind();
 <script id="noryvx-phase25-android-delegated-touch">
 (function(){
 "use strict";
-var last=0;
-function target(e){
-  var t=e.target;
-  return t && t.closest ? t.closest("[data-p25-tab],[data-p25-mode],[data-p25-arch],[data-p25-skill],#b-phase25-back") : null;
+var bound=false,last=0;
+
+function showTab(name){
+  var panels={build:"p25-build-panel",character:"p25-character-panel",mode:"p25-mode-panel"};
+  document.querySelectorAll("[data-p25-tab]").forEach(function(x){
+    x.classList.toggle("on",x.getAttribute("data-p25-tab")===name);
+  });
+  Object.keys(panels).forEach(function(k){
+    var p=document.getElementById(panels[k]);
+    if(p)p.style.display=(k===name)?"block":"none";
+  });
+  if(window.NORYVX_P25)window.NORYVX_P25.renderAll();
 }
-function act(el){
-  if(!el)return;
-  var now=Date.now();
-  if(now-last<250)return;
-  last=now;
-  var ev=el.getAttribute("data-p25-tab");
-  if(ev){
-    document.querySelectorAll("[data-p25-tab]").forEach(function(x){x.classList.remove("on");});
-    el.classList.add("on");
-    ["p25-build-panel","p25-character-panel","p25-mode-panel"].forEach(function(id){
-      var p=document.getElementById(id); if(p)p.style.display="none";
-    });
-    var map={build:"p25-build-panel",character:"p25-character-panel",mode:"p25-mode-panel"};
-    var p=document.getElementById(map[ev]);if(p)p.style.display="block";
-    try{p25RenderAll();}catch(x){console.error("P25 tab:",x);}
-    return;
+
+function mode(name){
+  if(window.NORYVX_P25){
+    window.NORYVX_P25.setMode(name);
+  }else{
+    try{
+      var st=JSON.parse(localStorage.getItem("noryvx_phase25_v1")||"{}");
+      st.mode=name; localStorage.setItem("noryvx_phase25_v1",JSON.stringify(st));
+    }catch(e){}
   }
-  ev=el.getAttribute("data-p25-mode");
-  if(ev){
-    if(window.P25S){P25S.mode=ev;P25S.selectedMap=(P25.modes[ev]||P25.modes.survival).map;}
-    try{p25Save();p25RenderMode();}catch(x){console.error("P25 mode:",x);}
-    return;
-  }
-  ev=el.getAttribute("data-p25-arch");
-  if(ev){
-    if(window.P25S)P25S.archetype=ev;
-    try{p25Save();p25RenderCharacter();}catch(x){console.error("P25 arch:",x);}
-    return;
-  }
-  if(el.hasAttribute("data-p25-skill")){
-    if(window.P25S && P25S.skillPoints>0){
-      P25S.skillPoints--;
-      var keys=Object.keys(P25S.mastery),k=keys[(P25S.charLevel+P25S.skillPoints)%keys.length];
-      P25S.mastery[k]=(P25S.mastery[k]||0)+1;
-      try{p25Save();p25RenderCharacter();}catch(x){}
-    }
-    return;
-  }
-  if(el.id==="b-phase25-back"){
-    var sc=document.getElementById("scr-phase25");if(sc)sc.classList.remove("on");
-    var menu=document.getElementById("scr-menu");if(menu)menu.classList.add("on");
+  document.querySelectorAll("[data-p25-mode]").forEach(function(x){
+    x.classList.toggle("on",x.getAttribute("data-p25-mode")===name);
+  });
+  var data={
+    survival:["SURVIVAL","Standart dengeli koşu. Temel progression.","NEON DISTRICT"],
+    bossrush:["BOSS RUSH","Daha az normal düşman, daha sık boss baskısı.","CORE VAULT"],
+    endless:["ENDLESS","Lv40 sonrası sınırsız scaling. Master tier baskısı.","VOID GRID"],
+    challenge:["CHALLENGE","Seed'li özel koşu. Kısıt + ödül.","ION STORM"],
+    daily:["DAILY","Günün sabit seed'i ve günlük modifier'ı.","DAILY SECTOR"],
+    weekly:["WEEKLY","Haftalık sabit seed. Daha uzun mastery odaklı koşu.","WEEKLY SECTOR"]
+  }[name];
+  if(data){
+    var n=document.getElementById("p25-mode-name"),note=document.getElementById("p25-mode-note");
+    if(n)n.textContent=data[0];
+    if(note)note.textContent=data[1]+" · Harita: "+data[2];
   }
 }
-function handler(e){
-  var el=target(e);
-  if(!el)return;
-  /* Android WebView sometimes fails to synthesize click from a touch.
-     Capture the gesture at document level so no canvas/stage listener can swallow it. */
-  if(e.type==="touchstart" || e.type==="pointerdown"){
-    try{e.preventDefault();}catch(x){}
-    act(el);
+
+function arch(name){
+  if(window.NORYVX_P25)window.NORYVX_P25.setArchetype(name);
+  else{
+    try{
+      var st=JSON.parse(localStorage.getItem("noryvx_phase25_v1")||"{}");
+      st.archetype=name; localStorage.setItem("noryvx_phase25_v1",JSON.stringify(st));
+    }catch(e){}
+  }
+  document.querySelectorAll("[data-p25-arch]").forEach(function(x){
+    x.classList.toggle("on",x.getAttribute("data-p25-arch")===name);
+  });
+}
+
+function bind(){
+  if(bound)return;
+  var root=document.getElementById("scr-phase25");
+  if(!root)return;
+  bound=true;
+
+  root.querySelectorAll("[data-p25-tab]").forEach(function(b){
+    b.onclick=function(e){e.preventDefault();e.stopPropagation();showTab(b.getAttribute("data-p25-tab"));return false;};
+    b.ontouchend=function(e){e.preventDefault();e.stopPropagation();showTab(b.getAttribute("data-p25-tab"));return false;};
+  });
+  root.querySelectorAll("[data-p25-mode]").forEach(function(b){
+    b.onclick=function(e){e.preventDefault();e.stopPropagation();mode(b.getAttribute("data-p25-mode"));return false;};
+    b.ontouchend=function(e){e.preventDefault();e.stopPropagation();mode(b.getAttribute("data-p25-mode"));return false;};
+  });
+  root.querySelectorAll("[data-p25-arch]").forEach(function(b){
+    b.onclick=function(e){e.preventDefault();e.stopPropagation();arch(b.getAttribute("data-p25-arch"));return false;};
+    b.ontouchend=function(e){e.preventDefault();e.stopPropagation();arch(b.getAttribute("data-p25-arch"));return false;};
+  });
+  var skill=root.querySelector("[data-p25-skill]");
+  if(skill){
+    var doSkill=function(e){
+      e.preventDefault();e.stopPropagation();
+      if(window.NORYVX_P25)window.NORYVX_P25.addMastery();
+      return false;
+    };
+    skill.onclick=doSkill;skill.ontouchend=doSkill;
   }
 }
-document.addEventListener("touchstart",handler,{capture:true,passive:false});
-if(window.PointerEvent)document.addEventListener("pointerdown",handler,{capture:true,passive:false});
+
+function open(){
+  var root=document.getElementById("scr-phase25");
+  if(!root)return;
+  document.querySelectorAll(".screen").forEach(function(x){
+    if(x!==root)x.classList.remove("on");
+  });
+  root.classList.add("on");
+  bind();
+  showTab(document.querySelector("[data-p25-tab].on")?.getAttribute("data-p25-tab")||"build");
+}
+
+function back(){
+  var root=document.getElementById("scr-phase25");if(root)root.classList.remove("on");
+  var menu=document.getElementById("scr-menu");if(menu)menu.classList.add("on");
+}
+
+function init(){
+  bind();
+  var menu=document.getElementById("b-phase25");
+  if(menu){
+    menu.onclick=function(e){e.preventDefault();e.stopPropagation();open();return false;};
+    menu.ontouchend=function(e){e.preventDefault();e.stopPropagation();open();return false;};
+  }
+  var backBtn=document.getElementById("b-phase25-back");
+  if(backBtn){
+    backBtn.onclick=function(e){e.preventDefault();e.stopPropagation();back();return false;};
+    backBtn.ontouchend=function(e){e.preventDefault();e.stopPropagation();back();return false;};
+  }
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});
+else init();
+setTimeout(init,300);
+setTimeout(init,1000);
 })();
 </script>
 
