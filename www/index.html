@@ -615,7 +615,7 @@ button,
 </head>
 
 <body>
-<div id="version-badge" aria-hidden="true">V16.0.0</div>
+<div id="version-badge" aria-hidden="true">V16.0.1</div>
 
 <div id="stage">
 
@@ -1019,14 +1019,14 @@ const BALANCE={
 
     /* weaponStat() icindeki sabitler */
     weapon:{
-      damagePerLevel:0.32,       // (1 + lv*0.32)
-      cooldownPerLevel:0.91,     // 0.91^lv
-      speedPerLevel:0.08,
+      damagePerLevel:0.16,       // Phase 1.2: +16% per weapon level
+      cooldownPerLevel:0.96,     // Phase 1.2: 4% faster per level
+      speedPerLevel:0.05,
       radiusPerLevel:0.7,
       pierceDivisor:2,           // floor(lv/2)
       chainDivisor:2,            // floor(lv/2)
       evolutionLevel:5,
-      evolution:{damage:1.16,cooldown:0.88,radius:1.5,pierce:1,chain:1},
+      evolution:{damage:1.10,cooldown:0.94,radius:1.2,pierce:1,chain:1},
       arcChainFalloff:0.72,      // zincir sicramasi hasar orani
       arcChainRange:105,
       novaRadiusBase:92,
@@ -2119,15 +2119,18 @@ function weaponEvolution(key,level){
   return level>=5;
 }
 
+/* PHASE 1.2 — kontrollü weapon scaling: eski +26% damage / -7% cooldown
+   eğrisi yerine merkezi BALANCE değerleri kullanılır. */
 function weaponStat(key,level){
   const w=WEAPONS[key];
   const lv=Math.max(0,level-1);
   const syn=buildSynergies();
 
-  let cooldown=w.cooldown*Math.pow(.93,lv);
-  let speed=w.speed*(1+lv*.07);
-  let damage=w.damage*(1+lv*.26);
-  let radius=w.radius+lv*.7;
+  const wb=BALANCE.player.weapon;
+  let cooldown=w.cooldown*Math.pow(wb.cooldownPerLevel,lv);
+  let speed=w.speed*(1+lv*wb.speedPerLevel);
+  let damage=w.damage*(1+lv*wb.damagePerLevel);
+  let radius=w.radius+lv*wb.radiusPerLevel;
   let pierce=w.pierce+Math.floor(lv/2);
   let chain=(w.chain||0)+Math.floor(lv/2);
 
@@ -2153,11 +2156,12 @@ function weaponStat(key,level){
   /* Lv.5 = EVOLUTION. Son seviye artık yalnızca +hasar değil,
      silahın kendi kimliğini belirginleştirir. */
   if(weaponEvolution(key,level)){
-    damage*=1.12;
-    cooldown*=.90;
-    radius+=1.5;
-    pierce+=1;
-    chain+=1;
+    const ev=wb.evolution;
+    damage*=ev.damage;
+    cooldown*=ev.cooldown;
+    radius+=ev.radius;
+    pierce+=ev.pierce;
+    chain+=ev.chain;
   }
 
   return {cooldown,speed,damage,radius,pierce,chain};
