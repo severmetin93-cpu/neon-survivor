@@ -612,6 +612,13 @@ button,
   text-transform:uppercase;
 }
 </style>
+
+<style id="phase2-8-style">
+#meta-hub{position:fixed;inset:0;z-index:80;background:rgba(3,5,15,.97);display:none;overflow:auto;padding:20px 16px 40px;box-sizing:border-box}
+#meta-hub.on{display:block}.hub-wrap{max-width:760px;margin:0 auto}.hub-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}.hub-title{font-size:clamp(24px,7vw,38px);font-weight:900;letter-spacing:.06em}.hub-sub{opacity:.65;font-size:12px}.hub-close{border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:#fff;border-radius:12px;padding:10px 14px}.hub-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:12px}.hub-tab{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:#fff;border-radius:10px;padding:9px 5px;font-size:11px}.hub-tab.active{border-color:#22e6ff;background:rgba(34,230,255,.12)}.hub-panel{display:none}.hub-panel.on{display:block}.hub-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.hub-card{border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:13px;background:rgba(255,255,255,.045)}.hub-card h3{margin:0 0 6px;font-size:15px}.hub-card p{margin:4px 0;opacity:.72;font-size:11px;line-height:1.45}.hub-badge{display:inline-block;padding:3px 7px;border-radius:999px;background:rgba(34,230,255,.12);color:#22e6ff;font-size:9px;margin-bottom:6px}.hub-stat{display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.07);padding:7px 0;font-size:11px}.hub-action{margin-top:9px;width:100%;padding:9px;border-radius:10px;border:1px solid rgba(34,230,255,.35);background:rgba(34,230,255,.08);color:#fff}.hub-note{font-size:10px;opacity:.55;line-height:1.5;margin-top:12px}.hub-progress{height:6px;border-radius:8px;background:rgba(255,255,255,.08);overflow:hidden;margin:7px 0}.hub-progress i{display:block;height:100%;background:#22e6ff}.hub-list{display:grid;gap:7px}.hub-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:10px;border-radius:10px;background:rgba(255,255,255,.04);font-size:11px}.hub-row small{opacity:.55}.hub-input{width:100%;box-sizing:border-box;background:#070b18;border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:10px;padding:10px;margin:5px 0}.hub-danger{color:#ff6b7a}.hub-good{color:#7dff9a}
+@media(max-width:420px){.hub-grid{grid-template-columns:1fr}.hub-tabs{grid-template-columns:repeat(4,1fr)}.hub-tab{font-size:9px}}
+</style>
+
 </head>
 
 <body>
@@ -6922,6 +6929,181 @@ if(
   /* Second pass covers WebViews that finish layout/script initialization late. */
   setTimeout(install, 250);
   setTimeout(install, 1000);
+})();
+</script>
+
+<script id="phase2-8-engine">
+/* ================================================================
+   PHASE 2-8 MASTER SYSTEM
+   Offline-first client foundations. Competitive/account/billing
+   authority MUST move server-side before production online launch.
+   ================================================================ */
+(function(){
+  "use strict";
+  const KEY="ns_master_2_8_v1";
+  const now=()=>Date.now();
+  const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
+  const uid=(p)=>p+"_"+Math.random().toString(36).slice(2,10)+"_"+Date.now().toString(36);
+  const deep=(x)=>JSON.parse(JSON.stringify(x));
+  const MASTER={
+    schemaVersion:1,
+    phaseScope:[2,3,4,5,6,7,8],
+    phase2:{
+      rarities:{common:{weight:65,power:1},rare:{weight:25,power:1.12},epic:{weight:8,power:1.28},legendary:{weight:2,power:1.48}},
+      weaponMaxLevel:8, passiveMaxLevel:8,
+      synergies:{overcharge:{weapons:["pulse","plasma"],bonus:1.12},chainReactor:{weapons:["pulse","arc"],bonus:1.10},meltdown:{weapons:["plasma","nova"],bonus:1.14}},
+      evolutionLevel:5
+    },
+    phase3:{
+      masteryMax:50, characterLevelMax:100,
+      archetypes:{vanguard:{hp:1.08,damage:.96,speed:1.02},striker:{hp:.96,damage:1.08,speed:1.03},controller:{hp:1,damage:.98,speed:1.06}},
+      masteryXP:[0,100,230,390,580,800,1050,1330,1640,1980,2350]
+    },
+    phase4:{
+      maps:{neonCore:{id:"neonCore",name:"Neon Core",tier:1},ionBasin:{id:"ionBasin",name:"Ion Basin",tier:2},voidFoundry:{id:"voidFoundry",name:"Void Foundry",tier:3},singularity:{id:"singularity",name:"Singularity",tier:4}},
+      enemies:{hunter:{tier:1,role:"chaser"},tank:{tier:1,role:"bruiser"},orbiter:{tier:2,role:"ranged"},dasher:{tier:3,role:"assassin"},weaver:{tier:4,role:"control"}},
+      elites:{berserker:{hp:1.4,speed:1.28,damage:1.15},juggernaut:{hp:2.2,speed:.72,damage:1.35},phase:{hp:1.25,speed:1.05,teleport:true},leech:{hp:1.5,speed:1,healOnHit:.08}},
+      bosses:{sentinel:{hp:1,phases:2},overlord:{hp:1.7,phases:3},voidTitan:{hp:2.6,phases:4},singularityCore:{hp:4.0,phases:5}},
+      events:{meteor:{duration:12,weight:1},blackout:{duration:10,weight:1},overdrive:{duration:15,weight:1},eliteSurge:{duration:12,weight:1}}
+    },
+    phase5:{
+      modes:{survival:{ranked:true},bossRush:{ranked:true},endless:{ranked:false},challenge:{ranked:true},daily:{ranked:true},weekly:{ranked:true}},
+      challengeRotation:["glassCannon","lowGravity","eliteSurge","doubleBoss","noMagnet"],
+      dailySeedDays:1,weeklySeedDays:7
+    },
+    phase6:{
+      season:{id:"S1",name:"First Light",durationDays:56},
+      tiers:[{id:"bronze",min:0},{id:"silver",min:900},{id:"gold",min:1100},{id:"platinum",min:1350},{id:"diamond",min:1650},{id:"master",min:2000},{id:"legend",min:2400}],
+      rating:{start:1000,kFactor:24,win:1,loss:0},
+      antiCheat:{serverAuthorityRequired:true,clientScoreNeverTrusted:true}
+    },
+    phase7:{
+      clan:{maxMembers:30,levels:20,xpPerLevel:1000,warSeasonDays:14},
+      roles:["owner","officer","member"],
+      missions:["completeRuns","killElites","defeatBosses","earnCores","winRanked"],
+      war:{teamsPerMatch:2,matchDurationDays:7}
+    },
+    phase8:{
+      products:{
+        battlePass:{type:"season_pass",competitivePower:false},
+        premium:{type:"subscription",competitivePower:false},
+        cosmetics:{type:"non_consumable",competitivePower:false},
+        convenience:{type:"quality_of_life",competitivePower:false}
+      },
+      entitlements:{premium:false,battlePass:false,cosmetics:[],convenience:[]},
+      policy:{payToWin:false,rankedPowerPurchasable:false,corePowerPurchasable:false,randomPaidRewards:false}
+    }
+  };
+  const DEFAULT={
+    character:{level:1,masteryXP:0,mastery:1,archetype:"vanguard",skillNodes:[],skillPoints:0},
+    build:{weapons:{pulse:{level:1,rarity:"common"},plasma:{level:0,rarity:"common"},arc:{level:0,rarity:"common"},nova:{level:0,rarity:"common"}},passives:{},synergies:[],evolutions:[]},
+    content:{unlockedMaps:["neonCore"],unlockedModes:["survival","bossRush","endless","challenge"],completedEvents:[],bossBest:{}},
+    competitive:{rating:1000,seasonId:"S1",wins:0,losses:0,placements:0,history:[]},
+    clan:{id:null,name:null,role:null,xp:0,level:1,members:[],missions:{},war:null},
+    monetization:{entitlements:deep(MASTER.phase8.entitlements),ownedProducts:[],battlePass:{seasonId:"S1",level:0,xp:0,rewardsClaimed:[]}},
+    telemetry:{runs:0,rankedRuns:0,totalBuilds:0,events:0,spendEvents:0},
+    lastSeen:now()
+  };
+  function load(){let x=null;try{x=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){};return migrate(x)}
+  function migrate(x){const d=deep(DEFAULT);if(!x||typeof x!=="object")return d;const merge=(a,b)=>{for(const k in b){if(a[k]===undefined)a[k]=deep(b[k]);else if(b[k]&&typeof b[k]==="object"&&!Array.isArray(b[k])&&a[k]&&typeof a[k]==="object")merge(a[k],b[k])}};merge(x,d);x.schemaVersion=1;return x}
+  let state=load();
+  function save(){state.lastSeen=now();try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+
+  const BuildSystem={
+    rarityPower(r){return MASTER.phase2.rarities[r]?.power||1},
+    weaponPower(id){const w=state.build.weapons[id];if(!w||w.level<=0)return 0;return w.level*this.rarityPower(w.rarity)},
+    totalPower(){let p=0;for(const k in state.build.weapons)p+=this.weaponPower(k);for(const k in state.build.passives)p+=state.build.passives[k].level*.65;for(const s of state.build.synergies)p*=MASTER.phase2.synergies[s]?.bonus||1;return +p.toFixed(3)},
+    setWeapon(id,level,rarity){if(!state.build.weapons[id])return false;state.build.weapons[id].level=clamp(level,0,MASTER.phase2.weaponMaxLevel);if(rarity)state.build.weapons[id].rarity=rarity;save();return true},
+    rollRarity(seed=Math.random()){let r=seed*100,acc=0;for(const k of ["common","rare","epic","legendary"]){acc+=MASTER.phase2.rarities[k].weight;if(r<acc)return k}return "common"},
+    canSynergy(id){const s=MASTER.phase2.synergies[id];return !!s&&s.weapons.every(w=>state.build.weapons[w]?.level>0)},
+    refreshSynergies(){state.build.synergies=Object.keys(MASTER.phase2.synergies).filter(k=>this.canSynergy(k));save();return state.build.synergies},
+    evolve(id){const w=state.build.weapons[id];if(!w||w.level<MASTER.phase2.evolutionLevel)return false;if(!state.build.evolutions.includes(id))state.build.evolutions.push(id);save();return true}
+  };
+
+  const CharacterSystem={
+    xpToLevel(xp){return clamp(1+Math.floor(Math.sqrt(Math.max(0,xp)/100)),1,MASTER.phase3.characterLevelMax)},
+    addMasteryXP(x){state.character.masteryXP=Math.max(0,state.character.masteryXP+x);state.character.mastery=clamp(this.xpToLevel(state.character.masteryXP),1,MASTER.phase3.masteryMax);state.character.skillPoints=Math.max(state.character.skillPoints,this.skillPoints());save();return state.character.mastery},
+    skillPoints(){return Math.max(0,state.character.mastery-1)},
+    chooseArchetype(id){if(!MASTER.phase3.archetypes[id])return false;state.character.archetype=id;save();return true},
+    archetypeStats(){return MASTER.phase3.archetypes[state.character.archetype]||MASTER.phase3.archetypes.vanguard},
+    unlockNode(id){if(state.character.skillNodes.includes(id)||state.character.skillPoints<=state.character.skillNodes.length)return false;state.character.skillNodes.push(id);save();return true}
+  };
+
+  const ContentSystem={
+    map(id){return MASTER.phase4.maps[id]}, mode(id){return MASTER.phase5.modes[id]},
+    unlockMap(id){if(!MASTER.phase4.maps[id]||state.content.unlockedMaps.includes(id))return false;state.content.unlockedMaps.push(id);save();return true},
+    completeEvent(id){if(!state.content.completedEvents.includes(id))state.content.completedEvents.push(id);state.telemetry.events++;save()},
+    challengeForDate(date=new Date()){const day=Math.floor(date.getTime()/86400000);return MASTER.phase5.challengeRotation[day%MASTER.phase5.challengeRotation.length]},
+    weeklyChallenge(date=new Date()){const day=Math.floor(date.getTime()/86400000);return MASTER.phase5.challengeRotation[Math.floor(day/7)%MASTER.phase5.challengeRotation.length]}
+  };
+
+  const LeagueSystem={
+    tier(r=state.competitive.rating){let t=MASTER.phase6.tiers[0];for(const x of MASTER.phase6.tiers)if(r>=x.min)t=x;return t},
+    record(win,score=0){const r=state.competitive.rating;const delta=win?MASTER.phase6.rating.kFactor: -Math.round(MASTER.phase6.rating.kFactor*.6);state.competitive.rating=clamp(r+delta,0,5000);win?state.competitive.wins++:state.competitive.losses++;state.competitive.history.push({at:now(),rating:state.competitive.rating,score});state.telemetry.rankedRuns++;save();return this.tier()},
+    placementComplete(){return state.competitive.placements>=5},
+    snapshot(){return {rating:state.competitive.rating,tier:this.tier().id,wins:state.competitive.wins,losses:state.competitive.losses,season:state.competitive.seasonId}}
+  };
+
+  const ClanSystem={
+    create(name){name=String(name||"").trim().slice(0,24);if(!name||state.clan.id)return false;state.clan={id:uid("clan"),name,role:"owner",xp:0,level:1,members:[{id:uid("member"),name:"Sen",role:"owner"}],missions:{},war:null};save();return true},
+    addXP(x){if(!state.clan.id)return false;state.clan.xp+=Math.max(0,x);state.clan.level=clamp(1+Math.floor(state.clan.xp/MASTER.phase7.clan.xpPerLevel),1,MASTER.phase7.clan.levels);save();return true},
+    mission(id,value=1){if(!MASTER.phase7.missions.includes(id))return false;state.clan.missions[id]=(state.clan.missions[id]||0)+value;this.addXP(value*10);return true},
+    leave(){state.clan={id:null,name:null,role:null,xp:0,level:1,members:[],missions:{},war:null};save()}
+  };
+
+  const MonetizationSystem={
+    catalog(){return deep(MASTER.phase8.products)},
+    grantDemo(product){if(!MASTER.phase8.products[product])return false;if(MASTER.phase8.products[product].competitivePower)return false;state.monetization.ownedProducts.push(product);if(product==="premium")state.monetization.entitlements.premium=true;if(product==="battlePass")state.monetization.entitlements.battlePass=true;state.telemetry.spendEvents++;save();return true},
+    has(product){return !!state.monetization.entitlements[product]},
+    policy(){return deep(MASTER.phase8.policy)}
+  };
+
+  const BackendAdapter={
+    baseURL:"",
+    request(path,options={}){if(!this.baseURL)return Promise.reject(new Error("BACKEND_NOT_CONFIGURED"));return fetch(this.baseURL+path,Object.assign({headers:{"Content-Type":"application/json"}},options))},
+    endpoints:{auth:"/v1/auth",profile:"/v1/profile",runs:"/v1/runs",leaderboard:"/v1/leaderboard",clans:"/v1/clans",season:"/v1/season",billing:"/v1/billing",antiCheat:"/v1/anti-cheat"}
+  };
+  /* Production authority rules: ranked score, rating, clan membership and paid
+     entitlements must be validated server-side. Local state is deliberately a
+     development/offline cache, not a trust boundary. */
+
+  function hubHTML(){return `
+  <div id="meta-hub"><div class="hub-wrap">
+    <div class="hub-head"><div><div class="hub-title">GELİŞİM MERKEZİ</div><div class="hub-sub">PHASE 2 → 8 · offline foundation / production contracts</div></div><button class="hub-close" id="hub-close">Kapat</button></div>
+    <div class="hub-tabs">${[["build","Build"],["character","Karakter"],["content","İçerik"],["online","Online"]].map((x,i)=>`<button class="hub-tab ${i===0?'active':''}" data-hubtab="${x[0]}">${x[1]}</button>`).join("")}</div>
+    <section class="hub-panel on" data-hubpanel="build"><div class="hub-grid">
+      <div class="hub-card"><span class="hub-badge">PHASE 2</span><h3>Build Power</h3><div class="hub-stat"><span>Build Power</span><b>${BuildSystem.totalPower()}</b></div><div class="hub-stat"><span>Synergy</span><b>${state.build.synergies.length}</b></div><p>Rarity, weapon level, passive, synergy ve evolution aynı build modelinde tutuluyor.</p><button class="hub-action" data-demo="refresh">Synergy Yenile</button></div>
+      <div class="hub-card"><span class="hub-badge">EVOLUTION</span><h3>Silahlar</h3><div class="hub-list">${Object.entries(state.build.weapons).map(([k,w])=>`<div class="hub-row"><span>${k.toUpperCase()} · Lv.${w.level}<br><small>${w.rarity}</small></span><b>${w.level?BuildSystem.weaponPower(k).toFixed(2):'LOCK'}</b></div>`).join("")}</div></div>
+    </div></section>
+    <section class="hub-panel" data-hubpanel="character"><div class="hub-grid">
+      <div class="hub-card"><span class="hub-badge">PHASE 3</span><h3>Karakter</h3><div class="hub-stat"><span>Archetype</span><b>${state.character.archetype}</b></div><div class="hub-stat"><span>Mastery</span><b>Lv.${state.character.mastery}</b></div><div class="hub-stat"><span>Skill Points</span><b>${state.character.skillPoints}</b></div><p>Vanguard, Striker ve Controller uzmanlaşmaları kalıcı karakter kimliğini oluşturur.</p></div>
+      <div class="hub-card"><span class="hub-badge">PHASE 4</span><h3>Haritalar</h3><div class="hub-list">${Object.values(MASTER.phase4.maps).map(m=>`<div class="hub-row"><span>${m.name}<br><small>Tier ${m.tier}</small></span><b class="${state.content.unlockedMaps.includes(m.id)?'hub-good':''}">${state.content.unlockedMaps.includes(m.id)?'AÇIK':'KİLİTLİ'}</b></div>`).join("")}</div></div>
+    </div></section>
+    <section class="hub-panel" data-hubpanel="content"><div class="hub-grid">
+      <div class="hub-card"><span class="hub-badge">PHASE 5</span><h3>Oyun Modları</h3><div class="hub-list">${Object.entries(MASTER.phase5.modes).map(([k,v])=>`<div class="hub-row"><span>${k}<br><small>${v.ranked?'Ranked':'Unranked'}</small></span><b>READY</b></div>`).join("")}</div></div>
+      <div class="hub-card"><span class="hub-badge">LIVE CONTENT</span><h3>Günlük / Haftalık</h3><div class="hub-stat"><span>Bugünün challenge'ı</span><b>${ContentSystem.challengeForDate()}</b></div><div class="hub-stat"><span>Haftanın challenge'ı</span><b>${ContentSystem.weeklyChallenge()}</b></div><p>Seed tabanlı challenge sistemi online backend bağlandığında herkes için aynı kuralları kullanacak.</p></div>
+    </div></section>
+    <section class="hub-panel" data-hubpanel="online"><div class="hub-grid">
+      <div class="hub-card"><span class="hub-badge">PHASE 6</span><h3>League</h3><div class="hub-stat"><span>Rating</span><b>${state.competitive.rating}</b></div><div class="hub-stat"><span>Tier</span><b>${LeagueSystem.tier().id.toUpperCase()}</b></div><div class="hub-stat"><span>W / L</span><b>${state.competitive.wins} / ${state.competitive.losses}</b></div><p>Ranked authority production'da sunucuda olacak. Client score'a güvenilmeyecek.</p></div>
+      <div class="hub-card"><span class="hub-badge">PHASE 7</span><h3>Clan</h3>${state.clan.id?`<div class="hub-stat"><span>${state.clan.name}</span><b>Lv.${state.clan.level}</b></div><div class="hub-stat"><span>Üyeler</span><b>${state.clan.members.length}/30</b></div><button class="hub-action" data-demo="clanleave">Clandan Ayrıl</button>`:`<input class="hub-input" id="clan-name" placeholder="Clan adı"><button class="hub-action" data-demo="clancreate">Clan Oluştur</button>`}<p>Clan savaşları, görevler, roller ve sezon progression modeli hazır.</p></div>
+      <div class="hub-card"><span class="hub-badge">PHASE 8</span><h3>Monetization</h3><div class="hub-stat"><span>Premium</span><b>${state.monetization.entitlements.premium?'AKTİF':'PASİF'}</b></div><div class="hub-stat"><span>Battle Pass</span><b>${state.monetization.entitlements.battlePass?'AKTİF':'PASİF'}</b></div><p class="hub-good">PAY-TO-WIN: KAPALI</p><p>Gerçek Play Billing entegrasyonu native app + backend doğrulaması gerektirir. Bu build yalnızca entitlement sözleşmesini ve demo akışını içerir.</p><button class="hub-action" data-demo="premium">Demo Premium Entitlement</button></div>
+    </div><div class="hub-note">Production online açılışından önce Auth, ranked sonuçları, clan üyeliği ve satın alma entitlement'ları backend tarafından doğrulanmalıdır. Google Play Billing satın alma ve abonelikleri destekler; satın alma token'ları backend'de doğrulanmalıdır.</div></section>
+  </div></div>`}
+
+  function mount(){
+    if(!document.getElementById("meta-hub")){document.body.insertAdjacentHTML("beforeend",hubHTML())}
+    const open=()=>{document.getElementById("meta-hub").classList.add("on");renderHub()};
+    const close=()=>document.getElementById("meta-hub").classList.remove("on");
+    const b=document.getElementById("b-meta-hub");if(b&&!b.dataset.bound){b.dataset.bound="1";b.addEventListener("click",open)}
+    const c=document.getElementById("hub-close");if(c&&!c.dataset.bound){c.dataset.bound="1";c.addEventListener("click",close)}
+    document.querySelectorAll("[data-hubtab]").forEach(t=>{if(t.dataset.bound)return;t.dataset.bound="1";t.addEventListener("click",()=>{document.querySelectorAll("[data-hubtab]").forEach(x=>x.classList.remove("active"));document.querySelectorAll("[data-hubpanel]").forEach(x=>x.classList.remove("on"));t.classList.add("active");document.querySelector(`[data-hubpanel='${t.dataset.hubtab}']`).classList.add("on");renderHub()})});
+    document.querySelectorAll("[data-demo]").forEach(x=>{if(x.dataset.bound)return;x.dataset.bound="1";x.addEventListener("click",()=>{const a=x.dataset.demo;if(a==="refresh")BuildSystem.refreshSynergies();if(a==="clancreate"){const n=document.getElementById("clan-name");ClanSystem.create(n?.value)}if(a==="clanleave")ClanSystem.leave();if(a==="premium")MonetizationSystem.grantDemo("premium");renderHub()})});
+  }
+  function renderHub(){const h=document.getElementById("meta-hub");if(!h)return;const active=h.querySelector(".hub-panel.on")?.dataset.hubpanel;h.outerHTML=hubHTML();mount();document.querySelectorAll("[data-hubtab]").forEach(t=>t.classList.toggle("active",t.dataset.hubtab===active));document.querySelectorAll("[data-hubpanel]").forEach(p=>p.classList.toggle("on",p.dataset.hubpanel===active));}
+  window.NS_MASTER={MASTER,state,save,BuildSystem,CharacterSystem,ContentSystem,LeagueSystem,ClanSystem,MonetizationSystem,BackendAdapter,openHub:mount};
+  function boot(){mount();}
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
+  setTimeout(boot,500);setTimeout(boot,1500);
 })();
 </script>
 
