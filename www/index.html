@@ -5461,28 +5461,16 @@ function drawBackground(dt){
   ctx.fillStyle=ground;
   ctx.fillRect(0,H*.16,W,H*.84);
 
-  /* Animated perspective lanes */
-  const laneStep=Math.max(44,Math.min(62,W*.13));
-  const laneOffset=(bgTime*13)%laneStep;
-
-  ctx.save();
-  ctx.lineWidth=1;
-  ctx.strokeStyle="rgba(34,230,255,.055)";
-  ctx.beginPath();
-
-  for(let x=-W;x<=W*2;x+=laneStep){
-    const topX=W/2+(x-W/2)*.20;
-    ctx.moveTo(topX,H*.18);
-    ctx.lineTo(x-laneOffset,H);
-  }
-
-  for(let y=H*.22;y<H;y+=Math.max(34,H*.07)){
-    const yy=y+((bgTime*18)%(Math.max(34,H*.07)));
-    ctx.moveTo(0,yy);
-    ctx.lineTo(W,yy);
-  }
-  ctx.stroke();
-  ctx.restore();
+  /* NOT: "Animated perspective lanes" grid katmani KALDIRILDI.
+     Burasi zemindeki perspektifli dikey cizgileri (topX'e dogru
+     daralan) ve asagi kayan yatay cizgileri ciziyordu; ikisi
+     birlikte grid gorunumunu olusturuyordu.
+     Arka planin diger TUM katmanlari aynen korunmustur: gokyuzu
+     gradyani, skyline siluetleri, horizon glow, 2.5D zemin
+     gradyani, neon serit aksanlari, oyuncu isik havuzu, sis
+     bantlari, vignette ve scanline dokusu.
+     laneStep / laneOffset degiskenleri sadece bu blokta
+     kullaniliyordu, birlikte kaldirildi. */
 
   /* Neon lane accents, sparse for mobile performance. */
   ctx.save();
