@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#04060f">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>NORYVX V16.4.1</title>
+<title>NORYVX V16.4.2</title>
 <link rel="manifest" href="manifest.json">
 
 <style>
@@ -686,38 +686,42 @@ button,
 <style id="noryvx-phase4a-css">
 #run-wave-hud{
   position:fixed;
-  top:calc(var(--safe-t) + 70px);
+  top:calc(var(--safe-t) + 72px);
   right:14px;
   left:auto;
   transform:none;
   z-index:18;
-  min-width:74px;
-  padding:5px 8px;
-  border:1px solid rgba(34,230,255,.18);
-  border-radius:9px;
-  background:rgba(4,10,25,.72);
-  box-shadow:0 0 14px rgba(34,230,255,.05);
-  text-align:center;
+  min-width:0;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+  text-align:right;
   pointer-events:none;
   opacity:0;
   transition:opacity .2s ease;
 }
 #run-wave-hud.on{opacity:1}
-#run-wave-hud .wave-label{
-  display:block;font-size:7px;letter-spacing:.18em;color:rgba(234,244,255,.42)
-}
-#run-wave-hud .wave-value{
-  display:block;margin-top:2px;font-size:13px;font-weight:950;letter-spacing:.12em;color:#22e6ff
-}
+#run-wave-hud .wave-label,
+#run-wave-hud .wave-value,
 #run-wave-hud .wave-pressure{
-  display:block;margin-top:2px;font-size:7px;color:rgba(234,244,255,.48)
+  display:inline;
+  margin:0;
+  font-size:7px;
+  font-weight:800;
+  letter-spacing:.08em;
 }
-</style>
+#run-wave-hud .wave-label{color:rgba(234,244,255,.42)}
+#run-wave-hud .wave-value{color:#22e6ff}
+#run-wave-hud .wave-pressure{color:rgba(234,244,255,.42)}
+#run-wave-hud .wave-label::after{content:" "}
+#run-wave-hud .wave-value::after{content:"  •  "}</style>
 
 </head>
 
 <body>
-<div id="version-badge" aria-hidden="true">V16.4.1 · PHASE 4A GAMEPLAY</div>
+<div id="version-badge" aria-hidden="true">V16.4.2 · PHASE 4A GAMEPLAY</div>
 
 <div id="stage">
 
@@ -1143,7 +1147,7 @@ const BALANCE={
 
   /* PHASE 0.5 · 14 — tek versiyon kaynagi. DOM rozeti ve <title>
      boot sirasinda bu degerden yazilir. */
-  version:"16.4.1",
+  version:"16.4.2",
 
   /* ---------------------------------------------------------
      FAZ 0 DUZELTME SABITLERI
