@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#04060f">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>NORYVX V16.3.2</title>
+<title>NORYVX V16.3.4</title>
 <link rel="manifest" href="manifest.json">
 
 <style>
@@ -664,19 +664,9 @@ button,
 </style>
 
 
-<style id="noryvx-character-selection-v1634">
-.nvx34-character-selection{margin:0 0 12px;padding:12px;border:1px solid rgba(34,230,255,.22);border-radius:16px;background:linear-gradient(145deg,rgba(8,18,39,.98),rgba(3,8,20,.98))}
-.nvx34-title{font-size:12px;font-weight:950;letter-spacing:.09em;color:#dff8ff;margin-bottom:9px}
-.nvx34-grid{display:grid;grid-template-columns:1fr;gap:8px}
-.nvx34-card{width:100%;text-align:left;padding:12px;border-radius:13px;border:1px solid rgba(120,190,255,.14);background:rgba(12,24,48,.92);color:#eef8ff}
-.nvx34-card.nvx34-active{border-color:rgba(34,230,255,.9);box-shadow:0 0 18px rgba(34,230,255,.12)}
-.nvx34-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
-.nvx34-name{font-size:14px;font-weight:950;letter-spacing:.06em}
-.nvx34-role{font-size:9px;color:rgba(234,244,255,.62);margin-top:3px}
-.nvx34-badge{font-size:8px;font-weight:950;color:#22e6ff}
-.nvx34-stats{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.nvx34-stat{font-size:8px;padding:4px 6px;border-radius:6px;background:rgba(255,255,255,.055)}
-</style>
+<!-- NOT: "noryvx-character-selection-v1634" stil blogu kaldirildi.
+     Tanimladigi .nvx34-* siniflari HTML'de HIC kullanilmiyordu
+     (yarim kalmis ikinci bir karakter secim denemesi). -->
 
 </head>
 
@@ -937,7 +927,7 @@ button,
 
 <div class="screen" id="scr-phase3">
   <div class="tutorial-title">KARAKTER GELİŞİMİ</div>
-  <div class="tag">V16.3.2 · PHASE 3</div>
+  <div class="tag" id="p3-version-tag">PHASE 3</div>
   <div class="p3-wrap">
     <div class="p3-card">
       <div class="p3-row">
@@ -7258,7 +7248,11 @@ resetPlayer();
 /* PHASE 0.5 · 14 — tum versiyon gostergeleri BALANCE.version'dan gelir. */
 document.title="NORYVX V"+BALANCE.version;
 const versionBadge=document.getElementById("version-badge");
-if(versionBadge)versionBadge.textContent="V"+BALANCE.version;
+if(versionBadge)versionBadge.textContent="V"+BALANCE.version+" · PHASE 3";
+/* Karakter ekranindaki surum etiketi de ayni tek kaynaktan gelir;
+   elle yazilan metin iki kez bayatladi (V16.3.1, sonra V16.3.2). */
+const p3Tag=document.getElementById("p3-version-tag");
+if(p3Tag)p3Tag.textContent="V"+BALANCE.version+" · PHASE 3";
 
 toMenu();
 updateWeaponHUD();
@@ -7703,49 +7697,19 @@ if(typeof Game!=="undefined"&&typeof Game.over==="function"){
 </script>
 
 
-<script id="noryvx-character-selection-runtime-v1634">
-(function(){
-  "use strict";
-  function sync(){
-    try{
-      var current = (typeof P3S!=="undefined" && P3S.archetype) ? P3S.archetype : "vanguard";
-      document.querySelectorAll("[data-nvx34-char]").forEach(function(el){
-        var active=el.getAttribute("data-nvx34-char")===current;
-        el.classList.toggle("nvx34-active",active);
-      });
-      document.querySelectorAll("[data-nvx34-badge]").forEach(function(el){
-        el.textContent=el.getAttribute("data-nvx34-badge")===current?"AKTİF":"SEÇ";
-      });
-    }catch(e){}
-  }
-  function bind(){
-    document.querySelectorAll("[data-nvx34-char]").forEach(function(el){
-      if(el.dataset.nvx34Bound==="1")return;
-      el.dataset.nvx34Bound="1";
-      el.addEventListener("click",function(e){
-        e.preventDefault();
-        e.stopPropagation();
-        var key=el.getAttribute("data-nvx34-char");
-        try{
-          if(typeof p3SetArchetype==="function"){
-            p3SetArchetype(key);
-          }else if(typeof P3S!=="undefined"){
-            P3S.archetype=key;
-            if(typeof p3Save==="function")p3Save();
-            if(typeof renderP3==="function")renderP3();
-          }
-        }catch(err){console.error("NORYVX character selection",err);}
-        setTimeout(sync,20);
-      },false);
-    });
-    sync();
-  }
-  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bind,{once:true});
-  else bind();
-  setTimeout(bind,250);
-  setTimeout(bind,1000);
-})();
-</script>
+<!-- NOT: ikinci karakter secim script'i kaldirildi.
+
+     Neden olu kodtu:
+     - [data-nvx34-char] ozniteligi HTML'de HICBIR elemanda yoktu,
+       yani querySelectorAll her zaman bos donuyordu
+     - aradigi p3SetArchetype ve renderP3 fonksiyonlari yok
+       (gercek adlari p3SetArch ve p3Render)
+     - P3S, Phase 3 IIFE'sinin icinde const; disaridan erisilemez
+
+     Calisan karakter secimi Phase 3 runtime'indadir:
+     [data-p3-arch] kartlari p3Attach ile baglanir, p3Render
+     [data-p3-selected] ve #p3-active-name alanlarini gunceller.
+     Runtime testinde uc kart da dogru calisiyor. -->
 
 </body>
       </html>
