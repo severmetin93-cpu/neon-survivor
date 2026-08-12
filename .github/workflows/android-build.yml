@@ -1,213 +1,193 @@
-name: Build Android APK
+name: NORYVX Debug APK
+
+# Bu workflow SADECE build zinciridir. Oyun kodu, service worker ve
+# Gradle surumu bu dosya tarafindan degistirilmez.
+#   Gradle  : repodaki wrapper ne diyorsa o (8.11.1) - dokunulmaz
+#   Java    : Temurin 21
+#   Node    : 22 LTS
+#   Cikti   : android/app/build/outputs/apk/debug/app-debug.apk
 
 on:
-  push:
-    branches: [ main, master ]
   workflow_dispatch:
+  push:
+    branches: [ main ]
+
+concurrency:
+  group: noryvx-debug-apk-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  JAVA_VERSION: '21'
+  NODE_VERSION: '22'
+  # Gradle'in KENDI HTTP indirmeleri (AGP, bagimliliklar) icin uzun timeout
+  # ve repository retry. Wrapper'in dagitim indirmesi bunlari kullanmaz;
+  # onun icin asagida ayri bir retry adimi var.
+  GRADLE_OPTS: >-
+    -Dorg.gradle.internal.http.connectionTimeout=120000
+    -Dorg.gradle.internal.http.socketTimeout=120000
+    -Dorg.gradle.internal.repository.max.retries=5
+    -Dorg.gradle.internal.repository.initial.backoff=1000
 
 jobs:
-  build:
-    name: Debug APK
+  debug-apk:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     steps:
+      # ------------------------------------------------------------------
+      # 1) Kaynak + Node
+      # ------------------------------------------------------------------
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
-      - name: Setup Java 21
-        uses: actions/setup-java@v4
+      - name: Node kurulumu
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: NPM bagimliliklari
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      # ------------------------------------------------------------------
+      # 2) Paketlenecek web dosyasini DOGRULA (degistirme yok, sadece kontrol)
+      # ------------------------------------------------------------------
+      - name: www/index.html dogrulama
+        run: |
+          set -euo pipefail
+          test -f www/index.html || { echo "::error::www/index.html bulunamadi"; exit 1; }
+          echo "boyut : $(wc -c < www/index.html) byte"
+          echo "sha256: $(sha256sum www/index.html | cut -d' ' -f1)"
+          grep -m1 -o '<title>[^<]*</title>' www/index.html || true
+          if grep -q 'V16\.7\.0' www/index.html; then
+            echo "surum : V16.7.0 rozeti bulundu"
+          else
+            echo "::warning::www/index.html icinde V16.7.0 rozeti bulunamadi"
+          fi
+          CFG=$(ls capacitor.config.json capacitor.config.ts capacitor.config.js 2>/dev/null | head -1 || true)
+          if [ -n "$CFG" ]; then
+            echo "capacitor config: $CFG"
+            grep -o 'webDir[^,}]*' "$CFG" || true
+          else
+            echo "::warning::capacitor.config.* bulunamadi"
+          fi
+
+      # ------------------------------------------------------------------
+      # 3) Capacitor senkronizasyonu (www -> android assets)
+      # ------------------------------------------------------------------
+      - name: Capacitor sync
+        run: |
+          set -euo pipefail
+          if [ ! -d android ]; then
+            echo "android/ klasoru yok -> cap add android"
+            npx --yes cap add android
+          fi
+          npx --yes cap sync android
+
+      - name: Paketlenecek icerik www ile ayni mi
+        run: |
+          set -euo pipefail
+          SRC=www/index.html
+          DST=android/app/src/main/assets/public/index.html
+          test -f "$DST" || { echo "::error::$DST yok - cap sync calismamis"; exit 1; }
+          if cmp -s "$SRC" "$DST"; then
+            echo "OK: assets/public/index.html == www/index.html"
+            echo "sha256: $(sha256sum "$DST" | cut -d' ' -f1)"
+          else
+            echo "::error::www/index.html ile paketlenen index.html AYNI DEGIL"
+            exit 1
+          fi
+          SW=android/app/src/main/assets/public/service-worker.js
+          if [ -f "$SW" ]; then
+            echo "service worker kopyalandi:"
+            grep -m1 'const CACHE' "$SW" || true
+          else
+            echo "::warning::service-worker.js assets/public icinde yok"
+          fi
+
+      # ------------------------------------------------------------------
+      # 4) Java + Gradle (wrapper korunur, dagitim cache'lenir)
+      # ------------------------------------------------------------------
+      - name: Java kurulumu
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: '21'
+          java-version: ${{ env.JAVA_VERSION }}
+          # DIKKAT: setup-gradle ile birlikte 'cache: gradle' KULLANILMAZ.
+          # Iki cache mekanizmasi birbirini bozar.
 
-      - name: Setup Node 20
-        uses: actions/setup-node@v4
+      - name: Gradle kurulumu ve cache
+        uses: gradle/actions/setup-gradle@v6
         with:
-          node-version: '20'
+          # Wrapper dokunulmaz; action wrapper jar checksum'unu dogrular.
+          validate-wrappers: true
+          # Ana dal disindaki dallardan da cache yazilsin.
+          cache-read-only: false
+          add-job-summary: always
+          # Tam acik kaynak cache isteniyorsa: cache-provider: basic
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Install project dependencies
+      # ------------------------------------------------------------------
+      # 5) ASIL DUZELTME: Gradle dagitim indirmesini retry ile yap.
+      #    Wrapper'in kendi indiricisi retry yapmaz; 503 veya
+      #    "Unexpected end of file from server" aninda build patlar.
+      #    Ilk basarili indirmeden sonra dagitim cache'ten gelir.
+      # ------------------------------------------------------------------
+      - name: Gradle dagitimini indir (retry)
+        working-directory: android
         run: |
-          npm install --include=dev --no-audit --no-fund
+          set -uo pipefail
+          grep distributionUrl gradle/wrapper/gradle-wrapper.properties || true
+          GUH="${GRADLE_USER_HOME:-$HOME/.gradle}"
+          for i in 1 2 3 4 5; do
+            echo "--- deneme $i ---"
+            if ./gradlew --version; then
+              echo "Gradle dagitimi hazir."
+              exit 0
+            fi
+            echo "::warning::Gradle dagitimi indirilemedi (deneme $i). Yarim dosyalar temizleniyor."
+            rm -rf "$GUH"/wrapper/dists/gradle-* || true
+            sleep $(( i * 20 ))
+          done
+          echo "::error::Gradle dagitimi 5 denemede indirilemedi."
+          exit 1
 
-      - name: Install sharp explicitly
+      # ------------------------------------------------------------------
+      # 6) Build
+      # ------------------------------------------------------------------
+      - name: Debug APK build
+        working-directory: android
+        run: ./gradlew :app:assembleDebug --stacktrace
+
+      # ------------------------------------------------------------------
+      # 7) APK dogrulama: icindeki index.html gercekten guncel mi
+      # ------------------------------------------------------------------
+      - name: APK dogrulama
         run: |
-          npm install --save-dev sharp@0.33.5 --include=dev --no-audit --no-fund
-          node -e "console.log('sharp version:', require('sharp').versions.sharp)"
-
-      - name: Verify sharp can rasterize SVG
-        run: |
-          test -f www/assets/icons/icon.svg || {
-            echo "HATA: www/assets/icons/icon.svg bulunamadi!"
-            exit 1
-          }
-
-          node <<'NODE'
-          const fs = require("fs");
-          const sharp = require("sharp");
-
-          const input = "www/assets/icons/icon.svg";
-
-          console.log("SVG kontrol ediliyor:", input);
-
-          sharp(fs.readFileSync(input), { density: 512 })
-            .resize(192, 192)
-            .png()
-            .toBuffer()
-            .then(buffer => {
-              console.log("SVG -> PNG BASARILI");
-              console.log("PNG boyutu:", buffer.length, "bytes");
-            })
-            .catch(error => {
-              console.error("SVG -> PNG HATASI:");
-              console.error(error);
-              process.exit(1);
-            });
-          NODE
-
-      - name: Sanity check
-        run: |
-          test -f www/index.html || {
-            echo "HATA: www/index.html yok!"
-            exit 1
-          }
-
-          test -f www/manifest.json || {
-            echo "HATA: www/manifest.json yok!"
-            exit 1
-          }
-
-          test -f www/service-worker.js || {
-            echo "HATA: www/service-worker.js yok!"
-            exit 1
-          }
-
-          test -f www/assets/icons/icon.svg || {
-            echo "HATA: www/assets/icons/icon.svg yok!"
-            exit 1
-          }
-
-          test -f capacitor.config.json || {
-            echo "HATA: capacitor.config.json yok!"
-            exit 1
-          }
-
-          test -f scripts/configure-android.mjs || {
-            echo "HATA: scripts/configure-android.mjs yok!"
-            exit 1
-          }
-
-          echo "================================"
-          echo "WEB KAYNAKLARI OK"
-          echo "================================"
-
-      - name: Add Android platform
-        run: |
-          if [ ! -d android ]; then
-            npx cap add android
+          set -euo pipefail
+          APK=$(find android/app/build/outputs/apk/debug -maxdepth 1 -name '*.apk' 2>/dev/null | head -1 || true)
+          test -n "$APK" || { echo "::error::APK uretilmedi"; exit 1; }
+          echo "APK   : $APK ($(du -h "$APK" | cut -f1))"
+          unzip -p "$APK" assets/public/index.html > /tmp/apk-index.html
+          if cmp -s www/index.html /tmp/apk-index.html; then
+            echo "OK: APK icindeki index.html == www/index.html"
           else
-            echo "android/ zaten var"
-          fi
-
-      - name: Sync web assets
-        run: |
-          npx cap sync android
-
-      - name: Install required Android SDK platform
-        run: |
-          COMPILE_SDK=$(grep -oP 'compileSdkVersion\s*=\s*\K[0-9]+' android/variables.gradle || echo "35")
-
-          echo "compileSdkVersion = $COMPILE_SDK"
-
-          yes | sdkmanager --licenses > /dev/null 2>&1 || true
-
-          sdkmanager \
-            "platforms;android-${COMPILE_SDK}" \
-            "platform-tools"
-
-      - name: Configure Android
-        run: |
-          node scripts/configure-android.mjs
-
-      - name: Build debug APK
-        run: |
-          cd android
-
-          chmod +x ./gradlew
-
-          ./gradlew assembleDebug \
-            --no-daemon \
-            --stacktrace
-
-      - name: Find APK
-        run: |
-          echo "APK aranıyor..."
-
-          find android/app/build/outputs \
-            -type f \
-            -name "*.apk" \
-            -print
-
-      - name: Rename APK
-        run: |
-          SRC=$(find android/app/build/outputs/apk/debug \
-            -type f \
-            -name "*.apk" \
-            | head -n 1)
-
-          if [ -z "$SRC" ]; then
-            echo "HATA: APK bulunamadi!"
+            echo "::error::APK icindeki index.html www/index.html ile ayni degil"
             exit 1
           fi
+          grep -m1 -o '<title>[^<]*</title>' /tmp/apk-index.html || true
+          unzip -p "$APK" assets/public/service-worker.js 2>/dev/null | grep -m1 'const CACHE' || true
 
-          echo "Bulunan APK:"
-          echo "$SRC"
-
-          mkdir -p dist
-
-          cp "$SRC" dist/NEON-SURVIVOR-debug.apk
-
-          echo "Final APK:"
-          ls -lh dist/NEON-SURVIVOR-debug.apk
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
+      - name: APK artifact yukle
+        uses: actions/upload-artifact@v6
         with:
-          name: NEON-SURVIVOR-debug-apk
-          path: dist/NEON-SURVIVOR-debug.apk
-          retention-days: 30
+          name: noryvx-debug-apk
+          path: android/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
-
-      - name: Diagnostic information
-        if: failure()
-        run: |
-          echo "================================"
-          echo "BUILD HATASI - DIAGNOSTIC"
-          echo "================================"
-
-          echo ""
-          echo "Node:"
-          node --version
-
-          echo ""
-          echo "NPM:"
-          npm --version
-
-          echo ""
-          echo "Java:"
-          java -version 2>&1
-
-          echo ""
-          echo "Sharp:"
-          npm list sharp || true
-
-          echo ""
-          echo "Files:"
-          find www -maxdepth 4 -type f -print || true
-
-          echo ""
-          echo "Android variables:"
-          cat android/variables.gradle || true
+          retention-days: 14
