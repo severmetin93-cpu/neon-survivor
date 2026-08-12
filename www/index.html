@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#04060f">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>NORYVX V16.3.4</title>
+<title>NORYVX V16.3.5</title>
 <link rel="manifest" href="manifest.json">
 
 <style>
@@ -631,7 +631,21 @@ button,
 </style>
 
 <style id="noryvx-phase3-css">
-#scr-phase3{overflow:auto;padding-bottom:28px}
+#scr-phase3{
+  overflow-y:auto;
+  overflow-x:hidden;
+  padding:14px 0 28px;
+  justify-content:flex-start;
+  align-items:center;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-y:contain;
+}
+#scr-phase3 .p3-wrap{
+  flex:0 0 auto;
+  width:min(430px,92vw);
+  max-height:none;
+  min-height:0;
+}
 .p3-wrap{width:min(430px,92vw);margin:0 auto}
 .p3-card{background:rgba(8,15,34,.90);border:1px solid rgba(34,230,255,.14);border-radius:16px;padding:12px;margin:8px 0}
 .p3-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -671,7 +685,7 @@ button,
 </head>
 
 <body>
-<div id="version-badge" aria-hidden="true">V16.3.4 · PHASE 3 CHARACTER SELECTION</div>
+<div id="version-badge" aria-hidden="true">V16.3.5 · PHASE 3 CHARACTER SELECTION</div>
 
 <div id="stage">
 
@@ -1090,7 +1104,7 @@ const BALANCE={
 
   /* PHASE 0.5 · 14 — tek versiyon kaynagi. DOM rozeti ve <title>
      boot sirasinda bu degerden yazilir. */
-  version:"16.3.4",
+  version:"16.3.5",
 
   /* ---------------------------------------------------------
      FAZ 0 DUZELTME SABITLERI
