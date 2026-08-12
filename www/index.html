@@ -7432,5 +7432,71 @@ else p25Init();
 })();
 </script>
 
+
+<script id="noryvx-phase25-safe-ui">
+(function(){
+"use strict";
+function p25Screen(){
+  return document.getElementById("scr-phase25");
+}
+function p25HideOthers(){
+  ["scr-menu","scr-how","scr-upgrades","scr-skins","scr-pause","scr-over","scr-levelup"].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el)el.classList.remove("on");
+  });
+}
+function p25OpenSafe(){
+  var el=p25Screen();
+  if(!el)return;
+  p25HideOthers();
+  el.classList.add("on");
+  try{ if(typeof p25RenderAll==="function")p25RenderAll(); }catch(e){}
+}
+function p25BackSafe(){
+  var el=p25Screen();
+  if(el)el.classList.remove("on");
+  var menu=document.getElementById("scr-menu");
+  if(menu)menu.classList.add("on");
+  try{ if(typeof toMenu==="function")toMenu(); }catch(e){}
+}
+function p25Bind(){
+  var b=document.getElementById("b-phase25");
+  if(b){
+    b.onclick=function(ev){
+      ev.preventDefault();
+      ev.stopPropagation();
+      p25OpenSafe();
+      return false;
+    };
+  }
+  var back=document.getElementById("b-phase25-back");
+  if(back){
+    back.onclick=function(ev){
+      ev.preventDefault();
+      ev.stopPropagation();
+      p25BackSafe();
+      return false;
+    };
+  }
+  document.querySelectorAll("[data-p25-tab]").forEach(function(tab){
+    tab.onclick=function(){
+      document.querySelectorAll("[data-p25-tab]").forEach(function(x){x.classList.remove("on");});
+      tab.classList.add("on");
+      var t=tab.getAttribute("data-p25-tab");
+      var a=document.getElementById("p25-build-panel");
+      var c=document.getElementById("p25-character-panel");
+      var m=document.getElementById("p25-mode-panel");
+      if(a)a.style.display=t==="build"?"block":"none";
+      if(c)c.style.display=t==="character"?"block":"none";
+      if(m)m.style.display=t==="mode"?"block":"none";
+      try{if(typeof p25RenderAll==="function")p25RenderAll();}catch(e){}
+    };
+  });
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",p25Bind,{once:true});
+else p25Bind();
+})();
+</script>
+
 </body>
       </html>
