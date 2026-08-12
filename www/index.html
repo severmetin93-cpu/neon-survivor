@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#04060f">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>NORYVX V16.4.0</title>
+<title>NORYVX V16.4.1</title>
 <link rel="manifest" href="manifest.json">
 
 <style>
@@ -686,16 +686,17 @@ button,
 <style id="noryvx-phase4a-css">
 #run-wave-hud{
   position:fixed;
-  top:calc(var(--safe-t) + 8px);
-  left:50%;
-  transform:translateX(-50%);
+  top:calc(var(--safe-t) + 70px);
+  right:14px;
+  left:auto;
+  transform:none;
   z-index:18;
-  min-width:112px;
-  padding:6px 10px;
+  min-width:74px;
+  padding:5px 8px;
   border:1px solid rgba(34,230,255,.18);
-  border-radius:10px;
-  background:rgba(4,10,25,.78);
-  box-shadow:0 0 18px rgba(34,230,255,.06);
+  border-radius:9px;
+  background:rgba(4,10,25,.72);
+  box-shadow:0 0 14px rgba(34,230,255,.05);
   text-align:center;
   pointer-events:none;
   opacity:0;
@@ -716,7 +717,7 @@ button,
 </head>
 
 <body>
-<div id="version-badge" aria-hidden="true">V16.4.0 · PHASE 4A GAMEPLAY</div>
+<div id="version-badge" aria-hidden="true">V16.4.1 · PHASE 4A GAMEPLAY</div>
 
 <div id="stage">
 
@@ -1142,7 +1143,7 @@ const BALANCE={
 
   /* PHASE 0.5 · 14 — tek versiyon kaynagi. DOM rozeti ve <title>
      boot sirasinda bu degerden yazilir. */
-  version:"16.4.0",
+  version:"16.4.1",
 
   /* ---------------------------------------------------------
      FAZ 0 DUZELTME SABITLERI
