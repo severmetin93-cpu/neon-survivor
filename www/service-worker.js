@@ -6,7 +6,7 @@
    sonsuza kadar sunmaya devam etti. Yeni APK'larda eski oyunun
    gorunmesinin sebebi buydu.
    SONRA: ad surumle birlikte degisir. */
-const CACHE = "neon-survivor-v16-3-4";
+const CACHE = "neon-survivor-v16-4-0";
 
 const ASSETS = [
   "./",
