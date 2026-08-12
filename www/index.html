@@ -7498,5 +7498,72 @@ else p25Bind();
 })();
 </script>
 
+
+<script id="noryvx-phase25-android-delegated-touch">
+(function(){
+"use strict";
+var last=0;
+function target(e){
+  var t=e.target;
+  return t && t.closest ? t.closest("[data-p25-tab],[data-p25-mode],[data-p25-arch],[data-p25-skill],#b-phase25-back") : null;
+}
+function act(el){
+  if(!el)return;
+  var now=Date.now();
+  if(now-last<250)return;
+  last=now;
+  var ev=el.getAttribute("data-p25-tab");
+  if(ev){
+    document.querySelectorAll("[data-p25-tab]").forEach(function(x){x.classList.remove("on");});
+    el.classList.add("on");
+    ["p25-build-panel","p25-character-panel","p25-mode-panel"].forEach(function(id){
+      var p=document.getElementById(id); if(p)p.style.display="none";
+    });
+    var map={build:"p25-build-panel",character:"p25-character-panel",mode:"p25-mode-panel"};
+    var p=document.getElementById(map[ev]);if(p)p.style.display="block";
+    try{p25RenderAll();}catch(x){console.error("P25 tab:",x);}
+    return;
+  }
+  ev=el.getAttribute("data-p25-mode");
+  if(ev){
+    if(window.P25S){P25S.mode=ev;P25S.selectedMap=(P25.modes[ev]||P25.modes.survival).map;}
+    try{p25Save();p25RenderMode();}catch(x){console.error("P25 mode:",x);}
+    return;
+  }
+  ev=el.getAttribute("data-p25-arch");
+  if(ev){
+    if(window.P25S)P25S.archetype=ev;
+    try{p25Save();p25RenderCharacter();}catch(x){console.error("P25 arch:",x);}
+    return;
+  }
+  if(el.hasAttribute("data-p25-skill")){
+    if(window.P25S && P25S.skillPoints>0){
+      P25S.skillPoints--;
+      var keys=Object.keys(P25S.mastery),k=keys[(P25S.charLevel+P25S.skillPoints)%keys.length];
+      P25S.mastery[k]=(P25S.mastery[k]||0)+1;
+      try{p25Save();p25RenderCharacter();}catch(x){}
+    }
+    return;
+  }
+  if(el.id==="b-phase25-back"){
+    var sc=document.getElementById("scr-phase25");if(sc)sc.classList.remove("on");
+    var menu=document.getElementById("scr-menu");if(menu)menu.classList.add("on");
+  }
+}
+function handler(e){
+  var el=target(e);
+  if(!el)return;
+  /* Android WebView sometimes fails to synthesize click from a touch.
+     Capture the gesture at document level so no canvas/stage listener can swallow it. */
+  if(e.type==="touchstart" || e.type==="pointerdown"){
+    try{e.preventDefault();}catch(x){}
+    act(el);
+  }
+}
+document.addEventListener("touchstart",handler,{capture:true,passive:false});
+if(window.PointerEvent)document.addEventListener("pointerdown",handler,{capture:true,passive:false});
+})();
+</script>
+
 </body>
       </html>
