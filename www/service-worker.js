@@ -1,4 +1,12 @@
-const CACHE = "neon-survivor-v4";
+/* NORYVX — cache adi HER BUILD'DE degismeli.
+   ONCE: "neon-survivor-v4" V15.5'ten beri hic degismemisti. activate
+   asamasi eski cache'leri temizliyor ama SADECE ad degistiginde
+   tetikleniyor; ad sabit kaldigi icin hicbir zaman temizlenmedi ve
+   fetch cache-first oldugu icin cihaz ilk kurulumdaki index.html'i
+   sonsuza kadar sunmaya devam etti. Yeni APK'larda eski oyunun
+   gorunmesinin sebebi buydu.
+   SONRA: ad surumle birlikte degisir. */
+const CACHE = "neon-survivor-v16-3-4";
 
 const ASSETS = [
   "./",
@@ -25,7 +33,10 @@ self.addEventListener("activate", event => {
       .then(keys => {
         return Promise.all(
           keys
+            /* Guncel cache disindaki TUM neon-survivor cache'leri silinir.
+               Yabanci originlerin cache'lerine dokunulmaz. */
             .filter(key => key !== CACHE)
+            .filter(key => key.indexOf("neon-survivor") === 0)
             .map(key => caches.delete(key))
         );
       })
@@ -35,6 +46,38 @@ self.addEventListener("activate", event => {
 
 self.addEventListener("fetch", event => {
   if (event.request.method !== "GET") return;
+
+  /* index.html / navigasyon istekleri NETWORK-FIRST.
+     Diger varliklar (ikon, manifest) eskisi gibi CACHE-FIRST kalir.
+     Neden: cache-first index.html, cache adi degismedigi surece yeni
+     build'i hicbir zaman gostermiyordu. Network-first ile yeni dosya
+     her acilista alinir; cevrimdisi durumda cache'e dusulur. */
+  const req = event.request;
+  const isDoc =
+    req.mode === "navigate" ||
+    (req.destination === "document") ||
+    /\/index\.html($|\?)/.test(req.url) ||
+    /\/$/.test(new URL(req.url).pathname);
+
+  if (isDoc) {
+    event.respondWith(
+      fetch(req)
+        .then(response => {
+          if (response && response.status === 200) {
+            const copy = response.clone();
+            caches.open(CACHE)
+              .then(cache => cache.put(req, copy))
+              .catch(() => {});
+          }
+          return response;
+        })
+        .catch(() => {
+          return caches.match(req)
+            .then(hit => hit || caches.match("./index.html"));
+        })
+    );
+    return;
+  }
 
   event.respondWith(
     caches.match(event.request)
