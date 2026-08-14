@@ -1329,11 +1329,14 @@ button:disabled{opacity:.38 !important;filter:saturate(.35);pointer-events:none}
 .rpg-d-head{display:flex;flex-direction:row !important;align-items:center;gap:10px}
 .rpg-d-head .rpg-d-txt{display:flex;flex-direction:column;gap:2px;min-width:0}
 
-/* UI_SET_60 · global icon atlas altyapisi
-   atlas-icons.png = global_icon_atlas_1024.png (1024x1024 px)
-   Koordinatlar Phase 3'te gorsel inceleme sonrasi doldurulacak.
-   Hicbir HTML elementi su an .ui-ico kullantmaz — altyapi only. */
+/* UI_SET_60 · global icon atlas — Phase 3 koordinatlar uygulandı
+   atlas-icons.png = global_icon_atlas_1024.png (1024×1024 px)
+   Grid: 4 sütun × 4 satır, her hücre 256×256 px.
+   Hicbir HTML elementi su an .ui-ico kullanmaz — altyapi only.
+   minus: 03_Icons referans kartında mevcut fakat atlasta yok — dahil edilmedi. */
 .ui-ico{
+  --ui-col:0;
+  --ui-row:0;
   display:inline-flex;
   align-items:center;
   justify-content:center;
@@ -1342,26 +1345,39 @@ button:disabled{opacity:.38 !important;filter:saturate(.35);pointer-events:none}
   flex:0 0 auto;
   width:24px;
   height:24px;
-  background-size:1024px 1024px;
+  background-size:96px 96px;
+  background-position:calc(var(--ui-col) * -24px) calc(var(--ui-row) * -24px);
 }
-/* Boyut varyantlari */
-.ui-ico.sm{width:16px;height:16px}
-.ui-ico.md{width:24px;height:24px}
-.ui-ico.lg{width:32px;height:32px}
-/* Koordinatlar Phase 3'te eklenecek:
-.ui-ico.close    { background-position: Xpx Ypx }
-.ui-ico.back     { background-position: Xpx Ypx }
-.ui-ico.home     { background-position: Xpx Ypx }
-.ui-ico.settings { background-position: Xpx Ypx }
-.ui-ico.search   { background-position: Xpx Ypx }
-.ui-ico.lock     { background-position: Xpx Ypx }
-.ui-ico.info     { background-position: Xpx Ypx }
-.ui-ico.warning  { background-position: Xpx Ypx }
-.ui-ico.error    { background-position: Xpx Ypx }
-.ui-ico.check    { background-position: Xpx Ypx }
-.ui-ico.plus     { background-position: Xpx Ypx }
-.ui-ico.minus    { background-position: Xpx Ypx }
-*/
+.ui-ico.sm{
+  width:16px;height:16px;
+  background-size:64px 64px;
+  background-position:calc(var(--ui-col) * -16px) calc(var(--ui-row) * -16px);
+}
+.ui-ico.lg{
+  width:32px;height:32px;
+  background-size:128px 128px;
+  background-position:calc(var(--ui-col) * -32px) calc(var(--ui-row) * -32px);
+}
+/* Satır 0 */
+.ui-ico.home    {--ui-col:0;--ui-row:0}
+.ui-ico.back    {--ui-col:1;--ui-row:0}
+.ui-ico.close   {--ui-col:2;--ui-row:0}
+.ui-ico.check   {--ui-col:3;--ui-row:0}
+/* Satır 1 */
+.ui-ico.plus    {--ui-col:0;--ui-row:1}
+.ui-ico.lock    {--ui-col:1;--ui-row:1}
+.ui-ico.info    {--ui-col:2;--ui-row:1}
+.ui-ico.warning {--ui-col:3;--ui-row:1}
+/* Satır 2 */
+.ui-ico.error   {--ui-col:0;--ui-row:2}
+.ui-ico.settings{--ui-col:1;--ui-row:2}
+.ui-ico.search  {--ui-col:2;--ui-row:2}
+.ui-ico.star    {--ui-col:3;--ui-row:2}
+/* Satır 3 */
+.ui-ico.quest   {--ui-col:0;--ui-row:3}
+.ui-ico.map     {--ui-col:1;--ui-row:3}
+.ui-ico.canon   {--ui-col:2;--ui-row:3} /* atlas label belirsiz — gorsel dogrulama gerekli */
+.ui-ico.player  {--ui-col:3;--ui-row:3}
 </style>
 
 <style id="noryvx-ach-css">
