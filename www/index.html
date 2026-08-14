@@ -1420,6 +1420,166 @@ button:disabled{opacity:.38 !important;filter:saturate(.35);pointer-events:none}
 .save-bar .p3-btn{flex:1;font-size:11px}
 </style>
 
+<style id="noryvx-landscape-css">
+/* =========================================================
+   NORYVX · YATAY (LANDSCAPE) DÜZEN
+
+   Oyun alanı (canvas) zaten yön-bağımsız: W/H clientWidth/Height
+   üzerinden okunuyor, collision ve spawn ekran oranından
+   türetiliyor. Bu blok GAMEPLAY MATEMATİĞİNE DOKUNMAZ; yalnızca
+   DOM katmanının yatayda kullanılabilir olmasını sağlar.
+
+   Dikey düzen aynen korunur — tüm kurallar body.ls altında.
+========================================================= */
+
+body.ls .screen{
+  flex-direction:row;
+  align-items:stretch;
+  justify-content:center;
+  gap:18px;
+  padding:calc(var(--safe-t) + 12px) calc(var(--safe-r) + 18px)
+          calc(var(--safe-b) + 12px) calc(var(--safe-l) + 18px);
+}
+
+/* Ekran içi otomatik iki kolon: başlık/özet solda, içerik sağda.
+   .ls-head ve .ls-body sarmalayıcıları JS tarafından kurulur. */
+body.ls .ls-head{
+  flex:0 0 clamp(160px,26vw,240px);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:8px;
+  padding-right:16px;
+  border-right:1px solid var(--line);
+}
+body.ls .ls-body{
+  flex:1 1 auto;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  gap:8px;
+  min-width:0;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  padding-right:4px;
+}
+body.ls .ls-head .tutorial-title{
+  font-size:17px;
+  text-align:left;
+  margin:0;
+}
+body.ls .ls-head .tag{text-align:left;margin:0}
+body.ls .ls-head .btn{width:100% !important;margin-top:auto}
+
+/* Yatayda dikey yükseklik az — panel yükseklik tavanları yeniden */
+body.ls .rpg-grid,
+body.ls .pg-list,
+body.ls .tech-wrap,
+body.ls .mast-wrap,
+body.ls .bp-wrap,
+body.ls .ach-wrap,
+body.ls .cosm-wrap,
+body.ls .evo-wrap,
+body.ls .lead-wrap,
+body.ls .save-wrap{max-height:none;width:100%}
+
+/* Geniş ekranda envanter/listeler daha çok sütun kullanır */
+body.ls .rpg-grid{grid-template-columns:repeat(3,1fr)}
+body.ls .rpg-slots{grid-template-columns:repeat(4,1fr)}
+body.ls .tech-wrap{display:grid;grid-template-columns:repeat(2,1fr);align-items:start}
+body.ls .mast-wrap{display:grid;grid-template-columns:repeat(2,1fr)}
+body.ls .cosm-wrap{display:grid;grid-template-columns:repeat(2,1fr)}
+body.ls .save-wrap{display:grid;grid-template-columns:repeat(2,1fr)}
+body.ls #save-code{width:100%}
+
+/* ---------- ANA MENÜ: sol navigasyon + sağ vitrin ---------- */
+body.ls #scr-menu{flex-direction:row;gap:20px;align-items:stretch}
+body.ls .menu-left{
+  flex:0 0 clamp(190px,28vw,280px);
+  display:flex;flex-direction:column;justify-content:center;gap:8px;
+  border-right:1px solid var(--line);padding-right:18px;
+}
+body.ls .menu-right{
+  flex:1 1 auto;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:8px;min-width:0;
+}
+body.ls .logo{font-size:34px !important;text-align:left;letter-spacing:.22em !important}
+body.ls .logo span{font-size:.26em !important}
+body.ls .menu-actions,
+body.ls .menu-tabs,
+body.ls .menu-sub,
+body.ls #onb{width:100% !important}
+body.ls .menu-sub[data-mpane].on{grid-template-columns:repeat(2,1fr)}
+body.ls .btn:not(.ghost){min-height:52px !important;font-size:16px !important}
+body.ls .btn.ghost{min-height:40px !important;font-size:10.5px !important}
+body.ls .hero-stage{width:100%;height:min(240px,52vh)}
+body.ls .progress-panel{width:100%}
+body.ls .toggles{top:calc(var(--safe-t) + 8px);right:calc(var(--safe-r) + 10px)}
+
+/* ---------- SAVAŞ HUD: geniş ekrana yayılır ---------- */
+body.ls #run-wave-hud{top:calc(var(--safe-t) + 10px);right:calc(var(--safe-r) + 16px)}
+body.ls #combat-track{top:calc(var(--safe-t) + 46px);right:calc(var(--safe-r) + 16px);
+  max-width:min(230px,26vw)}
+body.ls #power-hud{top:calc(var(--safe-t) + 10px);right:auto;
+  left:calc(var(--safe-l) + 62px)}
+body.ls #weapon-hud{top:auto;bottom:calc(var(--safe-b) + 10px);
+  left:calc(var(--safe-l) + 16px)}
+body.ls #boss-hud{top:calc(var(--safe-t) + 10px);left:50%;width:min(420px,44vw)}
+body.ls #build-hud{top:auto;bottom:calc(var(--safe-b) + 10px);
+  left:auto;right:calc(var(--safe-r) + 16px)}
+body.ls #version-badge{top:auto;bottom:4px;left:10px}
+
+/* Alçak yatay ekran (390px yükseklik) için sıkışma önlemi */
+@media (orientation:landscape) and (max-height:430px){
+  body.ls .logo{font-size:26px !important}
+  body.ls .hero-stage{height:min(180px,46vh)}
+  body.ls .btn:not(.ghost){min-height:44px !important;font-size:14px !important}
+  body.ls .btn.ghost{min-height:34px !important;font-size:9.5px !important}
+  body.ls .tutorial-title{font-size:15px}
+  body.ls .rpg-grid{grid-template-columns:repeat(4,1fr)}
+}
+</style>
+
+<style id="noryvx-dash-css">
+/* DASH BUTONU — savaş ekranında sağ alt, canvas üstünde */
+#b-dash{
+  position:absolute;
+  right:calc(var(--safe-r) + 18px);
+  bottom:calc(var(--safe-b) + 18px);
+  width:64px;height:64px;
+  z-index:9;
+  display:none;
+  align-items:center;justify-content:center;
+  border-radius:50%;
+  border:0;padding:0;
+  background:
+    conic-gradient(#7fe0ff var(--cd,0%), rgba(255,255,255,.10) var(--cd,0%)),
+    radial-gradient(circle at 42% 36%, rgba(127,224,255,.22), rgba(4,8,18,.92) 68%);
+  color:#cdf2ff;
+  box-shadow:0 4px 16px rgba(0,0,0,.45);
+  touch-action:none;
+  -webkit-tap-highlight-color:transparent;
+}
+#b-dash::before{
+  content:"";position:absolute;inset:5px;border-radius:50%;
+  background:radial-gradient(circle at 44% 38%, rgba(20,34,62,.96), rgba(5,9,20,.96));
+  border:1px solid rgba(127,224,255,.30);
+}
+#b-dash .dash-i{position:relative;font-size:23px;line-height:1;font-weight:900;
+  text-shadow:0 0 12px rgba(127,224,255,.7);opacity:.55;transition:opacity 140ms}
+#b-dash .dash-cd{position:absolute;font-size:13px;font-weight:900;
+  color:#eaf4ff;font-variant-numeric:tabular-nums}
+#b-dash.rdy{box-shadow:0 0 20px rgba(127,224,255,.42),0 4px 16px rgba(0,0,0,.45)}
+#b-dash.rdy .dash-i{opacity:1}
+#b-dash:active{transform:scale(.94)}
+body.ls #b-dash{width:72px;height:72px;
+  right:calc(var(--safe-r) + 22px);bottom:calc(var(--safe-b) + 22px)}
+@media (orientation:landscape) and (max-height:430px){
+  #b-dash{width:58px;height:58px}
+}
+</style>
+
 </head>
 
 <body>
@@ -1477,6 +1637,10 @@ button:disabled{opacity:.38 !important;filter:saturate(.35);pointer-events:none}
   <span class="wave-value" id="run-wave-value">1</span>
   <span class="wave-pressure" id="run-wave-pressure">BASKI %0</span>
 </div>
+
+<button id="b-dash" aria-label="Dash">
+  <span class="dash-i">↯</span><span class="dash-cd"></span>
+</button>
 
 <div id="boss-hud">
   <div class="boss-name">NEON WARDEN · ELITE CORE</div>
@@ -12890,6 +13054,789 @@ renderOnb();
 
 window.NEONKILL={KILLS,K,buyKill,selKill,killFx};
 window.NEONONB={STEPS,O,current,renderOnb};
+
+})();
+</script>
+
+<script>
+/* =========================================================
+   NORYVX · YATAY DÜZEN KONTROLÜ
+
+   1. Yön tespiti → body.ls
+   2. Ekranları iki kolona böler (başlık/özet | içerik)
+   3. Ana menüyü sol navigasyon + sağ vitrin olarak yeniden kurar
+
+   HİÇBİR ID, HİÇBİR EVENT BINDING DEĞİŞMEZ — sadece DOM
+   düğümleri sarmalayıcılar arasına taşınır. Dikey düzene
+   dönüldüğünde sarmalayıcılar saydam kalır ve mevcut CSS
+   aynen çalışır.
+========================================================= */
+(function(){
+"use strict";
+
+/* ---------- 1 · YÖN ---------- */
+function isLandscape(){
+  return (window.innerWidth||0) > (window.innerHeight||0)*1.15;
+}
+function applyOrientation(){
+  const ls=isLandscape();
+  document.body.classList.toggle("ls",ls);
+  return ls;
+}
+
+/* ---------- 2 · EKRANLARI İKİ KOLONA BÖL ---------- */
+/* Her ekranın "başlık bölgesi" = tutorial-title + tag'ler,
+   "gövde" = geri kalan her şey, "alt" = geri butonu. */
+function split(scr){
+  if(scr.dataset.lsSplit)return;
+  if(scr.id==="scr-menu")return;              /* menü ayrı ele alınır */
+  const kids=[...scr.children];
+  if(!kids.length)return;
+
+  const head=document.createElement("div");
+  head.className="ls-head";
+  const body=document.createElement("div");
+  body.className="ls-body";
+
+  kids.forEach(el=>{
+    const isTitle=el.classList.contains("tutorial-title");
+    const isTag=el.classList.contains("tag");
+    const isBack=el.tagName==="BUTTON"&&/-back$/.test(el.id||"");
+    (isTitle||isTag||isBack?head:body).appendChild(el);
+  });
+  scr.appendChild(head);
+  scr.appendChild(body);
+  scr.dataset.lsSplit="1";
+}
+
+/* ---------- 3 · ANA MENÜ ---------- */
+function splitMenu(){
+  const scr=document.getElementById("scr-menu");
+  if(!scr||scr.dataset.lsSplit)return;
+  const left=document.createElement("div");
+  left.className="menu-left";
+  const right=document.createElement("div");
+  right.className="menu-right";
+
+  [...scr.children].forEach(el=>{
+    if(el.classList.contains("toggles")){scr.appendChild(el);return;}
+    const toRight=el.classList.contains("hero-stage")||
+                  el.classList.contains("progress-panel")||
+                  el.id==="menu-best"||el.id==="pg-menu-sector";
+    (toRight?right:left).appendChild(el);
+  });
+  scr.insertBefore(left,scr.firstChild);
+  scr.insertBefore(right,left.nextSibling);
+  scr.dataset.lsSplit="1";
+}
+
+function build(){
+  splitMenu();
+  document.querySelectorAll(".screen").forEach(split);
+}
+
+/* ---------- 4 · CANVAS YENİDEN ÖLÇÜLENDİRME ---------- */
+/* Yön değişince oyunun kendi resize() fonksiyonu çağrılır —
+   W/H ve DPR yeniden hesaplanır, gameplay matematiği bozulmaz. */
+function relayout(){
+  applyOrientation();
+  try{if(typeof resize==="function")resize();}catch(e){}
+  try{if(window.NEONBP)window.NEONBP.render&&0;}catch(e){}
+}
+
+build();
+applyOrientation();
+
+let t=null;
+function debounced(){clearTimeout(t);t=setTimeout(relayout,120);}
+window.addEventListener("resize",debounced,{passive:true});
+window.addEventListener("orientationchange",()=>setTimeout(relayout,220),{passive:true});
+
+window.NEONLS={isLandscape,applyOrientation,build,relayout};
+
+})();
+</script>
+
+<script>
+/* =========================================================
+   NORYVX · JOYSTICK + MİNİMAP + GÜÇ GÖSTERGELERİ
+
+   JOYSTICK — GERÇEK KONTROLÜN GÖRSEL KARŞILIĞI:
+     Oyunun kontrolü zaten göreli sürükleme (inputDown ile
+     çapa, inputMove ile delta). Joystick BU MEKANİĞİ
+     DEĞİŞTİRMEZ; sadece çapayı ve parmağın sapmasını ekrana
+     çizer. Girdi boru hattına tek bir olay eklemez, tek bir
+     değeri değiştirmez — yalnızca dinler.
+
+   MİNİMAP — GERÇEK VERİ:
+     Sahadaki gerçek düşman, boss, çekirdek ve güç nesneleri
+     çizilir. Uydurma nokta yok.
+
+   ABILITY BUTONU EKLENMEDİ:
+     Oyunda manuel tetiklenen yetenek yok — kalkan, overdrive
+     ve mıknatıs toplanan süreli güçler. Basılacak bir şey
+     olmadan buton koymak sahte buton olurdu. Onun yerine
+     referanstaki yetenek yuvası konumunda GERÇEK aktif güç
+     sayaçları gösteriliyor.
+========================================================= */
+(function(){
+"use strict";
+if(typeof drawHUD!=="function"||typeof canvas==="undefined")return;
+
+/* ---------------------------------------------------------
+   1 · JOYSTICK DURUMU — sadece dinler, asla müdahale etmez
+--------------------------------------------------------- */
+const JOY={on:false,ox:0,oy:0,x:0,y:0,id:null,fade:0};
+const MAXR=54;
+
+function down(x,y,id){JOY.on=true;JOY.id=id;JOY.ox=x;JOY.oy=y;JOY.x=x;JOY.y=y;JOY.fade=1;}
+function move(x,y){if(JOY.on){JOY.x=x;JOY.y=y;}}
+function up(){JOY.on=false;JOY.id=null;}
+
+canvas.addEventListener("touchstart",e=>{
+  const t=e.changedTouches[0];if(t)down(t.clientX,t.clientY,t.identifier);
+},{passive:true});
+canvas.addEventListener("touchmove",e=>{
+  for(let i=0;i<e.changedTouches.length;i++){
+    const t=e.changedTouches[i];
+    if(JOY.id===null||t.identifier===JOY.id){move(t.clientX,t.clientY);break;}
+  }
+},{passive:true});
+["touchend","touchcancel"].forEach(ev=>
+  canvas.addEventListener(ev,up,{passive:true}));
+canvas.addEventListener("mousedown",e=>down(e.clientX,e.clientY,"m"),{passive:true});
+canvas.addEventListener("mousemove",e=>{if(JOY.on)move(e.clientX,e.clientY);},{passive:true});
+canvas.addEventListener("mouseup",up,{passive:true});
+
+function drawJoy(dt){
+  if(!JOY.on)JOY.fade=Math.max(0,JOY.fade-dt*3.2);
+  if(JOY.fade<=0.01)return;
+  const a=JOY.fade;
+  let dx=JOY.x-JOY.ox, dy=JOY.y-JOY.oy;
+  const d=Math.hypot(dx,dy);
+  if(d>MAXR){dx=dx/d*MAXR;dy=dy/d*MAXR;}
+
+  ctx.save();
+  ctx.translate(JOY.ox,JOY.oy);
+
+  /* taban halkası */
+  ctx.globalAlpha=.22*a;
+  ctx.fillStyle="#0a1224";
+  ctx.beginPath();ctx.arc(0,0,MAXR,0,TAU);ctx.fill();
+  ctx.globalAlpha=.55*a;
+  ctx.strokeStyle="#22e6ff";
+  ctx.lineWidth=1.6;
+  ctx.beginPath();ctx.arc(0,0,MAXR,0,TAU);ctx.stroke();
+
+  /* yön çizgisi */
+  if(d>4){
+    ctx.globalAlpha=.32*a;
+    ctx.lineWidth=2.4;
+    ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(dx,dy);ctx.stroke();
+  }
+
+  /* başparmak */
+  ctx.globalAlpha=.85*a;
+  ctx.fillStyle="rgba(14,24,48,.92)";
+  ctx.beginPath();ctx.arc(dx,dy,20,0,TAU);ctx.fill();
+  ctx.strokeStyle="#7fe0ff";
+  ctx.lineWidth=1.8;
+  ctx.beginPath();ctx.arc(dx,dy,20,0,TAU);ctx.stroke();
+  ctx.globalAlpha=.6*a;
+  ctx.fillStyle="#cdf2ff";
+  ctx.beginPath();ctx.arc(dx,dy,4.5,0,TAU);ctx.fill();
+
+  ctx.restore();
+}
+
+/* ---------------------------------------------------------
+   2 · MİNİMAP — sahadaki gerçek nesneler
+--------------------------------------------------------- */
+function mapGeom(){
+  const ls=document.body.classList.contains("ls");
+  const R=ls?Math.min(58,Math.min(W,H)*.16):Math.min(46,W*.13);
+  const cx=W-R-(ls?18:14);
+  const cy=(ls?18:96)+R;
+  return {R:R,cx:cx,cy:cy};
+}
+function drawMap(){
+  const g=mapGeom();
+  const range=Math.max(W,H)*.72;      /* radar kapsamı */
+  const k=g.R/range;
+
+  ctx.save();
+  ctx.translate(g.cx,g.cy);
+
+  ctx.globalAlpha=.55;
+  ctx.fillStyle="rgba(5,9,20,.78)";
+  ctx.beginPath();ctx.arc(0,0,g.R,0,TAU);ctx.fill();
+  ctx.globalAlpha=.45;
+  ctx.strokeStyle="rgba(34,230,255,.42)";
+  ctx.lineWidth=1.2;
+  ctx.beginPath();ctx.arc(0,0,g.R,0,TAU);ctx.stroke();
+  ctx.globalAlpha=.18;
+  ctx.beginPath();ctx.arc(0,0,g.R*.55,0,TAU);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(-g.R,0);ctx.lineTo(g.R,0);
+  ctx.moveTo(0,-g.R);ctx.lineTo(0,g.R);ctx.stroke();
+
+  ctx.save();
+  ctx.beginPath();ctx.arc(0,0,g.R-1,0,TAU);ctx.clip();
+
+  const plot=(x,y,r,color,alpha)=>{
+    const px=(x-player.x)*k, py=(y-player.y)*k;
+    if(px*px+py*py>g.R*g.R)return;
+    ctx.globalAlpha=alpha;
+    ctx.fillStyle=color;
+    ctx.beginPath();ctx.arc(px,py,r,0,TAU);ctx.fill();
+  };
+
+  try{orbs.forEach(o=>{if(o.alive!==false)plot(o.x,o.y,1.5,o.rare?"#ff4fd8":"#7dff3a",.8);});}catch(e){}
+  try{powerups.forEach(p=>{if(p.alive!==false)plot(p.x,p.y,2,"#ffe34d",.9);});}catch(e){}
+  try{
+    enemies.forEach(e=>{
+      if(e.alive===false)return;
+      if(e.boss)      plot(e.x,e.y,4.2,"#ff3b6b",1);
+      else if(e.elite)plot(e.x,e.y,3,"#ffe34d",.95);
+      else            plot(e.x,e.y,1.8,"#ff6a3d",.85);
+    });
+  }catch(e){}
+
+  ctx.restore();
+
+  /* oyuncu — merkezde ok */
+  ctx.globalAlpha=1;
+  ctx.fillStyle="#22e6ff";
+  ctx.beginPath();
+  ctx.moveTo(0,-4.5);ctx.lineTo(3.2,3.4);ctx.lineTo(0,1.6);ctx.lineTo(-3.2,3.4);
+  ctx.closePath();ctx.fill();
+
+  ctx.restore();
+}
+
+/* ---------------------------------------------------------
+   3 · AKTİF GÜÇ SAYAÇLARI — referanstaki yetenek yuvası
+      konumunda, ama GERÇEK kalan süreyi gösterir.
+--------------------------------------------------------- */
+const POWERS=[
+  {k:"shield",   n:"KALKAN",    c:"#48d9ff", max:12},
+  {k:"overdrive",n:"OVERDRIVE", c:"#ffe34d", max:10},
+  {k:"magnet",   n:"MIKNATIS",  c:"#7dff3a", max:10}
+];
+function drawPowers(){
+  let P;
+  try{P=Game.powers;}catch(e){return;}
+  if(!P)return;
+  const ls=document.body.classList.contains("ls");
+  const r=ls?21:18;
+  const gap=r*2+10;
+  const x=W-(ls?26:20)-r;
+  let y=H-(ls?24:34)-r;
+
+  POWERS.forEach(p=>{
+    const v=+P[p.k]||0;
+    if(v<=0)return;
+    const frac=Math.max(0,Math.min(1,v/p.max));
+    ctx.save();
+    ctx.translate(x,y);
+
+    ctx.globalAlpha=.72;
+    ctx.fillStyle="rgba(6,10,22,.9)";
+    ctx.beginPath();ctx.arc(0,0,r,0,TAU);ctx.fill();
+
+    ctx.globalAlpha=.30;
+    ctx.strokeStyle=p.c;ctx.lineWidth=3;
+    ctx.beginPath();ctx.arc(0,0,r-2,0,TAU);ctx.stroke();
+
+    ctx.globalAlpha=.95;
+    ctx.beginPath();
+    ctx.arc(0,0,r-2,-Math.PI/2,-Math.PI/2+TAU*frac);
+    ctx.stroke();
+
+    ctx.globalAlpha=.9;
+    ctx.fillStyle=p.c;
+    ctx.font="700 "+(r*.52)+"px system-ui,sans-serif";
+    ctx.textAlign="center";ctx.textBaseline="middle";
+    ctx.fillText(Math.ceil(v),0,1);
+
+    ctx.restore();
+    y-=gap;
+  });
+}
+
+/* ---------------------------------------------------------
+   4 · HUD KATMANINA BAĞLA
+--------------------------------------------------------- */
+const _hud=drawHUD;
+let lastT=performance.now();
+drawHUD=function(){
+  _hud.apply(this,arguments);
+  const now=performance.now();
+  const dt=Math.min(.05,(now-lastT)/1000);
+  lastT=now;
+  try{
+    drawMap();
+    drawPowers();
+    drawJoy(dt);
+  }catch(e){}
+};
+
+window.NEONHUD2={JOY,POWERS,mapGeom,drawMap,drawJoy,drawPowers};
+
+})();
+</script>
+
+<script>
+/* =========================================================
+   NORYVX · DASH (QUANTUM DASH)
+
+   Oyunun İLK manuel tetiklenen yeteneği. Referanstaki ability
+   butonu artık gerçek bir şeye basıyor.
+
+   GERÇEK ENTEGRASYON:
+     - Yön: oyuncunun gerçek hareket yönünden (trail deltası).
+       Duruyorsa en son bakılan yön kullanılır.
+     - Konum: mevcut inputMove ile AYNI clamp mantığı — arena
+       sınırının dışına çıkamaz.
+     - Dokunulmazlık: mevcut player.invuln alanı kullanılır,
+       yeni hasar sistemi yazılmadı.
+     - Soğuma: teknoloji ağacındaki ENERJİ AKIŞI düğümü ve
+       Focus yeteneği zaten CHAR.cooldownMult() üzerinden
+       silah cooldown'unu düşürüyor; dash de AYNI çarpanı
+       kullanır — yatırım burada da işe yarar.
+     - Ses: NEONAUDIO.SFX üzerinden.
+
+   Yeni hareket/collision matematiği eklenmedi; dash yalnızca
+   mevcut konumu mevcut kurallara göre ilerletir.
+========================================================= */
+(function(){
+"use strict";
+if(typeof player!=="object"||!player)return;
+
+const D={
+  cdBase:4.6,      /* saniye */
+  dur:0.17,        /* dash süresi */
+  dist:132,        /* toplam mesafe (px) */
+  iframe:0.34,     /* dokunulmazlık */
+  cd:0, t:0, dx:0, dy:0, fx:1, fy:0, ghosts:[]
+};
+
+function cdMax(){
+  let m=1;
+  try{if(typeof CHAR==="object"&&CHAR.cooldownMult)m=CHAR.cooldownMult();}catch(e){}
+  return Math.max(1.8,D.cdBase*m);
+}
+function ready(){
+  try{if(Game.state!==STATE.PLAYING)return false;}catch(e){return false;}
+  return D.cd<=0&&D.t<=0;
+}
+
+/* Yön: gerçek hareketten türetilir. */
+function facing(){
+  const tr=player.trail;
+  if(tr&&tr.length>=6){
+    const dx=tr[tr.length-2]-tr[tr.length-6];
+    const dy=tr[tr.length-1]-tr[tr.length-5];
+    const d=Math.hypot(dx,dy);
+    if(d>1.2)return {x:dx/d,y:dy/d};
+  }
+  return {x:D.fx,y:D.fy};
+}
+
+function trigger(){
+  if(!ready())return false;
+  const f=facing();
+  D.fx=f.x;D.fy=f.y;
+  D.dx=f.x*(D.dist/D.dur);
+  D.dy=f.y*(D.dist/D.dur);
+  D.t=D.dur;
+  D.cd=cdMax();
+  D.ghosts.length=0;
+  player.invuln=Math.max(player.invuln||0,D.iframe);
+  try{
+    if(typeof ringBurst==="function")
+      ringBurst(player.x,player.y,6,44,"#7fe0ff",.3,2.5);
+    emit(player.x,player.y,10,"#7fe0ff",220,2.4,.4);
+    if(window.NEONAUDIO)window.NEONAUDIO.SFX.skill();
+    vibrate(12);
+  }catch(e){}
+  return true;
+}
+
+function update(dt){
+  if(D.cd>0)D.cd=Math.max(0,D.cd-dt);
+  if(D.t<=0)return;
+
+  /* DUZELTME: son karede kalan sureden fazla ilerlenmemeli.
+     dt oldugu gibi uygulaninca 132 px hedef 142 px'e tasiyordu. */
+  const step=Math.min(dt,D.t);
+  D.t-=dt;
+  const r=(player.r||BALANCE.player.radius);
+  /* Mevcut inputMove ile AYNI clamp */
+  player.x=clamp(player.x+D.dx*step, r, W-r);
+  player.y=clamp(player.y+D.dy*step, BALANCE.player.radius, H-BALANCE.player.radius);
+
+  D.ghosts.push({x:player.x,y:player.y,life:.26});
+  if(D.ghosts.length>7)D.ghosts.shift();
+
+  if(D.t<=0){
+    D.t=0;
+    try{emit(player.x,player.y,6,"#cdf2ff",160,2,.3);}catch(e){}
+  }
+}
+
+function draw(dt){
+  for(let i=D.ghosts.length-1;i>=0;i--){
+    const g=D.ghosts[i];
+    g.life-=dt;
+    if(g.life<=0){D.ghosts.splice(i,1);continue;}
+    const a=g.life/.26;
+    ctx.save();
+    ctx.globalCompositeOperation="lighter";
+    ctx.globalAlpha=a*.35;
+    ctx.fillStyle="#7fe0ff";
+    ctx.beginPath();ctx.arc(g.x,g.y,13*a+4,0,TAU);ctx.fill();
+    ctx.restore();
+  }
+}
+
+/* ---------- güncelleme / çizim bağlantısı ---------- */
+if(typeof updateRings==="function"){
+  const _u=updateRings;
+  updateRings=function(dt){_u(dt);update(dt);};
+}
+if(typeof drawRings==="function"){
+  const _d=drawRings;
+  let last=performance.now();
+  drawRings=function(){
+    _d.apply(this,arguments);
+    const now=performance.now();
+    const dt=Math.min(.05,(now-last)/1000);last=now;
+    try{draw(dt);}catch(e){}
+  };
+}
+
+/* ---------- HUD butonu ---------- */
+const btn=document.getElementById("b-dash");
+if(btn){
+  const fire=e=>{e.preventDefault();e.stopPropagation();
+    if(!trigger()){try{if(window.NEONAUDIO)window.NEONAUDIO.SFX.denied();}catch(err){}}};
+  btn.addEventListener("touchstart",fire,{passive:false});
+  btn.addEventListener("mousedown",fire);
+
+  setInterval(()=>{
+    let playing=false;
+    try{playing=Game.state===STATE.PLAYING;}catch(e){}
+    btn.style.display=playing?"flex":"none";
+    if(!playing)return;
+    const max=cdMax();
+    const frac=D.cd>0?1-D.cd/max:1;
+    btn.style.setProperty("--cd",(frac*100).toFixed(1)+"%");
+    btn.classList.toggle("rdy",D.cd<=0);
+    const lbl=btn.querySelector(".dash-cd");
+    if(lbl)lbl.textContent=D.cd>0?D.cd.toFixed(1):"";
+  },90);
+}
+
+/* Boşluk tuşu — masaüstü test kolaylığı */
+window.addEventListener("keydown",e=>{
+  if(e.code==="Space"){e.preventDefault();trigger();}
+});
+
+window.NEONDASH={D,trigger,ready,update,draw,cdMax,facing};
+
+})();
+</script>
+
+<script>
+/* =========================================================
+   NORYVX · SEKTÖR MİMARİSİ
+
+   Sektörler artık RENK FİLTRESİ DEĞİL. Her sektörün kendi
+   mimarisi, zemin yapısı, çevre objesi ve parçacık davranışı
+   var. Geometri sektör başına BİR KEZ üretilir (tohumlu),
+   sonra sadece çizilir — kare başına prosedürel hesap yok.
+
+     01 NEON ŞEHİR    dar yüksek kuleler, holo tabelalar
+     02 SANAYİ        geniş alçak fabrikalar, bacalar, borular
+     03 ENERJİ SANT.  soğutma kuleleri, pilonlar, enerji yayı
+     04 RADYASYON     yıkık eğik yapılar, moloz, sürüklenen toz
+     05 VOID          yüzen parçalar, yarık, ufuk yok
+
+   MEVCUT KATMANLAR KORUNDU: gökyüzü, horizon glow, zemin
+   gradyanı, ışık havuzu, sis, vignette, ortam parçacıkları,
+   sektör paleti. Bu blok skyline'ı sektöre özel geometriyle
+   DEĞİŞTİRİR ve üstüne zemin/çevre katmanı ekler.
+   GRID GERİ GELMEZ — hiçbir katman ızgara çizmez.
+========================================================= */
+(function(){
+"use strict";
+if(typeof drawBackground!=="function")return;
+
+/* ---------- tohumlu rastgele: her açılışta aynı şehir ---------- */
+function rng(seed){
+  let s=seed>>>0;
+  return function(){
+    s=(s*1664525+1013904223)>>>0;
+    return s/4294967296;
+  };
+}
+
+const CACHE={};
+function geom(sec,w,h){
+  const key=sec+"|"+Math.round(w/40)+"|"+Math.round(h/40);
+  if(CACHE[key])return CACHE[key];
+  const r=rng(sec*7919+1337);
+  const g={sky:[],ground:[],props:[]};
+  const horizon=h*.52;
+
+  if(sec===1){
+    /* NEON ŞEHİR — dar, yüksek, sık kuleler */
+    let x=-30;
+    while(x<w+30){
+      const bw=16+r()*26;
+      const bh=h*(.20+r()*.30);
+      g.sky.push({x:x,w:bw,h:bh,win:2,step:9,spire:r()<.35});
+      x+=bw+4+r()*10;
+    }
+    /* holo tabelalar */
+    for(let i=0;i<5;i++)
+      g.props.push({t:"holo",x:r()*w,y:horizon-h*(.10+r()*.22),
+        w:8+r()*10,h:26+r()*38,p:r()*6.28});
+  }else if(sec===2){
+    /* SANAYİ — geniş alçak kütleler, bacalar, boru hatları */
+    let x=-40;
+    while(x<w+40){
+      const bw=54+r()*70;
+      const bh=h*(.10+r()*.16);
+      g.sky.push({x:x,w:bw,h:bh,win:1,step:14});
+      if(r()<.55)
+        g.props.push({t:"stack",x:x+bw*(.2+r()*.6),h:h*(.16+r()*.20),
+          w:7+r()*6,p:r()*6.28});
+      x+=bw+8+r()*16;
+    }
+    for(let i=0;i<4;i++)
+      g.ground.push({t:"pipe",y:horizon+h*(.10+i*.09),seg:5+((r()*4)|0)});
+  }else if(sec===3){
+    /* ENERJİ SANTRALİ — soğutma kuleleri + pilonlar */
+    let x=-20;
+    while(x<w+20){
+      if(r()<.42){
+        const bw=42+r()*36;
+        g.sky.push({x:x,w:bw,h:h*(.20+r()*.14),win:0,step:0,cool:true});
+        x+=bw+18+r()*24;
+      }else{
+        const bw=20+r()*22;
+        g.sky.push({x:x,w:bw,h:h*(.12+r()*.16),win:1,step:12});
+        x+=bw+10+r()*18;
+      }
+    }
+    for(let i=0;i<6;i++)
+      g.props.push({t:"pylon",x:r()*w,h:h*(.14+r()*.14),p:r()*6.28});
+  }else if(sec===4){
+    /* RADYASYON — yıkık, eğik, kırık siluetler */
+    let x=-30;
+    while(x<w+30){
+      const bw=26+r()*46;
+      const bh=h*(.10+r()*.26);
+      g.sky.push({x:x,w:bw,h:bh,win:1,step:16,tilt:(r()-.5)*.20,
+        broken:r()<.6});
+      x+=bw+6+r()*22;
+    }
+    for(let i=0;i<9;i++)
+      g.ground.push({t:"debris",x:r()*w,y:horizon+h*(.06+r()*.36),
+        s:4+r()*11,a:r()*6.28});
+  }else{
+    /* VOID — ufuk yok, yüzen parçalar + yarık */
+    for(let i=0;i<14;i++)
+      g.props.push({t:"shard",x:r()*w,y:r()*h*.82,
+        s:8+r()*26,a:r()*6.28,sp:.2+r()*.7});
+    g.props.push({t:"rift",x:w*.5,y:h*.30,s:Math.min(w,h)*.24});
+  }
+  CACHE[key]=g;
+  return g;
+}
+
+function sec(){
+  try{if(window.PROG&&window.PROG.state)return window.PROG.state.sector||1;}catch(e){}
+  return 1;
+}
+
+/* ---------- çizim ---------- */
+function A(a){return typeof SPA==="function"?SPA(a):"rgba(34,230,255,"+a+")";}
+function B(a){return typeof SPB==="function"?SPB(a):"rgba(160,92,255,"+a+")";}
+
+/* Kare basina pencere kotasi: S1'de 25 kule x ~8 kat = 206 fillRect
+   olcumu cikti. Golgesiz dolgu ucuz ama gereksiz; kota ile
+   sinirlanir, artan isiklar zaten karanlikta okunmuyor. */
+const WIN_BUDGET=110;
+function drawSector(t){
+  const s=sec();
+  const g=geom(s,W,H);
+  const horizon=H*.52;
+  let winLeft=WIN_BUDGET;
+
+  ctx.save();
+
+  /* ---- gökyüzü siluetleri ---- */
+  g.sky.forEach((b,i)=>{
+    const y=horizon-b.h;
+    ctx.save();
+    if(b.tilt){ctx.translate(b.x+b.w/2,horizon);ctx.rotate(b.tilt);
+      ctx.translate(-(b.x+b.w/2),-horizon);}
+
+    ctx.fillStyle=i%2?SP().bld[0]:SP().bld[1];
+    if(b.cool){
+      /* soğutma kulesi: içe daralan gövde */
+      ctx.beginPath();
+      ctx.moveTo(b.x,horizon);
+      ctx.lineTo(b.x+b.w*.20,y+b.h*.42);
+      ctx.lineTo(b.x+b.w*.16,y);
+      ctx.lineTo(b.x+b.w*.84,y);
+      ctx.lineTo(b.x+b.w*.80,y+b.h*.42);
+      ctx.lineTo(b.x+b.w,horizon);
+      ctx.closePath();ctx.fill();
+      ctx.globalAlpha=.16+.08*Math.sin(t*.6+i);
+      ctx.fillStyle=A("1");
+      ctx.beginPath();ctx.ellipse(b.x+b.w/2,y,b.w*.34,b.h*.07,0,0,TAU);ctx.fill();
+      ctx.globalAlpha=1;
+    }else if(b.broken){
+      /* kırık tepe */
+      ctx.beginPath();
+      ctx.moveTo(b.x,horizon);ctx.lineTo(b.x,y+b.h*.18);
+      ctx.lineTo(b.x+b.w*.34,y);ctx.lineTo(b.x+b.w*.58,y+b.h*.26);
+      ctx.lineTo(b.x+b.w,y+b.h*.10);ctx.lineTo(b.x+b.w,horizon);
+      ctx.closePath();ctx.fill();
+    }else{
+      ctx.fillRect(b.x,y,b.w,b.h);
+      if(b.spire){
+        ctx.fillRect(b.x+b.w*.44,y-b.h*.16,b.w*.12,b.h*.16);
+      }
+    }
+
+    /* pencere ışıkları */
+    if(b.win&&b.step){
+      const phase=(t*.5+i*1.7);
+      for(let wy=y+b.step;wy<horizon-4;wy+=b.step){
+        if(winLeft<=0)break;
+        const on=Math.sin(phase+wy*.21);
+        if(on<.15)continue;
+        winLeft--;
+        ctx.globalAlpha=.10+.10*on;
+        ctx.fillStyle=((wy|0)+i)%3===0?A("1"):B("1");
+        ctx.fillRect(b.x+4,wy,Math.max(3,b.w-8),b.win+.5);
+      }
+      ctx.globalAlpha=1;
+    }
+    ctx.restore();
+  });
+
+  /* ---- çevre objeleri ---- */
+  g.props.forEach((p,i)=>{
+    if(p.t==="holo"){
+      ctx.globalAlpha=.10+.07*Math.sin(t*1.5+p.p);
+      ctx.fillStyle=i%2?A("1"):B("1");
+      ctx.fillRect(p.x,p.y,p.w,p.h);
+      ctx.globalAlpha=.18+.10*Math.sin(t*1.5+p.p);
+      ctx.fillRect(p.x,p.y,p.w,2);
+    }else if(p.t==="stack"){
+      ctx.globalAlpha=1;
+      ctx.fillStyle=SP().bld[1];
+      ctx.fillRect(p.x,horizon-p.h,p.w,p.h);
+      /* duman */
+      for(let k=0;k<3;k++){
+        const ph=(t*.20+k*.33+p.p*.1)%1;
+        ctx.globalAlpha=(1-ph)*.10;
+        ctx.fillStyle=B("1");
+        ctx.beginPath();
+        ctx.arc(p.x+p.w/2+Math.sin(t*.6+k)*7,horizon-p.h-ph*H*.16,
+          4+ph*16,0,TAU);
+        ctx.fill();
+      }
+      ctx.globalAlpha=1;
+    }else if(p.t==="pylon"){
+      ctx.globalAlpha=.32;
+      ctx.strokeStyle=A("1");ctx.lineWidth=1.4;
+      ctx.beginPath();
+      ctx.moveTo(p.x,horizon);ctx.lineTo(p.x,horizon-p.h);
+      ctx.moveTo(p.x-8,horizon-p.h*.72);ctx.lineTo(p.x+8,horizon-p.h*.72);
+      ctx.moveTo(p.x-6,horizon-p.h*.88);ctx.lineTo(p.x+6,horizon-p.h*.88);
+      ctx.stroke();
+      /* enerji yayı */
+      const arc=Math.sin(t*2.4+p.p);
+      if(arc>.72){
+        ctx.globalAlpha=(arc-.72)*2.2;
+        ctx.strokeStyle="#dff8ff";ctx.lineWidth=1;
+        ctx.beginPath();
+        ctx.moveTo(p.x,horizon-p.h);
+        ctx.lineTo(p.x+(Math.sin(p.p*9)*22),horizon-p.h*.74);
+        ctx.stroke();
+      }
+      ctx.globalAlpha=1;
+    }else if(p.t==="shard"){
+      const yy=(p.y+Math.sin(t*p.sp+p.a)*10);
+      ctx.save();
+      ctx.translate(p.x,yy);ctx.rotate(p.a+t*p.sp*.25);
+      ctx.globalAlpha=.30;
+      ctx.fillStyle=SP().bld[0];
+      ctx.beginPath();
+      ctx.moveTo(0,-p.s*.6);ctx.lineTo(p.s*.5,0);
+      ctx.lineTo(0,p.s*.6);ctx.lineTo(-p.s*.5,0);
+      ctx.closePath();ctx.fill();
+      ctx.globalAlpha=.22;
+      ctx.strokeStyle=B("1");ctx.lineWidth=1;ctx.stroke();
+      ctx.restore();
+    }else if(p.t==="rift"){
+      const gr=ctx.createRadialGradient(p.x,p.y,2,p.x,p.y,p.s);
+      gr.addColorStop(0,B(".22"));
+      gr.addColorStop(.45,A(".07"));
+      gr.addColorStop(1,B("0"));
+      ctx.globalAlpha=.8+.2*Math.sin(t*.8);
+      ctx.fillStyle=gr;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.s,0,TAU);ctx.fill();
+      ctx.globalAlpha=.35;
+      ctx.strokeStyle=B("1");ctx.lineWidth=1.5;
+      ctx.beginPath();
+      ctx.ellipse(p.x,p.y,p.s*.42,p.s*.16,t*.35,0,TAU);ctx.stroke();
+      ctx.globalAlpha=1;
+    }
+  });
+
+  /* ---- zemin katmanı ---- */
+  g.ground.forEach((o,i)=>{
+    if(o.t==="pipe"){
+      ctx.globalAlpha=.13;
+      ctx.strokeStyle=B("1");ctx.lineWidth=3;
+      ctx.beginPath();ctx.moveTo(0,o.y);ctx.lineTo(W,o.y);ctx.stroke();
+      ctx.globalAlpha=.22;
+      ctx.fillStyle=A("1");
+      for(let k=0;k<o.seg;k++){
+        const px=((k+.5)/o.seg)*W;
+        ctx.fillRect(px-3,o.y-4,6,8);
+      }
+      ctx.globalAlpha=1;
+    }else if(o.t==="debris"){
+      ctx.save();
+      ctx.translate(o.x,o.y);ctx.rotate(o.a);
+      ctx.globalAlpha=.20;
+      ctx.fillStyle=SP().bld[1];
+      ctx.fillRect(-o.s/2,-o.s/4,o.s,o.s/2);
+      ctx.restore();
+      ctx.globalAlpha=1;
+    }
+  });
+
+  ctx.restore();
+}
+
+/* Arka planın SONUNA bağlanır: gökyüzü/zemin gradyanı üstüne,
+   tehlike ve birimlerin altına. drawAmbient zinciri korunur. */
+const _amb=drawAmbient;
+drawAmbient=function(t){
+  try{drawSector(t);}catch(e){}
+  _amb(t);
+};
+
+window.NEONSEC={geom,drawSector,CACHE,rng};
 
 })();
 </script>
