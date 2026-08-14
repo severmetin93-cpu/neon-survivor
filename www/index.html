@@ -1580,6 +1580,127 @@ body.ls #b-dash{width:72px;height:72px;
 }
 </style>
 
+<style id="noryvx-nav-css">
+/* =========================================================
+   NORYVX · NAVİGASYON MİMARİSİ
+   Mobil action RPG yerleşimi: kalıcı oyuncu kartı (sol üst),
+   para birimleri (sağ üst), birincil aksiyon (merkez), alt
+   navigasyon (5 hedef). Bildirim rozetleri GERÇEK talep
+   edilebilir durumdan beslenir.
+========================================================= */
+
+/* ---------- ÜST BAR ---------- */
+#topbar{
+  position:absolute;
+  top:calc(var(--safe-t) + 8px);
+  left:calc(var(--safe-l) + 10px);
+  right:calc(var(--safe-r) + 10px);
+  z-index:14;
+  display:none;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+  pointer-events:none;
+}
+#topbar.on{display:flex}
+.tb-card{
+  display:flex;align-items:center;gap:9px;
+  padding:7px 12px 7px 8px;
+  border-radius:var(--r-md);
+  background:linear-gradient(135deg,rgba(20,31,62,.94),rgba(6,10,22,.94));
+  border:1px solid var(--line);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 4px 14px rgba(0,0,0,.35);
+  min-width:0;
+}
+.tb-av{
+  width:38px;height:38px;flex:0 0 auto;border-radius:9px;
+  background:radial-gradient(circle at 42% 34%,rgba(34,230,255,.30),rgba(6,12,26,.95) 68%);
+  border:1px solid var(--line-strong);
+  display:flex;align-items:center;justify-content:center;
+  font-size:15px;font-weight:900;color:var(--primary);
+  text-shadow:0 0 10px rgba(34,230,255,.6);
+}
+.tb-txt{display:flex;flex-direction:column;gap:3px;min-width:0}
+.tb-name{font-size:11.5px;font-weight:900;letter-spacing:.16em;line-height:1}
+.tb-lv{font-size:8.5px;letter-spacing:.14em;color:var(--ink-3)}
+.tb-xp{height:3px;width:96px;border-radius:999px;background:rgba(2,5,14,.9);overflow:hidden}
+.tb-xp i{display:block;height:100%;background:linear-gradient(90deg,var(--primary),#7cc0ff)}
+.tb-cur{
+  display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end;
+}
+.tb-c{
+  display:flex;align-items:center;gap:5px;
+  padding:6px 10px;border-radius:999px;
+  background:linear-gradient(180deg,rgba(14,22,46,.92),rgba(5,9,20,.92));
+  border:1px solid var(--line);
+  font-size:11px;font-weight:800;font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+.tb-c b{font-size:12.5px;font-weight:900}
+.tb-c.cr b{color:#ffd24d}
+.tb-c.sh b{color:#9fd8ff}
+.tb-c.ne b{color:#d69bff}
+
+/* ---------- ALT NAVİGASYON ---------- */
+#bottomnav{
+  position:absolute;
+  left:50%;transform:translateX(-50%);
+  bottom:calc(var(--safe-b) + 10px);
+  z-index:14;
+  display:none;
+  gap:6px;
+  padding:6px;
+  border-radius:18px;
+  background:linear-gradient(180deg,rgba(14,22,46,.90),rgba(5,9,20,.94));
+  border:1px solid var(--line);
+  box-shadow:0 6px 22px rgba(0,0,0,.45);
+}
+#bottomnav.on{display:flex}
+.bn{
+  position:relative;
+  width:60px;padding:8px 4px 7px;
+  border:0;background:transparent;border-radius:13px;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  color:var(--ink-3);
+  transition:color var(--t-fast),background var(--t-fast);
+}
+.bn .bn-i{font-size:17px;line-height:1}
+.bn .bn-t{font-size:8px;letter-spacing:.10em;font-weight:800}
+.bn.on{
+  color:var(--ink);
+  background:linear-gradient(180deg,rgba(34,230,255,.16),rgba(8,13,28,.6));
+  box-shadow:inset 0 0 0 1px rgba(34,230,255,.28);
+}
+.bn:active{transform:scale(.95)}
+
+/* ---------- BİLDİRİM ROZETİ ---------- */
+.nx-dot{
+  position:absolute;top:4px;right:8px;
+  min-width:16px;height:16px;padding:0 4px;
+  border-radius:999px;
+  background:linear-gradient(180deg,#ff6b8a,#e0143f);
+  border:1.5px solid rgba(6,10,22,.95);
+  color:#fff;font-size:9px;font-weight:900;line-height:13px;
+  text-align:center;
+  box-shadow:0 0 10px rgba(255,59,107,.6);
+  animation:nx-pop 220ms ease-out;
+}
+@keyframes nx-pop{from{transform:scale(.4)}to{transform:scale(1)}}
+.btn.ghost{position:relative}
+.btn.ghost .nx-dot{top:-5px;right:-5px}
+.menu-tab{position:relative}
+.menu-tab .nx-dot{top:-6px;right:-6px}
+
+body.ls #topbar{top:calc(var(--safe-t) + 6px)}
+body.ls #bottomnav{bottom:calc(var(--safe-b) + 8px)}
+body.ls .bn{width:70px}
+@media (orientation:landscape) and (max-height:430px){
+  .bn{width:56px;padding:6px 3px 5px}
+  .bn .bn-i{font-size:15px}
+  .tb-av{width:32px;height:32px}
+}
+</style>
+
 </head>
 
 <body>
@@ -1636,6 +1757,30 @@ body.ls #b-dash{width:72px;height:72px;
   <span class="wave-label">DALGA</span>
   <span class="wave-value" id="run-wave-value">1</span>
   <span class="wave-pressure" id="run-wave-pressure">BASKI %0</span>
+</div>
+
+<div id="topbar">
+  <div class="tb-card">
+    <div class="tb-av" id="tb-av">N</div>
+    <div class="tb-txt">
+      <span class="tb-name" id="tb-name">NORYX</span>
+      <span class="tb-lv" id="tb-lv">SEVİYE 1</span>
+      <span class="tb-xp"><i id="tb-xpfill" style="width:0%"></i></span>
+    </div>
+  </div>
+  <div class="tb-cur">
+    <span class="tb-c cr">◎ <b id="tb-cr">0</b></span>
+    <span class="tb-c sh">◆ <b id="tb-sh">0</b></span>
+    <span class="tb-c ne">✦ <b id="tb-ne">0</b></span>
+  </div>
+</div>
+
+<div id="bottomnav">
+  <button class="bn on" data-nav="char"><span class="bn-i">◈</span><span class="bn-t">KARAKTER</span></button>
+  <button class="bn" data-nav="war"><span class="bn-i">✦</span><span class="bn-t">SAVAŞ</span></button>
+  <button class="bn" data-nav="prog"><span class="bn-i">▤</span><span class="bn-t">İLERLEME</span></button>
+  <button class="bn" data-nav="store"><span class="bn-i">◇</span><span class="bn-t">MAĞAZA</span></button>
+  <button class="bn" data-nav="sys"><span class="bn-i">⚙</span><span class="bn-t">SİSTEM</span></button>
 </div>
 
 <button id="b-dash" aria-label="Dash">
@@ -13837,6 +13982,405 @@ drawAmbient=function(t){
 };
 
 window.NEONSEC={geom,drawSector,CACHE,rng};
+
+})();
+</script>
+
+<script>
+/* =========================================================
+   NORYVX · ANİMASYON SİSTEMİ (sprite sheet)
+
+   Mevcut renderer birim başına TEK STATİK KARE okuyordu.
+   Bu blok animasyon sayfalarını ekler:
+
+     idle · run · attack1 · attack2 · dash · skill · hit · death
+
+   GERİ DÜŞME ZİNCİRİ (üçü de test edilir):
+     1. animasyon sayfası varsa  → kare dizisi oynatılır
+     2. yoksa statik atlas karesi → atlasDraw()
+     3. o da yoksa                → prosedürel çizim
+
+   Durum GERÇEK OYUN DURUMUNDAN seçilir; uydurma tetikleyici
+   yok. Gameplay matematiğine dokunulmaz.
+
+   PIVOT: kaynak piksel cinsinden (px,py). Ayak-hizası pivot
+   (örn. 256x256 karede 128,220) desteklenir; verilmezse kare
+   merkezi kullanılır ve mevcut davranış korunur.
+========================================================= */
+(function(){
+"use strict";
+if(typeof atlasDraw!=="function")return;
+
+const ANIM={
+  ready:false, tried:false,
+  sheets:{},          /* key -> {img,cell:[w,h],pivot:[x,y],states:{...}} */
+  manifest:null,
+  loading:{},
+  /* durum -> varsayilan oynatma hizi (KARE/SN).
+     Not: 60 FPS oyunun hedefi; animasyon hizi ayridir. */
+  fps:{idle:9,run:15,attack1:20,attack2:20,dash:24,skill:18,hit:22,death:14},
+  loop:{idle:1,run:1,attack1:0,attack2:0,dash:0,skill:0,hit:0,death:0}
+};
+
+/* ---------- manifest + sayfa yükleme (tembel) ---------- */
+function loadManifest(){
+  if(ANIM.tried)return; ANIM.tried=true;
+  try{
+    fetch("./assets/anim/manifest.json",{cache:"no-cache"})
+      .then(r=>r.ok?r.json():Promise.reject(0))
+      .then(m=>{ANIM.manifest=m&&m.units?m.units:null;ANIM.ready=!!ANIM.manifest;})
+      .catch(()=>{ANIM.ready=false;});
+  }catch(e){ANIM.ready=false;}
+}
+loadManifest();
+
+function sheet(key){
+  if(ANIM.sheets[key])return ANIM.sheets[key];
+  if(!ANIM.ready||!ANIM.manifest||!ANIM.manifest[key])return null;
+  if(ANIM.loading[key])return null;
+  ANIM.loading[key]=1;
+  const rec=ANIM.manifest[key];
+  fetch("./assets/anim/"+rec.json,{cache:"no-cache"})
+    .then(r=>r.ok?r.json():Promise.reject(0))
+    .then(meta=>new Promise((res,rej)=>{
+      const im=new Image();
+      im.onload=()=>{
+        ANIM.sheets[key]={
+          img:im,
+          cell:meta.cell||[256,256],
+          pivot:meta.pivot||null,
+          cols:meta.cols||Math.floor(im.width/((meta.cell||[256])[0])),
+          states:meta.states||{}
+        };
+        res();
+      };
+      im.onerror=rej;
+      im.src="./assets/anim/"+(meta.image||rec.image);
+    }))
+    .catch(()=>{ANIM.loading[key]=2;});
+  return null;
+}
+
+/* ---------- oynatma durumu (birim başına, hafif) ---------- */
+const ST=new WeakMap();
+const PST={t:0,state:"idle",once:null,onceT:0};
+
+function pick(sh,state){
+  if(sh.states[state])return state;
+  if(state==="attack2"&&sh.states.attack1)return "attack1";
+  if(state==="skill"&&sh.states.attack1)return "attack1";
+  if(state==="dash"&&sh.states.run)return "run";
+  if(state==="hit"&&sh.states.idle)return "idle";
+  return sh.states.idle?"idle":Object.keys(sh.states)[0];
+}
+
+/* Kare çizimi. size = ekrandaki genişlik (mevcut atlasDraw ile aynı ölçek). */
+function drawAnim(key,size,state,dt){
+  const sh=sheet(key);
+  if(!sh)return false;
+  const s=pick(sh,state);
+  const def=sh.states[s];
+  if(!def)return false;
+
+  const st=ST.get(sh)||{};
+  let rec=st[key];
+  if(!rec){rec={t:0,s:s};st[key]=rec;ST.set(sh,st);}
+  if(rec.s!==s){rec.s=s;rec.t=0;}
+  rec.t+=dt;
+
+  const fps=def.fps||ANIM.fps[s]||12;
+  const n=def.frames||1;
+  const looping=def.loop!=null?def.loop:ANIM.loop[s];
+  let idx=Math.floor(rec.t*fps);
+  idx=looping?idx%n:Math.min(n-1,idx);
+
+  const cw=sh.cell[0], ch=sh.cell[1];
+  const first=(def.row!=null?def.row*sh.cols:0)+(def.start||0)+idx;
+  const sx=(first%sh.cols)*cw;
+  const sy=Math.floor(first/sh.cols)*ch;
+
+  const scale=size/cw;
+  const dw=cw*scale, dh=ch*scale;
+  /* pivot: verilmişse ona göre, yoksa kare merkezi (eski davranış) */
+  const px=sh.pivot?sh.pivot[0]:cw/2;
+  const py=sh.pivot?sh.pivot[1]:ch/2;
+
+  ctx.drawImage(sh.img,sx,sy,cw,ch,-px*scale,-py*scale,dw,dh);
+  return true;
+}
+
+/* =========================================================
+   DURUM SEÇİMİ — gerçek oyun durumundan
+========================================================= */
+let lastProj=0, attackT=0, lastHp=null, hitT=0, lastT=performance.now();
+
+function playerState(dt){
+  attackT=Math.max(0,attackT-dt);
+  hitT=Math.max(0,hitT-dt);
+
+  /* saldırı: mermi havuzu sayımı arttıysa ateş edildi */
+  try{
+    const n=projectiles.count?projectiles.count():0;
+    if(n>lastProj)attackT=.22;
+    lastProj=n;
+  }catch(e){}
+
+  /* hasar: gerçek can düşüşü */
+  try{
+    const hp=player.hp;
+    if(lastHp!=null&&hp<lastHp)hitT=.28;
+    lastHp=hp;
+  }catch(e){}
+
+  try{if(Game.state!==STATE.PLAYING)return "idle";}catch(e){}
+  try{if(window.NEONDASH&&window.NEONDASH.D.t>0)return "dash";}catch(e){}
+  if(hitT>0)return "hit";
+  if(attackT>0)return "attack1";
+
+  /* hareket: trail deltası */
+  try{
+    const tr=player.trail;
+    if(tr&&tr.length>=6){
+      const dx=tr[tr.length-2]-tr[tr.length-6];
+      const dy=tr[tr.length-1]-tr[tr.length-5];
+      if(dx*dx+dy*dy>2.5)return "run";
+    }
+  }catch(e){}
+  return "idle";
+}
+
+function enemyState(e){
+  if(e.hitFlash>0)return "hit";
+  if(e.bossTelegraph>0||e.telegraph>0)return "attack1";
+  if(e.pulseWarn>0)return "skill";
+  return "run";
+}
+
+/* =========================================================
+   MEVCUT ÇİZİCİLERE BAĞLAN
+   atlasDraw sarmalanır: animasyon varsa onu, yoksa statik
+   kareyi çizer. Çağıran kod hiç değişmez.
+========================================================= */
+const _atlasDraw=atlasDraw;
+let curUnit=null;          /* o an çizilen birim (durum için) */
+
+atlasDraw=function(name,size){
+  const now=performance.now();
+  const dt=Math.min(.05,(now-lastT)/1000);
+  lastT=now;
+
+  let state="idle";
+  if(curUnit==="player")      state=playerState(dt);
+  else if(curUnit&&curUnit.e) state=enemyState(curUnit.e);
+
+  if(drawAnim(name,size,state,dt))return true;
+  return _atlasDraw(name,size);
+};
+
+/* Oyuncu çizicileri: hangi birimin çizildiğini işaretle */
+/* HATA DUZELTMESI: onceki surum eval ile sarmaliyordu. Katı modda
+   bir IIFE icindeki eval, disaridaki fonksiyon baglantisini YENIDEN
+   ATAMAZ — sarmalama sessizce basarisiz oluyordu ve oyuncu animasyon
+   durumu (run/attack/dash/hit) HIC calismiyordu. Klasik script'te
+   ust duzey fonksiyonlar globalThis ozelligidir; dogrudan atanir. */
+["rrVanguard","rrStriker","rrController"].forEach(fn=>{
+  const orig=window[fn];
+  if(typeof orig!=="function")return;
+  window[fn]=function(P){
+    curUnit="player";
+    try{return orig(P);}finally{curUnit=null;}
+  };
+});
+
+/* Düşman çizicileri */
+try{
+  const _eu=rrEnemyUnit;
+  rrEnemyUnit=function(e,paint,r,lod){
+    curUnit={e:e};
+    try{return _eu(e,paint,r,lod);}finally{curUnit=null;}
+  };
+}catch(e){}
+try{
+  const _el=rrEliteUnit;
+  rrEliteUnit=function(e,paint,lod){
+    curUnit={e:e};
+    try{return _el(e,paint,lod);}finally{curUnit=null;}
+  };
+}catch(e){}
+try{
+  const _bo=rrBossUnit;
+  rrBossUnit=function(e,lod){
+    curUnit={e:e};
+    try{return _bo(e,lod);}finally{curUnit=null;}
+  };
+}catch(e){}
+
+window.NEONANIM={ANIM,drawAnim,playerState,enemyState,sheet,loadManifest};
+
+})();
+</script>
+
+<script>
+/* =========================================================
+   NORYVX · NAVİGASYON + BİLDİRİM ROZETLERİ
+
+   1. Kalıcı oyuncu kartı ve para birimleri (ana menüde).
+   2. Alt navigasyon — 5 hedef, mevcut sekme panelleriyle
+      senkron. Hiçbir buton ID'si değişmedi.
+   3. ROZETLER GERÇEK: her rozet, o an gerçekten talep
+      edilebilir bir şey olduğunda çıkar. Uydurma sayı yok,
+      dikkat çekmek için sahte rozet yok.
+========================================================= */
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const fmt=n=>n>=1e6?(n/1e6).toFixed(1)+"M":n>=1000?(n/1000).toFixed(n>=10000?0:1)+"K":String(n|0);
+
+/* ---------- 1 · SİSTEM paneli: mevcut butonları topla ---------- */
+(function buildSysPane(){
+  const host=document.querySelector('.menu-sub[data-mpane="store"]');
+  if(!host||document.querySelector('.menu-sub[data-mpane="sys"]'))return;
+  const pane=document.createElement("div");
+  pane.className="menu-sub";
+  pane.dataset.mpane="sys";
+  ["b-save","b-how"].forEach(id=>{
+    const b=$(id);
+    if(b)pane.appendChild(b);
+  });
+  /* Savunmaci: DOM beklenmedik bicimde degisirse sessizce atla,
+     menu yine calisir. */
+  if(host.parentNode&&host.parentNode.insertBefore)
+    host.parentNode.insertBefore(pane,host.nextSibling||null);
+})();
+
+/* ---------- 2 · ALT NAVİGASYON ---------- */
+const tabs=[...document.querySelectorAll("#menu-tabs [data-mtab]")];
+const panes=[...document.querySelectorAll(".menu-sub[data-mpane]")];
+const navs=[...document.querySelectorAll("#bottomnav [data-nav]")];
+
+function go(key){
+  panes.forEach(p=>p.classList.toggle("on",p.dataset.mpane===key));
+  tabs.forEach(t=>t.classList.toggle("on",t.dataset.mtab===key));
+  navs.forEach(n=>n.classList.toggle("on",n.dataset.nav===key));
+  try{window.NEONAUDIO.SFX.tap();}catch(e){}
+}
+navs.forEach(n=>n.addEventListener("click",()=>go(n.dataset.nav)));
+tabs.forEach(t=>t.addEventListener("click",()=>go(t.dataset.mtab)));
+
+/* Eski sekme şeridi artık alt navigasyonla aynı işi yapıyor — gizle */
+const strip=$("menu-tabs");
+if(strip)strip.style.display="none";
+
+/* ---------- 3 · ÜST BAR (gerçek değerler) ---------- */
+function topbar(){
+  const bar=$("topbar"), nav=$("bottomnav"), menu=$("scr-menu");
+  const on=!!(menu&&menu.classList.contains("on"));
+  if(bar)bar.classList.toggle("on",on);
+  if(nav)nav.classList.toggle("on",on);
+  if(!on)return;
+  try{
+    const lv=$("tb-lv"), fill=$("tb-xpfill");
+    const pl=+(($("profile-level")||{}).textContent)||1;
+    if(lv)lv.textContent="SEVİYE "+pl;
+    const src=$("profile-xp-fill");
+    if(fill&&src)fill.style.width=src.style.width||"0%";
+  }catch(e){}
+  try{
+    const R=window.RPG,P=window.PROG;
+    if(R){$("tb-cr").textContent=fmt(R.state.credits);
+          $("tb-sh").textContent=fmt(R.state.shards);}
+    if(P){$("tb-ne").textContent=fmt(P.state.neon);}
+  }catch(e){}
+  try{
+    const a=window.NORYVX_P3&&window.NORYVX_P3.archetype
+      ?window.NORYVX_P3.archetype():null;
+    const id=String((a&&(a.id||a.name))||"vanguard").toLowerCase();
+    const nm=id.includes("striker")?"SHADOW":id.includes("controller")?"VEGA":"NORYX";
+    $("tb-name").textContent=nm;
+    $("tb-av").textContent=nm[0];
+  }catch(e){}
+}
+
+/* ---------- 4 · BİLDİRİM ROZETLERİ — gerçek talep edilebilir durum ---------- */
+function countMissions(){
+  try{
+    const P=window.PROG;
+    return P.MISSIONS.filter(m=>!P.state.claimed[m.id]&&P.progressOf(m)>=m.g).length;
+  }catch(e){return 0;}
+}
+function countBP(){
+  try{
+    const B=window.NEONBP, st=B.B, lv=B.levelOf().lv;
+    let n=0;
+    for(let i=1;i<=lv;i++){
+      if(!st.claimedF[i])n++;
+      if(st.premium&&!st.claimedP[i])n++;
+    }
+    return n;
+  }catch(e){return 0;}
+}
+function countAch(){
+  try{
+    const A=window.NEONACH;
+    return A.ACH.filter(a=>!A.A.claimed[a.id]&&a.v()>=a.g).length;
+  }catch(e){return 0;}
+}
+function countShop(){
+  try{return window.PROG.freeReady()?1:0;}catch(e){return 0;}
+}
+function countSkill(){
+  try{return Math.max(0,P3S.skillPoints|0);}catch(e){return 0;}
+}
+function countGear(){
+  /* boş slot varken envanterde o slota uygun parça duruyorsa */
+  try{
+    const R=window.RPG;
+    let n=0;
+    R.SLOTS.forEach(sl=>{
+      if(R.state.equip[sl.k])return;
+      if(R.state.inv.some(it=>R.DEFMAP[it.d].s===sl.k))n++;
+    });
+    return n;
+  }catch(e){return 0;}
+}
+
+const BADGES=[
+  {btn:"b-missions", tab:"prog",  n:countMissions},
+  {btn:"b-bp",       tab:"prog",  n:countBP},
+  {btn:"b-ach",      tab:"prog",  n:countAch},
+  {btn:"b-shop",     tab:"store", n:countShop},
+  {btn:"b-tech",     tab:"char",  n:countSkill},
+  {btn:"b-rpgchar",  tab:"char",  n:countGear}
+];
+
+function dot(el,n){
+  if(!el)return;
+  let d=el.querySelector(":scope > .nx-dot");
+  if(n<=0){if(d)d.remove();return;}
+  if(!d){d=document.createElement("span");d.className="nx-dot";el.appendChild(d);}
+  const txt=n>9?"9+":String(n);
+  if(d.textContent!==txt)d.textContent=txt;
+}
+
+function badges(){
+  const perTab={};
+  BADGES.forEach(b=>{
+    const n=b.n()|0;
+    dot($(b.btn),n);
+    perTab[b.tab]=(perTab[b.tab]||0)+n;
+  });
+  navs.forEach(nv=>dot(nv,perTab[nv.dataset.nav]||0));
+  tabs.forEach(t=>dot(t,perTab[t.dataset.mtab]||0));
+}
+
+let t=0;
+setInterval(()=>{
+  topbar();
+  if((t++%3)===0)badges();
+},420);
+topbar();badges();
+
+window.NEONNAV={go,badges,topbar,counts:{countMissions,countBP,countAch,countShop,countSkill,countGear}};
 
 })();
 </script>
