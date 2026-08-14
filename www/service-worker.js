@@ -6,13 +6,21 @@
    sonsuza kadar sunmaya devam etti. Yeni APK'larda eski oyunun
    gorunmesinin sebebi buydu.
    SONRA: ad surumle birlikte degisir. */
-const CACHE = "neon-survivor-v16-4-0";
+/* V16.8.0 — sprite atlas eklendi. Varliklar CACHE-FIRST oldugu icin
+   cache adi degismezse yeni atlas cihaza HIC ULASMAZ; dosyanin en
+   ustundeki notun tarif ettigi hata tam olarak budur. Ad bu yuzden
+   surumle birlikte yukseltildi. Temizleme mantigi degismedi. */
+const CACHE = "neon-survivor-v16-9-0";
 
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.json",
-  "./assets/icons/icon.svg"
+  "./assets/icons/icon.svg",
+  "./assets/atlas-units.json",
+  "./assets/atlas-units.png",
+  "./assets/atlas-items.json",
+  "./assets/atlas-items.png"
 ];
 
 self.addEventListener("install", event => {
