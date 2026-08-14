@@ -1,0 +1,30 @@
+{
+  "package": "NORYVX_UI_SET_21_MAP_WORLD_SECTOR_NODE_FAST_TRAVEL_COMPLETE",
+  "orientation": "landscape",
+  "resolution_reference": [
+    1920,
+    1080
+  ],
+  "format_target": "PNG-32 RGBA",
+  "color_space": "sRGB",
+  "components": {
+    "world_cards": 4,
+    "sector_maps": 4,
+    "node_types": 6,
+    "location_info": 4,
+    "fast_travel_states": 4,
+    "map_markers": 8,
+    "objective_overlays": 4,
+    "map_states": 6,
+    "vfx": 1
+  },
+  "modules": [
+    "world_select",
+    "sector_map",
+    "node_map",
+    "location_info",
+    "fast_travel",
+    "markers"
+  ],
+  "integration_note": "World unlocks, node states, location threat/power, objectives and fast-travel eligibility must be driven by authoritative progression/game state."
+}

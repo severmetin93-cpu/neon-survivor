@@ -1,0 +1,31 @@
+{
+  "package": "NORYVX_UI_SET_24_SEASON_PASS_BATTLE_PASS_TIER_REWARDS_PREMIUM_TRACK_COMPLETE",
+  "orientation": "landscape",
+  "resolution_reference": [
+    1920,
+    1080
+  ],
+  "format_target": "PNG-32 RGBA",
+  "color_space": "sRGB",
+  "components": {
+    "season_home": 4,
+    "progress_tracks": 4,
+    "free_rewards": 6,
+    "premium_rewards": 6,
+    "tier_rewards": 6,
+    "season_missions": 4,
+    "premium_purchase": 4,
+    "states": 6,
+    "vfx": 1
+  },
+  "modules": [
+    "season_home",
+    "progress_track",
+    "free_track",
+    "premium_track",
+    "tier_rewards",
+    "season_missions",
+    "premium_purchase"
+  ],
+  "integration_note": "Season tier progression, ownership, reward claims, premium entitlement and expiry must be authoritative account/season state; reward grants must be idempotent."
+}

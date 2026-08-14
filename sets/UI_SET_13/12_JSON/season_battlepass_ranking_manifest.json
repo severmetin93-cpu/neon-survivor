@@ -1,0 +1,36 @@
+{
+  "package": "NORYVX_UI_SET_13_SEASON_BATTLEPASS_RANKING_COMPLETE",
+  "orientation": "landscape",
+  "resolution_reference": [
+    1920,
+    1080
+  ],
+  "format_target": "PNG-32 RGBA",
+  "color_space": "sRGB",
+  "components": {
+    "season_cards": 3,
+    "battlepass_tiers": 3,
+    "leaderboards": 4,
+    "rank_badges": 6,
+    "reward_track": 8,
+    "season_status_cards": 4,
+    "rank_icons": 6,
+    "progress_bars": 3,
+    "vfx": 1
+  },
+  "ranks": [
+    "bronze",
+    "silver",
+    "gold",
+    "platinum",
+    "diamond",
+    "void"
+  ],
+  "leaderboards": [
+    "global",
+    "friends",
+    "sector",
+    "weekly"
+  ],
+  "integration_note": "Season dates, XP, Battle Pass ownership, rewards, ranking scores and rank changes must be driven by runtime progression data."
+}

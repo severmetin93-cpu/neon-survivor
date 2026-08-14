@@ -1,0 +1,32 @@
+{
+  "package": "NORYVX_UI_SET_58_LEADERBOARDS_SEASONS_COMPETITIVE_RANKING_RANK_REWARDS_SEASON_PASS_DIVISIONS_PROMOTION_COMPLETE",
+  "format_target": "PNG-32 RGBA",
+  "color_space": "sRGB",
+  "resolution_reference": [
+    1920,
+    1080
+  ],
+  "components": {
+    "leaderboards": 7,
+    "seasons": 6,
+    "competitive": 7,
+    "ranking": 7,
+    "rank_rewards": 7,
+    "season_pass": 7,
+    "divisions": 6,
+    "promotion": 6,
+    "states": 12,
+    "vfx": 1
+  },
+  "modules": [
+    "leaderboards",
+    "seasons",
+    "competitive",
+    "ranking",
+    "rank_rewards",
+    "season_pass",
+    "divisions",
+    "promotion"
+  ],
+  "integration_note": "Competitive rating, ranks, divisions, season timers, promotion/demotion state and reward eligibility must be authoritative. Season pass claims must be idempotent and ownership-validated. Leaderboard positions should be treated as time-sensitive snapshots."
+}

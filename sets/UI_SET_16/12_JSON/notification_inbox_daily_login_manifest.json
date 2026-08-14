@@ -1,0 +1,30 @@
+{
+  "package": "NORYVX_UI_SET_16_NOTIFICATION_INBOX_DAILY_LOGIN_COMPLETE",
+  "orientation": "landscape",
+  "resolution_reference": [
+    1920,
+    1080
+  ],
+  "format_target": "PNG-32 RGBA",
+  "color_space": "sRGB",
+  "components": {
+    "notification_types": 6,
+    "inbox_cards": 4,
+    "mail_cards": 4,
+    "reward_cards": 5,
+    "daily_login_days": 7,
+    "streak_cards": 4,
+    "badges": 5,
+    "empty_states": 3,
+    "vfx": 1
+  },
+  "modules": [
+    "notification_center",
+    "inbox",
+    "mail",
+    "reward_claim",
+    "daily_login",
+    "streaks"
+  ],
+  "integration_note": "Notifications, mail state, reward ownership, daily reset, streak continuity and claim state must be driven by runtime/account services."
+}

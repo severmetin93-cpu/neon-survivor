@@ -1,0 +1,34 @@
+{
+  "package": "NORYVX_UI_SET_22_SETTINGS_AUDIO_GRAPHICS_CONTROLS_ACCESSIBILITY_ACCOUNT_COMPLETE",
+  "orientation": "landscape",
+  "resolution_reference": [
+    1920,
+    1080
+  ],
+  "format_target": "PNG-32 RGBA",
+  "color_space": "sRGB",
+  "components": {
+    "settings_categories": 7,
+    "audio_controls": 5,
+    "graphics_controls": 6,
+    "control_options": 6,
+    "accessibility_options": 6,
+    "languages": 6,
+    "account_options": 4,
+    "privacy_options": 4,
+    "notification_options": 4,
+    "vfx": 1
+  },
+  "modules": [
+    "general",
+    "audio",
+    "graphics",
+    "controls",
+    "accessibility",
+    "language",
+    "account",
+    "privacy",
+    "notifications"
+  ],
+  "integration_note": "Settings must persist through the actual profile/device configuration layer; privacy and account actions require explicit user confirmation and authoritative account state."
+}

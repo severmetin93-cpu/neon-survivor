@@ -1,0 +1,29 @@
+{
+  "package": "NORYVX_UI_SET_19_QUESTS_CHALLENGES_OBJECTIVES_COMPLETE",
+  "orientation": "landscape",
+  "resolution_reference": [
+    1920,
+    1080
+  ],
+  "format_target": "PNG-32 RGBA",
+  "color_space": "sRGB",
+  "components": {
+    "quest_home": 4,
+    "daily_quests": 5,
+    "weekly_quests": 4,
+    "challenges": 5,
+    "objectives": 5,
+    "reward_track": 6,
+    "quest_cards": 4,
+    "status_states": 5,
+    "vfx": 1
+  },
+  "modules": [
+    "daily",
+    "weekly",
+    "challenges",
+    "objectives",
+    "reward_track"
+  ],
+  "integration_note": "Quest progress, reset windows, completion, rewards and expiration must be driven by authoritative runtime progression state."
+}

@@ -1,0 +1,31 @@
+{
+  "package": "NORYVX_UI_SET_43_MAP_WORLD_MAP_MINIMAP_LOCATIONS_FAST_TRAVEL_WAYPOINTS_MARKERS_DISCOVERY_COMPLETE",
+  "orientation": "landscape",
+  "resolution_reference": [
+    1920,
+    1080
+  ],
+  "format_target": "PNG-32 RGBA",
+  "color_space": "sRGB",
+  "components": {
+    "world_map": 5,
+    "minimap": 5,
+    "locations": 6,
+    "fast_travel": 5,
+    "waypoints": 5,
+    "markers": 8,
+    "discovery": 5,
+    "states": 10,
+    "vfx": 1
+  },
+  "modules": [
+    "world_map",
+    "minimap",
+    "locations",
+    "fast_travel",
+    "waypoints",
+    "markers",
+    "discovery"
+  ],
+  "integration_note": "Map discovery, location unlocks, fast travel availability and waypoint data must come from authoritative world state. Client markers may be presentation-only unless gameplay-critical."
+}

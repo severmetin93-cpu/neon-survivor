@@ -1,0 +1,33 @@
+{
+  "package": "NORYVX_UI_SET_08_BOSS_COMPLETE",
+  "orientation": "landscape",
+  "resolution_reference": [
+    1920,
+    1080
+  ],
+  "format_target": "PNG-32 RGBA",
+  "color_space": "sRGB",
+  "bosses": [
+    "TITAN",
+    "VOID REAPER",
+    "OVERMIND",
+    "RADIANT BEAST"
+  ],
+  "components": {
+    "selection_background": 1,
+    "boss_cards": 4,
+    "portraits": 4,
+    "boss_hud": 1,
+    "phase_bars": 4,
+    "attack_telegraphs": 4,
+    "reward_screens": 3,
+    "status_icons": 6,
+    "vfx": 1
+  },
+  "boss_system": {
+    "phases": 3,
+    "supports_enrage": true,
+    "telegraph_states": true
+  },
+  "integration_note": "Boss HP, phase transitions, telegraphs, status effects, rewards and victory state must be driven by gameplay runtime data."
+}

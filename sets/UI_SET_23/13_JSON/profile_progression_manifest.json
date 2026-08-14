@@ -1,0 +1,33 @@
+{
+  "package": "NORYVX_UI_SET_23_PROFILE_PLAYER_CARD_STATS_ACHIEVEMENTS_TITLES_BADGES_COMPLETE",
+  "orientation": "landscape",
+  "resolution_reference": [
+    1920,
+    1080
+  ],
+  "format_target": "PNG-32 RGBA",
+  "color_space": "sRGB",
+  "components": {
+    "profile_variants": 4,
+    "player_cards": 5,
+    "stat_sets": 4,
+    "achievements": 6,
+    "titles": 6,
+    "badges": 8,
+    "showcase_items": 4,
+    "presence_states": 4,
+    "profile_states": 6,
+    "vfx": 1
+  },
+  "modules": [
+    "profile",
+    "player_card",
+    "stats",
+    "achievements",
+    "titles",
+    "badges",
+    "showcase",
+    "presence"
+  ],
+  "integration_note": "Profile identity, progression stats, achievement completion, title ownership and badge ownership must be authoritative account/progression state."
+}

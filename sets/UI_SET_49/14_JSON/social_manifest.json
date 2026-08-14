@@ -1,0 +1,34 @@
+{
+  "package": "NORYVX_UI_SET_49_FRIENDS_SOCIAL_PARTY_INVITES_CLANS_CHAT_VOICE_BLOCK_REPORT_PRESENCE_COMPLETE",
+  "format_target": "PNG-32 RGBA",
+  "color_space": "sRGB",
+  "resolution_reference": [
+    1920,
+    1080
+  ],
+  "components": {
+    "friends": 6,
+    "social": 6,
+    "party": 7,
+    "invites": 6,
+    "clans": 7,
+    "chat": 6,
+    "voice": 6,
+    "block_report": 6,
+    "presence": 7,
+    "states": 11,
+    "vfx": 1
+  },
+  "modules": [
+    "friends",
+    "social",
+    "party",
+    "invites",
+    "clans",
+    "chat",
+    "voice",
+    "block_report",
+    "presence"
+  ],
+  "integration_note": "Presence, party membership, invites, clan membership and moderation outcomes must be authoritative. Chat and voice permissions must respect block/mute/report state. Party actions require server validation and should recover cleanly after reconnect."
+}

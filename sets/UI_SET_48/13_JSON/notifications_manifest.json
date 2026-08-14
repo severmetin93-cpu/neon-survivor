@@ -1,0 +1,32 @@
+{
+  "package": "NORYVX_UI_SET_48_NOTIFICATIONS_INBOX_MAIL_REWARDS_CLAIM_SYSTEM_MESSAGES_NEWS_EVENTS_ANNOUNCEMENTS_COMPLETE",
+  "format_target": "PNG-32 RGBA",
+  "color_space": "sRGB",
+  "resolution_reference": [
+    1920,
+    1080
+  ],
+  "components": {
+    "notifications": 6,
+    "inbox": 5,
+    "mail": 6,
+    "rewards": 7,
+    "system_messages": 6,
+    "news": 5,
+    "events": 6,
+    "announcements": 5,
+    "states": 10,
+    "vfx": 1
+  },
+  "modules": [
+    "notifications",
+    "inbox",
+    "mail",
+    "rewards",
+    "system_messages",
+    "news",
+    "events",
+    "announcements"
+  ],
+  "integration_note": "Notification delivery, read/unread state, reward ownership and claim state must be authoritative. Reward claiming must be idempotent. Expired mail must remain non-claimable. Priority announcements should respect user notification settings and accessibility."
+}

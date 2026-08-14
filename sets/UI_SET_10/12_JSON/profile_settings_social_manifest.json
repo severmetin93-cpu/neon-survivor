@@ -1,0 +1,31 @@
+{
+  "package": "NORYVX_UI_SET_10_PROFILE_SETTINGS_SOCIAL_COMPLETE",
+  "orientation": "landscape",
+  "resolution_reference": [
+    1920,
+    1080
+  ],
+  "format_target": "PNG-32 RGBA",
+  "color_space": "sRGB",
+  "components": {
+    "profile_card": 1,
+    "settings_rows": 8,
+    "quality_presets": 4,
+    "social_actions": 5,
+    "notifications": 5,
+    "achievements": 6,
+    "player_banner": 1,
+    "icons": 15,
+    "toggles": 2,
+    "vfx": 1
+  },
+  "modules": [
+    "profile",
+    "settings",
+    "social",
+    "notifications",
+    "achievements",
+    "player_card"
+  ],
+  "integration_note": "Account identity, settings persistence, friends, notifications, achievements and privacy state must be bound to runtime services/data."
+}

@@ -1,0 +1,34 @@
+{
+  "package": "NORYVX_UI_SET_57_MULTIPLAYER_MATCHMAKING_LOBBY_GAME_MODES_TEAM_SETUP_READY_QUEUE_MATCH_FOUND_MATCH_START_COMPLETE",
+  "format_target": "PNG-32 RGBA",
+  "color_space": "sRGB",
+  "resolution_reference": [
+    1920,
+    1080
+  ],
+  "components": {
+    "multiplayer_home": 6,
+    "matchmaking": 7,
+    "lobby": 7,
+    "game_modes": 7,
+    "team_setup": 7,
+    "ready": 6,
+    "queue": 6,
+    "match_found": 7,
+    "match_start": 7,
+    "states": 12,
+    "vfx": 1
+  },
+  "modules": [
+    "multiplayer_home",
+    "matchmaking",
+    "lobby",
+    "game_modes",
+    "team_setup",
+    "ready",
+    "queue",
+    "match_found",
+    "match_start"
+  ],
+  "integration_note": "Matchmaking, lobby membership, ready state, team assignment, match acceptance and match start must be authoritative. Queue cancellation and match acceptance require idempotent server handling. Client must recover from reconnects without duplicating joins or ready actions."
+}

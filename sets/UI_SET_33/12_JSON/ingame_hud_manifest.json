@@ -1,0 +1,31 @@
+{
+  "package": "NORYVX_UI_SET_33_INGAME_HUD_HEALTH_ENERGY_ABILITIES_MINIMAP_OBJECTIVES_COMBAT_PAUSE_COMPLETE",
+  "orientation": "landscape",
+  "resolution_reference": [
+    1920,
+    1080
+  ],
+  "format_target": "PNG-32 RGBA",
+  "color_space": "sRGB",
+  "components": {
+    "hud_variants": 5,
+    "vitals": 5,
+    "abilities": 5,
+    "minimap": 5,
+    "objectives": 5,
+    "combat_feedback": 7,
+    "pause": 6,
+    "states": 10,
+    "vfx": 1
+  },
+  "modules": [
+    "ingame_hud",
+    "player_vitals",
+    "abilities",
+    "minimap",
+    "objectives",
+    "combat_feedback",
+    "pause"
+  ],
+  "integration_note": "Gameplay HUD values must be driven by authoritative local game state. Pause, death, revive, ability cooldown and objective state must synchronize correctly with gameplay and session rules."
+}

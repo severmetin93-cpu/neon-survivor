@@ -1,0 +1,31 @@
+{
+  "package": "NORYVX_UI_SET_28_QUEST_JOURNAL_MAIN_SIDE_DAILY_WEEKLY_OBJECTIVES_COMPLETE",
+  "orientation": "landscape",
+  "resolution_reference": [
+    1920,
+    1080
+  ],
+  "format_target": "PNG-32 RGBA",
+  "color_space": "sRGB",
+  "components": {
+    "journal_views": 5,
+    "main_quests": 4,
+    "side_quests": 4,
+    "daily_quests": 4,
+    "weekly_quests": 4,
+    "objectives": 5,
+    "quest_details": 4,
+    "states": 8,
+    "vfx": 1
+  },
+  "modules": [
+    "quest_journal",
+    "main_quest",
+    "side_quest",
+    "daily",
+    "weekly",
+    "objectives",
+    "quest_details"
+  ],
+  "integration_note": "Quest definitions, progress, availability, expiry, tracking and rewards must be authoritative progression state. Reward grants must be idempotent."
+}

@@ -1,0 +1,34 @@
+{
+  "package": "NORYVX_UI_SET_47_PROFILE_PLAYER_CARD_LEVEL_XP_RANK_ACHIEVEMENTS_TITLES_BADGES_STATS_CAREER_COMPLETE",
+  "format_target": "PNG-32 RGBA",
+  "color_space": "sRGB",
+  "resolution_reference": [
+    1920,
+    1080
+  ],
+  "components": {
+    "profile_home": 5,
+    "player_card": 5,
+    "level_xp": 6,
+    "rank": 6,
+    "achievements": 6,
+    "titles": 5,
+    "badges": 6,
+    "stats": 7,
+    "career": 6,
+    "states": 10,
+    "vfx": 1
+  },
+  "modules": [
+    "profile_home",
+    "player_card",
+    "level_xp",
+    "rank",
+    "achievements",
+    "titles",
+    "badges",
+    "stats",
+    "career"
+  ],
+  "integration_note": "Profile progression values, ranks, achievements and career statistics must be authoritative. Cosmetic presentation may be client-side, but unlock ownership and equipped titles/badges must be validated by the progression/profile service."
+}

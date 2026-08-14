@@ -1,0 +1,32 @@
+{
+  "package": "NORYVX_UI_SET_55_SETTINGS_CONTROLS_AUDIO_GRAPHICS_ACCESSIBILITY_LANGUAGE_PRIVACY_ACCOUNT_COMPLETE",
+  "format_target": "PNG-32 RGBA",
+  "color_space": "sRGB",
+  "resolution_reference": [
+    1920,
+    1080
+  ],
+  "components": {
+    "settings_home": 6,
+    "controls": 7,
+    "audio": 7,
+    "graphics": 7,
+    "accessibility": 7,
+    "language": 6,
+    "privacy": 7,
+    "account": 7,
+    "states": 11,
+    "vfx": 1
+  },
+  "modules": [
+    "settings_home",
+    "controls",
+    "audio",
+    "graphics",
+    "accessibility",
+    "language",
+    "privacy",
+    "account"
+  ],
+  "integration_note": "Settings must persist per user/device according to product rules. Account/security mutations require authoritative validation. Privacy settings must be enforced server-side where they affect visibility, presence, invitations or communication."
+}

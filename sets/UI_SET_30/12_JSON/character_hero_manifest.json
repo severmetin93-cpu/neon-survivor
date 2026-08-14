@@ -1,0 +1,31 @@
+{
+  "package": "NORYVX_UI_SET_30_CHARACTER_HERO_SELECT_SKINS_STATS_ABILITIES_LOADOUT_PREVIEW_COMPLETE",
+  "orientation": "landscape",
+  "resolution_reference": [
+    1920,
+    1080
+  ],
+  "format_target": "PNG-32 RGBA",
+  "color_space": "sRGB",
+  "components": {
+    "hero_select_views": 5,
+    "character_cards": 5,
+    "skins": 6,
+    "stats": 6,
+    "abilities": 4,
+    "loadout_previews": 4,
+    "character_details": 4,
+    "states": 9,
+    "vfx": 1
+  },
+  "modules": [
+    "hero_select",
+    "character_cards",
+    "skins",
+    "stats",
+    "abilities",
+    "loadout_preview",
+    "character_details"
+  ],
+  "integration_note": "Hero ownership, level, stats, ability unlocks, skins and equipment must be authoritative player progression state. Selection/equip operations must validate compatibility and persist atomically."
+}

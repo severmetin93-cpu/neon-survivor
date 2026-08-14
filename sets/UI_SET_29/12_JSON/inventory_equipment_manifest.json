@@ -1,0 +1,32 @@
+{
+  "package": "NORYVX_UI_SET_29_INVENTORY_EQUIPMENT_LOADOUT_ITEMS_RARITY_SORT_FILTER_COMPLETE",
+  "orientation": "landscape",
+  "resolution_reference": [
+    1920,
+    1080
+  ],
+  "format_target": "PNG-32 RGBA",
+  "color_space": "sRGB",
+  "components": {
+    "inventory_views": 5,
+    "equipment_slots": 6,
+    "loadouts": 4,
+    "items": 8,
+    "rarities": 5,
+    "sort_options": 5,
+    "filter_options": 6,
+    "item_details": 4,
+    "states": 9,
+    "vfx": 1
+  },
+  "modules": [
+    "inventory",
+    "equipment",
+    "loadout",
+    "items",
+    "rarity",
+    "sort_filter",
+    "item_details"
+  ],
+  "integration_note": "Inventory ownership, quantities, equipment slots, loadouts and item state must be authoritative progression/account state. Equip and consume operations must be validated and idempotent."
+}

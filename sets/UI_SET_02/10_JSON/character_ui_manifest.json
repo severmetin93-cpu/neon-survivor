@@ -1,0 +1,33 @@
+{
+  "package": "NORYVX_UI_SET_02_CHARACTER_COMPLETE",
+  "orientation": "landscape",
+  "resolution_reference": [
+    1920,
+    1080
+  ],
+  "format_target": "PNG-32 RGBA",
+  "color_space": "sRGB",
+  "characters": [
+    "NORYVX",
+    "SHADOW",
+    "REX",
+    "VEGA",
+    "LUXIA"
+  ],
+  "components": {
+    "character_cards": 5,
+    "portraits": 5,
+    "stats_panel": 1,
+    "ability_icons": 5,
+    "equipment_slots": 6,
+    "tabs": 4,
+    "vfx": 1
+  },
+  "design_rules": {
+    "visual_language": "premium cyberpunk neon survivor",
+    "primary_energy": "violet/cyan",
+    "roles": "distinct visual silhouettes and gameplay identities",
+    "mobile_readability": true
+  },
+  "integration_note": "Visual building blocks are packaged separately; runtime wiring, localization, font licensing and final Android QA are integration steps."
+}

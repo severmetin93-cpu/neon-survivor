@@ -1,0 +1,34 @@
+{
+  "package": "NORYVX_UI_SET_54_CHARACTER_ABILITIES_SKILL_TREE_TALENTS_PERKS_PASSIVES_STATS_BUILD_RESET_COMPLETE",
+  "format_target": "PNG-32 RGBA",
+  "color_space": "sRGB",
+  "resolution_reference": [
+    1920,
+    1080
+  ],
+  "components": {
+    "character_home": 6,
+    "abilities": 7,
+    "skill_tree": 7,
+    "talents": 6,
+    "perks": 6,
+    "passives": 6,
+    "stats": 7,
+    "build": 7,
+    "reset": 6,
+    "states": 11,
+    "vfx": 1
+  },
+  "modules": [
+    "character_home",
+    "abilities",
+    "skill_tree",
+    "talents",
+    "perks",
+    "passives",
+    "stats",
+    "build",
+    "reset"
+  ],
+  "integration_note": "Character progression, unlocks, skill points, equipped abilities/perks, stat modifiers and respec/refund operations must be authoritative and atomic. Client UI must not grant progression or modify builds without validation."
+}

@@ -1,0 +1,31 @@
+{
+  "package": "NORYVX_UI_SET_25_SHOP_STORE_CURRENCY_BUNDLES_COSMETICS_LIMITED_OFFERS_PURCHASE_FLOW_COMPLETE",
+  "orientation": "landscape",
+  "resolution_reference": [
+    1920,
+    1080
+  ],
+  "format_target": "PNG-32 RGBA",
+  "color_space": "sRGB",
+  "components": {
+    "store_categories": 5,
+    "currencies": 5,
+    "cosmetics": 6,
+    "bundles": 4,
+    "limited_offers": 4,
+    "item_details": 4,
+    "purchase_states": 6,
+    "store_states": 8,
+    "vfx": 1
+  },
+  "modules": [
+    "store_home",
+    "currency",
+    "cosmetics",
+    "bundles",
+    "limited_offers",
+    "item_details",
+    "purchase_flow"
+  ],
+  "integration_note": "Ownership, prices, discounts, inventory grants, offer expiry and purchase results must be authoritative commerce/account state; grants must be idempotent."
+}

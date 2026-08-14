@@ -1,0 +1,31 @@
+{
+  "package": "NORYVX_UI_SET_18_SHOP_LOOTBOX_CURRENCY_PURCHASE_COMPLETE",
+  "orientation": "landscape",
+  "resolution_reference": [
+    1920,
+    1080
+  ],
+  "format_target": "PNG-32 RGBA",
+  "color_space": "sRGB",
+  "components": {
+    "shop_sections": 5,
+    "currency_cards": 4,
+    "item_cards": 6,
+    "lootboxes": 5,
+    "purchase_states": 4,
+    "bundles": 4,
+    "offers": 4,
+    "confirmation_states": 4,
+    "vfx": 1
+  },
+  "modules": [
+    "shop",
+    "currency",
+    "items",
+    "lootboxes",
+    "purchase",
+    "bundles",
+    "offers"
+  ],
+  "integration_note": "Prices, ownership, balances, purchase results, offers and loot outcomes must be authoritative server/economy state."
+}

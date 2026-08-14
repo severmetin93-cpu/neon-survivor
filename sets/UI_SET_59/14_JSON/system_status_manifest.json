@@ -1,0 +1,34 @@
+{
+  "package": "NORYVX_UI_SET_59_LOADING_CONNECTION_ERROR_RECONNECT_MAINTENANCE_SERVER_STATUS_UPDATE_DOWNLOAD_RETRY_COMPLETE",
+  "format_target": "PNG-32 RGBA",
+  "color_space": "sRGB",
+  "resolution_reference": [
+    1920,
+    1080
+  ],
+  "components": {
+    "loading": 7,
+    "connection": 7,
+    "error": 7,
+    "reconnect": 6,
+    "maintenance": 6,
+    "server_status": 7,
+    "update": 7,
+    "download": 7,
+    "retry": 6,
+    "states": 12,
+    "vfx": 1
+  },
+  "modules": [
+    "loading",
+    "connection",
+    "error",
+    "reconnect",
+    "maintenance",
+    "server_status",
+    "update",
+    "download",
+    "retry"
+  ],
+  "integration_note": "Connection, session, server status, update availability and download state must be authoritative where applicable. Retry operations should use bounded attempts/backoff and remain idempotent. Reconnect must reconcile the current session before restoring gameplay UI."
+}

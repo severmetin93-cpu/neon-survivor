@@ -1,0 +1,30 @@
+{
+  "package": "NORYVX_UI_SET_37_SEASON_PASS_BATTLE_PASS_TIERS_MISSIONS_FREE_PREMIUM_TRACK_REWARDS_PROGRESS_COMPLETE",
+  "orientation": "landscape",
+  "resolution_reference": [
+    1920,
+    1080
+  ],
+  "format_target": "PNG-32 RGBA",
+  "color_space": "sRGB",
+  "components": {
+    "season_home": 5,
+    "tiers": 7,
+    "missions": 5,
+    "free_premium_tracks": 4,
+    "rewards": 7,
+    "progress": 5,
+    "states": 10,
+    "vfx": 1
+  },
+  "modules": [
+    "season_home",
+    "tiers",
+    "missions",
+    "free_track",
+    "premium_track",
+    "rewards",
+    "season_progress"
+  ],
+  "integration_note": "Season tier, XP, mission progress, entitlements and reward claims must be authoritative and idempotent. Season timing should use authoritative server time."
+}

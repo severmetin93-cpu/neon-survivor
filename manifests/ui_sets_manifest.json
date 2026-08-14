@@ -1,0 +1,246 @@
+{
+  "repository": "NORYVX_UI_SYSTEM",
+  "total_sets": 60,
+  "sets": [
+    {
+      "id": "UI_SET_01",
+      "files": 46
+    },
+    {
+      "id": "UI_SET_02",
+      "files": 33
+    },
+    {
+      "id": "UI_SET_03",
+      "files": 56
+    },
+    {
+      "id": "UI_SET_04",
+      "files": 53
+    },
+    {
+      "id": "UI_SET_05",
+      "files": 33
+    },
+    {
+      "id": "UI_SET_06",
+      "files": 40
+    },
+    {
+      "id": "UI_SET_07",
+      "files": 46
+    },
+    {
+      "id": "UI_SET_08",
+      "files": 33
+    },
+    {
+      "id": "UI_SET_09",
+      "files": 54
+    },
+    {
+      "id": "UI_SET_10",
+      "files": 54
+    },
+    {
+      "id": "UI_SET_11",
+      "files": 33
+    },
+    {
+      "id": "UI_SET_12",
+      "files": 41
+    },
+    {
+      "id": "UI_SET_13",
+      "files": 44
+    },
+    {
+      "id": "UI_SET_14",
+      "files": 52
+    },
+    {
+      "id": "UI_SET_15",
+      "files": 51
+    },
+    {
+      "id": "UI_SET_16",
+      "files": 45
+    },
+    {
+      "id": "UI_SET_17",
+      "files": 43
+    },
+    {
+      "id": "UI_SET_18",
+      "files": 43
+    },
+    {
+      "id": "UI_SET_19",
+      "files": 45
+    },
+    {
+      "id": "UI_SET_20",
+      "files": 45
+    },
+    {
+      "id": "UI_SET_21",
+      "files": 47
+    },
+    {
+      "id": "UI_SET_22",
+      "files": 55
+    },
+    {
+      "id": "UI_SET_23",
+      "files": 54
+    },
+    {
+      "id": "UI_SET_24",
+      "files": 47
+    },
+    {
+      "id": "UI_SET_25",
+      "files": 49
+    },
+    {
+      "id": "UI_SET_26",
+      "files": 53
+    },
+    {
+      "id": "UI_SET_27",
+      "files": 47
+    },
+    {
+      "id": "UI_SET_28",
+      "files": 45
+    },
+    {
+      "id": "UI_SET_29",
+      "files": 59
+    },
+    {
+      "id": "UI_SET_30",
+      "files": 50
+    },
+    {
+      "id": "UI_SET_31",
+      "files": 46
+    },
+    {
+      "id": "UI_SET_32",
+      "files": 50
+    },
+    {
+      "id": "UI_SET_33",
+      "files": 55
+    },
+    {
+      "id": "UI_SET_34",
+      "files": 53
+    },
+    {
+      "id": "UI_SET_35",
+      "files": 57
+    },
+    {
+      "id": "UI_SET_36",
+      "files": 53
+    },
+    {
+      "id": "UI_SET_37",
+      "files": 50
+    },
+    {
+      "id": "UI_SET_38",
+      "files": 64
+    },
+    {
+      "id": "UI_SET_39",
+      "files": 59
+    },
+    {
+      "id": "UI_SET_40",
+      "files": 54
+    },
+    {
+      "id": "UI_SET_41",
+      "files": 62
+    },
+    {
+      "id": "UI_SET_42",
+      "files": 73
+    },
+    {
+      "id": "UI_SET_43",
+      "files": 56
+    },
+    {
+      "id": "UI_SET_44",
+      "files": 65
+    },
+    {
+      "id": "UI_SET_45",
+      "files": 61
+    },
+    {
+      "id": "UI_SET_46",
+      "files": 65
+    },
+    {
+      "id": "UI_SET_47",
+      "files": 69
+    },
+    {
+      "id": "UI_SET_48",
+      "files": 63
+    },
+    {
+      "id": "UI_SET_49",
+      "files": 75
+    },
+    {
+      "id": "UI_SET_50",
+      "files": 74
+    },
+    {
+      "id": "UI_SET_51",
+      "files": 77
+    },
+    {
+      "id": "UI_SET_52",
+      "files": 74
+    },
+    {
+      "id": "UI_SET_53",
+      "files": 75
+    },
+    {
+      "id": "UI_SET_54",
+      "files": 76
+    },
+    {
+      "id": "UI_SET_55",
+      "files": 72
+    },
+    {
+      "id": "UI_SET_56",
+      "files": 70
+    },
+    {
+      "id": "UI_SET_57",
+      "files": 79
+    },
+    {
+      "id": "UI_SET_58",
+      "files": 72
+    },
+    {
+      "id": "UI_SET_59",
+      "files": 79
+    },
+    {
+      "id": "UI_SET_60",
+      "files": 100
+    }
+  ]
+}

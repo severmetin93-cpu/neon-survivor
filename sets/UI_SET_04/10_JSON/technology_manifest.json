@@ -1,0 +1,48 @@
+{
+  "package": "NORYVX_UI_SET_04_TECHNOLOGY_COMPLETE",
+  "orientation": "landscape",
+  "resolution_reference": [
+    1920,
+    1080
+  ],
+  "format_target": "PNG-32 RGBA",
+  "color_space": "sRGB",
+  "tabs": [
+    "SAVAŞ",
+    "SAVUNMA",
+    "ENERJİ",
+    "HAREKET",
+    "TEKNOLOJİ"
+  ],
+  "node_types": [
+    "attack",
+    "crit",
+    "hp",
+    "shield",
+    "speed",
+    "void",
+    "locked",
+    "maxed"
+  ],
+  "node_states": [
+    "locked",
+    "available",
+    "active"
+  ],
+  "resources": [
+    "core",
+    "shard",
+    "coin"
+  ],
+  "components": {
+    "tabs": 5,
+    "node_variants": 24,
+    "connections": 3,
+    "node_icons": 8,
+    "detail_panels": 3,
+    "resources": 3,
+    "vfx": 1
+  },
+  "design_language": "premium cyberpunk neon survivor",
+  "integration_note": "Node prerequisites, levels, costs and unlock state must be populated from runtime progression data."
+}
