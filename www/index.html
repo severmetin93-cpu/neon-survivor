@@ -578,7 +578,7 @@ button,
 .levelup-grid{width:min(390px,88vw);display:grid;grid-template-columns:1fr;gap:10px;max-height:62vh;overflow:auto}
 .levelup-card{position:relative;padding:16px;border-radius:18px;background:linear-gradient(180deg,rgba(13,24,55,.96),rgba(5,9,22,.96));border:1px solid rgba(34,230,255,.2);text-align:left;box-shadow:0 0 18px rgba(34,230,255,.06)}
 .levelup-card:active{transform:scale(.985)}
-.levelup-card .perk-icon{float:left;width:42px;height:42px;margin-right:12px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(34,230,255,.08);border:1px solid rgba(34,230,255,.25);font-size:19px;color:#22e6ff}
+.levelup-card .perk-icon{float:left;width:42px;height:42px;margin-right:12px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;background:rgba(34,230,255,.08);border:1px solid rgba(34,230,255,.25);font-size:19px;color:#22e6ff}
 .levelup-card h3{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#fff;margin:2px 0 5px}.levelup-card h3 small{font-size:9px;color:#22e6ff;letter-spacing:.08em}
 .levelup-card p{font-size:11px;line-height:1.4;color:rgba(234,244,255,.55);min-height:30px}
 .levelup-card button{width:100%;margin-top:12px;min-height:44px;border:1px solid rgba(34,230,255,.3);border-radius:11px;background:linear-gradient(135deg,rgba(34,230,255,.12),rgba(59,123,255,.12));color:#eaf4ff;font-weight:900;font-size:11px;letter-spacing:.1em}
@@ -618,7 +618,7 @@ button,
 .p2-stat{padding:12px;border-radius:13px;background:rgba(8,15,34,.88);border:1px solid rgba(34,230,255,.14)}
 .p2-k{font-size:9px;letter-spacing:.13em;color:rgba(234,244,255,.45);text-transform:uppercase}
 .p2-v{font-size:18px;font-weight:900;color:#eaf4ff;margin-top:3px}
-.p2-item{padding:11px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);margin-bottom:7px}
+.p2-item{padding:11px;border-radius:var(--r-sm);background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);margin-bottom:7px}
 .p2-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .p2-badge{font-size:8px;font-weight:900;letter-spacing:.1em;padding:4px 6px;border-radius:7px;border:1px solid rgba(34,230,255,.22);background:rgba(34,230,255,.06)}
 .p2-badge.common    {color:var(--rarity-common)}
@@ -14476,7 +14476,7 @@ window.NEONNAV={go,badges,topbar,counts:{countMissions,countBP,countAch,countSho
 .ui60-toast{
   width:100%;
   padding:12px 16px;
-  border-radius:12px;
+  border-radius:var(--r-sm);
   font-size:12px;
   font-weight:700;
   letter-spacing:.08em;
