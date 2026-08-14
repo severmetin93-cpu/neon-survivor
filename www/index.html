@@ -718,6 +718,708 @@ button,
 #run-wave-hud .wave-label::after{content:" "}
 #run-wave-hud .wave-value::after{content:"  •  "}</style>
 
+<style id="noryvx-design-system">
+/* =========================================================
+   NORYVX DESIGN SYSTEM · V16.7.0
+   Bu blok SADECE gorsel katmandir. Mevcut CSS'in uzerine
+   biner; hicbir id, class adi, DOM yapisi veya JS secicisi
+   degistirilmemistir. HUD konumlari ve dokunma alanlari
+   aynen korunur.
+========================================================= */
+
+:root{
+  /* Yuzey katmanlari — derinlik hiyerarsisi */
+  --s0:#03050c;
+  --s1:rgba(9,14,30,.92);
+  --s2:rgba(14,22,46,.94);
+  --s3:rgba(20,31,62,.96);
+
+  /* Anlam tasiyan renkler */
+  --primary:#22e6ff;
+  --secondary:#a05cff;
+  --accent:#ff4fd8;
+  --danger:#ff3b6b;
+  --elite:#ffe34d;
+  --energy:#48ff9b;
+
+  /* Kenar ve isik */
+  --line:rgba(34,230,255,.16);
+  --line-strong:rgba(34,230,255,.38);
+  --ink:#eaf4ff;
+  --ink-2:rgba(234,244,255,.62);
+  --ink-3:rgba(234,244,255,.34);
+
+  /* Olcek */
+  --r-sm:10px;
+  --r-md:14px;
+  --r-lg:20px;
+  --gap:10px;
+
+  /* Hareket — 150-300ms hedefi */
+  --t-fast:150ms cubic-bezier(.2,.7,.3,1);
+  --t-mid:220ms cubic-bezier(.2,.7,.3,1);
+}
+
+/* ---------- TYPOGRAPHY ---------- */
+.logo{
+  letter-spacing:.26em !important;
+  text-shadow:
+    0 0 14px rgba(34,230,255,.55),
+    0 0 40px rgba(160,92,255,.35),
+    0 2px 0 rgba(0,0,0,.6) !important;
+}
+.logo span{
+  letter-spacing:.42em !important;
+  color:var(--ink-2) !important;
+  font-weight:700;
+  font-size:.30em !important;
+  margin-top:.9em !important;
+}
+.tutorial-title,
+.p3-char-name,
+.countdown-label{
+  letter-spacing:.14em;
+}
+.p2-k,.p3-k,.p2-badge,.p3-chip,.tag,.currency{
+  font-variant-numeric:tabular-nums;
+}
+
+/* ---------- EKRAN GECISLERI ---------- */
+.screen{
+  background:
+    radial-gradient(130% 78% at 50% -6%,rgba(34,230,255,.10),transparent 58%),
+    radial-gradient(120% 70% at 50% 108%,rgba(160,92,255,.10),transparent 60%),
+    rgba(3,5,12,.90) !important;
+  transition:
+    opacity var(--t-mid),
+    transform var(--t-mid),
+    visibility 0s linear .22s !important;
+  transform:scale(.986);
+}
+.screen.on{
+  transform:scale(1);
+  transition:
+    opacity var(--t-mid),
+    transform var(--t-mid),
+    visibility 0s linear 0s !important;
+}
+/* ust kenarda ince tarama cizgisi — ekran acilirken bir kez gecer */
+.screen.on::before{
+  content:"";
+  position:absolute;
+  left:0;right:0;top:0;
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--primary),transparent);
+  opacity:.6;
+  animation:nx-scan 620ms ease-out 1;
+  pointer-events:none;
+}
+@keyframes nx-scan{
+  from{transform:translateY(0);opacity:0}
+  30%{opacity:.75}
+  to{transform:translateY(38vh);opacity:0}
+}
+
+/* ---------- PANEL SISTEMI ---------- */
+.progress-panel,
+.tutorial-card,
+.upgrade-card,
+.skin-card,
+.levelup-card,
+.p2-build-panel,
+.p2-item,
+.p3-card,
+.p3-char-card,
+.p3-skill,
+.record,
+.stats{
+  background:linear-gradient(180deg,var(--s2),var(--s1)) !important;
+  border:1px solid var(--line) !important;
+  border-radius:var(--r-md) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.05),
+    inset 0 -14px 26px rgba(0,0,0,.32),
+    0 6px 18px rgba(0,0,0,.34) !important;
+  position:relative;
+  transition:border-color var(--t-fast),transform var(--t-fast),box-shadow var(--t-fast);
+}
+/* panel ust kenar isigi */
+.progress-panel::after,
+.tutorial-card::after,
+.levelup-card::after,
+.p2-build-panel::after,
+.p3-card::after{
+  content:"";
+  position:absolute;
+  left:12px;right:12px;top:0;
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--line-strong),transparent);
+  pointer-events:none;
+}
+
+/* ---------- BUTON SISTEMI ---------- */
+.btn{
+  position:relative;
+  border-radius:var(--r-md) !important;
+  letter-spacing:.18em !important;
+  transition:transform var(--t-fast),box-shadow var(--t-fast),filter var(--t-fast);
+  overflow:hidden;
+}
+/* PRIMARY — OYNA. Ana aksiyon belirgin sekilde daha guclu. */
+.btn:not(.ghost){
+  min-height:66px !important;
+  font-size:18px !important;
+  background:linear-gradient(135deg,#5cf2ff,var(--primary) 42%,#2b7dff) !important;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.18) inset,
+    0 1px 0 rgba(255,255,255,.45) inset,
+    0 8px 26px rgba(34,230,255,.30),
+    0 2px 10px rgba(0,0,0,.45) !important;
+}
+.btn:not(.ghost)::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(100deg,transparent 38%,rgba(255,255,255,.34) 50%,transparent 62%);
+  transform:translateX(-120%);
+  animation:nx-sheen 4.6s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes nx-sheen{
+  0%,72%{transform:translateX(-120%)}
+  86%,100%{transform:translateX(120%)}
+}
+.btn.ghost{
+  background:linear-gradient(180deg,rgba(18,28,56,.82),rgba(8,13,28,.82)) !important;
+  border:1px solid var(--line) !important;
+  color:var(--ink) !important;
+  min-height:52px !important;
+  letter-spacing:.15em !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05) !important;
+}
+.btn:active{transform:scale(.97) !important;filter:brightness(1.08)}
+.btn.ghost:active{border-color:var(--line-strong) !important}
+.btn:disabled,
+button:disabled{opacity:.38 !important;filter:saturate(.35);pointer-events:none}
+
+.p2-tab,.p3-btn,.tgl{
+  transition:background var(--t-fast),border-color var(--t-fast),color var(--t-fast),transform var(--t-fast);
+}
+.p2-tab:active,.p3-btn:active,.tgl:active{transform:scale(.95)}
+.p2-tab.on,.p3-btn.on{
+  box-shadow:0 0 16px rgba(34,230,255,.22),inset 0 1px 0 rgba(255,255,255,.10);
+}
+
+/* ---------- KART DURUMLARI ---------- */
+.upgrade-card:active,
+.skin-card:active,
+.p3-char-card:active,
+.levelup-card:active{transform:scale(.985)}
+
+.skin-card.selected,
+.p3-char-card.selected,
+.p3-char-card.on{
+  border-color:var(--line-strong) !important;
+  box-shadow:
+    0 0 0 1px rgba(34,230,255,.30) inset,
+    0 0 22px rgba(34,230,255,.20),
+    0 6px 18px rgba(0,0,0,.36) !important;
+}
+/* kilitli / max durumlari — anlam tasiyan renk */
+.p3-skill[data-state="locked"],
+.p2-item.locked{opacity:.5;filter:saturate(.4)}
+.p3-skill[data-state="max"],
+.p2-item.max{border-color:rgba(255,227,77,.42) !important}
+
+/* ---------- ILERLEME CUBUKLARI ---------- */
+.xp-bar,.p3-bar,.boss-bar{
+  border-radius:999px !important;
+  overflow:hidden;
+  background:rgba(2,5,14,.9) !important;
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.7);
+}
+.xp-fill,.p3-fill{
+  background:linear-gradient(90deg,var(--primary),#7cc0ff) !important;
+  box-shadow:0 0 12px rgba(34,230,255,.5);
+  transition:width var(--t-mid);
+}
+.boss-fill{transition:width 140ms linear}
+
+/* ---------- MENU HERO SAHNESI ---------- */
+.hero-stage{
+  position:relative;
+  width:min(340px,84vw);
+  height:min(210px,30vh);
+  margin:2px 0 6px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+#hero-canvas{
+  width:100%;
+  height:100%;
+  display:block;
+}
+.hero-meta{
+  position:absolute;
+  left:0;right:0;bottom:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:3px;
+  pointer-events:none;
+}
+.hero-class{
+  font-size:15px;
+  font-weight:900;
+  letter-spacing:.30em;
+  color:var(--ink);
+  text-shadow:0 0 14px rgba(34,230,255,.55);
+}
+.hero-role{
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.24em;
+  color:var(--ink-3);
+  text-transform:uppercase;
+}
+.menu-actions{
+  width:min(340px,84vw);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.menu-sub{
+  width:min(340px,84vw);
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:10px;
+}
+.menu-sub .btn.ghost{
+  width:100% !important;
+  margin-top:0 !important;
+  min-height:46px !important;
+  font-size:11.5px !important;
+  letter-spacing:.10em !important;
+  padding:0 6px;
+}
+
+/* ---------- HUD · konum degismez, sadece malzeme ---------- */
+#power-hud .power-pill,
+#weapon-hud .weapon-pill,
+#run-wave-hud,
+#build-hud,
+#version-badge,
+#b-pause{
+  border-radius:var(--r-sm) !important;
+  background:linear-gradient(180deg,rgba(12,20,42,.80),rgba(5,9,20,.80)) !important;
+  border:1px solid var(--line) !important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 2px 8px rgba(0,0,0,.35) !important;
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
+}
+#boss-hud .boss-name{letter-spacing:.20em}
+#version-badge{opacity:.5;letter-spacing:.14em}
+
+/* ---------- TOGGLE IKONLARI ---------- */
+.tgl{
+  border-radius:var(--r-sm) !important;
+  background:linear-gradient(180deg,rgba(14,22,46,.85),rgba(6,10,22,.85)) !important;
+  border:1px solid var(--line) !important;
+}
+.tgl.off{border-color:rgba(234,244,255,.10) !important}
+
+/* ---------- KUCUK EKRAN GUVENLIGI ---------- */
+@media (max-height:680px){
+  .hero-stage{height:min(160px,24vh)}
+  .btn:not(.ghost){min-height:58px !important;font-size:16px !important}
+  .btn.ghost{min-height:44px !important}
+}
+@media (prefers-reduced-motion:reduce){
+  .btn:not(.ghost)::after,
+  .screen.on::before{animation:none}
+}
+</style>
+
+<style id="noryvx-rpg-css">
+/* NORYVX RPG · envanter / karakter gorsel dili.
+   Design system token'larini kullanir, yeni renk uretmez. */
+.rpg-wrap{width:min(420px,92vw);display:flex;flex-direction:column;gap:9px}
+.rpg-power{display:flex;align-items:center;justify-content:space-between;
+  padding:11px 14px;border-radius:var(--r-md);
+  background:linear-gradient(135deg,rgba(34,230,255,.14),rgba(160,92,255,.10));
+  border:1px solid var(--line-strong)}
+.rpg-power span{font-size:10px;letter-spacing:.28em;color:var(--ink-2)}
+.rpg-power b{font-size:24px;font-weight:900;letter-spacing:.06em;
+  text-shadow:0 0 16px rgba(34,230,255,.55)}
+.rpg-stats{display:flex;flex-direction:column;gap:1px;padding:8px 12px;
+  border-radius:var(--r-md);background:linear-gradient(180deg,var(--s2),var(--s1));
+  border:1px solid var(--line)}
+.rpg-strow{display:flex;align-items:center;justify-content:space-between;
+  padding:5px 0;font-size:12px;border-bottom:1px solid rgba(255,255,255,.04)}
+.rpg-strow:last-child{border-bottom:0}
+.rpg-strow span{color:var(--ink-3);letter-spacing:.14em;font-size:10px}
+.rpg-strow b{font-weight:800;font-variant-numeric:tabular-nums}
+.rpg-strow i{font-style:normal;color:var(--energy);font-size:10.5px;
+  min-width:58px;text-align:right;font-weight:700}
+.rpg-slots{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.rpg-slot{--rc:rgba(234,244,255,.18);text-align:left;padding:8px 10px;
+  border-radius:var(--r-sm);border:1px solid rgba(255,255,255,.07);
+  background:rgba(8,13,28,.8);color:var(--ink);display:flex;
+  flex-direction:column;gap:2px;min-height:46px}
+.rpg-slot.full{border-color:var(--rc);
+  box-shadow:inset 0 0 14px color-mix(in srgb,var(--rc) 16%,transparent)}
+.rpg-slot-n{font-size:9px;letter-spacing:.20em;color:var(--ink-3)}
+.rpg-slot-v{font-size:11px;font-weight:800;color:var(--rc);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rpg-filters{width:min(420px,92vw);display:flex;gap:5px;overflow-x:auto;
+  padding-bottom:6px;scrollbar-width:none}
+.rpg-filters::-webkit-scrollbar{display:none}
+.rpg-filters .p2-tab{flex:0 0 auto;font-size:10px;padding:7px 11px}
+.rpg-grid{width:min(420px,92vw);display:grid;grid-template-columns:1fr 1fr;
+  gap:6px;max-height:44vh;overflow-y:auto;padding:2px}
+.rpg-item{--rc:#9fb3cc;text-align:left;padding:9px 10px;border-radius:var(--r-sm);
+  border:1px solid var(--rc);background:linear-gradient(180deg,
+    color-mix(in srgb,var(--rc) 11%,rgba(8,13,28,.92)),rgba(6,10,22,.94));
+  color:var(--ink);display:flex;flex-direction:column;gap:2px;position:relative}
+.rpg-item.eq{box-shadow:0 0 0 1px var(--rc) inset,0 0 16px color-mix(in srgb,var(--rc) 30%,transparent)}
+.rpg-plus{position:absolute;top:7px;right:9px;font-size:11px;font-weight:900;color:var(--rc)}
+.rpg-name{font-size:11.5px;font-weight:800;padding-right:26px;line-height:1.2}
+.rpg-rar{font-size:9px;letter-spacing:.14em;color:var(--rc);opacity:.85}
+.rpg-st{font-size:9.5px;color:var(--ink-3);line-height:1.35}
+.rpg-eqmark{font-size:8px;letter-spacing:.18em;color:var(--energy);margin-top:2px}
+.rpg-empty{grid-column:1/-1;padding:26px 12px;text-align:center;
+  font-size:12px;line-height:1.7;color:var(--ink-3)}
+.rpg-detail{--rc:#9fb3cc;width:min(420px,92vw);margin-top:8px;padding:12px;
+  border-radius:var(--r-md);border:1px solid var(--rc);
+  background:linear-gradient(180deg,rgba(14,22,46,.96),rgba(5,9,22,.96));
+  display:none}
+.rpg-detail.on{display:block}
+.rpg-d-head{display:flex;flex-direction:column;gap:2px;margin-bottom:8px}
+.rpg-d-head b{font-size:15px;font-weight:900;color:var(--rc)}
+.rpg-d-head span{font-size:9.5px;letter-spacing:.16em;color:var(--ink-3)}
+.rpg-d-note{margin-top:8px;font-size:10.5px;letter-spacing:.06em;color:var(--ink-2)}
+.rpg-d-actions{display:flex;gap:6px;margin-top:9px}
+.rpg-d-actions .p3-btn{flex:1;font-size:11px}
+.rpg-d-msg{margin-top:7px;font-size:11px;font-weight:800;letter-spacing:.10em;min-height:14px}
+</style>
+
+<style id="noryvx-prog-css">
+/* NORYVX PROGRESSION · sektor / gorev / magaza */
+.pg-list{width:min(430px,93vw);display:flex;flex-direction:column;gap:7px;
+  max-height:56vh;overflow-y:auto;padding:2px;overscroll-behavior:contain}
+.pg-msg{width:min(430px,93vw);min-height:16px;margin-top:7px;font-size:11.5px;
+  font-weight:800;letter-spacing:.08em;text-align:center}
+
+/* --- SEKTOR --- */
+.pg-sec{position:relative;text-align:left;padding:11px 13px 11px 46px;
+  border-radius:var(--r-md);border:1px solid var(--line);
+  background:linear-gradient(135deg,rgba(20,31,62,.94),rgba(6,10,22,.94));
+  color:var(--ink);display:flex;flex-direction:column;gap:3px}
+.pg-sec.sel{border-color:var(--line-strong);
+  box-shadow:0 0 0 1px rgba(34,230,255,.28) inset,0 0 20px rgba(34,230,255,.18)}
+.pg-sec.lock{opacity:.52;filter:saturate(.4)}
+.pg-sec-id{position:absolute;left:12px;top:12px;font-size:19px;font-weight:900;
+  letter-spacing:.02em;color:var(--primary);opacity:.55}
+.pg-sec-n{font-size:14px;font-weight:900;letter-spacing:.10em}
+.pg-sec-d{font-size:10.5px;color:var(--ink-3);line-height:1.35}
+.pg-sec-m{font-size:9.5px;letter-spacing:.06em;color:var(--secondary);font-weight:700}
+.pg-sec-b{font-size:9.5px;letter-spacing:.14em;color:var(--ink-2);font-weight:800}
+.pg-sec-b.lockline{color:var(--elite)}
+
+/* --- GOREV --- */
+.pg-ms{padding:10px 12px;border-radius:var(--r-md);border:1px solid var(--line);
+  background:linear-gradient(180deg,var(--s2),var(--s1));display:flex;
+  flex-direction:column;gap:6px}
+.pg-ms.ready{border-color:rgba(72,255,155,.42)}
+.pg-ms.done{opacity:.5}
+.pg-ms-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.pg-ms-h b{font-size:12px;font-weight:800}
+.pg-ms-h span{font-size:10px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.pg-bar{height:5px;border-radius:999px;background:rgba(2,5,14,.9);overflow:hidden}
+.pg-bar i{display:block;height:100%;border-radius:999px;
+  background:linear-gradient(90deg,var(--primary),#7cc0ff);
+  box-shadow:0 0 10px rgba(34,230,255,.5);transition:width var(--t-mid)}
+.pg-ms-f{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.pg-ms-f span{font-size:10.5px;color:var(--elite);font-weight:800;letter-spacing:.06em}
+.pg-ms-f i{font-style:normal;font-size:9.5px;letter-spacing:.16em;color:var(--ink-3)}
+.pg-ms-f .p3-btn{font-size:10.5px;padding:6px 12px}
+
+/* --- MAGAZA --- */
+.pg-shop{text-align:left;padding:10px 12px;border-radius:var(--r-md);
+  border:1px solid var(--line);background:linear-gradient(180deg,var(--s2),var(--s1));
+  color:var(--ink);display:grid;grid-template-columns:1fr auto;
+  grid-template-areas:"n p" "d p";gap:2px 10px;align-items:center}
+.pg-shop.free{border-color:rgba(255,227,77,.42)}
+.pg-shop.off{opacity:.42;filter:saturate(.35)}
+.pg-shop-n{grid-area:n;font-size:12px;font-weight:800;letter-spacing:.08em}
+.pg-shop-d{grid-area:d;font-size:10px;color:var(--ink-3)}
+.pg-shop-p{grid-area:p;font-size:12.5px;font-weight:900;color:var(--elite);
+  letter-spacing:.04em;white-space:nowrap}
+.pg-iap{margin-top:4px;padding:10px 12px;border-radius:var(--r-md);
+  border:1px dashed rgba(255,107,138,.35);background:rgba(30,6,14,.5);
+  font-size:10px;line-height:1.6;color:var(--ink-2)}
+.pg-iap b{color:#ff9db2}
+</style>
+
+<style id="noryvx-tech-css">
+/* TEKNOLOJI AGACI + USTALIK */
+.tech-wrap{width:min(430px,93vw);display:flex;flex-direction:column;gap:12px;
+  max-height:54vh;overflow-y:auto;padding:2px;overscroll-behavior:contain}
+.tech-branch{--bc:#22e6ff;display:flex;flex-direction:column;align-items:stretch;
+  padding:10px 11px 12px;border-radius:var(--r-md);
+  border:1px solid color-mix(in srgb,var(--bc) 30%,transparent);
+  background:linear-gradient(180deg,color-mix(in srgb,var(--bc) 8%,rgba(9,14,30,.94)),rgba(5,9,20,.95))}
+.tech-bh{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px}
+.tech-bh b{font-size:13px;font-weight:900;letter-spacing:.22em;color:var(--bc)}
+.tech-bh span{font-size:9.5px;letter-spacing:.14em;color:var(--ink-3)}
+/* dugumler arasi enerji hatti */
+.tech-link{height:12px;width:2px;margin:0 auto;
+  background:linear-gradient(180deg,transparent,var(--bc),transparent);opacity:.55}
+.tech-node{text-align:left;padding:9px 11px;border-radius:var(--r-sm);
+  border:1px solid rgba(255,255,255,.08);background:rgba(8,13,28,.85);
+  color:var(--ink);display:grid;grid-template-columns:1fr auto;
+  grid-template-areas:"n r" "d d" "q q";gap:2px 8px;position:relative}
+.tech-n{grid-area:n;font-size:11.5px;font-weight:800;letter-spacing:.08em}
+.tech-r{grid-area:r;font-size:11px;font-weight:900;font-variant-numeric:tabular-nums;color:var(--bc)}
+.tech-d{grid-area:d;font-size:9.5px;color:var(--ink-3)}
+.tech-req{grid-area:q;font-size:9px;letter-spacing:.10em;color:var(--elite);margin-top:2px}
+.tech-req.max{color:var(--energy)}
+.tech-node.available{border-color:color-mix(in srgb,var(--bc) 45%,transparent);
+  box-shadow:0 0 14px color-mix(in srgb,var(--bc) 18%,transparent)}
+.tech-node.unlocked{border-color:color-mix(in srgb,var(--bc) 62%,transparent);
+  background:linear-gradient(180deg,color-mix(in srgb,var(--bc) 12%,rgba(8,13,28,.9)),rgba(6,10,22,.92))}
+.tech-node.max{border-color:rgba(72,255,155,.5)}
+.tech-node.max .tech-r{color:var(--energy)}
+.tech-node.locked{opacity:.46;filter:saturate(.35)}
+.tech-node:active{transform:scale(.985)}
+
+.mast-wrap{width:min(430px,93vw);display:flex;flex-direction:column;gap:9px;
+  max-height:60vh;overflow-y:auto;padding:2px}
+.mast-card{--mc:#22e6ff;padding:11px 12px;border-radius:var(--r-md);
+  border:1px solid color-mix(in srgb,var(--mc) 34%,transparent);
+  background:linear-gradient(180deg,color-mix(in srgb,var(--mc) 9%,rgba(14,22,46,.94)),rgba(5,9,20,.95));
+  display:flex;flex-direction:column;gap:6px}
+.mast-h{display:flex;align-items:baseline;justify-content:space-between}
+.mast-h b{font-size:14px;font-weight:900;letter-spacing:.20em;color:var(--mc)}
+.mast-h span{font-size:10px;letter-spacing:.14em;color:var(--ink-2);font-weight:800}
+.mast-evo{font-size:10px;letter-spacing:.24em;color:var(--ink-3);font-weight:700}
+.mast-f{display:flex;align-items:center;justify-content:space-between}
+.mast-f span{font-size:10px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.mast-f i{font-style:normal;font-size:10.5px;font-weight:800;color:var(--energy)}
+.mast-note{font-size:9.5px;line-height:1.6;color:var(--ink-3);padding:2px 4px}
+</style>
+
+<style id="noryvx-bp-css">
+.bp-wrap{width:min(430px,93vw);display:flex;flex-direction:column;gap:6px;
+  max-height:56vh;overflow-y:auto;padding:2px;overscroll-behavior:contain}
+.bp-head{display:flex;align-items:center;justify-content:space-between;
+  padding:10px 12px;border-radius:var(--r-md);
+  background:linear-gradient(135deg,rgba(255,227,77,.13),rgba(160,92,255,.10));
+  border:1px solid rgba(255,227,77,.32)}
+.bp-season b{display:block;font-size:13px;font-weight:900;letter-spacing:.20em;color:var(--elite)}
+.bp-season span{font-size:9.5px;letter-spacing:.12em;color:var(--ink-3)}
+.bp-lvl b{font-size:26px;font-weight:900;color:var(--ink);text-shadow:0 0 14px rgba(255,227,77,.5)}
+.bp-lvl span{font-size:11px;color:var(--ink-3)}
+.bp-xp{font-size:10px;color:var(--ink-3);text-align:right;font-variant-numeric:tabular-nums}
+.bp-actions{display:flex;gap:6px}
+.bp-actions .p3-btn{flex:1;font-size:11px}
+.bp-prem-on{flex:1;display:flex;align-items:center;justify-content:center;
+  font-size:10.5px;font-weight:800;letter-spacing:.14em;color:var(--elite);
+  border:1px solid rgba(255,227,77,.35);border-radius:var(--r-sm);padding:8px}
+.bp-cols{display:grid;grid-template-columns:34px 1fr 1fr;gap:5px;margin-top:4px;
+  font-size:8.5px;letter-spacing:.16em;color:var(--ink-3);padding:0 2px}
+.bp-cols span:first-child{text-align:center}
+.bp-row{display:grid;grid-template-columns:34px 1fr 1fr;gap:5px;align-items:stretch}
+.bp-lv{display:flex;align-items:center;justify-content:center;font-size:12px;
+  font-weight:900;color:var(--ink-3);border-radius:var(--r-sm);
+  background:rgba(6,10,22,.8);border:1px solid rgba(255,255,255,.06)}
+.bp-row.open .bp-lv{color:var(--primary);border-color:var(--line)}
+.bp-r{font-size:9.5px;font-weight:700;letter-spacing:.04em;padding:8px 6px;
+  border-radius:var(--r-sm);border:1px solid rgba(255,255,255,.07);
+  background:rgba(8,13,28,.82);color:var(--ink);text-align:center;line-height:1.25}
+.bp-r.free{border-color:rgba(34,230,255,.26)}
+.bp-r.prem{border-color:rgba(255,227,77,.30);color:var(--elite)}
+.bp-r.prem.lock{opacity:.42}
+.bp-r.got{opacity:.4;color:var(--energy);border-color:rgba(72,255,155,.3)}
+.bp-r:disabled{opacity:.34;filter:saturate(.3)}
+.bp-r:not(:disabled):active{transform:scale(.97)}
+.bp-ads{margin-top:10px;padding:10px 11px;border-radius:var(--r-md);
+  border:1px solid var(--line);background:linear-gradient(180deg,var(--s2),var(--s1));
+  display:flex;flex-direction:column;gap:6px}
+.bp-ads-h{font-size:10px;letter-spacing:.24em;color:var(--ink-2);font-weight:800}
+.bp-ad{display:flex;align-items:center;justify-content:space-between;
+  padding:8px 10px;border-radius:var(--r-sm);border:1px solid rgba(255,255,255,.07);
+  background:rgba(8,13,28,.8);color:var(--ink);font-size:11px;font-weight:800}
+.bp-ad i{font-style:normal;font-size:10px;color:var(--energy)}
+.bp-ad:disabled{opacity:.36;filter:saturate(.3)}
+.bp-ads-note{font-size:9.5px;line-height:1.65;color:var(--ink-3);
+  padding:8px 9px;border-radius:var(--r-sm);
+  border:1px dashed rgba(255,107,138,.32);background:rgba(30,6,14,.45)}
+.bp-ads-note b{color:#ff9db2}
+.bp-ads-note code{font-size:9px;color:var(--primary)}
+</style>
+
+<style id="noryvx-icons-css">
+/* ITEM IKONLARI — atlas-items.png (4x2 hucre, 128px kaynak).
+   Atlas yuklenemezse ikon gorunmez, kart metniyle calismaya devam eder. */
+.rpg-ico{
+  display:block;
+  width:34px;height:34px;
+  flex:0 0 auto;
+  background-image:url(assets/atlas-items.png);
+  background-size:136px 68px;
+  background-repeat:no-repeat;
+  filter:drop-shadow(0 0 6px color-mix(in srgb,var(--rc,#9fb3cc) 55%,transparent));
+}
+.rpg-ico[data-ico="weapon"]   {background-position:0 0}
+.rpg-ico[data-ico="helmet"]   {background-position:-34px 0}
+.rpg-ico[data-ico="armor"]    {background-position:-68px 0}
+.rpg-ico[data-ico="gloves"]   {background-position:-102px 0}
+.rpg-ico[data-ico="boots"]    {background-position:0 -34px}
+.rpg-ico[data-ico="core"]     {background-position:-34px -34px}
+.rpg-ico[data-ico="module"]   {background-position:-68px -34px}
+.rpg-ico[data-ico="accessory"]{background-position:-102px -34px}
+.rpg-ico.sm{width:26px;height:26px;background-size:104px 52px}
+.rpg-ico.sm[data-ico="helmet"]   {background-position:-26px 0}
+.rpg-ico.sm[data-ico="armor"]    {background-position:-52px 0}
+.rpg-ico.sm[data-ico="gloves"]   {background-position:-78px 0}
+.rpg-ico.sm[data-ico="boots"]    {background-position:0 -26px}
+.rpg-ico.sm[data-ico="core"]     {background-position:-26px -26px}
+.rpg-ico.sm[data-ico="module"]   {background-position:-52px -26px}
+.rpg-ico.sm[data-ico="accessory"]{background-position:-78px -26px}
+.rpg-ico.lg{width:46px;height:46px;background-size:184px 92px}
+.rpg-ico.lg[data-ico="helmet"]   {background-position:-46px 0}
+.rpg-ico.lg[data-ico="armor"]    {background-position:-92px 0}
+.rpg-ico.lg[data-ico="gloves"]   {background-position:-138px 0}
+.rpg-ico.lg[data-ico="boots"]    {background-position:0 -46px}
+.rpg-ico.lg[data-ico="core"]     {background-position:-46px -46px}
+.rpg-ico.lg[data-ico="module"]   {background-position:-92px -46px}
+.rpg-ico.lg[data-ico="accessory"]{background-position:-138px -46px}
+
+/* ikonlu kart yerlesimi */
+.rpg-item{padding-left:9px}
+.rpg-item .rpg-top{display:flex;gap:8px;align-items:flex-start}
+.rpg-item .rpg-txt{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.rpg-slot{flex-direction:row !important;align-items:center;gap:8px}
+.rpg-slot .rpg-slot-txt{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.rpg-d-head{display:flex;flex-direction:row !important;align-items:center;gap:10px}
+.rpg-d-head .rpg-d-txt{display:flex;flex-direction:column;gap:2px;min-width:0}
+</style>
+
+<style id="noryvx-ach-css">
+.ach-wrap{width:min(430px,93vw);display:flex;flex-direction:column;gap:7px;
+  max-height:56vh;overflow-y:auto;padding:2px;overscroll-behavior:contain}
+.ach-d{font-size:9.5px;color:var(--ink-3);margin:-2px 0 1px}
+#ach-count{font-size:10px;letter-spacing:.18em;color:var(--elite);font-weight:800}
+</style>
+
+<style id="noryvx-cosm-css">
+/* KOZMETİK MAĞAZA + EVRİM */
+.cosm-wrap,.evo-wrap{width:min(430px,93vw);display:flex;flex-direction:column;gap:8px;
+  max-height:58vh;overflow-y:auto;padding:2px;overscroll-behavior:contain}
+.cosm-card{--co:#22e6ff;--cg:#22e6ff;display:grid;
+  grid-template-columns:54px 1fr auto;align-items:center;gap:10px;
+  padding:10px 12px;border-radius:var(--r-md);
+  border:1px solid color-mix(in srgb,var(--co) 32%,transparent);
+  background:linear-gradient(180deg,color-mix(in srgb,var(--co) 9%,rgba(14,22,46,.94)),rgba(5,9,20,.95));
+  color:var(--ink);text-align:left}
+.cosm-card.on{border-color:var(--co);
+  box-shadow:0 0 0 1px var(--co) inset,0 0 22px color-mix(in srgb,var(--cg) 32%,transparent)}
+.cosm-orb{width:42px;height:42px;border-radius:50%;
+  background:radial-gradient(circle at 42% 38%,#fff,var(--co) 46%,transparent 72%);
+  box-shadow:0 0 18px color-mix(in srgb,var(--cg) 65%,transparent),
+             inset 0 0 12px color-mix(in srgb,var(--co) 45%,transparent)}
+.cosm-txt{display:flex;flex-direction:column;gap:2px;min-width:0}
+.cosm-txt b{font-size:13px;font-weight:900;letter-spacing:.16em;color:var(--co)}
+.cosm-txt i{font-style:normal;font-size:9.5px;color:var(--ink-3)}
+.cosm-p{font-size:11.5px;font-weight:900;color:var(--elite);white-space:nowrap}
+.cosm-note{font-size:9.5px;line-height:1.65;color:var(--ink-3);padding:8px 10px;
+  border-radius:var(--r-sm);border:1px dashed rgba(72,255,155,.28);background:rgba(4,20,12,.4)}
+.evo-pick{display:flex;gap:5px;overflow-x:auto;padding-bottom:5px;scrollbar-width:none}
+.evo-pick::-webkit-scrollbar{display:none}
+.evo-chip{--rc:#9fb3cc;flex:0 0 auto;font-size:10px;font-weight:800;padding:7px 10px;
+  border-radius:var(--r-sm);border:1px solid var(--rc);background:rgba(8,13,28,.85);
+  color:var(--rc);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.evo-chip.on{box-shadow:0 0 0 1px var(--rc) inset,0 0 14px color-mix(in srgb,var(--rc) 30%,transparent)}
+</style>
+
+<style id="noryvx-menu2-css">
+/* MENÜ SEKMELERİ + LİDERLİK */
+.menu-tabs{width:min(340px,84vw);display:grid;grid-template-columns:repeat(4,1fr);
+  gap:4px;margin-top:10px}
+.menu-tab{font-size:9.5px;font-weight:800;letter-spacing:.10em;padding:9px 2px;
+  border-radius:var(--r-sm);border:1px solid rgba(255,255,255,.07);
+  background:rgba(8,13,28,.82);color:var(--ink-3);
+  transition:color var(--t-fast),border-color var(--t-fast),background var(--t-fast)}
+.menu-tab.on{color:var(--ink);border-color:var(--line-strong);
+  background:linear-gradient(180deg,rgba(34,230,255,.14),rgba(8,13,28,.9));
+  box-shadow:0 0 14px rgba(34,230,255,.18)}
+.menu-tab:active{transform:scale(.96)}
+.menu-sub[data-mpane]{display:none}
+.menu-sub[data-mpane].on{display:grid;animation:mp-in 180ms ease-out}
+@keyframes mp-in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+.lead-wrap{width:min(430px,93vw);display:flex;flex-direction:column;gap:5px;
+  max-height:58vh;overflow-y:auto;padding:2px}
+.lead-row{display:grid;grid-template-columns:30px 1fr auto;gap:9px;align-items:center;
+  padding:9px 11px;border-radius:var(--r-sm);border:1px solid rgba(255,255,255,.06);
+  background:linear-gradient(180deg,var(--s2),var(--s1))}
+.lead-row.top{border-color:rgba(255,227,77,.36)}
+.lead-row.top .lead-i{color:var(--elite)}
+.lead-i{font-size:13px;font-weight:900;color:var(--ink-3);text-align:center}
+.lead-m{display:flex;flex-direction:column;gap:1px;min-width:0}
+.lead-m b{font-size:12.5px;font-weight:900;font-variant-numeric:tabular-nums}
+.lead-m span{font-size:9px;letter-spacing:.10em;color:var(--ink-3)}
+.lead-w{font-size:11px;font-weight:800;color:var(--primary);white-space:nowrap}
+.lead-note{font-size:9.5px;line-height:1.65;color:var(--ink-3);padding:9px 10px;
+  border-radius:var(--r-sm);border:1px dashed rgba(255,107,138,.30);
+  background:rgba(30,6,14,.42);margin-top:6px}
+.lead-note b{color:#ff9db2}
+</style>
+
+<style id="noryvx-onb-css">
+/* ONBOARDING KARTI — ana menüde, OYNA'nın hemen altında */
+#onb{display:none;width:min(340px,84vw);margin-top:10px;padding:11px 12px;
+  border-radius:var(--r-md);border:1px solid rgba(255,227,77,.34);
+  background:linear-gradient(180deg,rgba(38,32,8,.92),rgba(8,10,20,.94));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 6px 18px rgba(0,0,0,.34)}
+#onb.on{display:block;animation:mp-in 200ms ease-out}
+.onb-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px}
+.onb-h b{font-size:9.5px;letter-spacing:.22em;color:var(--elite)}
+.onb-h span{font-size:9.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.onb-n{font-size:13.5px;font-weight:900;letter-spacing:.10em;margin-bottom:2px}
+.onb-d{font-size:10.5px;line-height:1.5;color:var(--ink-2);margin-bottom:7px}
+.onb-a{display:flex;gap:6px;margin-top:8px}
+.onb-a .p3-btn{flex:1;font-size:10.5px}
+</style>
+
+<style id="noryvx-save-css">
+.save-wrap{width:min(430px,93vw);display:flex;flex-direction:column;gap:5px;
+  max-height:46vh;overflow-y:auto;padding:2px}
+.sv-row{display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:9px 11px;border-radius:var(--r-sm);border:1px solid rgba(255,255,255,.06);
+  background:linear-gradient(180deg,var(--s2),var(--s1))}
+.sv-row.empty{opacity:.45}
+.sv-row.bad{border-color:rgba(255,107,138,.45)}
+.sv-m{display:flex;flex-direction:column;gap:2px;min-width:0}
+.sv-m b{font-size:11.5px;font-weight:800}
+.sv-m span{font-size:8.5px;color:var(--ink-3);word-break:break-all}
+.sv-m u{color:#ff9db2;text-decoration:none}
+.sv-x{font-size:9.5px;padding:6px 10px;flex:0 0 auto}
+.sv-note{font-size:9.5px;line-height:1.6;color:var(--ink-3);padding:8px 10px;
+  border-radius:var(--r-sm);border:1px dashed rgba(34,230,255,.24);background:rgba(4,12,24,.5)}
+.sv-note b{color:var(--ink-2)}
+.sv-note code{color:var(--primary);font-size:9px}
+#save-code{width:min(430px,93vw);height:70px;margin-top:8px;padding:8px 10px;
+  border-radius:var(--r-sm);border:1px solid var(--line);background:rgba(4,8,18,.9);
+  color:var(--ink-2);font-size:9px;font-family:ui-monospace,monospace;
+  word-break:break-all;resize:none}
+.save-bar{width:min(430px,93vw);display:flex;gap:6px;margin-top:8px}
+.save-bar .p3-btn{flex:1;font-size:11px}
+</style>
+
 </head>
 
 <body>
@@ -793,12 +1495,26 @@ button,
   </div>
 
   <div class="logo">
-    Neon
-    <span>Survivor</span>
+    NORYVX
+    <span>Tactical Survivor</span>
+  </div>
+
+  <!-- Hero sahnesi: secili karakter combat ile AYNI cizicilerle,
+       canli olarak gosterilir. Secim mantigi degistirilmedi. -->
+  <div class="hero-stage">
+    <canvas id="hero-canvas"></canvas>
+    <div class="hero-meta">
+      <span class="hero-class" id="hero-class">VANGUARD</span>
+      <span class="hero-role" id="hero-role">HEAVY ASSAULT · TANK</span>
+    </div>
   </div>
 
   <div class="tag" id="menu-best">
     En iyi skor · 0
+  </div>
+
+  <div class="tag" id="pg-menu-sector" style="margin-top:6px;color:var(--primary);font-weight:800">
+    SEKTÖR 01 · NEON ŞEHRİ
   </div>
 
   <div class="progress-panel">
@@ -810,27 +1526,183 @@ button,
     <div class="currency" id="profile-currency">◆ 0 ÇEKİRDEK</div>
   </div>
 
-  <button class="btn ghost" id="b-phase3">KARAKTER GELİŞİMİ</button>
-<button class="btn" id="b-play">
-    Oyna
-  </button>
+  <div class="menu-actions">
+    <button class="btn" id="b-play">
+      Oyna
+    </button>
+  </div>
 
-  <button class="btn ghost" id="b-how">
-    Nasıl Oynanır?
-  </button>
+  <div id="onb"></div>
 
-  <button class="btn ghost" id="b-build">BUILD & SİLAHLAR</button>
-  <button class="btn ghost" id="b-upgrades">
-    Geliştirmeler
-  </button>
+  <!-- Menu artik 4 sekmeli. Buton ID'leri DEGISMEDI; her blok
+       kendi butonunu ayni id ile bulmaya devam eder. -->
+  <div class="menu-tabs" id="menu-tabs">
+    <button class="menu-tab on" data-mtab="char">KARAKTER</button>
+    <button class="menu-tab" data-mtab="war">SAVAŞ</button>
+    <button class="menu-tab" data-mtab="prog">İLERLEME</button>
+    <button class="menu-tab" data-mtab="store">MAĞAZA</button>
+  </div>
 
-  <button class="btn ghost" id="b-skins">
-    Çekirdekler
-  </button>
+  <div class="menu-sub on" data-mpane="char">
+    <button class="btn ghost" id="b-rpgchar">KARAKTER</button>
+    <button class="btn ghost" id="b-rpginv">ENVANTER</button>
+    <button class="btn ghost" id="b-evo">EVRİM</button>
+    <button class="btn ghost" id="b-tech">YETENEKLER</button>
+    <button class="btn ghost" id="b-mastery">USTALIK</button>
+    <button class="btn ghost" id="b-phase3">GELİŞİM</button>
+  </div>
+
+  <div class="menu-sub" data-mpane="war">
+    <button class="btn ghost" id="b-sectors">SEKTÖRLER</button>
+    <button class="btn ghost" id="b-build">BUILD &amp; SİLAH</button>
+    <button class="btn ghost" id="b-upgrades">GELİŞTİRME</button>
+    <button class="btn ghost" id="b-how">NASIL OYNANIR</button>
+  </div>
+
+  <div class="menu-sub" data-mpane="prog">
+    <button class="btn ghost" id="b-missions">GÖREVLER</button>
+    <button class="btn ghost" id="b-ach">BAŞARIMLAR</button>
+    <button class="btn ghost" id="b-bp">BATTLE PASS</button>
+    <button class="btn ghost" id="b-lead">LİDERLİK</button>
+    <button class="btn ghost" id="b-save">KAYIT &amp; YEDEK</button>
+  </div>
+
+  <div class="menu-sub" data-mpane="store">
+    <button class="btn ghost" id="b-shop">MAĞAZA</button>
+    <button class="btn ghost" id="b-cosm">KOZMETİK</button>
+    <button class="btn ghost" id="b-kill">ÖLDÜRME EFEKTİ</button>
+    <button class="btn ghost" id="b-skins">ÇEKİRDEKLER</button>
+  </div>
 
 </div>
 
 <!-- TUTORIAL -->
+
+<div class="screen" id="scr-rpgchar">
+  <div class="tutorial-title">KARAKTER</div>
+  <div class="tag" id="rpg-char-cur">◎ 0   ◆ 0</div>
+  <div class="rpg-wrap" id="rpg-char-body"></div>
+  <button class="btn ghost" id="b-rpgchar-inv">ENVANTER</button>
+  <button class="btn ghost" id="b-rpgchar-back">Geri</button>
+</div>
+
+<div class="screen" id="scr-rpginv">
+  <div class="tutorial-title">ENVANTER</div>
+  <div class="tag" id="rpg-inv-cur">◎ 0   ◆ 0</div>
+  <div class="rpg-filters">
+    <button class="p2-tab on" data-invf="all">TÜMÜ</button>
+    <button class="p2-tab" data-invf="weapon">SİLAH</button>
+    <button class="p2-tab" data-invf="armor">ZIRH</button>
+    <button class="p2-tab" data-invf="helmet">BAŞLIK</button>
+    <button class="p2-tab" data-invf="gloves">ELDİVEN</button>
+    <button class="p2-tab" data-invf="boots">BOT</button>
+    <button class="p2-tab" data-invf="core">ÇEKİRDEK</button>
+    <button class="p2-tab" data-invf="module">MODÜL</button>
+    <button class="p2-tab" data-invf="accessory">AKSESUAR</button>
+  </div>
+  <div class="rpg-grid" id="rpg-inv-grid"></div>
+  <div class="rpg-detail" id="rpg-detail"></div>
+  <button class="btn ghost" id="b-rpginv-back">Geri</button>
+</div>
+
+<div class="screen" id="scr-sectors">
+  <div class="tutorial-title">SEKTÖRLER</div>
+  <div class="tag" id="pg-sector-cur">◎ 0   ◆ 0   ✦ 0</div>
+  <div class="pg-list" id="pg-sector-list"></div>
+  <button class="btn ghost" id="b-sectors-back">Geri</button>
+</div>
+
+<div class="screen" id="scr-missions">
+  <div class="tutorial-title">GÖREVLER</div>
+  <div class="tag" id="pg-mission-cur">◎ 0   ◆ 0   ✦ 0</div>
+  <div class="pg-list" id="pg-mission-list"></div>
+  <button class="btn ghost" id="b-missions-back">Geri</button>
+</div>
+
+<div class="screen" id="scr-shop">
+  <div class="tutorial-title">MAĞAZA</div>
+  <div class="tag" id="pg-shop-cur">◎ 0   ◆ 0   ✦ 0</div>
+  <div class="pg-list" id="pg-shop-list"></div>
+  <div class="pg-msg" id="pg-shop-msg"></div>
+  <button class="btn ghost" id="b-shop-back">Geri</button>
+</div>
+
+<div class="screen" id="scr-tech">
+  <div class="tutorial-title">TEKNOLOJİ AĞACI</div>
+  <div class="tag" id="tech-points">YETENEK PUANI · 0</div>
+  <div class="tech-wrap" id="tech-body"></div>
+  <div class="pg-msg" id="tech-msg"></div>
+  <button class="btn ghost" id="b-tech-mast">SİLAH USTALIĞI</button>
+  <button class="btn ghost" id="b-tech-back">Geri</button>
+</div>
+
+<div class="screen" id="scr-mastery">
+  <div class="tutorial-title">SİLAH USTALIĞI</div>
+  <div class="mast-wrap" id="mast-body"></div>
+  <button class="btn ghost" id="b-mastery-back">Geri</button>
+</div>
+
+<div class="screen" id="scr-bp">
+  <div class="tutorial-title">BATTLE PASS</div>
+  <div class="tag" id="bp-cur">◎ 0   ◆ 0   ✦ 0</div>
+  <div class="bp-wrap" id="bp-body"></div>
+  <div class="pg-msg" id="bp-msg"></div>
+  <button class="btn ghost" id="b-bp-back">Geri</button>
+</div>
+
+<div class="screen" id="scr-ach">
+  <div class="tutorial-title">BAŞARIMLAR</div>
+  <div class="tag" id="ach-count">0 / 12 TAMAMLANDI</div>
+  <div class="tag" id="ach-cur">◎ 0   ◆ 0   ✦ 0</div>
+  <div class="ach-wrap" id="ach-body"></div>
+  <div class="pg-msg" id="ach-msg"></div>
+  <button class="btn ghost" id="b-ach-back">Geri</button>
+</div>
+
+<div class="screen" id="scr-cosm">
+  <div class="tutorial-title">KOZMETİK</div>
+  <div class="tag" id="cosm-cur">◎ 0   ◆ 0   ✦ 0</div>
+  <div class="cosm-wrap" id="cosm-body"></div>
+  <div class="pg-msg" id="cosm-msg"></div>
+  <button class="btn ghost" id="b-cosm-back">Geri</button>
+</div>
+
+<div class="screen" id="scr-evo">
+  <div class="tutorial-title">EVRİM</div>
+  <div class="tag" id="evo-cur">◎ 0   ◆ 0   ✦ 0</div>
+  <div class="evo-wrap" id="evo-body"></div>
+  <div class="pg-msg" id="evo-msg"></div>
+  <button class="btn ghost" id="b-evo-back">Geri</button>
+</div>
+
+<div class="screen" id="scr-lead">
+  <div class="tutorial-title">LİDERLİK</div>
+  <div class="tag" id="lead-sum">—</div>
+  <div class="lead-wrap" id="lead-body"></div>
+  <button class="btn ghost" id="b-lead-back">Geri</button>
+</div>
+
+<div class="screen" id="scr-kill">
+  <div class="tutorial-title">ÖLDÜRME EFEKTİ</div>
+  <div class="tag" id="kill-cur">✦ 0 NEON</div>
+  <div class="cosm-wrap" id="kill-body"></div>
+  <div class="pg-msg" id="kill-msg"></div>
+  <button class="btn ghost" id="b-kill-back">Geri</button>
+</div>
+
+<div class="screen" id="scr-save">
+  <div class="tutorial-title">KAYIT &amp; YEDEK</div>
+  <div class="tag" id="save-sum">—</div>
+  <div class="save-wrap" id="save-body"></div>
+  <textarea id="save-code" spellcheck="false"
+    placeholder="YEDEK AL'a bas → kod burada çıkar. Geri yüklemek için kodu buraya yapıştır → GERİ YÜKLE."></textarea>
+  <div class="save-bar">
+    <button class="p3-btn" id="b-save-export">YEDEK AL</button>
+    <button class="p3-btn" id="b-save-import">GERİ YÜKLE</button>
+  </div>
+  <div class="pg-msg" id="save-msg"></div>
+  <button class="btn ghost" id="b-save-back">Geri</button>
+</div>
 
 <div class="screen" id="scr-how">
 
@@ -2092,7 +2964,10 @@ function vibrate(p){
 const canvas=
   document.getElementById("game");
 
-const ctx=
+/* NOT: menu hero sahnesi ayni robot cizicilerini kullanabilsin diye
+   ctx yeniden atanabilir; deger sadece bir kare icinde gecici olarak
+   degisir ve finally ile geri alinir. */
+let ctx=
   canvas.getContext(
     "2d",
     {alpha:false}
@@ -3822,6 +4697,7 @@ function spawnOrb(){
 function collectOrb(o){
 
   o.alive=false;
+  ringBurst(o.x,o.y,2,o.rare?26:15,o.rare?"#ff4fd8":"#7dff3a",o.rare?.34:.24,o.rare?2.4:1.6);
 
   const energyGain=o.rare?3:1;
   Game.energy+=energyGain;
@@ -3996,8 +4872,12 @@ function damageEnemy(e,amount,color,src){
       Game.maxCombo=Math.max(Game.maxCombo,Game.combo);
       Game.comboTimer=BALANCE.economy.comboWindowSec;
 
+      if(window.RPG_onEnemyKilled)window.RPG_onEnemyKilled(e);
+      if(window.TITAN_onBossDeath)window.TITAN_onBossDeath(e);
       emit(e.x,e.y,70,"#ff3b6b",360,5,1.1);
       emit(e.x,e.y,45,"#22e6ff",300,4,1);
+      ringBurst(e.x,e.y,e.r*.6,e.r*5.2,"#ff3b6b",.75,6);
+      ringBurst(e.x,e.y,e.r*.4,e.r*3.4,"#ffd9e2",.55,3);
       popText(W/2,H*.25,"WARDEN YOK EDİLDİ","#ffe34d",20);
       Audio_.power();
       vibrate([40,50,40,70]);
@@ -4015,6 +4895,7 @@ function damageEnemy(e,amount,color,src){
       Game.comboTimer=BALANCE.economy.comboWindowSec;
 
       emit(e.x,e.y,28,"#ffe34d",250,4,.8);
+      ringBurst(e.x,e.y,e.r*.5,e.r*3.0,"#ffe34d",.5,4);
       popText(e.x,e.y-18,"ELITE +"+reward,"#ffe34d",14);
       Audio_.power();
       vibrate([18,25,18]);
@@ -4028,6 +4909,8 @@ function damageEnemy(e,amount,color,src){
       Game.comboTimer=BALANCE.economy.comboWindowSec;
       Game.energy+=e.type===1?2:1;
       emit(e.x,e.y,12,enemyPaint(e).core,180,3,.5);
+      if(window.RPG_onEnemyKilled)window.RPG_onEnemyKilled(e);
+      ringBurst(e.x,e.y,e.r*.4,e.r*1.9,enemyPaint(e).edge,.34,2);
       popText(e.x,e.y-12,"+"+reward,enemyPaint(e).core,12);
       Audio_.power();
     }
@@ -4051,6 +4934,8 @@ function fireProjectile(key){
       if(d<=radius){damageEnemy(e,st.damage,w.color,"novaWeapon");hit++;}
     });
     emit(player.x,player.y,26,w.color,260,3.2,.55);
+    ringBurst(player.x,player.y,10,radius,w.color,.42,5);
+    ringBurst(player.x,player.y,4,radius*.62,"#fff3d8",.3,2.5);
     popText(player.x,player.y-36,"NOVA BURST",w.color,14);
     if(hit) vibrate(10);
     return;
@@ -4106,19 +4991,7 @@ function updateWeapons(dt){
   });
 }
 
-function drawWeapons(){
-  projectiles.forEach(p=>{
-    ctx.save();
-    ctx.shadowColor=p.color;
-    ctx.shadowBlur=p.type==="plasma"?22:14;
-    ctx.fillStyle=p.color;
-    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,TAU);ctx.fill();
-    if(p.type==="plasma"){
-      ctx.globalAlpha=.28;ctx.beginPath();ctx.arc(p.x,p.y,p.r*2.4,0,TAU);ctx.fill();
-    }
-    ctx.restore();
-  });
-}
+/* drawWeapons() PREMIUM PRESENTATION LAYER blogunda yeniden tanimlandi. */
 
 /* BATCH B/4 — HUD DOM yazim katmani.
 
@@ -5374,6 +6247,7 @@ function update(dt){
   }
 
   updateFX(dt);
+  updateRings(dt);
 
 }
 
@@ -5399,14 +6273,14 @@ function drawBackground(dt){
      No gameplay coordinates/collisions are changed.
   ========================================================= */
 
-  ctx.fillStyle="#03050c";
+  ctx.fillStyle=SP().base;
   ctx.fillRect(0,0,W,H);
 
   /* Deep city atmosphere */
   const sky=ctx.createLinearGradient(0,0,0,H);
-  sky.addColorStop(0,"#050918");
-  sky.addColorStop(.42,"#070b1a");
-  sky.addColorStop(1,"#02040b");
+  sky.addColorStop(0,SP().sky[0]);
+  sky.addColorStop(.42,SP().sky[1]);
+  sky.addColorStop(1,SP().sky[2]);
   ctx.fillStyle=sky;
   ctx.fillRect(0,0,W,H);
 
@@ -5423,12 +6297,12 @@ function drawBackground(dt){
     const y=H*b[1];
     const bw=b[2];
     const bh=H*b[3];
-    ctx.fillStyle=i%2 ? "rgba(8,17,38,.82)" : "rgba(6,13,30,.88)";
+    ctx.fillStyle=i%2 ? SP().bld[0] : SP().bld[1];
     ctx.fillRect(x,y,bw,bh);
 
     ctx.strokeStyle=i%2
-      ? "rgba(34,230,255,.11)"
-      : "rgba(160,92,255,.10)";
+      ? SPA(".11")
+      : SPB(".10");
     ctx.lineWidth=1;
     ctx.strokeRect(x+.5,y+.5,bw-1,bh-1);
 
@@ -5436,8 +6310,8 @@ function drawBackground(dt){
       const phase=Math.floor(bgTime*1.7+i+wy);
       if((phase%5)!==0){
         ctx.fillStyle=(phase%3===0)
-          ? "rgba(34,230,255,.16)"
-          : "rgba(160,92,255,.12)";
+          ? SPA(".16")
+          : SPB(".12");
         ctx.fillRect(x+8,wy,Math.max(5,bw-16),2);
       }
     }
@@ -5447,8 +6321,8 @@ function drawBackground(dt){
   const horizon=ctx.createRadialGradient(
     W/2,H*.38,10,W/2,H*.38,Math.max(W,H)*.72
   );
-  horizon.addColorStop(0,"rgba(34,230,255,.10)");
-  horizon.addColorStop(.38,"rgba(160,92,255,.055)");
+  horizon.addColorStop(0,SPA(".10"));
+  horizon.addColorStop(.38,SPB(".055"));
   horizon.addColorStop(1,"rgba(3,5,12,0)");
   ctx.fillStyle=horizon;
   ctx.fillRect(0,0,W,H);
@@ -5498,13 +6372,15 @@ function drawBackground(dt){
   for(let i=0;i<3;i++){
     const y=H*(.25+i*.25)+Math.sin(bgTime*.35+i)*10;
     const fog=ctx.createLinearGradient(0,y-26,0,y+26);
-    fog.addColorStop(0,"rgba(160,92,255,0)");
-    fog.addColorStop(.5,i===1?"rgba(34,230,255,.018)":"rgba(160,92,255,.016)");
-    fog.addColorStop(1,"rgba(160,92,255,0)");
+    fog.addColorStop(0,SPB("0"));
+    fog.addColorStop(.5,i===1?SPA(".018"):SPB(".016"));
+    fog.addColorStop(1,SPB("0"));
     ctx.fillStyle=fog;
     ctx.fillRect(0,y-28,W,56);
   }
   ctx.restore();
+
+  drawAmbient(bgTime);
 
   /* Cinematic vignette */
   const vignette=ctx.createRadialGradient(
@@ -5532,6 +6408,83 @@ function drawBackground(dt){
 /* =========================================================
    DRAW PLAYER
 ========================================================= */
+
+/* =========================================================
+   SEKTOR GORSEL KIMLIGI
+   Arka plan KATMAN YAPISI degismedi (gokyuzu, skyline, horizon
+   glow, zemin, isik havuzu, sis, vignette, ortam parcaciklari).
+   Sadece renk paleti aktif sektorden okunur. GRID GERI GELMEZ.
+   Sektor secili degilse Sektor 1 paleti = bugunku gorunum.
+========================================================= */
+const SECTOR_PAL={
+  1:{n:"NEON ŞEHRİ",     A:"34,230,255",  B:"160,92,255",
+     base:"#03050c", sky:["#050918","#070b1a","#02040b"],
+     bld:["rgba(8,17,38,.82)","rgba(6,13,30,.88)"]},
+  2:{n:"ENDÜSTRİ",       A:"255,138,31",  B:"255,59,107",
+     base:"#0a0604", sky:["#140c06","#100a08","#050303"],
+     bld:["rgba(34,20,10,.84)","rgba(26,15,8,.88)"]},
+  3:{n:"MEZARLIK",       A:"72,255,155",  B:"34,230,255",
+     base:"#020906", sky:["#04140e","#061410","#010806"],
+     bld:["rgba(8,30,22,.84)","rgba(6,22,17,.88)"]},
+  4:{n:"REAKTÖR",        A:"255,59,107",  B:"255,138,31",
+     base:"#0a0305", sky:["#16060a","#12060c","#070204"],
+     bld:["rgba(38,10,18,.84)","rgba(28,8,14,.88)"]},
+  5:{n:"VOID",           A:"180,92,255",  B:"255,60,224",
+     base:"#05020c", sky:["#0c0618","#0a0516","#04020a"],
+     bld:["rgba(20,10,40,.84)","rgba(14,7,30,.88)"]}
+};
+let _palId=0,_palCache=SECTOR_PAL[1];
+function SP(){
+  let id=1;
+  try{if(window.PROG&&window.PROG.state)id=window.PROG.state.sector||1;}catch(e){}
+  if(id!==_palId){_palId=id;_palCache=SECTOR_PAL[id]||SECTOR_PAL[1];}
+  return _palCache;
+}
+/* rgba yardimcisi: SPA(.12) -> "rgba(<A>,.12)" */
+function SPA(a){return "rgba("+SP().A+","+a+")";}
+function SPB(a){return "rgba("+SP().B+","+a+")";}
+
+
+/* =========================================================
+   SPRITE ATLAS
+   Birimler artik OFFLINE bake edilmis sprite'lardan cizilir.
+   Atlas yuklenemezse (dosya yok / APK'ya girmemis / ag hatasi)
+   ATLAS.ready false kalir ve TUM birimler eski procedural
+   render ile cizilir. Oyun hicbir kosulda bozulmaz.
+========================================================= */
+const ATLAS={
+  ready:false, img:null, f:null, tried:false,
+  /* sprite cerceve boyutu = yaricap * k. Bu katsayilar ekrandaki
+     siluet boyutunu mevcut procedural cizimle esitler; carpisma
+     yaricapi (e.r / player) DEGISMEZ. */
+  k:{hunter:2.75,tank:2.60,orbiter:3.05,dasher:2.85,weaver:3.25,elite:2.95,boss:2.95}
+};
+
+(function loadAtlas(){
+  if(ATLAS.tried)return; ATLAS.tried=true;
+  try{
+    fetch("./assets/atlas-units.json",{cache:"no-cache"})
+      .then(r=>r.ok?r.json():Promise.reject(0))
+      .then(meta=>new Promise((res,rej)=>{
+        const im=new Image();
+        im.onload=()=>{ATLAS.img=im;ATLAS.f=meta.frames;ATLAS.ready=true;res();};
+        im.onerror=rej;
+        im.src="./assets/"+(meta.image||"atlas-units.png");
+      }))
+      .catch(()=>{ATLAS.ready=false;});
+  }catch(e){ATLAS.ready=false;}
+})();
+
+/* Gecerli transform'un merkezine sprite cizer. */
+function atlasDraw(name,size){
+  const f=ATLAS.f&&ATLAS.f[name];
+  if(!f)return false;
+  const h=size*(f.h/f.w);
+  ctx.drawImage(ATLAS.img,f.x,f.y,f.w,f.h,-size/2,-h/2,size,h);
+  return true;
+}
+function atlasHas(name){return ATLAS.ready&&ATLAS.f&&!!ATLAS.f[name];}
+
 
 /* =========================================================
    V16.7.0 · RPG COMBAT RENDER — ORTAK CIZIM KATMANI
@@ -5744,6 +6697,20 @@ function drawPlayer(){
 --------------------------------------------------------- */
 function rrVanguard(P){
 
+  /* SPRITE YOLU — atlas hazirsa bake edilmis govde kullanilir,
+     enerji nabzi/aura CANLI kalir. Atlas yoksa asagidaki
+     procedural cizim aynen calisir. */
+  if(atlasHas("vanguard")){
+    ctx.save();
+    atlasDraw("vanguard",47);
+    ctx.globalCompositeOperation="lighter";
+    ctx.globalAlpha=.30+.22*Math.sin(P.t*5);
+    ctx.fillStyle=P.acc;
+    ctx.beginPath();ctx.arc(0,-13*47/47,6.5*47/47,0,TAU);ctx.fill();
+    ctx.restore();
+    return;
+  }
+
   ctx.save();
   ctx.scale(1.2,1.2);
 
@@ -5813,6 +6780,20 @@ function rrVanguard(P){
    on kol enerji blade emitterleri.
 --------------------------------------------------------- */
 function rrStriker(P){
+
+  /* SPRITE YOLU — atlas hazirsa bake edilmis govde kullanilir,
+     enerji nabzi/aura CANLI kalir. Atlas yoksa asagidaki
+     procedural cizim aynen calisir. */
+  if(atlasHas("striker")){
+    ctx.save();
+    atlasDraw("striker",45);
+    ctx.globalCompositeOperation="lighter";
+    ctx.globalAlpha=.30+.22*Math.sin(P.t*5);
+    ctx.fillStyle=P.acc;
+    ctx.beginPath();ctx.arc(0,-13*45/47,6.5*45/47,0,TAU);ctx.fill();
+    ctx.restore();
+    return;
+  }
 
   ctx.save();
 
@@ -5889,6 +6870,20 @@ function rrStriker(P){
    Sensor dizisi, teknoloji modulleri, yuzen enerji halkalari.
 --------------------------------------------------------- */
 function rrController(P){
+
+  /* SPRITE YOLU — atlas hazirsa bake edilmis govde kullanilir,
+     enerji nabzi/aura CANLI kalir. Atlas yoksa asagidaki
+     procedural cizim aynen calisir. */
+  if(atlasHas("controller")){
+    ctx.save();
+    atlasDraw("controller",46);
+    ctx.globalCompositeOperation="lighter";
+    ctx.globalAlpha=.30+.22*Math.sin(P.t*5);
+    ctx.fillStyle=P.acc;
+    ctx.beginPath();ctx.arc(0,-13*46/47,6.5*46/47,0,TAU);ctx.fill();
+    ctx.restore();
+    return;
+  }
 
   ctx.save();
   ctx.scale(1.05,1.05);
@@ -6085,7 +7080,21 @@ function drawEnemies(){
    Ileri yon = +x (mevcut e.ang ile ayni), boylece DASHER'in
    nisan yonu eskisiyle birebir ayni kalir.
 --------------------------------------------------------- */
+const EN_SPRITE=["hunter","tank","orbiter","dasher","weaver"];
+
 function rrEnemyUnit(e,paint,r,lod){
+
+  const sn=EN_SPRITE[e.type];
+  if(sn&&atlasHas(sn)){
+    atlasDraw(sn,r*(ATLAS.k[sn]||2.8));
+    ctx.save();
+    ctx.globalCompositeOperation="lighter";
+    ctx.globalAlpha=.22+.16*Math.sin(e.t*4);
+    ctx.fillStyle=paint.core;
+    ctx.beginPath();ctx.arc(0,0,r*.34,0,TAU);ctx.fill();
+    ctx.restore();
+    return;
+  }
 
   ctx.save();
   ctx.shadowColor=paint.edge;
@@ -6258,6 +7267,25 @@ function rrEliteUnit(e,paint,lod){
 
   RR.shadow(e.r,.3);
 
+  if(atlasHas("elite")){
+    ctx.save();
+    ctx.rotate(e.ang||0);
+    atlasDraw("elite",e.r*ATLAS.k.elite);
+    ctx.restore();
+    ctx.save();
+    ctx.rotate(e.t*.9);
+    ctx.globalAlpha=.55;
+    ctx.strokeStyle="#ffe34d";ctx.lineWidth=2.4;
+    ctx.beginPath();ctx.arc(0,0,er*1.34,0,TAU*.42);ctx.stroke();
+    ctx.restore();
+    RR.flash(e.r*1.15,e.hitFlash,"#fff6c9");
+    ctx.fillStyle="rgba(4,6,15,.8)";
+    ctx.fillRect(-22,-er-11,44,4);
+    ctx.fillStyle="#ffe34d";
+    ctx.fillRect(-22,-er-11,44*Math.max(0,e.hp/e.maxHp),4);
+    return;
+  }
+
   /* donen zirh segmentleri */
   ctx.save();
   ctx.rotate(e.t*.9);
@@ -6321,6 +7349,54 @@ function rrBossUnit(e,lod){
 
   RR.shadow(e.r,.38);
 
+  if(atlasHas("boss")){
+    const tp=e.titanPhase||1;
+    ctx.save();
+    ctx.rotate(e.ang||0);
+    /* faz 3'te govde kizarir — gercek faz durumundan turetilir */
+    if(tp===3){ctx.shadowColor="#ff3b6b";ctx.shadowBlur=26;}
+    atlasDraw("boss",e.r*ATLAS.k.boss);
+    ctx.restore();
+    /* zayif nokta: reaktor SADECE telegraph aninda acilir */
+    if(e.weakOpen){
+      ctx.save();
+      ctx.globalCompositeOperation="lighter";
+      ctx.globalAlpha=.45+.35*Math.sin(e.t*22);
+      ctx.fillStyle="#ffe34d";
+      ctx.beginPath();ctx.arc(0,0,e.r*.34,0,TAU);ctx.fill();
+      ctx.globalAlpha=.7;
+      ctx.strokeStyle="#ffe34d";ctx.lineWidth=2;
+      ctx.beginPath();ctx.arc(0,0,e.r*.52,0,TAU);ctx.stroke();
+      ctx.restore();
+    }
+    /* faz 1 zirh halkasi — kirildiginda kaybolur */
+    if(tp===1){
+      ctx.save();
+      ctx.globalAlpha=.42;
+      ctx.strokeStyle="#8fa6c4";ctx.lineWidth=3;
+      for(let i=0;i<6;i++){
+        const a=i*(TAU/6)+e.t*.35;
+        ctx.beginPath();ctx.arc(0,0,e.r*1.22,a,a+TAU/6*.52);ctx.stroke();
+      }
+      ctx.restore();
+    }
+    ctx.save();
+    ctx.rotate(e.t*.55);
+    ctx.globalAlpha=.5;
+    ctx.strokeStyle="#a05cff";ctx.lineWidth=2.6;
+    ctx.beginPath();ctx.arc(0,0,br*1.48,0,TAU*.55);ctx.stroke();
+    ctx.restore();
+    if(e.bossTelegraph>0){
+      ctx.globalAlpha=.45+Math.sin(e.bossTelegraph*35)*.22;
+      ctx.strokeStyle="#ffe34d";ctx.lineWidth=3;
+      ctx.beginPath();ctx.arc(0,0,br+12+Math.sin(e.bossTelegraph*20)*5,0,TAU);ctx.stroke();
+      ctx.globalAlpha=1;
+    }
+    if(e.pulseWarn>0)rrBossPulseWarn(e,br);
+    RR.flash(e.r*1.1,e.hitFlash*.8,"#ffd0dc");
+    return;
+  }
+
   /* dis donen zirh segmentleri */
   ctx.save();
   ctx.rotate(e.t*.55);
@@ -6375,9 +7451,18 @@ function rrBossUnit(e,lod){
     ctx.globalAlpha=1;
   }
 
-  /* PHASE 0.5 · P0-2 — pulse uyari halkasi.
-     Dis kesikli halka = hasar alani. Daralan halka = carpma yaklasiyor. */
-  if(e.pulseWarn>0){
+  /* PHASE 0.5 · P0-2 — pulse uyari halkasi. */
+  if(e.pulseWarn>0)rrBossPulseWarn(e,br);
+
+  /* reaktor cekirdegi */
+  RR.core(0,0,br*.30,"#ff3b6b","#ff8aa8",20);
+  RR.core(0,0,br*.14,"#ffd9e2","#ffffff",12);
+  RR.flash(e.r*1.1,e.hitFlash*.8,"#ffd0dc");
+}
+
+/* Boss pulse uyarisi — mantik ve BALANCE degerleri BIREBIR korundu. */
+function rrBossPulseWarn(e,br){
+  {
     const pw=BALANCE.enemy.boss;
     const k=Math.max(0,Math.min(1,1-e.pulseWarn/pw.pulseWarnSec));
     const R=pw.pulseRange;
@@ -6400,14 +7485,347 @@ function rrBossUnit(e,lod){
 
     ctx.restore();
   }
+}
 
-  /* reaktor cekirdegi */
-  RR.core(0,0,br*.30,"#ff3b6b","#ff8aa8",20);
-  RR.core(0,0,br*.14,"#ffd9e2","#ffffff",12);
 
-  /* boss hit feedback — guclu fakat kontrollu */
-  RR.flash(e.r*1.1,e.hitFlash*.8,"#ffd0dc");
+/* =========================================================
+   NORYVX V16.7.0 · PREMIUM PRESENTATION LAYER
+   Bu blok SADECE sunum katmanidir.
+   Dokunulmayan sistemler: gameplay matematigi, collision,
+   enemy AI, spawn, wave, pressure, damage, weapon logic,
+   mastery, skill tree, core economy, HUD konumlari,
+   Service Worker, Capacitor, Gradle / GitHub Actions.
+========================================================= */
 
+/* ---------------------------------------------------------
+   1 · SOK DALGASI KATMANI
+   Parcacik havuzuna ve BALANCE.fx.maxParticles limitine
+   dokunmaz; ayri, sabit 12 slotluk kucuk bir halka havuzudur.
+--------------------------------------------------------- */
+const RINGS=[];
+for(let i=0;i<12;i++)RINGS.push({alive:false,x:0,y:0,r0:0,r1:0,life:0,max:1,color:"#fff",w:3});
+let _ringCursor=0;
+
+function ringBurst(x,y,r0,r1,color,life,w){
+  let s=RINGS.find(r=>!r.alive);
+  if(!s){ s=RINGS[_ringCursor%RINGS.length]; _ringCursor++; }
+  s.alive=true;
+  s.x=x; s.y=y; s.r0=r0; s.r1=r1;
+  s.max=s.life=life||.42;
+  s.color=color||"#22e6ff";
+  s.w=w||3;
+}
+
+function updateRings(dt){
+  for(let i=0;i<RINGS.length;i++){
+    const s=RINGS[i];
+    if(!s.alive)continue;
+    s.life-=dt;
+    if(s.life<=0)s.alive=false;
+  }
+}
+
+function drawRings(){
+  for(let i=0;i<RINGS.length;i++){
+    const s=RINGS[i];
+    if(!s.alive)continue;
+    const k=1-s.life/s.max;
+    const r=s.r0+(s.r1-s.r0)*(1-Math.pow(1-k,3));
+    ctx.save();
+    ctx.globalAlpha=(1-k)*.85;
+    ctx.strokeStyle=s.color;
+    ctx.lineWidth=s.w*(1-k*.7);
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,r,0,TAU);
+    ctx.stroke();
+    ctx.restore();
+  }
+}
+
+
+/* ---------------------------------------------------------
+   2 · ORTAM PARCACIKLARI (arka plan)
+   Mevcut arka plan katmanlari degistirilmedi; uzerine
+   dusuk maliyetli, cizgisiz bir toz/isik katmani eklenir.
+   GRID GERI GELMEZ — burada sadece nokta ve yumusak isik var.
+--------------------------------------------------------- */
+const AMB=[];
+for(let i=0;i<22;i++){
+  AMB.push({
+    x:Math.random(),
+    y:Math.random(),
+    z:.35+Math.random()*.65,
+    s:.6+Math.random()*1.5,
+    p:Math.random()*6.283
+  });
+}
+
+function drawAmbient(t){
+  ctx.save();
+  for(let i=0;i<AMB.length;i++){
+    const a=AMB[i];
+    const x=a.x*W;
+    const y=((a.y+ t*.012*a.z)%1)*H;
+    ctx.globalAlpha=(.10+.14*a.z)*(.6+.4*Math.sin(t*1.3+a.p));
+    ctx.fillStyle=i%3===0?SPB("1"):SPA("1");
+    ctx.beginPath();
+    ctx.arc(x,y,a.s*a.z,0,TAU);
+    ctx.fill();
+  }
+  ctx.restore();
+
+  /* uzak isik nabzi — yavas, kontrollu, cizgisiz */
+  const lp=(Math.sin(t*.42)+1)*.5;
+  if(lp>.02){
+    const g=ctx.createRadialGradient(W*.5,H*.30,4,W*.5,H*.30,Math.max(W,H)*.55);
+    g.addColorStop(0,SPA((.030*lp).toFixed(3)));
+    g.addColorStop(1,"rgba(3,5,12,0)");
+    ctx.fillStyle=g;
+    ctx.fillRect(0,0,W,H);
+  }
+}
+
+
+/* ---------------------------------------------------------
+   3 · SILAH GORSEL KIMLIGI
+   Gameplay degerleri (damage / cooldown / speed / pierce /
+   chain) okunmaz ve degistirilmez. Sadece p.type'a gore
+   cizim ayrisir.
+--------------------------------------------------------- */
+function drawWeapons(){
+
+  const t=performance.now()/1000;
+
+  projectiles.forEach(p=>{
+
+    ctx.save();
+    ctx.translate(p.x,p.y);
+
+    const ang=Math.atan2(p.vy||0,p.vx||1);
+
+    if(p.type==="plasma"){
+
+      /* PLASMA — agir, sicak, yogun glow + plazma izi */
+      ctx.rotate(ang);
+      ctx.globalAlpha=.22;
+      ctx.fillStyle=p.color;
+      ctx.beginPath();
+      ctx.ellipse(-p.r*2.6,0,p.r*3.4,p.r*1.15,0,0,TAU);
+      ctx.fill();
+
+      ctx.globalAlpha=1;
+      ctx.shadowColor=p.color;
+      ctx.shadowBlur=22;
+      ctx.fillStyle=p.color;
+      ctx.beginPath();
+      ctx.arc(0,0,p.r*1.12,0,TAU);
+      ctx.fill();
+
+      ctx.shadowBlur=0;
+      ctx.fillStyle="#fff3d8";
+      ctx.globalAlpha=.9;
+      ctx.beginPath();
+      ctx.arc(p.r*.18,0,p.r*.44,0,TAU);
+      ctx.fill();
+
+    }else if(p.type==="arc"){
+
+      /* ARC — elektriksel, kirikli enerji hatti */
+      ctx.rotate(ang);
+      ctx.shadowColor=p.color;
+      ctx.shadowBlur=14;
+      ctx.strokeStyle=p.color;
+      ctx.lineWidth=1.7;
+      ctx.beginPath();
+      ctx.moveTo(-p.r*4.2,0);
+      for(let i=1;i<=4;i++){
+        const f=i/4;
+        ctx.lineTo(
+          -p.r*4.2+p.r*4.2*f,
+          Math.sin(t*46+i*2.1+p.x*.05)*p.r*(1-f)*1.5
+        );
+      }
+      ctx.stroke();
+
+      ctx.shadowBlur=0;
+      ctx.globalAlpha=.55;
+      ctx.strokeStyle="#dcbcff";
+      ctx.lineWidth=.9;
+      ctx.stroke();
+
+      ctx.globalAlpha=1;
+      ctx.shadowColor=p.color;
+      ctx.shadowBlur=12;
+      ctx.fillStyle="#f0e2ff";
+      ctx.beginPath();
+      ctx.arc(0,0,p.r*.82,0,TAU);
+      ctx.fill();
+
+    }else{
+
+      /* PULSE — temiz, hizli cyan enerji bolt + kisa iz */
+      ctx.rotate(ang);
+      ctx.globalAlpha=.35;
+      ctx.fillStyle=p.color;
+      ctx.beginPath();
+      ctx.ellipse(-p.r*1.8,0,p.r*2.4,p.r*.55,0,0,TAU);
+      ctx.fill();
+
+      ctx.globalAlpha=1;
+      ctx.shadowColor=p.color;
+      ctx.shadowBlur=13;
+      ctx.fillStyle=p.color;
+      ctx.beginPath();
+      ctx.ellipse(0,0,p.r*1.35,p.r*.82,0,0,TAU);
+      ctx.fill();
+
+      ctx.shadowBlur=0;
+      ctx.fillStyle="#eafcff";
+      ctx.beginPath();
+      ctx.arc(p.r*.28,0,p.r*.38,0,TAU);
+      ctx.fill();
+
+    }
+
+    ctx.restore();
+
+  });
+
+}
+
+
+/* ---------------------------------------------------------
+   4 · ANA MENU HERO SAHNESI
+   Savas ekranindaki AYNI robot cizicileri kullanilir, boylece
+   menu ve combat tek evren gibi gorunur. Karakter secimi
+   runtime'dan okunur; secim mantigi degistirilmemistir.
+--------------------------------------------------------- */
+const HERO={
+  cv:null, cx:null, w:0, h:0, dpr:1, t:0, last:"",
+  roles:{
+    vanguard:"HEAVY ASSAULT · TANK",
+    striker:"FAST ASSAULT · DAMAGE",
+    controller:"TECH CONTROL · TACTICAL"
+  }
+};
+
+function heroArchId(){
+  const a=
+    window.NORYVX_P3 &&
+    typeof window.NORYVX_P3.archetype==="function"
+      ? window.NORYVX_P3.archetype()
+      : null;
+  return String((a&&(a.id||a.key||a.name))||"vanguard").toLowerCase();
+}
+
+function heroResize(){
+  const cv=HERO.cv;
+  if(!cv)return;
+  const r=cv.getBoundingClientRect();
+  if(!r.width||!r.height)return;
+  const dpr=Math.min(2,window.devicePixelRatio||1);
+  const w=Math.round(r.width*dpr);
+  const h=Math.round(r.height*dpr);
+  if(w===HERO.w&&h===HERO.h&&dpr===HERO.dpr)return;
+  cv.width=w; cv.height=h;
+  HERO.w=w; HERO.h=h; HERO.dpr=dpr;
+}
+
+function renderMenuHero(dt){
+
+  const scr=document.getElementById("scr-menu");
+  if(!scr||!scr.classList.contains("on"))return;
+
+  if(!HERO.cv){
+    HERO.cv=document.getElementById("hero-canvas");
+    if(!HERO.cv)return;
+    HERO.cx=HERO.cv.getContext("2d");
+  }
+  if(!HERO.cx)return;
+
+  heroResize();
+  if(!HERO.w||!HERO.h)return;
+
+  HERO.t+=dt;
+
+  const id=heroArchId();
+  const key=id.includes("striker")?"striker":id.includes("controller")?"controller":"vanguard";
+
+  if(key!==HERO.last){
+    HERO.last=key;
+    const n=document.getElementById("hero-class");
+    const r=document.getElementById("hero-role");
+    if(n)n.textContent=key.toUpperCase();
+    if(r)r.textContent=HERO.roles[key];
+  }
+
+  const c=HERO.cx;
+  const w=HERO.w, h=HERO.h;
+
+  c.clearRect(0,0,w,h);
+
+  /* zemin isik havuzu */
+  const g=c.createRadialGradient(w/2,h*.62,4,w/2,h*.62,w*.52);
+  g.addColorStop(0,"rgba(34,230,255,.14)");
+  g.addColorStop(.5,"rgba(160,92,255,.05)");
+  g.addColorStop(1,"rgba(0,0,0,0)");
+  c.fillStyle=g;
+  c.fillRect(0,0,w,h);
+
+  /* enerji parcaciklari — yukari suzulen */
+  c.save();
+  for(let i=0;i<10;i++){
+    const ph=(HERO.t*.22+i*.1)%1;
+    const px=w/2+Math.sin(i*2.3+HERO.t*.6)*w*.20;
+    const py=h*.78-ph*h*.52;
+    c.globalAlpha=(1-ph)*.5;
+    c.fillStyle=i%2?"#22e6ff":"#a05cff";
+    c.beginPath();
+    c.arc(px,py,1.6*HERO.dpr,0,TAU);
+    c.fill();
+  }
+  c.restore();
+
+  /* Robot — combat ile ayni cizici. ctx gecici olarak
+     hero context'ine yonlendirilir ve hemen geri alinir. */
+  const scale=Math.min(w,h)/(150*1);
+  const skin=currentSkin();
+
+  const P={
+    outer:skin.outer,
+    inner:skin.inner,
+    glow:skin.glow,
+    acc:key==="striker"?"#ff4fd8":key==="controller"?"#b56cff":"#9edfff",
+    t:HERO.t,
+    pulse:1+Math.sin(HERO.t*2.6)*.045,
+    moving:false
+  };
+
+  const prev=ctx;
+  ctx=c;
+  try{
+    ctx.save();
+    ctx.translate(w/2,h*.56);
+    ctx.scale(scale*2.05,scale*2.05);
+    ctx.rotate(Math.sin(HERO.t*.55)*.035);
+    RR.shadow(16,.42);
+    ctx.save();
+    ctx.globalAlpha=.20+.07*Math.sin(HERO.t*2.2);
+    ctx.strokeStyle=P.outer;
+    ctx.shadowColor=P.glow;
+    ctx.shadowBlur=20;
+    ctx.lineWidth=1.4;
+    ctx.beginPath();
+    ctx.arc(0,0,23*P.pulse,0,TAU);
+    ctx.stroke();
+    ctx.restore();
+    if(key==="striker")           rrStriker(P);
+    else if(key==="controller")   rrController(P);
+    else                          rrVanguard(P);
+    ctx.restore();
+  }finally{
+    ctx=prev;
+  }
 }
 
 
@@ -6819,6 +8237,7 @@ function render(dt){
 
   drawWeapons();
   drawEnemies();
+  drawRings();
 
   if(
     Game.state===
@@ -6882,6 +8301,7 @@ function loop(now){
 
   update(dt);
   render(dt);
+  renderMenuHero(dt);
 
 }
 
@@ -8360,6 +9780,3119 @@ if(typeof Game!=="undefined"&&typeof Game.over==="function"){
      [data-p3-arch] kartlari p3Attach ile baglanir, p3Render
      [data-p3-selected] ve #p3-active-name alanlarini gunceller.
      Runtime testinde uc kart da dogru calisiyor. -->
+
+<script>
+/* =========================================================
+   NORYVX · KAYIT KATMANI (şema sürümü · onarım · yedek)
+
+   SORUN: oyun 9 ayrı localStorage anahtarı kullanıyor ve
+   HİÇBİRİNDE şema sürümü yok. Bir alanın yapısı değişirse
+   eski kayıtlar sessizce bozulur; JSON bozulursa ilgili
+   sistem sessizce sıfırlanır ve oyuncu ilerlemesini kaybeder.
+
+   BU BLOK, TÜM TÜKETİCİLERDEN ÖNCE ÇALIŞIR:
+     1. Her deponun şema sürümünü damgalar (_sv).
+     2. Kayıtlı sürüm eskiyse kayıtlı geçiş fonksiyonunu
+        uygular; bilinmeyen/gelecek sürümde DOKUNMAZ.
+     3. Bozuk JSON'u SİLMEZ — <anahtar>__bozuk adına taşır,
+        böylece elle kurtarma mümkün kalır, oyun da açılır.
+     4. Tek metin halinde yedek al / geri yükle sağlar.
+
+   Hiçbir mevcut sistemin okuma/yazma kodu değiştirilmedi.
+========================================================= */
+(function(){
+"use strict";
+
+const STORES=[
+  {k:"neon_survivor_v3",   sv:1, n:"Ana kayıt (skor, ayar, görünüm)"},
+  {k:"noryvx_phase3_v1",   sv:1, n:"Karakter gelişimi (yetenek, ustalık)"},
+  {k:"noryvx_rpg_v1",      sv:1, n:"Envanter ve ekipman"},
+  {k:"noryvx_prog_v1",     sv:1, n:"Sektör, görev, NEON"},
+  {k:"noryvx_bp_v1",       sv:1, n:"Battle Pass"},
+  {k:"noryvx_ach_v1",      sv:1, n:"Başarımlar"},
+  {k:"noryvx_lead_v1",     sv:1, n:"Liderlik kayıtları", arr:true},
+  {k:"noryvx_kill_v1",     sv:1, n:"Öldürme efekti"},
+  {k:"noryvx_onb_v1",      sv:1, n:"Başlangıç rehberi"},
+  {k:"noryvx_music",       sv:1, n:"Müzik tercihi", raw:true}
+];
+const SMAP={};STORES.forEach(s=>SMAP[s.k]=s);
+
+/* Gelecek şema değişiklikleri buraya eklenir:
+   MIGRATIONS["noryvx_rpg_v1"][1] = obj => { ...v1'den v2'ye... } */
+const MIGRATIONS={};
+
+const report={migrated:[],repaired:[],stamped:[],skipped:[]};
+
+function readRaw(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function writeRaw(k,v){try{localStorage.setItem(k,v);return true;}catch(e){return false;}}
+
+function quarantine(s,raw){
+  const q=s.k+"__bozuk";
+  try{
+    if(!localStorage.getItem(q))localStorage.setItem(q,raw);
+    localStorage.removeItem(s.k);
+  }catch(e){}
+  report.repaired.push(s.k);
+}
+
+function migrateStore(s){
+  const raw=readRaw(s.k);
+  if(raw===null)return;                 /* hic kayit yok — dokunma */
+  if(s.raw)return;                      /* duz deger (ornek: "0"/"1") */
+
+  let obj;
+  try{obj=JSON.parse(raw);}
+  catch(e){quarantine(s,raw);return;}
+
+  const isArr=Array.isArray(obj);
+  if(s.arr?!isArr:(!obj||typeof obj!=="object"||isArr)){
+    quarantine(s,raw);return;
+  }
+
+  /* diziler icin surum ayri anahtar altinda tutulur */
+  let cur = s.arr
+    ? (+readRaw(s.k+"__sv")||0)
+    : (+obj._sv||0);
+
+  if(cur>s.sv){report.skipped.push(s.k);return;}   /* gelecek surum: dokunma */
+
+  let changed=false;
+  while(cur<s.sv){
+    const fn=MIGRATIONS[s.k]&&MIGRATIONS[s.k][cur];
+    if(fn){
+      try{obj=fn(obj)||obj;}catch(e){quarantine(s,raw);return;}
+      report.migrated.push(s.k+" v"+cur+"→v"+(cur+1));
+    }
+    cur++;changed=true;
+  }
+  if(!changed&&(s.arr?false:obj._sv===s.sv))return;
+
+  if(s.arr){
+    writeRaw(s.k,JSON.stringify(obj));
+    writeRaw(s.k+"__sv",String(s.sv));
+  }else{
+    obj._sv=s.sv;
+    writeRaw(s.k,JSON.stringify(obj));
+  }
+  if(!MIGRATIONS[s.k])report.stamped.push(s.k);
+}
+
+STORES.forEach(migrateStore);
+
+/* =========================================================
+   YEDEK / GERİ YÜKLEME
+========================================================= */
+const MAGIC="NORYVX1:";
+function exportAll(){
+  const bag={t:Date.now(),v:1,d:{}};
+  STORES.forEach(s=>{const r=readRaw(s.k);if(r!==null)bag.d[s.k]=r;});
+  try{
+    const json=JSON.stringify(bag);
+    return MAGIC+btoa(unescape(encodeURIComponent(json)));
+  }catch(e){return "";}
+}
+function importAll(code){
+  if(typeof code!=="string")return {ok:false,msg:"Kod boş"};
+  code=code.trim();
+  if(code.indexOf(MAGIC)!==0)return {ok:false,msg:"Geçersiz kod (NORYVX1: ile başlamalı)"};
+  let bag;
+  try{bag=JSON.parse(decodeURIComponent(escape(atob(code.slice(MAGIC.length)))));}
+  catch(e){return {ok:false,msg:"Kod çözülemedi"};}
+  if(!bag||!bag.d||typeof bag.d!=="object")return {ok:false,msg:"Kod içeriği bozuk"};
+  /* once dogrula, sonra yaz — yarim yazma olmasin */
+  const pend=[];
+  for(const k in bag.d){
+    if(!SMAP[k])continue;
+    const val=bag.d[k];
+    if(typeof val!=="string")return {ok:false,msg:"Bozuk alan: "+k};
+    if(!SMAP[k].raw){try{JSON.parse(val);}catch(e){return {ok:false,msg:"Bozuk JSON: "+k};}}
+    pend.push([k,val]);
+  }
+  if(!pend.length)return {ok:false,msg:"Kodda tanınan kayıt yok"};
+  pend.forEach(([k,v])=>writeRaw(k,v));
+  return {ok:true,msg:pend.length+" kayıt geri yüklendi · sayfayı yenile",n:pend.length};
+}
+function wipe(k){
+  if(!SMAP[k])return false;
+  try{localStorage.removeItem(k);localStorage.removeItem(k+"__sv");}catch(e){}
+  return true;
+}
+function sizeOf(k){const r=readRaw(k);return r===null?0:r.length;}
+
+/* =========================================================
+   UI
+========================================================= */
+const $$=id=>document.getElementById(id);
+function render(){
+  const w=$$("save-body");if(!w)return;
+  const total=STORES.reduce((a,s)=>a+sizeOf(s.k),0);
+  const sum=$$("save-sum");
+  if(sum)sum.textContent=STORES.filter(s=>sizeOf(s.k)).length+" / "+STORES.length+
+    " DEPO · "+(total/1024).toFixed(1)+" KB";
+
+  w.innerHTML=STORES.map(s=>{
+    const sz=sizeOf(s.k);
+    const sv=s.arr?(readRaw(s.k+"__sv")||"-"):(()=>{
+      try{return (JSON.parse(readRaw(s.k)||"null")||{})._sv||"-";}catch(e){return "?";}})();
+    const bad=readRaw(s.k+"__bozuk")!==null;
+    return '<div class="sv-row'+(sz?"":" empty")+(bad?" bad":"")+'">'+
+      '<div class="sv-m"><b>'+s.n+'</b>'+
+      '<span>'+s.k+' · şema v'+(s.raw?"—":sv)+' · '+
+      (sz?(sz/1024).toFixed(2)+" KB":"boş")+
+      (bad?' · <u>bozuk kopya saklandı</u>':'')+'</span></div>'+
+      (sz?'<button class="p3-btn sv-x" data-wipe="'+s.k+'">SİL</button>':'')+
+    '</div>';
+  }).join("")+
+  '<div class="sv-note">Bozuk bir kayıt bulunursa <b>silinmez</b>; '+
+  '<code>__bozuk</code> ekiyle saklanır, oyun da açılmaya devam eder.</div>';
+
+  w.querySelectorAll("[data-wipe]").forEach(b=>b.addEventListener("click",()=>{
+    if(b.dataset.armed){
+      wipe(b.dataset.wipe);
+      const m=$$("save-msg");
+      if(m){m.textContent=b.dataset.wipe+" silindi · sayfayı yenile";m.style.color="#ff6b8a";}
+      render();
+    }else{
+      b.dataset.armed="1";b.textContent="EMİN MİSİN?";
+      setTimeout(()=>{if(b.dataset){delete b.dataset.armed;b.textContent="SİL";}},3000);
+    }
+  }));
+}
+
+function bind(id,fn){const e=$$(id);if(e)e.addEventListener("click",fn);}
+function hideAll(){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));}
+bind("b-save",()=>{hideAll();$$("scr-save").classList.add("on");render();});
+bind("b-save-back",()=>{hideAll();const m=$$("scr-menu");if(m)m.classList.add("on");});
+bind("b-save-export",()=>{
+  const t=$$("save-code");
+  if(t){t.value=exportAll();t.focus();t.select();}
+  const m=$$("save-msg");
+  if(m){m.textContent="Yedek kodu oluşturuldu — kopyala ve güvenli yere kaydet";
+        m.style.color="#48ff9b";}
+});
+bind("b-save-import",()=>{
+  const t=$$("save-code");
+  const r=importAll(t?t.value:"");
+  const m=$$("save-msg");
+  if(m){m.textContent=r.msg;m.style.color=r.ok?"#48ff9b":"#ff6b8a";}
+  render();
+});
+
+window.NEONSAVE={STORES,MIGRATIONS,report,exportAll,importAll,wipe,sizeOf,render,migrateStore};
+
+})();
+</script>
+
+<script>
+/* =========================================================
+   NORYVX · RPG CORE (TRACK 1 + 3)
+   Ekipman / nadirlik / +N gelistirme / loot / kalici stat.
+
+   TASARIM KURALI: HICBIR DEGER SAHTE DEGIL.
+   Ekranda gorunen her stat asagidaki hesaptan gelir ve
+   dogrudan combat'a baglanir:
+     ATK      -> weaponStat().damage
+     DEF      -> CHAR.damageTaken()
+     HP       -> CHAR.maxHp()
+     KRITIK   -> damageEnemy() icinde gercek crit rolu
+     KRT.HSR  -> crit carpani
+   Hicbir ekipman yokken tum carpanlar 1.0'dir, yani oyun
+   bugunku dengesiyle BIREBIR ayni oynanir.
+
+   Bu blok en sonda yuklenir: Phase 3 CHAR'i yamaladiktan
+   SONRA sarmalar, boylece arketip statlari korunur.
+========================================================= */
+(function(){
+"use strict";
+
+const RPG_KEY="noryvx_rpg_v1";
+
+/* ---------- NADIRLIK ---------- */
+const RARITY={
+  COMMON   :{i:0,label:"YAYGIN"  ,color:"#9fb3cc",mult:1.00,weight:58,maxPlus:10},
+  RARE     :{i:1,label:"NADİR"   ,color:"#3ba7ff",mult:1.36,weight:26,maxPlus:14},
+  EPIC     :{i:2,label:"EPİK"    ,color:"#b45cff",mult:1.84,weight:11,maxPlus:17},
+  LEGENDARY:{i:3,label:"EFSANEVİ",color:"#ffb020",mult:2.50,weight:4 ,maxPlus:20},
+  MYTHIC   :{i:4,label:"MİTİK"   ,color:"#ff3ce0",mult:3.35,weight:1 ,maxPlus:20}
+};
+const RKEYS=Object.keys(RARITY);
+
+/* ---------- SLOTLAR ---------- */
+const SLOTS=[
+  {k:"weapon"   ,n:"SİLAH"     },
+  {k:"helmet"   ,n:"BAŞLIK"    },
+  {k:"armor"    ,n:"ZIRH"      },
+  {k:"gloves"   ,n:"ELDİVEN"   },
+  {k:"boots"    ,n:"BOT"       },
+  {k:"core"     ,n:"ÇEKİRDEK"  },
+  {k:"module"   ,n:"MODÜL"     },
+  {k:"accessory",n:"AKSESUAR"  }
+];
+
+/* ---------- ITEM KATALOGU ----------
+   atk/def/hp/crit/cdmg: taban puanlar. Nadirlik ve +N
+   bunlarin uzerine carpan uygular. */
+const DEFS=[
+ /* SILAH */
+ {id:"w1",n:"PULSE KESİCİ"      ,s:"weapon",atk:42,crit:6},
+ {id:"w2",n:"PLAZMA KILICI"     ,s:"weapon",atk:55,cdmg:10},
+ {id:"w3",n:"ARC MIZRAK"        ,s:"weapon",atk:48,crit:10},
+ {id:"w4",n:"NOVA TOPU"         ,s:"weapon",atk:64,def:4},
+ {id:"w5",n:"VOID PARÇALAYICI"  ,s:"weapon",atk:58,crit:8,cdmg:8},
+ /* BASLIK */
+ {id:"h1",n:"TAKTİK VİZÖR"      ,s:"helmet",def:22,crit:5},
+ {id:"h2",n:"AĞIR MİĞFER"       ,s:"helmet",def:34,hp:28},
+ {id:"h3",n:"SENSÖR BAŞLIĞI"    ,s:"helmet",def:20,cdmg:9},
+ {id:"h4",n:"NEURAL KASK"       ,s:"helmet",def:26,hp:20,crit:4},
+ /* ZIRH */
+ {id:"a1",n:"KOMPOZİT PLAKA"    ,s:"armor",def:40,hp:44},
+ {id:"a2",n:"REAKTİF ZIRH"      ,s:"armor",def:52,hp:30},
+ {id:"a3",n:"HAYALET KAPLAMA"   ,s:"armor",def:28,hp:26,crit:6},
+ {id:"a4",n:"TİTAN GÖVDE"       ,s:"armor",def:64,hp:58},
+ /* ELDIVEN */
+ {id:"g1",n:"NİŞANCI ELDİVENİ"  ,s:"gloves",atk:18,crit:12},
+ {id:"g2",n:"GÜÇ KAVRAYICI"     ,s:"gloves",atk:28,cdmg:8},
+ {id:"g3",n:"SERVO KOL"         ,s:"gloves",atk:22,def:12},
+ {id:"g4",n:"AVCI PENÇESİ"      ,s:"gloves",atk:24,crit:9,cdmg:6},
+ /* BOT */
+ {id:"b1",n:"İTİCİ BOT"         ,s:"boots",def:16,hp:22},
+ {id:"b2",n:"AĞIR YÜRÜYÜCÜ"     ,s:"boots",def:30,hp:34},
+ {id:"b3",n:"FAZ ADIMI"         ,s:"boots",def:14,crit:7},
+ {id:"b4",n:"MANYETİK TABAN"    ,s:"boots",def:22,hp:26,cdmg:5},
+ /* CEKIRDEK */
+ {id:"c1",n:"ENERJİ ÇEKİRDEĞİ"  ,s:"core",atk:30,hp:24},
+ {id:"c2",n:"AŞIRI YÜKLEYİCİ"   ,s:"core",atk:44,cdmg:12},
+ {id:"c3",n:"KARARLILIK ÇEKİRD.",s:"core",def:32,hp:40},
+ {id:"c4",n:"SİNGÜLARİTE ÇEKİRD",s:"core",atk:52,crit:10,cdmg:10},
+ /* MODUL */
+ {id:"m1",n:"HEDEFLEME MODÜLÜ"  ,s:"module",crit:16},
+ {id:"m2",n:"BALİSTİK MODÜL"    ,s:"module",atk:26,cdmg:10},
+ {id:"m3",n:"KALKAN MODÜLÜ"     ,s:"module",def:34,hp:22},
+ {id:"m4",n:"KUANTUM MODÜL"     ,s:"module",atk:20,crit:11,cdmg:11},
+ /* AKSESUAR */
+ {id:"x1",n:"SAVAŞ NİŞANI"      ,s:"accessory",atk:20,def:14},
+ {id:"x2",n:"KAN YEMİNİ"        ,s:"accessory",cdmg:20},
+ {id:"x3",n:"KORUYUCU TILSIM"   ,s:"accessory",def:24,hp:36},
+ {id:"x4",n:"AVCI MÜHRÜ"        ,s:"accessory",crit:14,cdmg:8},
+ {id:"x5",n:"VOID FRAGMANI"     ,s:"accessory",atk:24,crit:8,hp:20}
+];
+const DEFMAP={};DEFS.forEach(d=>DEFMAP[d.id]=d);
+
+/* ---------- DURUM ---------- */
+const S={
+  credits:0,
+  shards:0,
+  inv:[],
+  equip:{},
+  uid:1,
+  found:0
+};
+
+function load(){
+  try{
+    const raw=localStorage.getItem(RPG_KEY);
+    if(!raw)return;
+    const p=JSON.parse(raw);
+    if(!p||typeof p!=="object")return;
+    S.credits=Math.max(0,+p.credits||0);
+    S.shards =Math.max(0,+p.shards ||0);
+    S.uid    =Math.max(1,+p.uid    ||1);
+    S.found  =Math.max(0,+p.found  ||0);
+    if(Array.isArray(p.inv)){
+      S.inv=p.inv.filter(it=>it&&DEFMAP[it.d]&&RARITY[it.r]).map(it=>({
+        u:+it.u||(S.uid++),
+        d:it.d,
+        r:it.r,
+        p:Math.max(0,Math.min(RARITY[it.r].maxPlus,+it.p||0)),
+        lv:Math.max(1,Math.min(60,+it.lv||1))
+      }));
+    }
+    if(p.equip&&typeof p.equip==="object"){
+      SLOTS.forEach(sl=>{
+        const u=+p.equip[sl.k];
+        if(u&&S.inv.some(it=>it.u===u))S.equip[sl.k]=u;
+      });
+    }
+  }catch(e){}
+}
+function persist(){
+  try{localStorage.setItem(RPG_KEY,JSON.stringify(S));}catch(e){}
+}
+
+/* ---------- STAT HESABI ---------- */
+/* +N egrisi: her seviye %8, 5'in katlarinda ek kilometre tasi. */
+function plusMult(p){
+  return 1 + p*.08 + Math.floor(p/5)*.10;
+}
+function itemStats(it){
+  const d=DEFMAP[it.d], r=RARITY[it.r];
+  if(!d||!r)return {atk:0,def:0,hp:0,crit:0,cdmg:0};
+  const k=r.mult*(1+(it.lv-1)*.035)*plusMult(it.p);
+  return {
+    atk :Math.round((d.atk ||0)*k),
+    def :Math.round((d.def ||0)*k),
+    hp  :Math.round((d.hp  ||0)*k),
+    crit:Math.round((d.crit||0)*k),
+    cdmg:Math.round((d.cdmg||0)*k)
+  };
+}
+function byUid(u){return S.inv.find(it=>it.u===u)||null;}
+
+function totals(){
+  const t={atk:0,def:0,hp:0,crit:0,cdmg:0};
+  SLOTS.forEach(sl=>{
+    const it=byUid(S.equip[sl.k]);
+    if(!it)return;
+    const s=itemStats(it);
+    t.atk+=s.atk;t.def+=s.def;t.hp+=s.hp;t.crit+=s.crit;t.cdmg+=s.cdmg;
+  });
+  return t;
+}
+/* Gorunur/gercek turev degerler */
+function derived(){
+  const t=totals();
+  return {
+    raw:t,
+    dmgMult :1+t.atk/900,
+    dmgTaken:1/(1+t.def/1100),
+    hpMult  :1+t.hp/1600,
+    /* Tavan %60'ta EFSANEVİ+20 profilinde doluyordu; o noktadan
+       sonra KRİTİK yatirimi tamamen bosa gidiyordu. %75 yapildi. */
+    critChance:Math.min(.75,t.crit/1000),
+    critMult  :1.50+t.cdmg/700,
+    power:Math.round(t.atk*2.2+t.def*1.6+t.hp*1.1+t.crit*1.8+t.cdmg*1.4)
+  };
+}
+
+/* ---------- LOOT ---------- */
+function rollRarity(bonus){
+  let pool=RKEYS.map(k=>({k,w:RARITY[k].weight*(1+(RARITY[k].i*(bonus||0)))}));
+  let sum=pool.reduce((a,b)=>a+b.w,0), r=Math.random()*sum;
+  for(const p of pool){ r-=p.w; if(r<=0)return p.k; }
+  return "COMMON";
+}
+function makeItem(rarityKey,lv){
+  const d=DEFS[(Math.random()*DEFS.length)|0];
+  return {u:S.uid++,d:d.id,r:rarityKey,p:0,lv:Math.max(1,Math.min(60,lv|0||1))};
+}
+const INV_CAP=120;
+function invFull(){return S.inv.length>=INV_CAP;}
+/* DUZELTME: envanter dolunca en eski parca sessizce SILINMIYOR.
+   Kusanilmis bir parcanin kaybolmasi gercek ilerleme kaybidir.
+   Dolu envanterde grant() null doner, cagiran taraf bilgilendirir. */
+function grant(it){
+  if(invFull())return null;
+  S.inv.push(it);
+  S.found++;
+  persist();
+  return it;
+}
+/* Dusman olumunden gercek loot. Oran: normal dusuk, elite yuksek,
+   boss garanti + yuksek nadirlik egilimi. */
+function rollLoot(e,lvl){
+  const boss=!!e.boss, elite=!!e.elite;
+  S.credits+=boss?420:elite?55:6;
+  if(boss)S.shards+=12; else if(elite&&Math.random()<.5)S.shards+=2;
+  const chance=boss?1:elite?.34:.035;
+  if(Math.random()>chance){persist();return null;}
+  if(invFull()){
+    persist();
+    try{popText(e.x,e.y-30,"ENVANTER DOLU","#ff6b8a",12);}catch(err){}
+    return null;
+  }
+  const it=makeItem(rollRarity(boss?1.9:elite?.7:0),lvl||1);
+  grant(it);
+  return it;
+}
+
+/* ---------- +N GELISTIRME ---------- */
+function enhCost(it){
+  const r=RARITY[it.r];
+  const n=it.p+1;
+  return {
+    credits:Math.round(120*Math.pow(1.34,n)*(1+r.i*.35)),
+    shards :n<=5?0:Math.round((n-5)*1.6*(1+r.i*.5)),
+    chance :Math.max(.28,1-n*.045-r.i*.02)
+  };
+}
+function enhance(u){
+  const it=byUid(u);
+  if(!it)return {ok:false,msg:"Parça bulunamadı"};
+  const r=RARITY[it.r];
+  if(it.p>=r.maxPlus)return {ok:false,msg:"Maksimum seviye"};
+  const c=enhCost(it);
+  if(S.credits<c.credits)return {ok:false,msg:"Yetersiz kredi"};
+  if(S.shards<c.shards)  return {ok:false,msg:"Yetersiz shard"};
+  S.credits-=c.credits;
+  S.shards -=c.shards;
+  const win=Math.random()<c.chance;
+  if(win)it.p++;
+  persist();
+  return {ok:true,success:win,plus:it.p,msg:win?("+"+it.p+" BAŞARILI"):"BAŞARISIZ"};
+}
+function sell(u){
+  const i=S.inv.findIndex(it=>it.u===u);
+  if(i<0)return false;
+  const it=S.inv[i];
+  SLOTS.forEach(sl=>{if(S.equip[sl.k]===u)delete S.equip[sl.k];});
+  S.credits+=Math.round(45*RARITY[it.r].mult*(1+it.p*.3));
+  S.inv.splice(i,1);
+  persist();
+  return true;
+}
+function equip(u){
+  const it=byUid(u);
+  if(!it)return false;
+  S.equip[DEFMAP[it.d].s]=u;
+  persist();
+  return true;
+}
+function unequip(slot){delete S.equip[slot];persist();return true;}
+
+/* =========================================================
+   GAMEPLAY BAGLANTILARI
+   Ekipman yokken tum carpanlar 1.0 -> davranis degismez.
+========================================================= */
+load();
+
+/* 1 · ATK -> silah hasari */
+if(typeof weaponStat==="function"){
+  const _ws=weaponStat;
+  weaponStat=function(key,level){
+    const st=_ws(key,level);
+    if(st&&S.inv.length){
+      const m=derived().dmgMult;
+      if(m>1)st.damage*=m;
+    }
+    return st;
+  };
+}
+
+/* 2 · DEF -> alinan hasar, HP -> maksimum can
+      (Phase 3 CHAR yamasi korunur, uzerine sarilir) */
+if(typeof CHAR==="object"&&CHAR){
+  const _dt=CHAR.damageTaken.bind(CHAR);
+  const _mh=CHAR.maxHp.bind(CHAR);
+  CHAR.damageTaken=function(){ return _dt()*derived().dmgTaken; };
+  CHAR.maxHp=function(){ return _mh()*derived().hpMult; };
+}
+
+/* 3 · KRITIK -> gercek crit rolu */
+if(typeof damageEnemy==="function"){
+  const _de=damageEnemy;
+  const WKEYS={pulse:1,plasma:1,arc:1,novaWeapon:1};
+  damageEnemy=function(e,amount,color,src){
+    if(WKEYS[src]&&S.inv.length){
+      const d=derived();
+      if(d.critChance>0&&Math.random()<d.critChance){
+        amount*=d.critMult;
+        try{popText(e.x,e.y-18,"KRİTİK",'#ffe34d',13);}catch(err){}
+      }
+    }
+    return _de(e,amount,color,src);
+  };
+}
+
+/* 4 · LOOT -> gercek dusman olumu */
+window.RPG_onEnemyKilled=function(e){
+  try{
+    const lvl=(typeof Game!=="undefined"&&Game.level)?Game.level:1;
+    const it=rollLoot(e,lvl);
+    if(it){
+      const r=RARITY[it.r];
+      try{popText(e.x,e.y-30,DEFMAP[it.d].n,r.color,12);}catch(err){}
+      if(r.i>=2&&typeof ringBurst==="function")
+        ringBurst(e.x,e.y,4,52,r.color,.55,3);
+    }
+  }catch(err){}
+};
+
+/* =========================================================
+   UI — KARAKTER & ENVANTER
+========================================================= */
+const $$=id=>document.getElementById(id);
+const fmt=n=>n>=1000?(n/1000).toFixed(n>=10000?0:1)+"K":String(n);
+/* Evrim oneki: EVRIM blogu yuklendiyse ondan, yoksa duz isim. */
+function NAME(it){
+  try{if(window.RPG_itemName)return window.RPG_itemName(it);}catch(e){}
+  const d=DEFMAP[it.d];return d?d.n:"?";
+}
+
+function itemCard(it,opts){
+  const d=DEFMAP[it.d], r=RARITY[it.r], st=itemStats(it);
+  const eq=S.equip[d.s]===it.u;
+  const bits=[];
+  if(st.atk)bits.push("ATK "+st.atk);
+  if(st.def)bits.push("DEF "+st.def);
+  if(st.hp)bits.push("HP "+st.hp);
+  if(st.crit)bits.push("KRT "+st.crit);
+  if(st.cdmg)bits.push("K.HSR "+st.cdmg);
+  return '<button class="rpg-item'+(eq?" eq":"")+'" data-uid="'+it.u+'" style="--rc:'+r.color+'">'+
+    '<span class="rpg-plus">+'+it.p+'</span>'+
+    '<span class="rpg-top">'+
+      '<i class="rpg-ico" data-ico="'+d.s+'"></i>'+
+      '<span class="rpg-txt">'+
+        '<span class="rpg-name">'+NAME(it)+'</span>'+
+        '<span class="rpg-rar">'+r.label+' · Lv.'+it.lv+'</span>'+
+      '</span>'+
+    '</span>'+
+    '<span class="rpg-st">'+bits.join(" · ")+'</span>'+
+    (eq?'<span class="rpg-eqmark">KUŞANILI</span>':'')+
+  '</button>';
+}
+
+let invFilter="all";
+
+function renderChar(){
+  const d=derived(), t=d.raw;
+  const w=$$("rpg-char-body");
+  if(!w)return;
+  const rows=[
+    ["HP"      , Math.round(CHAR.maxHp()*1000)/1000 , t.hp?"+"+t.hp:""],
+    ["ATK"     , "x"+d.dmgMult.toFixed(3)           , t.atk?"+"+t.atk:""],
+    ["DEF"     , "x"+d.dmgTaken.toFixed(3)+" hasar" , t.def?"+"+t.def:""],
+    ["KRİTİK"  , "%"+(d.critChance*100).toFixed(1)  , t.crit?"+"+t.crit:""],
+    ["KRT.HASAR", "x"+d.critMult.toFixed(2)         , t.cdmg?"+"+t.cdmg:""],
+    ["TEHDİT",    "x"+(window.NEONTHREAT?window.NEONTHREAT.threat():1).toFixed(2)+" düşman HP",
+                  "gücüne göre"]
+  ];
+  w.innerHTML=
+    '<div class="rpg-power"><span>GÜÇ</span><b>'+fmt(d.power)+'</b></div>'+
+    '<div class="rpg-stats">'+rows.map(r=>
+      '<div class="rpg-strow"><span>'+r[0]+'</span><b>'+r[1]+'</b><i>'+r[2]+'</i></div>').join("")+
+    '</div>'+
+    '<div class="rpg-slots">'+SLOTS.map(sl=>{
+      const it=byUid(S.equip[sl.k]);
+      const r=it?RARITY[it.r]:null;
+      return '<button class="rpg-slot'+(it?" full":"")+'" data-slot="'+sl.k+'"'+
+        (r?' style="--rc:'+r.color+'"':'')+'>'+
+        '<i class="rpg-ico sm" data-ico="'+sl.k+'"'+(it?'':' style="opacity:.34"')+'></i>'+
+        '<span class="rpg-slot-txt">'+
+          '<span class="rpg-slot-n">'+sl.n+'</span>'+
+          '<span class="rpg-slot-v">'+(it?NAME(it)+" +"+it.p:"BOŞ")+'</span>'+
+        '</span>'+
+      '</button>';
+    }).join("")+'</div>';
+  w.querySelectorAll("[data-slot]").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const s=b.dataset.slot;
+      if(S.equip[s]){unequip(s);renderChar();}
+      else{invFilter=s;openInv();}
+    });
+  });
+  const cur=$$("rpg-char-cur");
+  if(cur)cur.textContent="◎ "+fmt(S.credits)+"   ◆ "+fmt(S.shards);
+}
+
+function renderInv(){
+  const g=$$("rpg-inv-grid");
+  if(!g)return;
+  const list=S.inv
+    .filter(it=>invFilter==="all"||DEFMAP[it.d].s===invFilter)
+    .sort((a,b)=>(RARITY[b.r].i-RARITY[a.r].i)||(b.p-a.p));
+  g.innerHTML=list.length
+    ? list.map(it=>itemCard(it)).join("")
+    : '<div class="rpg-empty">Bu kategoride parça yok.<br>Düşman ve boss öldürerek parça düşür.</div>';
+  g.querySelectorAll("[data-uid]").forEach(b=>{
+    b.addEventListener("click",()=>openDetail(+b.dataset.uid));
+  });
+  const cur=$$("rpg-inv-cur");
+  if(cur)cur.textContent="◎ "+fmt(S.credits)+"   ◆ "+fmt(S.shards)+"   ("+S.inv.length+"/120)";
+  document.querySelectorAll("[data-invf]").forEach(b=>{
+    b.classList.toggle("on",b.dataset.invf===invFilter);
+  });
+}
+
+function openDetail(u){
+  const it=byUid(u);
+  const box=$$("rpg-detail");
+  if(!it||!box)return;
+  const d=DEFMAP[it.d], r=RARITY[it.r], st=itemStats(it), c=enhCost(it);
+  const maxed=it.p>=r.maxPlus;
+  const nextIt={...it,p:Math.min(r.maxPlus,it.p+1)};
+  const ns=itemStats(nextIt);
+  box.style.setProperty("--rc",r.color);
+  box.innerHTML=
+    '<div class="rpg-d-head">'+
+      '<i class="rpg-ico lg" data-ico="'+d.s+'"></i>'+
+      '<div class="rpg-d-txt"><b>'+NAME(it)+' +'+it.p+'</b><span>'+r.label+' · '+
+      (SLOTS.find(s=>s.k===d.s)||{}).n+' · Lv.'+it.lv+'</span></div>'+
+    '</div>'+
+    '<div class="rpg-d-stats">'+
+      ["atk","def","hp","crit","cdmg"].filter(k=>st[k]).map(k=>{
+        const lbl={atk:"ATK",def:"DEF",hp:"HP",crit:"KRİTİK",cdmg:"KRT.HASAR"}[k];
+        const up=ns[k]-st[k];
+        return '<div class="rpg-strow"><span>'+lbl+'</span><b>'+st[k]+'</b>'+
+          '<i>'+(up>0&&!maxed?"→ "+ns[k]:"")+'</i></div>';
+      }).join("")+
+    '</div>'+
+    (maxed
+      ? '<div class="rpg-d-note">MAKSİMUM SEVİYE (+'+r.maxPlus+')</div>'
+      : '<div class="rpg-d-note">GELİŞTİRME +'+(it.p+1)+' · başarı %'+Math.round(c.chance*100)+
+        ' · ◎'+fmt(c.credits)+(c.shards?' · ◆'+c.shards:'')+'</div>')+
+    '<div class="rpg-d-actions">'+
+      (maxed?'':'<button class="p3-btn" data-act="enh">GELİŞTİR</button>')+
+      '<button class="p3-btn" data-act="eq">'+(S.equip[d.s]===it.u?"ÇIKAR":"KUŞAN")+'</button>'+
+      '<button class="p3-btn" data-act="sell">SAT</button>'+
+    '</div>'+
+    '<div class="rpg-d-msg" id="rpg-d-msg"></div>';
+  box.classList.add("on");
+  box.querySelectorAll("[data-act]").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const a=b.dataset.act;
+      if(a==="enh"){
+        const res=enhance(u);
+        const m=$$("rpg-d-msg");
+        if(m){m.textContent=res.msg;m.style.color=res.success?"#48ff9b":"#ff6b8a";}
+        try{Audio_.power();}catch(e){}
+        renderInv();openDetail(u);
+      }else if(a==="eq"){
+        if(S.equip[d.s]===it.u)unequip(d.s); else equip(u);
+        try{Audio_.power();}catch(e){}
+        renderInv();renderChar();openDetail(u);
+      }else if(a==="sell"){
+        sell(u);box.classList.remove("on");renderInv();renderChar();
+      }
+    });
+  });
+}
+
+function hideAllScreens(){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));
+}
+function openChar(){hideAllScreens();$$("scr-rpgchar").classList.add("on");renderChar();}
+function openInv(){hideAllScreens();$$("scr-rpginv").classList.add("on");renderInv();
+  const b=$$("rpg-detail");if(b)b.classList.remove("on");}
+function backToMenu(){hideAllScreens();$$("scr-menu").classList.add("on");}
+
+function bind(id,fn){const el=$$(id);if(el)el.addEventListener("click",fn);}
+bind("b-rpgchar",openChar);
+bind("b-rpginv",()=>{invFilter="all";openInv();});
+bind("b-rpgchar-back",backToMenu);
+bind("b-rpginv-back",backToMenu);
+bind("b-rpgchar-inv",()=>{invFilter="all";openInv();});
+document.querySelectorAll("[data-invf]").forEach(b=>{
+  b.addEventListener("click",()=>{invFilter=b.dataset.invf;renderInv();});
+});
+
+/* ilk kurulumda baslangic parcasi — oyuncu sistemi bos gormesin */
+if(!S.inv.length&&S.found===0){
+  grant({u:S.uid++,d:"w1",r:"COMMON",p:0,lv:1});
+  S.credits=350;
+  persist();
+}
+
+window.RPG={
+  state:S,RARITY,SLOTS,DEFMAP,
+  totals,derived,itemStats,enhance,equip,unequip,sell,rollLoot,grant,makeItem,invFull,INV_CAP,
+  renderChar,renderInv,persist
+};
+
+})();
+</script>
+
+<script>
+/* =========================================================
+   NORYVX · PROGRESSION (TRACK 4 + 6)
+   SEKTÖRLER · GÖREVLER · MAĞAZA · PREMIUM PARA
+
+   SAHTE SISTEM YOK:
+     - Sektor secimi gercekten dusman HP egrisini, dusman
+       havuzunu, loot seviyesini ve kredi kazancini degistirir.
+     - Sektor kilidi gercek: onceki sektorde belirli dalgaya
+       ulasilmadan acilmaz ve secilemez.
+     - Gorev sayaclari gercek olaylardan artar (oldurulen
+       dusman / elite / boss, ulasilan dalga, yapilan
+       gelistirme, bulunan efsanevi parca).
+     - Magaza gercek para birimini harcar ve gercek parcayi
+       envantere koyar.
+     - IAP: magaza koprusu YOK. Sahte "satin alma basarili"
+       DONDURULMEZ; eksik yapilandirma acikca gosterilir.
+========================================================= */
+(function(){
+"use strict";
+
+if(!window.RPG){console.warn("PROG: RPG cekirdegi yok");return;}
+const RPG=window.RPG;
+const KEY="noryvx_prog_v1";
+
+/* ---------- SEKTORLER ---------- */
+const SECTORS=[
+  {id:1,n:"NEON ŞEHRİ"       ,d:"Başlangıç bölgesi. Devriye droidleri.",
+   hp:1.00,cred:1.00,lootLv:1 ,rar:0   ,pool:[62,14,10, 9, 5],req:null},
+  {id:2,n:"ENDÜSTRİ BÖLGESİ" ,d:"Ağır zırhlı üretim birimleri.",
+   hp:1.38,cred:1.45,lootLv:12,rar:.35 ,pool:[38,32,10,12, 8],req:{s:1,w:8}},
+  {id:3,n:"SAKATÖR MEZARLIĞI",d:"Hızlı, saldırgan hurda avcıları.",
+   hp:1.90,cred:2.10,lootLv:26,rar:.75 ,pool:[30,12,14,30,14],req:{s:2,w:12}},
+  {id:4,n:"REAKTÖR MERKEZİ"  ,d:"Enerji birimleri ve yörünge droidleri.",
+   hp:2.65,cred:3.00,lootLv:40,rar:1.20,pool:[24,16,30,12,18],req:{s:3,w:16}},
+  {id:5,n:"VOID SEKTÖRÜ"     ,d:"Bozulmuş teknoloji. En yüksek risk.",
+   hp:3.60,cred:4.20,lootLv:55,rar:1.80,pool:[20,20,18,20,22],req:{s:4,w:20}}
+];
+const SMAP={};SECTORS.forEach(s=>SMAP[s.id]=s);
+
+/* ---------- GOREVLER ---------- */
+const MISSIONS=[
+  {id:"k100" ,n:"100 düşman yok et"          ,t:"kills"    ,g:100 ,cr:900  ,sh:4 ,ne:0},
+  {id:"k1000",n:"1.000 düşman yok et"        ,t:"kills"    ,g:1000,cr:4200 ,sh:20,ne:25},
+  {id:"e20"  ,n:"20 elit düşman yok et"      ,t:"elites"   ,g:20  ,cr:2400 ,sh:14,ne:10},
+  {id:"b1"   ,n:"İlk boss'u yen"             ,t:"bosses"   ,g:1   ,cr:1800 ,sh:10,ne:15},
+  {id:"b5"   ,n:"5 boss yen"                 ,t:"bosses"   ,g:5   ,cr:6500 ,sh:34,ne:40},
+  {id:"w10"  ,n:"Dalga 10'a ulaş"            ,t:"bestWave" ,g:10  ,cr:1500 ,sh:8 ,ne:10},
+  {id:"w20"  ,n:"Dalga 20'ye ulaş"           ,t:"bestWave" ,g:20  ,cr:5200 ,sh:26,ne:30},
+  {id:"enh10",n:"10 başarılı geliştirme yap" ,t:"enhance"  ,g:10  ,cr:2000 ,sh:16,ne:12},
+  {id:"leg1" ,n:"Bir efsanevi parça bul"     ,t:"legendary",g:1   ,cr:3000 ,sh:18,ne:20},
+  {id:"sec3" ,n:"3. sektörü aç"              ,t:"sectors"  ,g:3   ,cr:4500 ,sh:24,ne:30},
+  {id:"pw5k" ,n:"5.000 güce ulaş"            ,t:"power"    ,g:5000,cr:7000 ,sh:40,ne:50}
+];
+
+/* ---------- MAGAZA ---------- */
+const SHOP=[
+  {id:"comp" ,n:"KOMPONENT PAKETİ",d:"+25 shard"          ,cr:2200,ne:0 ,kind:"shards",amt:25},
+  {id:"comp2",n:"BÜYÜK KOMPONENT" ,d:"+70 shard"          ,cr:5600,ne:0 ,kind:"shards",amt:70},
+  /* min: GARANTILI taban nadirlik. Etiketteki vaat gercekten tutulur. */
+  {id:"box1" ,n:"STANDART SANDIK" ,d:"1 parça · nadir garanti"   ,cr:1800,ne:0 ,kind:"item",bonus:.4 ,min:"RARE"},
+  {id:"box2" ,n:"GELİŞMİŞ SANDIK" ,d:"1 parça · epik garanti"    ,cr:6200,ne:0 ,kind:"item",bonus:1.5,min:"EPIC"},
+  {id:"box3" ,n:"EFSANE SANDIĞI"  ,d:"1 parça · efsanevi garanti",cr:0   ,ne:60,kind:"item",bonus:4.5,min:"LEGENDARY"},
+  {id:"box4" ,n:"MİTİK SANDIK"    ,d:"1 parça · mitik garanti"   ,cr:0   ,ne:180,kind:"item",bonus:12 ,min:"MYTHIC"}
+];
+
+/* ---------- DURUM ---------- */
+const P={
+  sector:1,
+  unlocked:{1:true},
+  bestWave:{},
+  counters:{kills:0,elites:0,bosses:0,enhance:0,legendary:0},
+  claimed:{},
+  neon:0,
+  freeAt:0
+};
+
+function load(){
+  try{
+    const raw=localStorage.getItem(KEY);if(!raw)return;
+    const p=JSON.parse(raw);if(!p||typeof p!=="object")return;
+    if(SMAP[+p.sector])P.sector=+p.sector;
+    if(p.unlocked&&typeof p.unlocked==="object")
+      SECTORS.forEach(s=>{if(p.unlocked[s.id])P.unlocked[s.id]=true;});
+    if(p.bestWave&&typeof p.bestWave==="object")
+      SECTORS.forEach(s=>{const v=+p.bestWave[s.id];if(v>0)P.bestWave[s.id]=v;});
+    if(p.counters&&typeof p.counters==="object")
+      for(const k in P.counters){const v=+p.counters[k];if(v>0)P.counters[k]=v;}
+    if(p.claimed&&typeof p.claimed==="object")
+      MISSIONS.forEach(m=>{if(p.claimed[m.id])P.claimed[m.id]=true;});
+    P.neon=Math.max(0,+p.neon||0);
+    P.freeAt=Math.max(0,+p.freeAt||0);
+  }catch(e){}
+}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(P));}catch(e){}}
+load();
+
+function sector(){return SMAP[P.sector]||SECTORS[0];}
+function unlockedCount(){return SECTORS.filter(s=>P.unlocked[s.id]).length;}
+function reqMet(s){
+  if(!s.req)return true;
+  return (P.bestWave[s.req.s]||0)>=s.req.w;
+}
+function refreshUnlocks(){
+  let changed=false;
+  SECTORS.forEach(s=>{
+    if(!P.unlocked[s.id]&&reqMet(s)){P.unlocked[s.id]=true;changed=true;}
+  });
+  if(changed)persist();
+  return changed;
+}
+refreshUnlocks();
+
+/* =========================================================
+   GERCEK GAMEPLAY BAGLANTILARI
+========================================================= */
+
+/* 1 · Sektor zorlugu -> dusman HP egrisi */
+if(typeof BALANCE==="object"&&BALANCE.enemy&&typeof BALANCE.enemy.hpCurve==="function"){
+  const _hp=BALANCE.enemy.hpCurve;
+  BALANCE.enemy.hpCurve=function(level){ return _hp(level)*sector().hp; };
+}
+
+/* 2 · Sektor dusman havuzu -> gercekten farkli dusman dagilimi */
+if(typeof chooseEnemyType==="function"){
+  const _ct=chooseEnemyType;
+  chooseEnemyType=function(level){
+    const s=sector();
+    if(!s.pool)return _ct(level);
+    let unlocked=1;
+    if(level>=2)unlocked=2;
+    if(level>=3)unlocked=3;
+    if(level>=4)unlocked=4;
+    if(level>=6)unlocked=5;
+    let total=0;
+    for(let i=0;i<unlocked;i++)total+=s.pool[i];
+    let r=Math.random()*total;
+    for(let i=0;i<unlocked;i++){ r-=s.pool[i]; if(r<=0)return i; }
+    return 0;
+  };
+}
+
+/* 3 · Sektor -> loot seviyesi, nadirlik egilimi, kredi carpani
+      RPG.rollLoot sarmalanir; sonuc gercek envantere yazilir. */
+const _roll=RPG.rollLoot;
+RPG.rollLoot=function(e,lvl){
+  const s=sector();
+  const before=RPG.state.credits;
+  const it=_roll(e,Math.max(1,(lvl||1)+s.lootLv));
+  /* sektor kredi carpani — farki ekleyerek uygula */
+  const gained=RPG.state.credits-before;
+  if(gained>0&&s.cred!==1){
+    RPG.state.credits+=Math.round(gained*(s.cred-1));
+  }
+  /* nadirlik egilimi: dusuk nadirlikte tekrar rol hakki */
+  if(it&&s.rar>0){
+    const tier=RPG.RARITY[it.r].i;
+    if(tier<=1&&Math.random()<Math.min(.7,s.rar*.34)){
+      const up=["RARE","EPIC","LEGENDARY","MYTHIC"][Math.min(3,tier+1)];
+      it.r=up;
+    }
+  }
+  RPG.persist();
+  return it;
+};
+
+/* 4 · Gercek olay sayaclari */
+const _killed=window.RPG_onEnemyKilled;
+window.RPG_onEnemyKilled=function(e){
+  const invBefore=RPG.state.inv.length;
+  if(_killed)_killed(e);
+  P.counters.kills++;
+  if(e.elite)P.counters.elites++;
+  if(e.boss){P.counters.bosses++;P.neon+=8;}
+  if(RPG.state.inv.length>invBefore){
+    const it=RPG.state.inv[RPG.state.inv.length-1];
+    if(it&&RPG.RARITY[it.r].i>=3)P.counters.legendary++;
+  }
+  if(P.counters.kills%25===0)persist();
+};
+
+/* 5 · Gelistirme sayaci — gercek basarili yukseltme */
+const _enh=RPG.enhance;
+RPG.enhance=function(u){
+  const r=_enh(u);
+  if(r&&r.ok&&r.success){P.counters.enhance++;persist();}
+  return r;
+};
+
+/* 6 · Kosu sonu -> sektorun en iyi dalgasi, kilit acilimi */
+if(typeof showOver==="function"){
+  const _so=showOver;
+  showOver=function(record){
+    try{
+      const w=Math.max(1,(typeof Game!=="undefined"&&Game.wave)||1);
+      const id=P.sector;
+      if(w>(P.bestWave[id]||0)){P.bestWave[id]=w;}
+      const opened=refreshUnlocks();
+      persist();
+      if(opened&&typeof popText==="function"){
+        try{popText(W/2,H*.32,"YENİ SEKTÖR AÇILDI","#ffe34d",18);}catch(e){}
+      }
+    }catch(e){}
+    return _so(record);
+  };
+}
+
+/* =========================================================
+   GOREV DEGERLENDIRME
+========================================================= */
+function progressOf(m){
+  switch(m.t){
+    case "kills"    :return P.counters.kills;
+    case "elites"   :return P.counters.elites;
+    case "bosses"   :return P.counters.bosses;
+    case "enhance"  :return P.counters.enhance;
+    case "legendary":return P.counters.legendary;
+    case "sectors"  :return unlockedCount();
+    case "bestWave" :return Math.max(0,...Object.values(P.bestWave),0);
+    case "power"    :return RPG.derived().power;
+  }
+  return 0;
+}
+function claim(id){
+  const m=MISSIONS.find(x=>x.id===id);
+  if(!m||P.claimed[id])return false;
+  if(progressOf(m)<m.g)return false;
+  P.claimed[id]=true;
+  RPG.state.credits+=m.cr;
+  RPG.state.shards +=m.sh;
+  P.neon+=m.ne;
+  RPG.persist();persist();
+  return true;
+}
+
+/* =========================================================
+   MAGAZA — gercek harcama, gercek parca
+========================================================= */
+function buy(id){
+  const o=SHOP.find(x=>x.id===id);
+  if(!o)return {ok:false,msg:"Ürün yok"};
+  if(o.cr&&RPG.state.credits<o.cr)return {ok:false,msg:"Yetersiz kredi"};
+  if(o.ne&&P.neon<o.ne)return {ok:false,msg:"Yetersiz NEON"};
+  /* DUZELTME: dolu envanterde para ONCE alinip parca kaybedilmemeli. */
+  if(o.kind==="item"&&RPG.invFull())
+    return {ok:false,msg:"Envanter dolu ("+RPG.INV_CAP+") — parça sat"};
+  RPG.state.credits-=o.cr||0;
+  P.neon-=o.ne||0;
+  let msg;
+  if(o.kind==="shards"){
+    RPG.state.shards+=o.amt;
+    msg="+"+o.amt+" shard";
+  }else{
+    const s=sector();
+    const it=RPG.grant(RPG.makeItem(rollTier(o.bonus,o.min),Math.max(1,s.lootLv+5)));
+    if(!it)return {ok:false,msg:"Envanter dolu"};
+    if(RPG.RARITY[it.r].i>=3)P.counters.legendary++;
+    msg=RPG.DEFMAP[it.d].n+" · "+RPG.RARITY[it.r].label;
+  }
+  RPG.persist();persist();
+  return {ok:true,msg:msg};
+}
+function rollTier(bonus,min){
+  const floor=min?RPG.RARITY[min].i:0;
+  const pool=Object.keys(RPG.RARITY)
+    .filter(k=>RPG.RARITY[k].i>=floor)
+    .map(k=>({k,w:RPG.RARITY[k].weight*(1+RPG.RARITY[k].i*(bonus||0))}));
+  let sum=pool.reduce((a,b)=>a+b.w,0),r=Math.random()*sum;
+  for(const p of pool){r-=p.w;if(r<=0)return p.k;}
+  return pool.length?pool[0].k:"COMMON";
+}
+function freeReady(){return Date.now()>=P.freeAt;}
+function claimFree(){
+  if(!freeReady())return {ok:false,msg:"Henüz hazır değil"};
+  P.freeAt=Date.now()+20*3600*1000;
+  RPG.state.credits+=650;
+  RPG.state.shards+=5;
+  RPG.persist();persist();
+  return {ok:true,msg:"+650 kredi · +5 shard"};
+}
+
+/* =========================================================
+   UI
+========================================================= */
+const $$=id=>document.getElementById(id);
+const fmt=n=>n>=1000?(n/1000).toFixed(n>=10000?0:1)+"K":String(n);
+const bar=(v,g)=>'<div class="pg-bar"><i style="width:'+
+  Math.min(100,v/g*100).toFixed(1)+'%"></i></div>';
+
+function currencyLine(){
+  return "◎ "+fmt(RPG.state.credits)+"   ◆ "+fmt(RPG.state.shards)+"   ✦ "+fmt(P.neon);
+}
+function setCur(id){const e=$$(id);if(e)e.textContent=currencyLine();}
+
+function renderSectors(){
+  const g=$$("pg-sector-list");if(!g)return;
+  setCur("pg-sector-cur");
+  g.innerHTML=SECTORS.map(s=>{
+    const open=!!P.unlocked[s.id];
+    const sel=P.sector===s.id;
+    const bw=P.bestWave[s.id]||0;
+    const need=s.req?("SEKTÖR "+s.req.s+" · DALGA "+s.req.w):"";
+    const have=s.req?(P.bestWave[s.req.s]||0):0;
+    return '<button class="pg-sec'+(open?"":" lock")+(sel?" sel":"")+'" data-sec="'+s.id+'">'+
+      '<span class="pg-sec-id">'+String(s.id).padStart(2,"0")+'</span>'+
+      '<span class="pg-sec-n">'+s.n+'</span>'+
+      '<span class="pg-sec-d">'+s.d+'</span>'+
+      '<span class="pg-sec-m">DÜŞMAN HP x'+s.hp.toFixed(2)+' · KREDİ x'+s.cred.toFixed(2)+
+        ' · LOOT Lv+'+s.lootLv+'</span>'+
+      (open
+        ? '<span class="pg-sec-b">EN İYİ DALGA '+bw+(sel?" · SEÇİLİ":"")+'</span>'
+        : '<span class="pg-sec-b lockline">🔒 '+need+' ('+have+'/'+s.req.w+')</span>')+
+    '</button>';
+  }).join("");
+  g.querySelectorAll("[data-sec]").forEach(b=>b.addEventListener("click",()=>{
+    const id=+b.dataset.sec;
+    if(!P.unlocked[id])return;
+    P.sector=id;persist();renderSectors();updateMenuTag();
+    try{Audio_.power();}catch(e){}
+  }));
+}
+
+function renderMissions(){
+  const g=$$("pg-mission-list");if(!g)return;
+  setCur("pg-mission-cur");
+  g.innerHTML=MISSIONS.map(m=>{
+    const p=progressOf(m),done=p>=m.g,cl=!!P.claimed[m.id];
+    return '<div class="pg-ms'+(cl?" done":done?" ready":"")+'">'+
+      '<div class="pg-ms-h"><b>'+m.n+'</b><span>'+Math.min(p,m.g)+' / '+m.g+'</span></div>'+
+      bar(Math.min(p,m.g),m.g)+
+      '<div class="pg-ms-f"><span>◎'+fmt(m.cr)+(m.sh?'  ◆'+m.sh:'')+(m.ne?'  ✦'+m.ne:'')+'</span>'+
+      (cl?'<i>ALINDI</i>':done?'<button class="p3-btn" data-claim="'+m.id+'">ÖDÜLÜ AL</button>':'<i>DEVAM</i>')+
+      '</div></div>';
+  }).join("");
+  g.querySelectorAll("[data-claim]").forEach(b=>b.addEventListener("click",()=>{
+    if(claim(b.dataset.claim)){try{Audio_.power();}catch(e){}renderMissions();}
+  }));
+}
+
+function renderShop(){
+  const g=$$("pg-shop-list");if(!g)return;
+  setCur("pg-shop-cur");
+  const free=freeReady();
+  const left=Math.max(0,P.freeAt-Date.now());
+  const hrs=Math.floor(left/3600000),mins=Math.floor(left%3600000/60000);
+  g.innerHTML=
+    '<button class="pg-shop free'+(free?"":" off")+'" data-free="1">'+
+      '<span class="pg-shop-n">GÜNLÜK ÜCRETSİZ</span>'+
+      '<span class="pg-shop-d">+650 kredi · +5 shard</span>'+
+      '<span class="pg-shop-p">'+(free?"AL":hrs+"s "+mins+"dk")+'</span>'+
+    '</button>'+
+    SHOP.map(o=>{
+      const afford=(!o.cr||RPG.state.credits>=o.cr)&&(!o.ne||P.neon>=o.ne);
+      return '<button class="pg-shop'+(afford?"":" off")+'" data-buy="'+o.id+'">'+
+        '<span class="pg-shop-n">'+o.n+'</span>'+
+        '<span class="pg-shop-d">'+o.d+'</span>'+
+        '<span class="pg-shop-p">'+(o.cr?'◎'+fmt(o.cr):'')+(o.ne?'✦'+o.ne:'')+'</span>'+
+      '</button>';
+    }).join("")+
+    '<div class="pg-iap">MAĞAZA KÖPRÜSÜ BAĞLI DEĞİL<br>'+
+      'Google Play Billing / StoreKit yapılandırması bu ortamda yok. '+
+      'Gerçek para ile satın alma <b>bilerek devre dışı</b>; sahte "satın alma başarılı" '+
+      'sonucu döndürülmüyor. NEON şu an boss ve görev ödüllerinden kazanılır.</div>';
+  const msg=$$("pg-shop-msg");
+  g.querySelectorAll("[data-buy]").forEach(b=>b.addEventListener("click",()=>{
+    const r=buy(b.dataset.buy);
+    if(msg){msg.textContent=r.msg;msg.style.color=r.ok?"#48ff9b":"#ff6b8a";}
+    try{Audio_.power();}catch(e){}
+    renderShop();
+  }));
+  const fb=g.querySelector("[data-free]");
+  if(fb)fb.addEventListener("click",()=>{
+    const r=claimFree();
+    if(msg){msg.textContent=r.msg;msg.style.color=r.ok?"#48ff9b":"#ff6b8a";}
+    renderShop();
+  });
+}
+
+function updateMenuTag(){
+  const t=$$("pg-menu-sector");
+  if(t)t.textContent="SEKTÖR "+String(P.sector).padStart(2,"0")+" · "+sector().n;
+}
+
+function hideAll(){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));}
+function open(id,fn){hideAll();const e=$$(id);if(e)e.classList.add("on");if(fn)fn();}
+function back(){hideAll();const m=$$("scr-menu");if(m)m.classList.add("on");updateMenuTag();}
+function bind(id,fn){const e=$$(id);if(e)e.addEventListener("click",fn);}
+
+bind("b-sectors",()=>open("scr-sectors",renderSectors));
+bind("b-missions",()=>open("scr-missions",renderMissions));
+bind("b-shop",()=>open("scr-shop",renderShop));
+bind("b-sectors-back",back);
+bind("b-missions-back",back);
+bind("b-shop-back",back);
+updateMenuTag();
+
+window.PROG={
+  state:P,SECTORS,MISSIONS,SHOP,
+  sector,progressOf,claim,buy,claimFree,freeReady,refreshUnlocks,persist,
+  renderSectors,renderMissions,renderShop
+};
+
+})();
+</script>
+
+<script>
+/* =========================================================
+   NORYVX · TITAN-X BOSS SYSTEM
+   Mevcut boss (NEON WARDEN) motoru KORUNUR ve uzerine
+   3 fazli TITAN-X mekanigi sarilir.
+
+   SAHTE MEKANIK YOK:
+     - Faz gecisleri gercek HP oranindan
+     - Zirh: faz 1'de gercek hasar azaltimi
+     - Zayif nokta: reaktor sadece telegraph aninda acilir,
+       o anda vurus gercekten daha cok hasar verir
+     - Zirh kirilmasi: gercek sok dalgasi + gercek ek dusman
+     - Rage: gercek hiz ve pulse frekansi artisi
+     - Odul: gercek loot cagrisi
+========================================================= */
+(function(){
+"use strict";
+
+if(typeof updateBossEnemy!=="function"){console.warn("TITAN: boss motoru yok");return;}
+
+const T={
+  breakAt:0.65,      /* faz 2 — zirh kirilmasi */
+  rageAt:0.30,       /* faz 3 — rage */
+  armorDR:0.35,      /* faz 1 zirh: gelen hasarin %35'i emilir */
+  weakMult:2.20,     /* telegraph aninda reaktor acik: zayif nokta */
+  rageSpeed:1.16,    /* faz 3 ek hiz */
+  ragePulse:0.72,    /* faz 3 pulse bekleme carpani */
+  breakAdds:2,
+  rageAdds:3,
+  names:["","TITAN-X · ZIRHLI","TITAN-X · ZIRH KIRILDI","TITAN-X · RAGE"]
+};
+
+function phaseOf(e){
+  const r=e.maxHp>0?e.hp/e.maxHp:1;
+  return r<=T.rageAt?3:r<=T.breakAt?2:1;
+}
+
+function summon(n){
+  try{
+    const lv=(typeof Game!=="undefined"&&Game.level)?Game.level:1;
+    for(let i=0;i<n;i++)spawnEnemy(lv);
+  }catch(err){}
+}
+
+function enterPhase(e,p){
+  e.titanPhase=p;
+
+  if(p===2){
+    /* ZIRH KIRILMASI — gercek olay: sok dalgasi + ek dusman */
+    try{
+      emit(e.x,e.y,46,"#ff8a3d",340,4.5,.85);
+      emit(e.x,e.y,26,"#ffd9e2",260,3.5,.7);
+      if(typeof ringBurst==="function"){
+        ringBurst(e.x,e.y,e.r*.5,e.r*4.6,"#ff8a3d",.62,5);
+        ringBurst(e.x,e.y,e.r*.3,e.r*2.8,"#ffffff",.42,2.5);
+      }
+      popText(e.x,e.y-e.r-16,"ZIRH KIRILDI","#ff8a3d",17);
+      player.shake=Math.max(player.shake||0,.9);
+      vibrate(22);
+      Audio_.power();
+    }catch(err){}
+    summon(T.breakAdds);
+    /* zirh gittigi icin saldiri temposu artar */
+    e.bossCd=Math.min(e.bossCd,1.1);
+  }
+
+  if(p===3){
+    try{
+      emit(e.x,e.y,60,"#ff3b6b",400,5,1.0);
+      if(typeof ringBurst==="function"){
+        ringBurst(e.x,e.y,e.r*.4,e.r*5.4,"#ff3b6b",.75,6);
+        ringBurst(e.x,e.y,e.r*.2,e.r*3.2,"#ffd9e2",.5,3);
+      }
+      popText(e.x,e.y-e.r-16,"TITAN-X · RAGE","#ff3b6b",19);
+      player.shake=Math.max(player.shake||0,1.2);
+      vibrate(30);
+      Audio_.power();
+    }catch(err){}
+    summon(T.rageAdds);
+    e.pulseCd=Math.min(e.pulseCd,.9);
+    e.bossCd=Math.min(e.bossCd,.9);
+  }
+}
+
+/* ---------------------------------------------------------
+   1 · FAZ MOTORU — mevcut updateBossEnemy sarilir
+--------------------------------------------------------- */
+const _ub=updateBossEnemy;
+updateBossEnemy=function(e,dt,level){
+
+  const p=phaseOf(e);
+  if(p>(e.titanPhase||1))enterPhase(e,p);
+  if(!e.titanPhase)e.titanPhase=p;
+
+  /* Orijinal motor yalnizca 1 ve 2'yi bilir. Faz 3'te de
+     "faz 2" davranisi verilir, ek rage etkileri asagida. */
+  e.bossPhase=p>=2?2:1;
+
+  _ub(e,dt,level);
+
+  if(p===3){
+    /* gercek ek hiz — konum orijinal hesabin uzerine eklenir */
+    e.x+=e.vx*dt*(T.rageSpeed-1);
+    e.y+=e.vy*dt*(T.rageSpeed-1);
+    /* gercek pulse frekansi artisi */
+    if(e.pulseWarn<=0&&e.pulseCd>0)e.pulseCd-=dt*(1/T.ragePulse-1);
+  }
+
+  /* reaktor sadece telegraph sirasinda acik */
+  e.weakOpen=e.bossTelegraph>0;
+};
+
+/* ---------------------------------------------------------
+   2 · ZIRH + ZAYIF NOKTA — gercek hasar hesabi
+--------------------------------------------------------- */
+const _de=damageEnemy;
+damageEnemy=function(e,amount,color,src){
+  if(e&&e.boss&&typeof amount==="number"){
+    if(e.weakOpen){
+      amount*=T.weakMult;
+      if(Math.random()<.30){
+        try{popText(e.x,e.y-e.r*.7,"ZAYIF NOKTA","#ffe34d",13);}catch(err){}
+      }
+    }else if((e.titanPhase||1)===1){
+      amount*=(1-T.armorDR);
+    }
+  }
+  return _de(e,amount,color,src);
+};
+
+/* ---------------------------------------------------------
+   3 · BOSS HUD — faz gostergesi (konum degismedi)
+--------------------------------------------------------- */
+const nameEl=document.querySelector("#boss-hud .boss-name");
+if(nameEl){
+  let last=-1;
+  setInterval(()=>{
+    let b=null;
+    try{enemies.forEach(e=>{if(e.boss&&e.alive!==false)b=e;});}catch(err){}
+    if(!b){last=-1;return;}
+    const p=b.titanPhase||1;
+    if(p!==last){
+      last=p;
+      nameEl.textContent=T.names[p]||T.names[1];
+      nameEl.style.color=p===3?"#ff6b8a":p===2?"#ff8a3d":"#ffd9e2";
+    }
+  },300);
+}
+
+/* ---------------------------------------------------------
+   4 · TITAN-X ODULU — gercek loot, faz 3'te olduruldugu icin
+       ekstra parca. RPG envanterine gercekten girer.
+--------------------------------------------------------- */
+window.TITAN_onBossDeath=function(e){
+  try{
+    if(!window.RPG)return;
+    const lv=(typeof Game!=="undefined"&&Game.level)?Game.level:1;
+    /* boss zaten bir parca dusuruyor; TITAN ek parca verir */
+    if(!window.RPG.invFull()){
+      const it=window.RPG.rollLoot({x:e.x,y:e.y,boss:true},lv);
+      if(it&&typeof ringBurst==="function")
+        ringBurst(e.x,e.y,6,72,window.RPG.RARITY[it.r].color,.8,4);
+    }else{
+      try{popText(e.x,e.y-40,"ENVANTER DOLU","#ff6b8a",13);}catch(err){}
+    }
+  }catch(err){}
+};
+
+window.TITAN={T,phaseOf};
+
+})();
+</script>
+
+<script>
+/* =========================================================
+   NORYVX · TEKNOLOJI AGACI + SILAH USTALIGI 2.0
+
+   Mevcut Phase-3 sistemi (P3S.skills / skillPoints / masteryXP)
+   KORUNUR ve depolama olarak yeniden kullanilir. Bu blok
+   uzerine dallanan bir teknoloji agaci ve 4 teknoloji ailesi
+   ekler.
+
+   SAHTE DUGUM YOK — her kademe gercek bir carpana baglidir:
+     TP1 plasma hasari      -> weaponStat("plasma").damage
+     TP2 patlama yaricapi   -> weaponStat(plasma/nova).radius
+     TP3 nova hasari        -> weaponStat("novaWeapon").damage
+     TV1 alinan hasar       -> CHAR.damageTaken()
+     TV2 maksimum can       -> CHAR.maxHp()
+     TV3 ikisi birden
+     TE1 cooldown           -> CHAR.cooldownMult()
+     TE2 cekim alani        -> CHAR.magnetMult()
+     TQ1 kuantum kritik     -> damageEnemy() icinde gercek rol
+     TQ2 kuantum kritik hasari
+========================================================= */
+(function(){
+"use strict";
+
+if(typeof P3S!=="object"||!P3S){console.warn("TECH: P3 yok");return;}
+
+const TECH={
+  plasma:{n:"PLAZMA",c:"#ff8a3d",d:"Yıkım gücü",nodes:[
+    {id:"tp1",n:"AŞIRI YÜKLEME",d:"Plasma hasarı +4%",max:5,req:{mastery:"plasma",r:2}},
+    {id:"tp2",n:"ZİNCİR PATLAMA",d:"Plasma/Nova yarıçapı +6%",max:5,req:{node:"tp1",r:3}},
+    {id:"tp3",n:"PLAZMA NOVA",d:"Nova hasarı +7%",max:5,req:{node:"tp2",r:3}}
+  ]},
+  void:{n:"VOID",c:"#b45cff",d:"Dayanıklılık",nodes:[
+    {id:"tv1",n:"VOID KAPLAMA",d:"Alınan hasar -3%",max:5,req:{skill:"survivor",r:2}},
+    {id:"tv2",n:"VOID ÇEKİRDEK",d:"Maksimum can +4%",max:5,req:{node:"tv1",r:3}},
+    {id:"tv3",n:"SİNGÜLARİTE",d:"Alınan hasar -2% ve can +3%",max:3,req:{node:"tv2",r:3}}
+  ]},
+  energy:{n:"ENERJİ",c:"#22e6ff",d:"Tempo",nodes:[
+    {id:"te1",n:"ENERJİ AKIŞI",d:"Cooldown -1.5%",max:5,req:{skill:"focus",r:2}},
+    {id:"te2",n:"ENERJİ ALANI",d:"Çekim alanı +6%",max:5,req:{node:"te1",r:2}}
+  ]},
+  quantum:{n:"KUANTUM",c:"#ff4fd8",d:"İsabet",nodes:[
+    {id:"tq1",n:"KUANTUM KESKİNLİK",d:"Kuantum kritik şansı +2%",max:5,req:{totalMastery:4}},
+    {id:"tq2",n:"KUANTUM PATLAMA",d:"Kuantum kritik hasarı +25%",max:4,req:{node:"tq1",r:3}}
+  ]}
+};
+
+const ALL={};
+Object.keys(TECH).forEach(k=>TECH[k].nodes.forEach(nd=>{nd.branch=k;ALL[nd.id]=nd;}));
+
+if(!P3S.tech||typeof P3S.tech!=="object")P3S.tech={};
+function rank(id){const nd=ALL[id];return nd?Math.max(0,Math.min(nd.max,P3S.tech[id]|0)):0;}
+function save(){try{p3Save();}catch(e){}}
+
+/* ---------- ON KOSUL: gercek durumdan ---------- */
+function reqText(nd){
+  const r=nd.req;
+  if(!r)return "";
+  if(r.node)return ALL[r.node].n+" "+r.r+" kademe";
+  if(r.mastery)return r.mastery.toUpperCase()+" ustalık rütbe "+r.r;
+  if(r.skill)return r.skill.toUpperCase()+" "+r.r+" kademe";
+  if(r.totalMastery)return "toplam ustalık "+r.totalMastery;
+  return "";
+}
+function reqMet(nd){
+  const r=nd.req;
+  if(!r)return true;
+  if(r.node)return rank(r.node)>=r.r;
+  if(r.mastery)return p3MasteryRank(r.mastery==="nova"?"novaWeapon":r.mastery)>=r.r;
+  if(r.skill)return p3SkillRank(r.skill)>=r.r;
+  if(r.totalMastery)return p3TotalMastery()>=r.totalMastery;
+  return true;
+}
+function state(nd){
+  if(rank(nd.id)>=nd.max)return "max";
+  if(!reqMet(nd))return "locked";
+  if(rank(nd.id)>0)return "unlocked";
+  return "available";
+}
+function spend(id){
+  const nd=ALL[id];
+  if(!nd)return {ok:false,msg:"Düğüm yok"};
+  if(!reqMet(nd))return {ok:false,msg:"Ön koşul: "+reqText(nd)};
+  if(rank(id)>=nd.max)return {ok:false,msg:"Maksimum kademe"};
+  if((P3S.skillPoints|0)<=0)return {ok:false,msg:"Yetenek puanı yok"};
+  P3S.skillPoints--;
+  P3S.tech[id]=rank(id)+1;
+  save();
+  return {ok:true,msg:nd.n+" → "+rank(id)+"/"+nd.max};
+}
+
+/* ---------- GERCEK CARPANLAR ---------- */
+const M={
+  plasmaDmg :()=>1+rank("tp1")*.04,
+  blastRad  :()=>1+rank("tp2")*.06,
+  novaDmg   :()=>1+rank("tp3")*.07,
+  taken     :()=>Math.max(.45,1-rank("tv1")*.03-rank("tv3")*.02),
+  hp        :()=>1+rank("tv2")*.04+rank("tv3")*.03,
+  cooldown  :()=>Math.max(.80,1-rank("te1")*.015),
+  magnet    :()=>1+rank("te2")*.06,
+  qCrit     :()=>rank("tq1")*.02,
+  qCritMult :()=>1.5+rank("tq2")*.25
+};
+
+/* 1 · SILAH — hasar, yaricap, cooldown */
+if(typeof weaponStat==="function"){
+  const _ws=weaponStat;
+  weaponStat=function(key,level){
+    const st=_ws(key,level);
+    if(!st)return st;
+    if(key==="plasma")     st.damage*=M.plasmaDmg();
+    if(key==="novaWeapon") st.damage*=M.novaDmg();
+    if(key==="plasma"||key==="novaWeapon") st.radius*=M.blastRad();
+    /* Cooldown ve alan TEK yoldan uygulanir: CHAR uzerinden.
+       M.cooldown() zaten CHAR.cooldownMult icine sarildi, burada
+       tekrar carpilmaz — cift sayim olmaz. */
+    if(typeof st.cooldown==="number"&&typeof CHAR==="object")
+      st.cooldown*=CHAR.cooldownMult();
+    if(typeof st.radius==="number"&&typeof CHAR==="object")
+      st.radius+=CHAR.radiusBonus();
+    return st;
+  };
+}
+
+/* 2 · KARAKTER — can, alinan hasar, cekim, cooldown, alan
+
+   DUZELTME (bu blokta bulundu): CHAR.cooldownMult() ve
+   CHAR.radiusBonus() oyunun HICBIR yerinde cagrilmiyordu.
+   Yani mevcut "Focus" yetenegi ve Controller arketipinin
+   cooldown/alan vaadi ekranda yaziyor ama gameplay'e HIC
+   dokunmuyordu — sahte stat. Once P3 fonksiyonlari CHAR'a
+   baglanir, sonra weaponStat icinde gercekten tuketilir. */
+if(typeof CHAR==="object"&&CHAR){
+  if(typeof p3CooldownMult==="function")CHAR.cooldownMult=p3CooldownMult;
+  if(typeof p3MagnetMult==="function")  CHAR.magnetMult  =p3MagnetMult;
+  if(typeof p3RadiusBonus==="function") CHAR.radiusBonus =p3RadiusBonus;
+
+  const _mh=CHAR.maxHp.bind(CHAR);
+  const _dt=CHAR.damageTaken.bind(CHAR);
+  const _mg=CHAR.magnetMult.bind(CHAR);
+  const _cd=CHAR.cooldownMult.bind(CHAR);
+  const _rb=CHAR.radiusBonus.bind(CHAR);
+  CHAR.maxHp       =function(){return _mh()*M.hp();};
+  CHAR.damageTaken =function(){return _dt()*M.taken();};
+  CHAR.magnetMult  =function(){return _mg()*M.magnet();};
+  CHAR.cooldownMult=function(){return _cd()*M.cooldown();};
+  CHAR.radiusBonus =function(){return _rb();};
+}
+
+/* 3 · KUANTUM KRITIK — gercek, bagimsiz rol */
+if(typeof damageEnemy==="function"){
+  const _de=damageEnemy;
+  const W={pulse:1,plasma:1,arc:1,novaWeapon:1};
+  damageEnemy=function(e,amount,color,src){
+    const ch=M.qCrit();
+    if(ch>0&&W[src]&&Math.random()<ch){
+      amount*=M.qCritMult();
+      try{popText(e.x,e.y-26,"KUANTUM","#ff4fd8",14);}catch(err){}
+    }
+    return _de(e,amount,color,src);
+  };
+}
+
+/* 4 · YETENEK PUANI KAYNAKLARI — gercek kazanim
+      Gorev odulu basina +1 puan. */
+if(window.PROG&&typeof window.PROG.claim==="function"){
+  const _c=window.PROG.claim;
+  window.PROG.claim=function(id){
+    const ok=_c(id);
+    if(ok){P3S.skillPoints=(P3S.skillPoints|0)+1;save();}
+    return ok;
+  };
+}
+
+/* =========================================================
+   UI
+========================================================= */
+const $$=id=>document.getElementById(id);
+const WKEYS=[["pulse","PULSE","#22e6ff"],["plasma","PLASMA","#ff8a3d"],
+             ["arc","ARC","#b45cff"],["novaWeapon","NOVA","#ff4fd8"]];
+const EVO=["","KALİBRE","GÜÇLENDİRİLMİŞ","AŞIRI YÜKLÜ","KUANTUM","SİNGÜLARİTE"];
+
+function renderTech(){
+  const w=$$("tech-body");if(!w)return;
+  const pts=P3S.skillPoints|0;
+  const pe=$$("tech-points");
+  if(pe)pe.textContent="YETENEK PUANI · "+pts;
+
+  w.innerHTML=Object.keys(TECH).map(bk=>{
+    const b=TECH[bk];
+    return '<div class="tech-branch" style="--bc:'+b.c+'">'+
+      '<div class="tech-bh"><b>'+b.n+'</b><span>'+b.d+'</span></div>'+
+      b.nodes.map((nd,i)=>{
+        const st=state(nd), r=rank(nd.id);
+        return (i?'<div class="tech-link"></div>':'')+
+          '<button class="tech-node '+st+'" data-node="'+nd.id+'">'+
+            '<span class="tech-n">'+nd.n+'</span>'+
+            '<span class="tech-r">'+r+'/'+nd.max+'</span>'+
+            '<span class="tech-d">'+nd.d+'</span>'+
+            (st==="locked"?'<span class="tech-req">🔒 '+reqText(nd)+'</span>':'')+
+            (st==="max"?'<span class="tech-req max">MAKSİMUM</span>':'')+
+          '</button>';
+      }).join("")+
+    '</div>';
+  }).join("");
+
+  w.querySelectorAll("[data-node]").forEach(b=>b.addEventListener("click",()=>{
+    const r=spend(b.dataset.node);
+    const m=$$("tech-msg");
+    if(m){m.textContent=r.msg;m.style.color=r.ok?"#48ff9b":"#ff6b8a";}
+    if(r.ok){try{Audio_.power();}catch(e){}}
+    renderTech();
+  }));
+}
+
+function renderMastery(){
+  const w=$$("mast-body");if(!w)return;
+  const TH=P3.masteryThresholds;
+  w.innerHTML=WKEYS.map(([k,label,col])=>{
+    const r=p3MasteryRank(k);
+    const xp=Math.max(0,P3S.masteryXP?.[k]||0);
+    const next=r<TH.length?TH[r]:null;
+    const prev=r>0?TH[r-1]:0;
+    const pct=next?Math.min(100,(xp-prev)/(next-prev)*100):100;
+    const bonus=Math.min(10,r*2);
+    return '<div class="mast-card" style="--mc:'+col+'">'+
+      '<div class="mast-h"><b>'+label+'</b><span>RÜTBE '+r+'/5</span></div>'+
+      '<div class="mast-evo">'+(r>0?EVO[r]:"KAYITSIZ")+'</div>'+
+      '<div class="pg-bar"><i style="width:'+pct.toFixed(1)+'%"></i></div>'+
+      '<div class="mast-f">'+
+        '<span>'+(next?xp.toLocaleString("tr")+' / '+next.toLocaleString("tr"):'MAKSİMUM')+'</span>'+
+        '<i>hasar +%'+bonus+'</i>'+
+      '</div>'+
+    '</div>';
+  }).join("")+
+  '<div class="mast-note">Ustalık, o silahla koşu boyunca verilen '+
+  'kümülatif hasardan kazanılır. Koşu bitince kalıcı olarak eklenir.</div>';
+}
+
+function hideAll(){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));}
+function back(){hideAll();const m=$$("scr-menu");if(m)m.classList.add("on");}
+function bind(id,fn){const e=$$(id);if(e)e.addEventListener("click",fn);}
+bind("b-tech",()=>{hideAll();$$("scr-tech").classList.add("on");renderTech();});
+bind("b-mastery",()=>{hideAll();$$("scr-mastery").classList.add("on");renderMastery();});
+bind("b-tech-back",back);
+bind("b-mastery-back",back);
+bind("b-tech-mast",()=>{hideAll();$$("scr-mastery").classList.add("on");renderMastery();});
+
+window.TECHTREE={TECH,ALL,rank,state,spend,reqMet,M,renderTech,renderMastery};
+
+})();
+</script>
+
+<script>
+/* =========================================================
+   NORYVX · BATTLE PASS + ODULLU REKLAM MIMARISI
+
+   BATTLE PASS — SAHTE YOK:
+     BP XP gercek oyun olaylarindan gelir (oldurulen dusman,
+     elit, boss, ulasilan dalga, tamamlanan gorev). Odul
+     talep edildiginde gercek para birimi / gercek parca
+     hesaba gecer ve talep durumu kalici olarak yazilir.
+     Premium track NEON ile acilir — NEON gercekten harcanir.
+
+   ODULLU REKLAM — DURUST UYGULAMA:
+     Reklam saglayici adaptoru ve tum odul akisi yazildi.
+     Bu ortamda BAGLI BIR SAGLAYICI YOK. Sahte "reklam
+     izlendi" sonucu URETILMEZ ve odul VERILMEZ. Arayuz
+     ozelligi acikca "saglayici bagli degil" olarak gosterir.
+     Entegrasyon noktasi: NEONADS.registerProvider(...)
+========================================================= */
+(function(){
+"use strict";
+
+if(!window.RPG||!window.PROG){console.warn("BP: bagimlilik yok");return;}
+const RPG=window.RPG, PROG=window.PROG;
+const KEY="noryvx_bp_v1";
+const SEASON_DAYS=30;
+
+/* ---------- SEZON TANIMI ---------- */
+const LEVELS=30;
+const XP_PER=lv=>Math.round(180+lv*46);        /* kademe basina gereken XP */
+
+/* Odul tablosu: her kademe icin ucretsiz + premium.
+   kind: credits | shards | neon | item | skillPoint */
+function rewardFor(lv,premium){
+  const t=lv%5;
+  if(premium){
+    if(lv%10===0) return {kind:"item",   bonus:4.5,min:"LEGENDARY",label:"EFSANEVİ PARÇA"};
+    if(lv%5===0)  return {kind:"item",   bonus:1.5,min:"EPIC",     label:"EPİK PARÇA"};
+    if(t===1)     return {kind:"neon",   amt:18,  label:"18 NEON"};
+    if(t===2)     return {kind:"shards", amt:14,  label:"14 SHARD"};
+    if(t===3)     return {kind:"credits",amt:2600,label:"2.600 KREDİ"};
+    return           {kind:"skillPoint",amt:1,   label:"1 YETENEK PUANI"};
+  }
+  if(lv%10===0)   return {kind:"item",   bonus:1.5,min:"EPIC",label:"EPİK PARÇA"};
+  if(lv%5===0)    return {kind:"shards", amt:8,   label:"8 SHARD"};
+  if(t===1)       return {kind:"credits",amt:700, label:"700 KREDİ"};
+  if(t===2)       return {kind:"credits",amt:900, label:"900 KREDİ"};
+  if(t===3)       return {kind:"shards", amt:4,   label:"4 SHARD"};
+  return             {kind:"credits",amt:1100,label:"1.100 KREDİ"};
+}
+
+/* ---------- DURUM ---------- */
+const B={season:1,start:0,xp:0,premium:false,claimedF:{},claimedP:{}};
+
+function load(){
+  try{
+    const p=JSON.parse(localStorage.getItem(KEY)||"null");
+    if(!p||typeof p!=="object")return;
+    B.season=Math.max(1,+p.season||1);
+    B.start=Math.max(0,+p.start||0);
+    B.xp=Math.max(0,+p.xp||0);
+    B.premium=!!p.premium;
+    if(p.claimedF&&typeof p.claimedF==="object")B.claimedF=Object.assign({},p.claimedF);
+    if(p.claimedP&&typeof p.claimedP==="object")B.claimedP=Object.assign({},p.claimedP);
+  }catch(e){}
+}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(B));}catch(e){}}
+load();
+if(!B.start)B.start=Date.now();
+
+/* Sezon suresi gercekten dolduysa yeni sezona gecilir. */
+function rollSeason(){
+  const end=B.start+SEASON_DAYS*864e5;
+  if(Date.now()<end)return false;
+  B.season++;
+  B.start=Date.now();
+  B.xp=0;
+  B.premium=false;
+  B.claimedF={};B.claimedP={};
+  persist();
+  return true;
+}
+rollSeason();
+
+function levelOf(){
+  let lv=0,rest=B.xp;
+  while(lv<LEVELS&&rest>=XP_PER(lv+1)){rest-=XP_PER(lv+1);lv++;}
+  return {lv:lv,into:rest,need:lv<LEVELS?XP_PER(lv+1):0};
+}
+function daysLeft(){
+  return Math.max(0,Math.ceil((B.start+SEASON_DAYS*864e5-Date.now())/864e5));
+}
+function addXp(n){
+  if(!(n>0))return;
+  const before=levelOf().lv;
+  B.xp+=n;
+  const after=levelOf().lv;
+  if(after>before){
+    try{popText(W/2,H*.28,"BATTLE PASS "+after,"#ffe34d",16);Audio_.power();}catch(e){}
+  }
+  persist();
+}
+
+/* ---------- GERCEK XP KAYNAKLARI ---------- */
+const _killed=window.RPG_onEnemyKilled;
+window.RPG_onEnemyKilled=function(e){
+  if(_killed)_killed(e);
+  addXp(e.boss?120:e.elite?18:2);
+};
+if(typeof showOver==="function"){
+  const _so=showOver;
+  showOver=function(rec){
+    try{
+      const w=Math.max(1,(typeof Game!=="undefined"&&Game.wave)||1);
+      addXp(w*14);
+    }catch(e){}
+    return _so(rec);
+  };
+}
+const _claim=PROG.claim;
+PROG.claim=function(id){
+  const ok=_claim(id);
+  if(ok)addXp(240);
+  return ok;
+};
+
+/* ---------- ODUL TALEBI — gercek hesap hareketi ---------- */
+function grant(r){
+  if(r.kind==="credits"){RPG.state.credits+=r.amt;RPG.persist();return r.label;}
+  if(r.kind==="shards"){RPG.state.shards+=r.amt;RPG.persist();return r.label;}
+  if(r.kind==="neon"){PROG.state.neon+=r.amt;PROG.persist();return r.label;}
+  if(r.kind==="skillPoint"){
+    if(typeof P3S==="object"&&P3S){P3S.skillPoints=(P3S.skillPoints|0)+r.amt;
+      try{p3Save();}catch(e){}}
+    return r.label;
+  }
+  if(r.kind==="item"){
+    if(RPG.invFull())return null;
+    const keys=Object.keys(RPG.RARITY);
+    const floor=RPG.RARITY[r.min].i;
+    const pool=keys.filter(k=>RPG.RARITY[k].i>=floor)
+      .map(k=>({k,w:RPG.RARITY[k].weight*(1+RPG.RARITY[k].i*r.bonus)}));
+    let sum=pool.reduce((a,b)=>a+b.w,0),x=Math.random()*sum,pick=pool[0].k;
+    for(const p of pool){x-=p.w;if(x<=0){pick=p.k;break;}}
+    const it=RPG.grant(RPG.makeItem(pick,30));
+    return it?RPG.DEFMAP[it.d].n+" · "+RPG.RARITY[it.r].label:null;
+  }
+  return null;
+}
+function claimLevel(lv,premium){
+  const cur=levelOf().lv;
+  if(lv>cur)return {ok:false,msg:"Kademe "+lv+" açık değil"};
+  if(premium&&!B.premium)return {ok:false,msg:"Premium track kilitli"};
+  const map=premium?B.claimedP:B.claimedF;
+  if(map[lv])return {ok:false,msg:"Zaten alındı"};
+  const r=rewardFor(lv,premium);
+  const got=grant(r);
+  if(!got)return {ok:false,msg:"Envanter dolu — parça sat"};
+  map[lv]=1;persist();
+  return {ok:true,msg:got};
+}
+function claimAll(){
+  const cur=levelOf().lv;let n=0,last="";
+  for(let lv=1;lv<=cur;lv++){
+    let r=claimLevel(lv,false);if(r.ok){n++;last=r.msg;}
+    if(B.premium){r=claimLevel(lv,true);if(r.ok){n++;last=r.msg;}}
+  }
+  return n?{ok:true,msg:n+" ödül alındı"}:{ok:false,msg:"Alınacak ödül yok"};
+}
+const PREMIUM_COST=450;
+function buyPremium(){
+  if(B.premium)return {ok:false,msg:"Premium zaten açık"};
+  if(PROG.state.neon<PREMIUM_COST)return {ok:false,msg:"Yetersiz NEON ("+PREMIUM_COST+" gerekir)"};
+  PROG.state.neon-=PREMIUM_COST;PROG.persist();
+  B.premium=true;persist();
+  return {ok:true,msg:"PREMIUM TRACK AÇILDI"};
+}
+
+/* =========================================================
+   ODULLU REKLAM ADAPTORU
+   Saglayici kaydedilmeden HICBIR odul verilmez.
+========================================================= */
+const ADS={
+  provider:null,
+  offers:[
+    {id:"ad_credits",  label:"BONUS KREDİ",     desc:"+1.500 kredi",  cd:4*3600e3},
+    {id:"ad_shards",   label:"BONUS SHARD",     desc:"+12 shard",     cd:6*3600e3},
+    {id:"ad_bp",       label:"BATTLE PASS XP",  desc:"+300 BP XP",    cd:8*3600e3}
+  ],
+  next:{},
+  registerProvider(p){
+    /* p: {name, isReady():bool, show(cb)} — cb(true) SADECE reklam
+       gercekten sonuna kadar izlendiginde cagrilmalidir. */
+    if(!p||typeof p.show!=="function")return false;
+    this.provider=p;return true;
+  },
+  available(){return !!(this.provider&&this.provider.isReady&&this.provider.isReady());},
+  ready(id){return Date.now()>=(this.next[id]||0);},
+  watch(id,done){
+    if(!this.available()){
+      done({ok:false,msg:"Reklam sağlayıcı bağlı değil — ödül verilmedi"});
+      return;
+    }
+    if(!this.ready(id)){done({ok:false,msg:"Bekleme süresi dolmadı"});return;}
+    this.provider.show(completed=>{
+      if(!completed){done({ok:false,msg:"Reklam tamamlanmadı — ödül yok"});return;}
+      const o=this.offers.find(x=>x.id===id);
+      this.next[id]=Date.now()+o.cd;
+      if(id==="ad_credits"){RPG.state.credits+=1500;RPG.persist();}
+      if(id==="ad_shards"){RPG.state.shards+=12;RPG.persist();}
+      if(id==="ad_bp"){addXp(300);}
+      done({ok:true,msg:o.desc+" verildi"});
+    });
+  }
+};
+
+/* =========================================================
+   UI
+========================================================= */
+const $$=id=>document.getElementById(id);
+const fmt=n=>n>=1000?(n/1000).toFixed(n>=10000?0:1)+"K":String(n);
+
+function render(){
+  const w=$$("bp-body");if(!w)return;
+  rollSeason();
+  const L=levelOf();
+  const cur=$$("bp-cur");
+  if(cur)cur.textContent="◎ "+fmt(RPG.state.credits)+"   ◆ "+fmt(RPG.state.shards)+"   ✦ "+fmt(PROG.state.neon);
+
+  let rows="";
+  const from=Math.max(1,L.lv-1);
+  for(let lv=from;lv<=Math.min(LEVELS,from+11);lv++){
+    const open=lv<=L.lv;
+    const rf=rewardFor(lv,false), rp=rewardFor(lv,true);
+    const cf=!!B.claimedF[lv], cp=!!B.claimedP[lv];
+    rows+='<div class="bp-row'+(open?" open":"")+'">'+
+      '<span class="bp-lv">'+lv+'</span>'+
+      '<button class="bp-r free'+(cf?" got":"")+'" data-bp="'+lv+'" data-t="f"'+
+        (open&&!cf?'':' disabled')+'>'+(cf?"ALINDI":rf.label)+'</button>'+
+      '<button class="bp-r prem'+(cp?" got":"")+(B.premium?"":" lock")+'" data-bp="'+lv+'" data-t="p"'+
+        (open&&!cp&&B.premium?'':' disabled')+'>'+(cp?"ALINDI":(B.premium?rp.label:"🔒 "+rp.label))+'</button>'+
+    '</div>';
+  }
+
+  w.innerHTML=
+    '<div class="bp-head">'+
+      '<div class="bp-season"><b>SEZON '+B.season+'</b><span>'+daysLeft()+' gün kaldı</span></div>'+
+      '<div class="bp-lvl"><b>'+L.lv+'</b><span>/ '+LEVELS+'</span></div>'+
+    '</div>'+
+    '<div class="pg-bar"><i style="width:'+(L.need?(L.into/L.need*100):100).toFixed(1)+'%"></i></div>'+
+    '<div class="bp-xp">'+(L.need?L.into+" / "+L.need+" BP XP":"MAKSİMUM KADEME")+'</div>'+
+    '<div class="bp-actions">'+
+      (B.premium
+        ? '<div class="bp-prem-on">PREMIUM TRACK AKTİF</div>'
+        : '<button class="p3-btn" data-act="prem">PREMIUM AÇ · ✦'+PREMIUM_COST+'</button>')+
+      '<button class="p3-btn" data-act="all">TÜMÜNÜ AL</button>'+
+    '</div>'+
+    '<div class="bp-cols"><span>KADEME</span><span>ÜCRETSİZ</span><span>PREMIUM</span></div>'+
+    rows+
+    '<div class="bp-ads">'+
+      '<div class="bp-ads-h">ÖDÜLLÜ REKLAM</div>'+
+      ADS.offers.map(o=>
+        '<button class="bp-ad" data-ad="'+o.id+'"'+(ADS.available()?'':' disabled')+'>'+
+          '<span>'+o.label+'</span><i>'+o.desc+'</i></button>').join("")+
+      (ADS.available()?'':'<div class="bp-ads-note">Reklam sağlayıcı bu yapıda '+
+        '<b>bağlı değil</b>. Ödül akışı hazır ama sahte "izlendi" sonucu üretilmiyor, '+
+        'bu yüzden ödül verilmiyor. Entegrasyon noktası: '+
+        '<code>NEONADS.registerProvider({name,isReady,show})</code></div>')+
+    '</div>';
+
+  const msg=$$("bp-msg");
+  const say=r=>{if(msg){msg.textContent=r.msg;msg.style.color=r.ok?"#48ff9b":"#ff6b8a";}};
+  w.querySelectorAll("[data-bp]").forEach(b=>b.addEventListener("click",()=>{
+    const r=claimLevel(+b.dataset.bp,b.dataset.t==="p");
+    say(r);if(r.ok){try{Audio_.power();}catch(e){}}render();
+  }));
+  w.querySelectorAll("[data-act]").forEach(b=>b.addEventListener("click",()=>{
+    const r=b.dataset.act==="prem"?buyPremium():claimAll();
+    say(r);if(r.ok){try{Audio_.power();}catch(e){}}render();
+  }));
+  w.querySelectorAll("[data-ad]").forEach(b=>b.addEventListener("click",()=>{
+    ADS.watch(b.dataset.ad,r=>{say(r);render();});
+  }));
+}
+
+function hideAll(){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));}
+function bind(id,fn){const e=$$(id);if(e)e.addEventListener("click",fn);}
+bind("b-bp",()=>{hideAll();$$("scr-bp").classList.add("on");render();});
+bind("b-bp-back",()=>{hideAll();const m=$$("scr-menu");if(m)m.classList.add("on");});
+
+window.NEONBP={B,levelOf,addXp,claimLevel,claimAll,buyPremium,rollSeason,rewardFor,LEVELS,XP_PER,persist,render};
+window.NEONADS=ADS;
+
+})();
+</script>
+
+<style id="noryvx-hud2-css">
+/* Savas HUD eki — MEVCUT HUD KONUMLARI DEGISMEDI.
+   run-wave-hud sag ustte (top:safe+72, right:14). Bu blok onun
+   ALTINA yerlesir, hicbir mevcut elemani itmez veya ortmez. */
+#combat-track{
+  position:fixed;
+  top:calc(var(--safe-t) + 112px);
+  right:14px;
+  z-index:18;
+  display:none;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:4px;
+  pointer-events:none;
+  max-width:min(210px,52vw);
+}
+#combat-track.on{display:flex}
+.ct-sector{
+  font-size:9px;letter-spacing:.20em;font-weight:800;
+  color:var(--primary);opacity:.85;
+  text-shadow:0 0 10px rgba(34,230,255,.4);
+}
+.ct-m{
+  width:100%;
+  padding:5px 8px;
+  border-radius:var(--r-sm);
+  background:linear-gradient(180deg,rgba(12,20,42,.72),rgba(5,9,20,.72));
+  border:1px solid rgba(34,230,255,.16);
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
+}
+.ct-m-h{display:flex;justify-content:space-between;gap:6px;align-items:baseline}
+.ct-m-h b{font-size:8.5px;font-weight:700;letter-spacing:.06em;color:var(--ink-2);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ct-m-h span{font-size:8px;color:var(--ink-3);font-variant-numeric:tabular-nums;flex:0 0 auto}
+.ct-bar{height:3px;margin-top:3px;border-radius:999px;background:rgba(2,5,14,.85);overflow:hidden}
+.ct-bar i{display:block;height:100%;border-radius:999px;
+  background:linear-gradient(90deg,var(--primary),#7cc0ff)}
+.ct-m.ready{border-color:rgba(72,255,155,.42)}
+.ct-m.ready .ct-bar i{background:linear-gradient(90deg,var(--energy),#b6ffd9)}
+.ct-bp{font-size:8px;letter-spacing:.16em;color:var(--elite);opacity:.8;font-weight:800}
+</style>
+
+<div id="combat-track" aria-hidden="true">
+  <div class="ct-sector" id="ct-sector"></div>
+  <div id="ct-missions"></div>
+  <div class="ct-bp" id="ct-bp"></div>
+</div>
+
+<script>
+/* =========================================================
+   SAVAS HUD — SEKTOR + GOREV TAKIBI + BATTLE PASS
+   Mevcut HUD elemanlarinin konumu, boyutu ve mantigi
+   DEGISTIRILMEDI; sag ust bloğun altina yeni bir katman
+   eklendi. Tum degerler gercek durumdan okunur.
+========================================================= */
+(function(){
+"use strict";
+const el=document.getElementById("combat-track");
+if(!el)return;
+const secEl=document.getElementById("ct-sector");
+const misEl=document.getElementById("ct-missions");
+const bpEl=document.getElementById("ct-bp");
+
+let lastSig="";
+
+function playing(){
+  try{return typeof Game!=="undefined"&&Game.state===STATE.PLAYING;}catch(e){return false;}
+}
+
+function tick(){
+  const on=playing();
+  el.classList.toggle("on",on);
+  if(!on){lastSig="";return;}
+
+  const P=window.PROG, BP=window.NEONBP;
+  if(!P)return;
+
+  /* aktif sektor — gercek secim */
+  const s=P.sector();
+  const sec="SEKTÖR "+String(P.state.sector).padStart(2,"0")+" · "+s.n;
+
+  /* tamamlanmamis gorevlerden en yakin 2'si — gercek sayaclar */
+  const open=P.MISSIONS
+    .filter(m=>!P.state.claimed[m.id])
+    .map(m=>({m,p:Math.min(P.progressOf(m),m.g)}))
+    .sort((a,b)=>(b.p/b.m.g)-(a.p/a.m.g))
+    .slice(0,2);
+
+  const lv=BP?BP.levelOf():null;
+  const sig=sec+"|"+open.map(o=>o.m.id+o.p).join(",")+"|"+(lv?lv.lv+"-"+lv.into:"");
+  if(sig===lastSig)return;
+  lastSig=sig;
+
+  secEl.textContent=sec;
+  misEl.innerHTML=open.map(o=>{
+    const done=o.p>=o.m.g;
+    return '<div class="ct-m'+(done?" ready":"")+'">'+
+      '<div class="ct-m-h"><b>'+o.m.n+'</b><span>'+o.p+'/'+o.m.g+'</span></div>'+
+      '<div class="ct-bar"><i style="width:'+(o.p/o.m.g*100).toFixed(1)+'%"></i></div>'+
+    '</div>';
+  }).join("");
+  bpEl.textContent=lv?("BATTLE PASS "+lv.lv+(lv.need?" · "+lv.into+"/"+lv.need:"")):"";
+}
+
+setInterval(tick,600);
+tick();
+})();
+</script>
+
+<script>
+/* =========================================================
+   NORYVX · AUDIO 2.0
+   Mevcut Audio_ (WebAudio) motoru KORUNUR; uzerine adaptif
+   muzik katmani ve ayrisik SFX kutuphanesi eklenir.
+
+   Muzik TAMAMEN PROSEDUREL: hicbir ses dosyasi paketlenmez.
+   Paket boyutu 0 byte artar, cevrimdisi calisir, lisans
+   sorunu yoktur.
+
+   Katmanlar:  MENU  ·  COMBAT  ·  BOSS
+   Gecisler gercek oyun durumundan turetilir (Game.state ve
+   sahada canli boss olup olmadigi). Sektor tonu da paletten
+   okunur — her sektorun muzigi farkli perdeden calar.
+========================================================= */
+(function(){
+"use strict";
+
+if(typeof Audio_!=="object"||!Audio_)return;
+
+const MUS={
+  on:true, bus:null, timer:null, mode:"", next:0, step:0, tempo:.42,
+  gain:{menu:0,combat:0,boss:0}, target:{menu:0,combat:0,boss:0}
+};
+
+/* Sektor bazli kok perde — her sektor farkli tonda calar. */
+const ROOTS=[0,55.00,49.00,58.27,43.65,46.25];   /* Hz */
+function root(){
+  let s=1;
+  try{if(window.PROG&&window.PROG.state)s=window.PROG.state.sector||1;}catch(e){}
+  return ROOTS[s]||ROOTS[1];
+}
+
+/* Olcek dereceleri (dogal minor) */
+const SCALE=[0,2,3,5,7,8,10,12];
+const semi=n=>Math.pow(2,n/12);
+
+function ensure(){
+  if(!Audio_.ready){Audio_.init();}
+  if(!Audio_.ready)return false;
+  if(!MUS.bus){
+    MUS.bus=Audio_.ctx.createGain();
+    MUS.bus.gain.value=0;
+    MUS.bus.connect(Audio_.master);
+  }
+  return true;
+}
+
+function voice(freq,when,dur,type,vol,detune){
+  const c=Audio_.ctx;
+  const o=c.createOscillator();
+  const g=c.createGain();
+  o.type=type||"sine";
+  o.frequency.setValueAtTime(freq,when);
+  if(detune)o.detune.setValueAtTime(detune,when);
+  g.gain.setValueAtTime(0,when);
+  g.gain.linearRampToValueAtTime(vol,when+Math.min(.04,dur*.25));
+  g.gain.exponentialRampToValueAtTime(.0001,when+dur);
+  o.connect(g);g.connect(MUS.bus);
+  o.start(when);o.stop(when+dur+.02);
+}
+function noise(when,dur,vol,hz){
+  const c=Audio_.ctx;
+  const len=Math.max(1,Math.floor(c.sampleRate*dur));
+  const b=c.createBuffer(1,len,c.sampleRate);
+  const d=b.getChannelData(0);
+  for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*(1-i/len);
+  const s=c.createBufferSource();s.buffer=b;
+  const f=c.createBiquadFilter();f.type="bandpass";f.frequency.value=hz||1800;
+  const g=c.createGain();g.gain.value=vol;
+  s.connect(f);f.connect(g);g.connect(MUS.bus);
+  s.start(when);
+}
+
+/* ---------- DESEN ---------- */
+function schedule(when,step){
+  const R=root();
+  const bar=step%16;
+
+  /* MENU — yavas pad + seyrek arpej */
+  if(MUS.target.menu>.01){
+    if(bar%8===0)voice(R,when,3.4,"sine",.16*MUS.target.menu);
+    if(bar%8===0)voice(R*semi(7),when,3.4,"sine",.10*MUS.target.menu,6);
+    if(bar%2===0){
+      const n=SCALE[(step*3)%SCALE.length];
+      voice(R*4*semi(n),when,.55,"triangle",.055*MUS.target.menu);
+    }
+  }
+
+  /* COMBAT — surukleyici bas + 16'lik arpej + hi-hat */
+  if(MUS.target.combat>.01){
+    const v=MUS.target.combat;
+    if(bar%4===0)voice(R,when,.42,"square",.11*v);
+    if(bar%4===2)voice(R*semi(3),when,.30,"square",.075*v);
+    const n=SCALE[(step*5)%7];
+    voice(R*4*semi(n),when,.16,"sawtooth",.045*v,-4);
+    if(bar%2===1)noise(when,.045,.030*v,5200);
+    if(bar===0||bar===8)noise(when,.13,.075*v,180);
+  }
+
+  /* BOSS — daha agir, disonant ikinci ses + davul */
+  if(MUS.target.boss>.01){
+    const v=MUS.target.boss;
+    if(bar%2===0)voice(R*.5,when,.5,"sawtooth",.115*v);
+    if(bar%8===0)voice(R*semi(6),when,1.6,"sawtooth",.055*v,10);
+    const n=SCALE[(step*7)%7];
+    voice(R*2*semi(n),when,.22,"square",.05*v);
+    if(bar%4===0)noise(when,.17,.10*v,140);
+    if(bar%4===2)noise(when,.05,.045*v,4200);
+  }
+}
+
+function loop(){
+  if(!ensure())return;
+  const c=Audio_.ctx;
+  const soundOn=(()=>{try{return !!Save.data.soundEnabled;}catch(e){return true;}})();
+  const want=MUS.on&&soundOn;
+
+  /* durum tespiti — gercek oyun durumundan */
+  let mode="menu";
+  try{
+    if(typeof Game!=="undefined"&&Game.state===STATE.PLAYING){
+      mode="combat";
+      let boss=false;
+      enemies.forEach(e=>{if(e.boss)boss=true;});
+      if(boss)mode="boss";
+    }
+  }catch(e){}
+  MUS.mode=mode;
+  MUS.target.menu  =want&&mode==="menu"  ?1:0;
+  MUS.target.combat=want&&mode!=="menu"  ?(mode==="boss"?.35:1):0;
+  MUS.target.boss  =want&&mode==="boss"  ?1:0;
+
+  const g=MUS.bus.gain;
+  g.cancelScheduledValues(c.currentTime);
+  g.setTargetAtTime(want?1:0,c.currentTime,.35);
+
+  if(MUS.next<c.currentTime)MUS.next=c.currentTime+.08;
+  while(MUS.next<c.currentTime+.45){
+    if(want)schedule(MUS.next,MUS.step);
+    MUS.step=(MUS.step+1)%64;
+    MUS.next+=MUS.tempo/4;
+  }
+}
+
+/* =========================================================
+   SFX — her olayin kendi sesi
+========================================================= */
+function fx(list){
+  if(!Audio_.ready)Audio_.init();
+  if(!Audio_.ready)return;
+  try{if(!Save.data.soundEnabled)return;}catch(e){}
+  const c=Audio_.ctx, t0=c.currentTime;
+  list.forEach(([f,d,ty,v,at])=>{
+    const o=c.createOscillator(), g=c.createGain();
+    o.type=ty||"sine";
+    const w=t0+(at||0);
+    o.frequency.setValueAtTime(f[0],w);
+    if(f[1])o.frequency.exponentialRampToValueAtTime(Math.max(20,f[1]),w+d);
+    g.gain.setValueAtTime(0,w);
+    g.gain.linearRampToValueAtTime(v,w+.012);
+    g.gain.exponentialRampToValueAtTime(.0001,w+d);
+    o.connect(g);g.connect(Audio_.master);
+    o.start(w);o.stop(w+d+.02);
+  });
+}
+
+const SFX={
+  tap    :()=>fx([[[520,700],.06,"square",.10]]),
+  select :()=>fx([[[420,640],.09,"triangle",.13],[[840,1050],.07,"sine",.07,.04]]),
+  equip  :()=>fx([[[300,520],.10,"sawtooth",.11],[[760,900],.12,"sine",.09,.06]]),
+  enhOk  :()=>fx([[[420,760],.10,"square",.12],[[760,1140],.12,"square",.10,.08],
+                  [[1140,1520],.16,"sine",.09,.17]]),
+  enhFail:()=>fx([[[300,120],.28,"sawtooth",.13]]),
+  loot   :t=>fx(t>=3?[[[600,900],.09,"triangle",.13],[[900,1350],.12,"sine",.11,.07],
+                      [[1350,1800],.20,"sine",.09,.16]]
+                    :[[[600,880],.08,"triangle",.10],[[880,1080],.09,"sine",.06,.05]]),
+  levelUp:()=>fx([[[400,600],.10,"square",.12],[[600,800],.10,"square",.11,.09],
+                  [[800,1200],.22,"sine",.10,.18]]),
+  claim  :()=>fx([[[660,990],.10,"triangle",.12],[[990,1320],.16,"sine",.10,.08]]),
+  buy    :()=>fx([[[880,660],.08,"sine",.11],[[440,330],.14,"triangle",.10,.06]]),
+  denied :()=>fx([[[220,160],.16,"square",.11]]),
+  sector :()=>fx([[[180,420],.16,"sawtooth",.11],[[720,900],.14,"sine",.08,.10]]),
+  skill  :()=>fx([[[520,780],.10,"square",.11],[[780,1170],.14,"triangle",.10,.08]]),
+  bossPhase:()=>fx([[[160,90],.34,"sawtooth",.16],[[520,260],.30,"square",.10,.05]])
+};
+
+/* =========================================================
+   MUZIK ANAHTARI — mevcut ses/titresim anahtarlarinin yanina
+========================================================= */
+function mountToggle(){
+  const row=document.querySelector("#scr-menu .toggles");
+  if(!row||document.getElementById("t-music"))return;
+  const b=document.createElement("div");
+  b.className="tgl";b.id="t-music";b.textContent="♫";
+  b.addEventListener("click",()=>{
+    MUS.on=!MUS.on;
+    b.classList.toggle("off",!MUS.on);
+    try{localStorage.setItem("noryvx_music",""+(MUS.on?1:0));}catch(e){}
+    SFX.tap();
+  });
+  try{if(localStorage.getItem("noryvx_music")==="0"){MUS.on=false;b.classList.add("off");}}catch(e){}
+  row.appendChild(b);
+}
+
+/* ---------- BAGLANTILAR: gercek olaylara ses ---------- */
+function wire(){
+  /* boss faz gecisi */
+  if(window.TITAN&&typeof updateBossEnemy==="function"){
+    const _u=updateBossEnemy;
+    updateBossEnemy=function(e,dt,lv){
+      const p=e.titanPhase||1;
+      _u(e,dt,lv);
+      if((e.titanPhase||1)>p)SFX.bossPhase();
+    };
+  }
+  /* loot — nadirlige gore */
+  if(window.RPG&&typeof window.RPG.rollLoot==="function"){
+    const _r=window.RPG.rollLoot;
+    window.RPG.rollLoot=function(e,lv){
+      const it=_r(e,lv);
+      if(it)SFX.loot(window.RPG.RARITY[it.r].i);
+      return it;
+    };
+  }
+  /* gelistirme basari/basarisizlik */
+  if(window.RPG&&typeof window.RPG.enhance==="function"){
+    const _e=window.RPG.enhance;
+    window.RPG.enhance=function(u){
+      const r=_e(u);
+      if(r&&r.ok)(r.success?SFX.enhOk:SFX.enhFail)();
+      else if(r)SFX.denied();
+      return r;
+    };
+  }
+  /* kusanma */
+  if(window.RPG&&typeof window.RPG.equip==="function"){
+    const _q=window.RPG.equip;
+    window.RPG.equip=function(u){const r=_q(u);if(r)SFX.equip();return r;};
+  }
+  /* gorev odulu */
+  if(window.PROG&&typeof window.PROG.claim==="function"){
+    const _c=window.PROG.claim;
+    window.PROG.claim=function(id){const r=_c(id);(r?SFX.claim:SFX.denied)();return r;};
+  }
+  /* magaza */
+  if(window.PROG&&typeof window.PROG.buy==="function"){
+    const _b=window.PROG.buy;
+    window.PROG.buy=function(id){const r=_b(id);(r&&r.ok?SFX.buy:SFX.denied)();return r;};
+  }
+  /* yetenek dugumu */
+  if(window.TECHTREE&&typeof window.TECHTREE.spend==="function"){
+    const _s=window.TECHTREE.spend;
+    window.TECHTREE.spend=function(id){const r=_s(id);(r&&r.ok?SFX.skill:SFX.denied)();return r;};
+  }
+  /* battle pass */
+  if(window.NEONBP&&typeof window.NEONBP.claimLevel==="function"){
+    const _l=window.NEONBP.claimLevel;
+    window.NEONBP.claimLevel=function(lv,p){const r=_l(lv,p);(r&&r.ok?SFX.claim:SFX.denied)();return r;};
+  }
+  /* menu butonlari — genel dokunma sesi */
+  document.querySelectorAll(".btn.ghost,.p2-tab,.p3-btn").forEach(b=>{
+    b.addEventListener("click",()=>SFX.tap(),{passive:true});
+  });
+}
+
+/* ilk kullanici hareketinde baslat (mobil autoplay kurali) */
+function boot(){
+  ensure();
+  if(!MUS.timer)MUS.timer=setInterval(loop,120);
+  loop();
+}
+["pointerdown","touchstart","keydown"].forEach(ev=>
+  window.addEventListener(ev,boot,{once:true,passive:true}));
+
+mountToggle();
+wire();
+
+window.NEONAUDIO={MUS,SFX,loop,root,boot};
+
+})();
+</script>
+
+<script>
+/* =========================================================
+   NORYVX · SEKTÖR TEHLİKELERİ + BAŞARIMLAR
+
+   TEHLİKELER — GERÇEK GAMEPLAY:
+     Her sektörün kendi çevre tehlikesi var. Tehlike önce
+     TELEGRAPH eder (uyarı halkası, hasar yok), sonra AKTİF
+     olur. Aktifken oyuncu alan içindeyse hasar MEVCUT
+     Game.damage() boru hattından geçer — yani invuln,
+     kalkan ve ekipman DEF'i aynen uygulanır. Yeni hasar
+     sistemi yazılmadı.
+
+     Sektör 1 tehlikesizdir (giriş bölgesi) → bugünkü
+     oynanış birebir korunur.
+
+   BAŞARIMLAR — GERÇEK SAYAÇLARDAN:
+     Hiçbir başarım kendi sayacını tutmaz; hepsi zaten var
+     olan gerçek durumdan okur (PROG sayaçları, RPG envanteri
+     ve gücü, Battle Pass kademesi, sektör kilitleri).
+========================================================= */
+(function(){
+"use strict";
+
+/* =========================================================
+   1 · SEKTÖR TEHLİKELERİ
+========================================================= */
+const HZ={
+  2:{n:"ISI BACASI",     c:"#ff8a1f",r:54,tel:1.10,act:0.85,gap:4.6,max:2},
+  3:{n:"ENERJİ KALINTISI",c:"#48ff9b",r:46,tel:0.95,act:1.40,gap:4.0,max:3},
+  4:{n:"RADYASYON DALGASI",c:"#ff3b6b",r:62,tel:0.80,act:1.00,gap:3.4,max:3},
+  5:{n:"VOID YARIĞI",    c:"#b45cff",r:50,tel:0.70,act:1.25,gap:2.8,max:4}
+};
+const POOL=[];
+for(let i=0;i<5;i++)POOL.push({on:false,x:0,y:0,r:0,tel:0,act:0,cfg:null});
+let hzGap=2.5;
+
+function cfg(){
+  let s=1;
+  try{if(window.PROG&&window.PROG.state)s=window.PROG.state.sector||1;}catch(e){}
+  return HZ[s]||null;
+}
+function playing(){
+  try{return typeof Game!=="undefined"&&Game.state===STATE.PLAYING;}catch(e){return false;}
+}
+function activeCount(){let n=0;for(const h of POOL)if(h.on)n++;return n;}
+
+function spawn(c){
+  const h=POOL.find(x=>!x.on);
+  if(!h)return;
+  const m=c.r+22;
+  /* oyuncunun tam uzerinde acilmasin — telegraph zaten uyariyor
+     ama dogrudan ustte acilmasi haksiz olur */
+  let x,y,tries=0;
+  do{
+    x=m+Math.random()*(W-m*2);
+    y=m+Math.random()*(H-m*2);
+    tries++;
+  }while(tries<8&&Math.hypot(x-player.x,y-player.y)<c.r*1.15);
+  h.on=true;h.x=x;h.y=y;h.r=c.r;h.tel=c.tel;h.act=c.act;h.cfg=c;
+}
+
+function updateHazards(dt){
+  const c=cfg();
+  if(!playing()||!c){
+    for(const h of POOL)h.on=false;
+    hzGap=1.2;
+    return;
+  }
+  hzGap-=dt;
+  if(hzGap<=0&&activeCount()<c.max){hzGap=c.gap;spawn(c);}
+
+  for(const h of POOL){
+    if(!h.on)continue;
+    if(h.tel>0){
+      h.tel-=dt;
+      if(h.tel<=0){
+        try{if(window.NEONAUDIO)window.NEONAUDIO.SFX.denied();}catch(e){}
+      }
+      continue;
+    }
+    h.act-=dt;
+    if(h.act<=0){h.on=false;continue;}
+    /* GERCEK HASAR — mevcut boru hattindan */
+    if(Math.hypot(player.x-h.x,player.y-h.y)<h.r){
+      try{
+        if(player.invuln<=0){
+          Game.damage();
+          player.shake=Math.max(player.shake||0,.5);
+          emit(player.x,player.y,7,h.cfg.c,180,2.6,.45);
+        }
+      }catch(e){}
+    }
+  }
+}
+
+function drawHazards(){
+  const c=cfg();
+  if(!c)return;
+  for(const h of POOL){
+    if(!h.on)continue;
+    ctx.save();
+    ctx.translate(h.x,h.y);
+    if(h.tel>0){
+      /* TELEGRAPH — hasar yok, sadece uyari */
+      const k=1-h.tel/c.tel;
+      ctx.globalAlpha=.22+.30*Math.abs(Math.sin(h.tel*14));
+      ctx.strokeStyle=c.c;
+      ctx.lineWidth=2;
+      ctx.setLineDash([10,8]);
+      ctx.lineDashOffset=-performance.now()/28;
+      ctx.beginPath();ctx.arc(0,0,h.r,0,TAU);ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.globalAlpha=.16+.20*k;
+      ctx.lineWidth=1.5;
+      ctx.beginPath();ctx.arc(0,0,h.r*(1-k*.55),0,TAU);ctx.stroke();
+    }else{
+      /* AKTIF — dolgulu alan */
+      const k=h.act/c.act;
+      const g=ctx.createRadialGradient(0,0,2,0,0,h.r);
+      g.addColorStop(0,c.c+"44");
+      g.addColorStop(.62,c.c+"22");
+      g.addColorStop(1,c.c+"00");
+      ctx.globalAlpha=.55+.35*k;
+      ctx.fillStyle=g;
+      ctx.beginPath();ctx.arc(0,0,h.r,0,TAU);ctx.fill();
+      ctx.globalAlpha=.6*k+.25;
+      ctx.strokeStyle=c.c;
+      ctx.lineWidth=2.4;
+      ctx.beginPath();ctx.arc(0,0,h.r,0,TAU);ctx.stroke();
+    }
+    ctx.restore();
+  }
+}
+
+/* Zemin katmanina bagla: drawAmbient arka planin sonunda cagriliyor,
+   yani tehlikeler birimlerin ALTINDA kalir — okunabilirlik korunur. */
+if(typeof drawAmbient==="function"){
+  const _da=drawAmbient;
+  drawAmbient=function(t){_da(t);drawHazards();};
+}
+if(typeof updateRings==="function"){
+  const _ur=updateRings;
+  updateRings=function(dt){_ur(dt);updateHazards(dt);};
+}
+
+/* =========================================================
+   2 · BASARIMLAR — hepsi gercek durumdan okur
+========================================================= */
+const AKEY="noryvx_ach_v1";
+const ACH=[
+  {id:"a1", n:"İLK KAN",         d:"100 düşman yok et",        v:()=>P().kills,      g:100,  cr:800, sh:4,  ne:0},
+  {id:"a2", n:"TEMİZLEYİCİ",     d:"2.500 düşman yok et",      v:()=>P().kills,      g:2500, cr:5200,sh:26, ne:30},
+  {id:"a3", n:"ELİT AVCISI",     d:"50 elit yok et",           v:()=>P().elites,     g:50,   cr:3600,sh:20, ne:20},
+  {id:"a4", n:"TITAN AVCISI",    d:"10 boss yen",              v:()=>P().bosses,     g:10,   cr:8000,sh:44, ne:60},
+  {id:"a5", n:"DERİN KUŞATMA",   d:"Dalga 25'e ulaş",          v:()=>bestWave(),     g:25,   cr:6000,sh:30, ne:40},
+  {id:"a6", n:"USTA DEMİRCİ",    d:"50 başarılı geliştirme",   v:()=>P().enhance,    g:50,   cr:4400,sh:34, ne:25},
+  {id:"a7", n:"EFSANE AVCISI",   d:"10 efsanevi+ parça bul",   v:()=>P().legendary,  g:10,   cr:5000,sh:30, ne:35},
+  {id:"a8", n:"KÂŞİF",           d:"Tüm sektörleri aç",        v:()=>unlocked(),     g:5,    cr:7000,sh:38, ne:50},
+  {id:"a9", n:"SİLAH USTASI",    d:"Toplam ustalık rütbesi 12",v:()=>totalMastery(), g:12,   cr:5600,sh:32, ne:40},
+  {id:"a10",n:"GÜÇ ÇEKİRDEĞİ",   d:"10.000 güce ulaş",         v:()=>power(),        g:10000,cr:9000,sh:50, ne:70},
+  {id:"a11",n:"SEZON SAVAŞÇISI", d:"Battle Pass kademe 20",    v:()=>bpLevel(),      g:20,   cr:6400,sh:36, ne:45},
+  {id:"a12",n:"KOLEKSİYONCU",    d:"Envanterde 40 parça",      v:()=>invCount(),     g:40,   cr:3000,sh:18, ne:15}
+];
+
+function P(){try{return window.PROG.state.counters;}catch(e){return {};}}
+function bestWave(){try{return Math.max(0,...Object.values(window.PROG.state.bestWave),0);}catch(e){return 0;}}
+function unlocked(){try{return Object.keys(window.PROG.state.unlocked).length;}catch(e){return 0;}}
+function power(){try{return window.RPG.derived().power;}catch(e){return 0;}}
+function invCount(){try{return window.RPG.state.inv.length;}catch(e){return 0;}}
+function bpLevel(){try{return window.NEONBP.levelOf().lv;}catch(e){return 0;}}
+function totalMastery(){try{return p3TotalMastery();}catch(e){return 0;}}
+
+const A={claimed:{}};
+try{
+  const raw=JSON.parse(localStorage.getItem(AKEY)||"null");
+  if(raw&&raw.claimed)ACH.forEach(a=>{if(raw.claimed[a.id])A.claimed[a.id]=1;});
+}catch(e){}
+function aPersist(){try{localStorage.setItem(AKEY,JSON.stringify(A));}catch(e){}}
+
+function claimAch(id){
+  const a=ACH.find(x=>x.id===id);
+  if(!a)return {ok:false,msg:"Başarım yok"};
+  if(A.claimed[id])return {ok:false,msg:"Zaten alındı"};
+  if(a.v()<a.g)return {ok:false,msg:"Tamamlanmadı"};
+  A.claimed[id]=1;aPersist();
+  try{
+    window.RPG.state.credits+=a.cr;
+    window.RPG.state.shards+=a.sh;
+    window.RPG.persist();
+    window.PROG.state.neon+=a.ne;
+    window.PROG.persist();
+    if(window.NEONAUDIO)window.NEONAUDIO.SFX.claim();
+  }catch(e){}
+  return {ok:true,msg:a.n+" · ödül alındı"};
+}
+
+/* ---------- UI ---------- */
+const $$=id=>document.getElementById(id);
+const fmt=n=>n>=1000?(n/1000).toFixed(n>=10000?0:1)+"K":String(n);
+
+function renderAch(){
+  const w=$$("ach-body");if(!w)return;
+  const cur=$$("ach-cur");
+  try{if(cur)cur.textContent="◎ "+fmt(window.RPG.state.credits)+"   ◆ "+
+    fmt(window.RPG.state.shards)+"   ✦ "+fmt(window.PROG.state.neon);}catch(e){}
+  const done=ACH.filter(a=>A.claimed[a.id]).length;
+  const head=$$("ach-count");
+  if(head)head.textContent=done+" / "+ACH.length+" TAMAMLANDI";
+
+  w.innerHTML=ACH.map(a=>{
+    const v=Math.min(a.v(),a.g), ready=v>=a.g, got=!!A.claimed[a.id];
+    return '<div class="pg-ms'+(got?" done":ready?" ready":"")+'">'+
+      '<div class="pg-ms-h"><b>'+a.n+'</b><span>'+v+' / '+a.g+'</span></div>'+
+      '<div class="ach-d">'+a.d+'</div>'+
+      '<div class="pg-bar"><i style="width:'+(v/a.g*100).toFixed(1)+'%"></i></div>'+
+      '<div class="pg-ms-f"><span>◎'+fmt(a.cr)+'  ◆'+a.sh+(a.ne?'  ✦'+a.ne:'')+'</span>'+
+      (got?'<i>ALINDI</i>':ready?'<button class="p3-btn" data-ach="'+a.id+'">ÖDÜLÜ AL</button>':'<i>DEVAM</i>')+
+      '</div></div>';
+  }).join("");
+  w.querySelectorAll("[data-ach]").forEach(b=>b.addEventListener("click",()=>{
+    const r=claimAch(b.dataset.ach);
+    const m=$$("ach-msg");
+    if(m){m.textContent=r.msg;m.style.color=r.ok?"#48ff9b":"#ff6b8a";}
+    renderAch();
+  }));
+}
+
+function hideAll(){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));}
+function bind(id,fn){const e=$$(id);if(e)e.addEventListener("click",fn);}
+bind("b-ach",()=>{hideAll();$$("scr-ach").classList.add("on");renderAch();});
+bind("b-ach-back",()=>{hideAll();const m=$$("scr-menu");if(m)m.classList.add("on");});
+
+window.NEONHZ={HZ,POOL,cfg,updateHazards,drawHazards};
+window.NEONACH={ACH,A,claimAch,renderAch,
+  read:{bestWave,unlocked,power,invCount,bpLevel,totalMastery}};
+
+})();
+</script>
+
+<script>
+/* =========================================================
+   NORYVX · KOZMETİK MAĞAZA + ITEM EVRİMİ
+
+   KOZMETİK — GERÇEK, PAY-TO-WIN DEĞİL:
+     Premium görünümler yalnızca renk/parıltı değiştirir;
+     hiçbir stat, hasar veya oynanış değeri vermez. Mevcut
+     SKINS dizisine eklenir, satın alınınca gerçekten
+     Save.data.ownedSkins'e yazılır ve currentSkin() üzerinden
+     savaş ekranında görünür. NEON gerçekten harcanır.
+     Çekirdek ile alınan mevcut görünümler bozulmadı; premium
+     olanlar o ekranda listelenmez.
+
+   EVRİM — GERÇEK STAT ETKİSİ:
+     Bir parça maksimum +N'e ulaşıp EPİK ve üzeriyse evrilir.
+     Evrim: nadirlik bir kademe yükselir, parça seviyesi +10,
+     +N sıfırlanır, isim öneki değişir. Nadirlik ve seviye
+     zaten itemStats() içinde çarpan olduğu için etki
+     doğrudan combat'a yansır — yeni hesap yazılmadı.
+     Bedeli: kredi + shard + aynı slottan 2 kurban parça.
+========================================================= */
+(function(){
+"use strict";
+if(!window.RPG||!window.PROG){console.warn("COSM: bagimlilik yok");return;}
+const RPG=window.RPG, PROG=window.PROG;
+
+/* =========================================================
+   1 · PREMIUM GÖRÜNÜMLER
+========================================================= */
+const PREMIUM=[
+  {id:"px_glacier",name:"BUZUL",  neon:180,outer:"#8fe9ff",inner:"#ffffff",glow:"#3ba7ff",
+   desc:"Kutup buzu enerji çekirdeği."},
+  {id:"px_ember",  name:"KOR",    neon:220,outer:"#ff8a3d",inner:"#fff0d8",glow:"#ff3b6b",
+   desc:"Sönmeyen kor plazması."},
+  {id:"px_spectre",name:"HAYALET",neon:300,outer:"#c9a8ff",inner:"#f6efff",glow:"#7a36ff",
+   desc:"Faz kaymalı hayalet çekirdeği."},
+  {id:"px_prism",  name:"PRİZMA", neon:420,outer:"#ff4fd8",inner:"#eafcff",glow:"#22e6ff",
+   desc:"Çift spektrumlu prizma çekirdeği."}
+];
+const PSET={};PREMIUM.forEach(p=>PSET[p.id]=p);
+
+/* SKINS dizisine ekle — currentSkin() bunlari tanisin.
+   level/cost degerleri cekirdek ekraninda alinamayacak sekilde ayarlanir;
+   o ekranda zaten filtrelenirler. */
+try{
+  PREMIUM.forEach(p=>{
+    if(!SKINS.some(s=>s.id===p.id))
+      SKINS.push({id:p.id,name:p.name,level:999,cost:999999,
+        outer:p.outer,inner:p.inner,glow:p.glow,desc:p.desc,premium:true});
+  });
+}catch(e){}
+
+/* Cekirdek ekraninda premium kartlari gosterme — mevcut ekran bozulmaz. */
+if(typeof renderSkins==="function"){
+  const _rs=renderSkins;
+  renderSkins=function(){
+    _rs();
+    try{
+      const g=document.getElementById("skin-grid");
+      if(!g)return;
+      g.querySelectorAll("button[data-skin]").forEach(b=>{
+        if(PSET[b.dataset.skin]){
+          const card=b.closest(".skin-card");
+          if(card)card.remove();
+        }
+      });
+    }catch(e){}
+  };
+}
+
+function owns(id){try{return !!Save.data.ownedSkins[id];}catch(e){return false;}}
+function buySkin(id){
+  const p=PSET[id];
+  if(!p)return {ok:false,msg:"Görünüm yok"};
+  if(owns(id))return {ok:false,msg:"Zaten sahipsin"};
+  if(PROG.state.neon<p.neon)return {ok:false,msg:"Yetersiz NEON ("+p.neon+" gerekir)"};
+  PROG.state.neon-=p.neon;PROG.persist();
+  try{
+    Save.data.ownedSkins[id]=true;
+    Save.data.selectedSkin=id;
+    Save.save();
+  }catch(e){}
+  try{if(window.NEONAUDIO)window.NEONAUDIO.SFX.buy();}catch(e){}
+  return {ok:true,msg:p.name+" alındı ve kuşanıldı"};
+}
+function selectSkin(id){
+  if(!owns(id))return {ok:false,msg:"Sahip değilsin"};
+  try{Save.data.selectedSkin=id;Save.save();}catch(e){}
+  try{if(window.NEONAUDIO)window.NEONAUDIO.SFX.select();}catch(e){}
+  return {ok:true,msg:(PSET[id]||{}).name+" kuşanıldı"};
+}
+
+/* =========================================================
+   2 · ITEM EVRİMİ
+========================================================= */
+const EVO_NAMES=["","GELİŞMİŞ","KUANTUM","OVERDRIVE"];
+const EVO_MAX=4;   /* gercek sinir nadirlik tavanidir */
+const ORDER=["COMMON","RARE","EPIC","LEGENDARY","MYTHIC"];
+
+function evOf(it){return Math.max(0,Math.min(EVO_MAX,it.ev|0));}
+function evName(it){
+  const base=RPG.DEFMAP[it.d]?RPG.DEFMAP[it.d].n:"?";
+  const e=evOf(it);
+  return e?EVO_NAMES[e]+" "+base:base;
+}
+function nextRarity(r){
+  const i=ORDER.indexOf(r);
+  return i>=0&&i<ORDER.length-1?ORDER[i+1]:null;
+}
+function evoCost(it){
+  const e=evOf(it);
+  return {
+    credits:Math.round(9000*Math.pow(2.1,e)),
+    shards :Math.round(60*Math.pow(1.9,e)),
+    fodder :2
+  };
+}
+function canEvolve(it){
+  if(!it)return {ok:false,why:"Parça yok"};
+  if(evOf(it)>=EVO_MAX)return {ok:false,why:"Evrim tamamlandı"};
+  const r=RPG.RARITY[it.r];
+  if(r.i<2)return {ok:false,why:"En az EPİK olmalı"};
+  if(it.p<r.maxPlus)return {ok:false,why:"Önce +"+r.maxPlus+"'e ulaş (şu an +"+it.p+")"};
+  if(!nextRarity(it.r))return {ok:false,why:"Nadirlik tavanda"};
+  return {ok:true};
+}
+function fodderFor(it){
+  const slot=RPG.DEFMAP[it.d].s;
+  return RPG.state.inv.filter(x=>
+    x.u!==it.u &&
+    RPG.DEFMAP[x.d].s===slot &&
+    !Object.values(RPG.state.equip).includes(x.u)
+  ).sort((a,b)=>RPG.RARITY[a.r].i-RPG.RARITY[b.r].i||a.p-b.p);
+}
+function evolve(u){
+  const it=RPG.state.inv.find(x=>x.u===u);
+  const chk=canEvolve(it);
+  if(!chk.ok)return {ok:false,msg:chk.why};
+  const c=evoCost(it);
+  if(RPG.state.credits<c.credits)return {ok:false,msg:"Yetersiz kredi ("+c.credits+")"};
+  if(RPG.state.shards<c.shards)  return {ok:false,msg:"Yetersiz shard ("+c.shards+")"};
+  const fod=fodderFor(it);
+  if(fod.length<c.fodder)
+    return {ok:false,msg:"Aynı slottan "+c.fodder+" kurban parça gerekir ("+fod.length+" var)"};
+
+  RPG.state.credits-=c.credits;
+  RPG.state.shards -=c.shards;
+  for(let i=0;i<c.fodder;i++){
+    const idx=RPG.state.inv.findIndex(x=>x.u===fod[i].u);
+    if(idx>=0)RPG.state.inv.splice(idx,1);
+  }
+  const nr=nextRarity(it.r);
+  const stBefore=RPG.itemStats(it);
+  it.r=nr;
+  it.lv=Math.min(60,it.lv+10);
+  /* DUZELTME: +N SIFIRLANMIYOR. Sifirlaninca kademe carpani (+17'de
+     2.66x) kayboluyor, nadirlik+seviye kazanci (1.77x) bunu
+     karsilamiyor ve evrilen parca ESKISINDEN ZAYIF cikiyordu.
+     Yatirim korunur, yalnizca yeni nadirligin tavanina kirpilir. */
+  it.p=Math.min(RPG.RARITY[nr].maxPlus,it.p);
+  it.ev=evOf(it)+1;
+  RPG.persist();
+  const stAfter=RPG.itemStats(it);
+  try{if(window.NEONAUDIO)window.NEONAUDIO.SFX.enhOk();}catch(e){}
+  return {ok:true,msg:evName(it)+" · "+RPG.RARITY[nr].label,
+          gain:{before:stBefore,after:stAfter}};
+}
+
+/* Envanter/karakter ekranindaki isimler evrim onekini gostersin. */
+window.RPG_itemName=evName;
+
+/* =========================================================
+   UI
+========================================================= */
+const $$=id=>document.getElementById(id);
+const fmt=n=>n>=1000?(n/1000).toFixed(n>=10000?0:1)+"K":String(n);
+let evSel=0;
+
+function cur(){
+  return "◎ "+fmt(RPG.state.credits)+"   ◆ "+fmt(RPG.state.shards)+"   ✦ "+fmt(PROG.state.neon);
+}
+
+function renderCosm(){
+  const w=$$("cosm-body");if(!w)return;
+  const c=$$("cosm-cur");if(c)c.textContent=cur();
+  let sel="";
+  try{sel=Save.data.selectedSkin;}catch(e){}
+  w.innerHTML=PREMIUM.map(p=>{
+    const own=owns(p.id), on=sel===p.id;
+    return '<button class="cosm-card'+(on?" on":"")+'" data-skin="'+p.id+'" '+
+      'style="--co:'+p.outer+';--cg:'+p.glow+'">'+
+      '<span class="cosm-orb"></span>'+
+      '<span class="cosm-txt"><b>'+p.name+'</b><i>'+p.desc+'</i></span>'+
+      '<span class="cosm-p">'+(on?"KUŞANILI":own?"KUŞAN":"✦"+p.neon)+'</span>'+
+    '</button>';
+  }).join("")+
+  '<div class="cosm-note">Premium görünümler yalnızca renk ve parıltı değiştirir. '+
+  'Hiçbir stat, hasar veya oynanış avantajı vermez.</div>';
+  const msg=$$("cosm-msg");
+  w.querySelectorAll("[data-skin]").forEach(b=>b.addEventListener("click",()=>{
+    const id=b.dataset.skin;
+    const r=owns(id)?selectSkin(id):buySkin(id);
+    if(msg){msg.textContent=r.msg;msg.style.color=r.ok?"#48ff9b":"#ff6b8a";}
+    renderCosm();
+  }));
+}
+
+function renderEvo(){
+  const w=$$("evo-body");if(!w)return;
+  const c=$$("evo-cur");if(c)c.textContent=cur();
+  const list=RPG.state.inv
+    .filter(it=>RPG.RARITY[it.r].i>=2)
+    .sort((a,b)=>(evOf(b)-evOf(a))||(RPG.RARITY[b.r].i-RPG.RARITY[a.r].i)||(b.p-a.p));
+  if(!list.length){
+    w.innerHTML='<div class="rpg-empty">Evrim için EPİK veya üstü bir parça gerekir.<br>'+
+      'Boss ve gelişmiş sandıklardan düşer.</div>';
+    return;
+  }
+  if(!list.some(x=>x.u===evSel))evSel=list[0].u;
+  const it=list.find(x=>x.u===evSel);
+  const r=RPG.RARITY[it.r], d=RPG.DEFMAP[it.d];
+  const chk=canEvolve(it), cost=evoCost(it), fod=fodderFor(it);
+  const nr=nextRarity(it.r);
+  const preview=nr?Object.assign({},it,{r:nr,lv:Math.min(60,it.lv+10),
+    p:Math.min(RPG.RARITY[nr].maxPlus,it.p)}):null;
+  const st=RPG.itemStats(it), ns=preview?RPG.itemStats(preview):null;
+
+  w.innerHTML=
+    '<div class="evo-pick">'+list.slice(0,10).map(x=>
+      '<button class="evo-chip'+(x.u===evSel?" on":"")+'" data-ev="'+x.u+'" '+
+      'style="--rc:'+RPG.RARITY[x.r].color+'">'+evName(x)+' +'+x.p+'</button>').join("")+'</div>'+
+    '<div class="rpg-detail on" style="--rc:'+r.color+'">'+
+      '<div class="rpg-d-head">'+
+        '<i class="rpg-ico lg" data-ico="'+d.s+'"></i>'+
+        '<div class="rpg-d-txt"><b>'+evName(it)+' +'+it.p+'</b>'+
+        '<span>'+r.label+' · Lv.'+it.lv+' · EVRİM '+evOf(it)+'/'+EVO_MAX+'</span></div>'+
+      '</div>'+
+      '<div class="rpg-d-stats">'+
+        ["atk","def","hp","crit","cdmg"].filter(k=>st[k]||(ns&&ns[k])).map(k=>{
+          const lbl={atk:"ATK",def:"DEF",hp:"HP",crit:"KRİTİK",cdmg:"KRT.HASAR"}[k];
+          return '<div class="rpg-strow"><span>'+lbl+'</span><b>'+st[k]+'</b>'+
+            '<i>'+(ns&&ns[k]!==st[k]?"→ "+ns[k]:"")+'</i></div>';
+        }).join("")+
+      '</div>'+
+      (chk.ok
+        ? '<div class="rpg-d-note">EVRİM · ◎'+fmt(cost.credits)+' · ◆'+cost.shards+
+          ' · aynı slottan '+cost.fodder+' kurban ('+fod.length+' uygun)<br>'+
+          'Nadirlik '+r.label+' → '+RPG.RARITY[nr].label+' · Lv.'+it.lv+' → '+
+          Math.min(60,it.lv+10)+' · +'+it.p+' korunur</div>'
+        : '<div class="rpg-d-note" style="color:#ff9db2">'+chk.why+'</div>')+
+      '<div class="rpg-d-actions">'+
+        (chk.ok?'<button class="p3-btn" data-do="ev">EVRİMLEŞTİR</button>':'')+
+      '</div>'+
+    '</div>';
+
+  const msg=$$("evo-msg");
+  w.querySelectorAll("[data-ev]").forEach(b=>b.addEventListener("click",()=>{
+    evSel=+b.dataset.ev;renderEvo();
+  }));
+  const go=w.querySelector('[data-do="ev"]');
+  if(go)go.addEventListener("click",()=>{
+    const res=evolve(evSel);
+    if(msg){msg.textContent=res.msg;msg.style.color=res.ok?"#48ff9b":"#ff6b8a";}
+    renderEvo();
+  });
+}
+
+function hideAll(){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));}
+function bind(id,fn){const e=$$(id);if(e)e.addEventListener("click",fn);}
+bind("b-cosm",()=>{hideAll();$$("scr-cosm").classList.add("on");renderCosm();});
+bind("b-evo",()=>{hideAll();$$("scr-evo").classList.add("on");renderEvo();});
+bind("b-cosm-back",()=>{hideAll();const m=$$("scr-menu");if(m)m.classList.add("on");});
+bind("b-evo-back",()=>{hideAll();const m=$$("scr-menu");if(m)m.classList.add("on");});
+
+window.NEONCOSM={PREMIUM,buySkin,selectSkin,owns};
+window.NEONEVO={EVO_MAX,evOf,evName,canEvolve,evoCost,fodderFor,evolve,nextRarity};
+
+})();
+</script>
+
+<script>
+/* =========================================================
+   NORYVX · MENÜ SEKMELERİ + LİDERLİK TABLOSU
+
+   SEKMELER: 16 düz buton 4 kategoriye bölündü. Hiçbir buton
+   ID'si değişmedi, hiçbir binding kırılmadı — sadece hangi
+   panelin görüneceği değişiyor.
+
+   LİDERLİK — GERÇEK KOŞU KAYITLARI:
+     Her koşu bittiğinde skor, dalga, sektör, süre ve o anki
+     güç GERÇEK oyun durumundan kaydedilir. Uydurma isim,
+     uydurma sıralama veya sahte rakip YOKTUR. Çevrimiçi
+     sıralama backend ister; o kısım izole edildi ve ekranda
+     açıkça belirtiliyor.
+========================================================= */
+(function(){
+"use strict";
+
+/* ---------- 1 · MENÜ SEKMELERİ ---------- */
+(function tabs(){
+  const bar=document.getElementById("menu-tabs");
+  if(!bar)return;
+  const panes=[...document.querySelectorAll(".menu-sub[data-mpane]")];
+  bar.querySelectorAll("[data-mtab]").forEach(t=>{
+    t.addEventListener("click",()=>{
+      bar.querySelectorAll("[data-mtab]").forEach(x=>x.classList.toggle("on",x===t));
+      panes.forEach(p=>p.classList.toggle("on",p.dataset.mpane===t.dataset.mtab));
+      try{if(window.NEONAUDIO)window.NEONAUDIO.SFX.tap();}catch(e){}
+    });
+  });
+})();
+
+/* ---------- 2 · LİDERLİK ---------- */
+const LKEY="noryvx_lead_v1";
+const MAX=25;
+let RUNS=[];
+try{
+  const p=JSON.parse(localStorage.getItem(LKEY)||"null");
+  if(Array.isArray(p))RUNS=p.filter(r=>r&&typeof r.score==="number").slice(0,MAX);
+}catch(e){}
+function persist(){try{localStorage.setItem(LKEY,JSON.stringify(RUNS.slice(0,MAX)));}catch(e){}}
+
+function record(){
+  let r;
+  try{
+    r={
+      score:Math.round(Game.score||0),
+      wave :Math.max(1,Game.wave||1),
+      lvl  :Math.max(1,Game.level||1),
+      time :Math.round(Game.time||0),
+      sec  :(window.PROG&&window.PROG.state)?window.PROG.state.sector:1,
+      pow  :window.RPG?window.RPG.derived().power:0,
+      at   :Date.now()
+    };
+  }catch(e){return;}
+  RUNS.push(r);
+  RUNS.sort((a,b)=>b.score-a.score);
+  if(RUNS.length>MAX)RUNS.length=MAX;
+  persist();
+}
+/* koşu sonu — gerçek olay */
+if(typeof showOver==="function"){
+  const _so=showOver;
+  showOver=function(rec){record();return _so(rec);};
+}
+
+const SECN=["","NEON ŞEHRİ","ENDÜSTRİ","MEZARLIK","REAKTÖR","VOID"];
+const fmt=n=>n>=1000?(n/1000).toFixed(n>=10000?0:1)+"K":String(n);
+function dstr(ts){
+  const d=new Date(ts);
+  return String(d.getDate()).padStart(2,"0")+"."+String(d.getMonth()+1).padStart(2,"0")+
+    " "+String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");
+}
+function mmss(s){return Math.floor(s/60)+":"+String(s%60).padStart(2,"0");}
+
+function render(){
+  const w=document.getElementById("lead-body");if(!w)return;
+  const sum=document.getElementById("lead-sum");
+  if(sum)sum.textContent=RUNS.length?RUNS.length+" KOŞU · EN İYİ "+fmt(RUNS[0].score):"HENÜZ KOŞU YOK";
+  if(!RUNS.length){
+    w.innerHTML='<div class="rpg-empty">Henüz tamamlanmış koşu yok.<br>'+
+      'Bir koşu bitir, skorun buraya gerçek verilerle işlensin.</div>'+note();
+    return;
+  }
+  w.innerHTML=RUNS.map((r,i)=>
+    '<div class="lead-row'+(i<3?" top":"")+'">'+
+      '<span class="lead-i">'+(i+1)+'</span>'+
+      '<span class="lead-m"><b>'+r.score.toLocaleString("tr")+'</b>'+
+      '<span>'+(SECN[r.sec]||"?")+' · Lv.'+r.lvl+' · '+mmss(r.time)+' · GÜÇ '+fmt(r.pow)+
+      ' · '+dstr(r.at)+'</span></span>'+
+      '<span class="lead-w">DALGA '+r.wave+'</span>'+
+    '</div>').join("")+note();
+}
+function note(){
+  return '<div class="lead-note">Bu tablo <b>yalnızca bu cihazdaki gerçek koşularını</b> '+
+    'gösterir. Uydurma isim veya sahte rakip eklenmedi. Küresel sıralama sunucu '+
+    'gerektirir; o katman bilinçli olarak boş bırakıldı.</div>';
+}
+
+function hideAll(){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));}
+const b1=document.getElementById("b-lead");
+if(b1)b1.addEventListener("click",()=>{hideAll();
+  document.getElementById("scr-lead").classList.add("on");render();});
+const b2=document.getElementById("b-lead-back");
+if(b2)b2.addEventListener("click",()=>{hideAll();
+  const m=document.getElementById("scr-menu");if(m)m.classList.add("on");});
+
+window.NEONLEAD={RUNS,record,render,persist};
+
+})();
+</script>
+
+<script>
+/* =========================================================
+   NORYVX · TEHDİT ÖLÇEĞİ (denge geçişi)
+
+   SORUN (ölçüldü): ekipman + teknoloji ağacı + ustalık +
+   evrim çarpanları BİRBİRİYLE ÇARPILDIĞI için tam donanımlı
+   oyuncunun DPS'i tabana göre x56'ya çıkıyordu; düşman HP
+   eğrisi ise seviye ve sektörle birlikte ancak x10'a
+   ulaşıyordu. Sonuç: geç oyunda öldürme süresi tabanın
+   %19'una düşüyor, içerik anlamsızlaşıyordu.
+
+   ÇÖZÜM: düşman HP'si oyuncunun GERÇEK güç puanına göre de
+   ölçeklenir. Katsayılar deneme yanılma ile değil, sayısal
+   arama ile bulundu (verify_balance.js).
+
+     ölçek = min(4, 1 + (güç - 850) / 8500)
+
+   Sonuç: öldürme süresi tüm eğri boyunca tabanın 0.70–1.18
+   katı arasında kalıyor. Oyuncu HÂLÂ net x14 kazanıyor —
+   yatırım anlamsızlaşmıyor, sadece içerik tehdit olmayı
+   sürdürüyor.
+
+   GİZLİ DEĞİL: ölçek karakter ekranında açıkça gösterilir.
+========================================================= */
+(function(){
+"use strict";
+const BASE_POWER=850, DIV=8500, CAP=4;
+
+function threat(){
+  try{
+    const p=window.RPG?window.RPG.derived().power:0;
+    return Math.min(CAP,1+Math.max(0,p-BASE_POWER)/DIV);
+  }catch(e){return 1;}
+}
+
+/* Düşman HP eğrisine uygula. Sektör çarpanı zaten ayrı bir
+   sarmalayıcıda; bu üçüncü katman onu bozmaz. */
+if(typeof BALANCE==="object"&&BALANCE.enemy&&typeof BALANCE.enemy.hpCurve==="function"){
+  const _hp=BALANCE.enemy.hpCurve;
+  BALANCE.enemy.hpCurve=function(level){return _hp(level)*threat();};
+}
+
+window.NEONTHREAT={threat,BASE_POWER,DIV,CAP};
+})();
+</script>
+
+<script>
+/* =========================================================
+   NORYVX · ÖLDÜRME EFEKTİ KOZMETİĞİ + ONBOARDING
+
+   ÖLDÜRME EFEKTİ — GERÇEK KOZMETİK:
+     Seçili efekt gerçek düşman ölümünde ekrana çizilir.
+     NEON gerçekten harcanır, sahiplik kalıcı yazılır.
+     Hiçbir efekt hasar, loot, oran veya herhangi bir
+     gameplay değeri değiştirmez — sadece görsel. Mevcut
+     ölüm partikülleri korunur, efekt ÜZERİNE eklenir.
+
+   ONBOARDING — GERÇEK DURUMDAN:
+     Adımlar uydurma değil; oyuncunun gerçek ilerlemesinden
+     okunur (koşu yaptı mı, parçası var mı, kuşandı mı,
+     geliştirdi mi, sektör açtı mı). Tamamlanan adım geri
+     gelmez. Kapatılabilir ve bir daha gösterilmez.
+========================================================= */
+(function(){
+"use strict";
+if(!window.RPG||!window.PROG)return;
+const RPG=window.RPG, PROG=window.PROG;
+
+/* =========================================================
+   1 · ÖLDÜRME EFEKTLERİ
+========================================================= */
+const KKEY="noryvx_kill_v1";
+const KILLS=[
+  {id:"k_std",  n:"STANDART",        neon:0,   c:"#9fb3cc",
+   d:"Varsayılan enerji dağılımı."},
+  {id:"k_plasma",n:"PLAZMA PATLAMASI",neon:150,c:"#ff8a3d",
+   d:"Sıcak plazma halkası ve kıvılcım."},
+  {id:"k_void", n:"VOID ÇÖKÜŞÜ",     neon:240, c:"#b45cff",
+   d:"İçe çöken void tekilliği."},
+  {id:"k_arc",  n:"ZİNCİR ŞİMŞEK",   neon:320, c:"#22e6ff",
+   d:"Çevreye sıçrayan elektrik yayı."},
+  {id:"k_prism",n:"PRİZMA",          neon:460, c:"#ff4fd8",
+   d:"Üç renkli prizma dalgası."}
+];
+const KMAP={};KILLS.forEach(k=>KMAP[k.id]=k);
+
+const K={owned:{k_std:1},sel:"k_std"};
+try{
+  const p=JSON.parse(localStorage.getItem(KKEY)||"null");
+  if(p&&typeof p==="object"){
+    if(p.owned)KILLS.forEach(k=>{if(p.owned[k.id])K.owned[k.id]=1;});
+    if(KMAP[p.sel]&&K.owned[p.sel])K.sel=p.sel;
+  }
+}catch(e){}
+function kPersist(){try{localStorage.setItem(KKEY,JSON.stringify(K));}catch(e){}}
+
+function buyKill(id){
+  const k=KMAP[id];
+  if(!k)return {ok:false,msg:"Efekt yok"};
+  if(K.owned[id])return {ok:false,msg:"Zaten sahipsin"};
+  if(PROG.state.neon<k.neon)return {ok:false,msg:"Yetersiz NEON ("+k.neon+" gerekir)"};
+  PROG.state.neon-=k.neon;PROG.persist();
+  K.owned[id]=1;K.sel=id;kPersist();
+  try{window.NEONAUDIO.SFX.buy();}catch(e){}
+  return {ok:true,msg:k.n+" alındı ve seçildi"};
+}
+function selKill(id){
+  if(!K.owned[id])return {ok:false,msg:"Sahip değilsin"};
+  K.sel=id;kPersist();
+  try{window.NEONAUDIO.SFX.select();}catch(e){}
+  return {ok:true,msg:KMAP[id].n+" seçildi"};
+}
+
+/* Gerçek ölümde çiz — mevcut ölüm efektleri korunur, üzerine eklenir. */
+function killFx(e){
+  const id=K.sel;
+  if(id==="k_std")return;
+  const big=e.boss?2.6:e.elite?1.6:1;
+  try{
+    if(id==="k_plasma"){
+      ringBurst(e.x,e.y,e.r*.4,e.r*3.4*big,"#ff8a3d",.42,3.5*big);
+      emit(e.x,e.y,Math.round(10*big),"#ffd79a",240,3,.5);
+    }else if(id==="k_void"){
+      /* ice cokme: buyuk halka once, kucuk sonra */
+      ringBurst(e.x,e.y,e.r*3.2*big,e.r*.3,"#b45cff",.46,3*big);
+      ringBurst(e.x,e.y,e.r*1.6*big,e.r*.2,"#e2bcff",.30,2);
+      emit(e.x,e.y,Math.round(8*big),"#b45cff",120,2.4,.55);
+    }else if(id==="k_arc"){
+      for(let i=0;i<3;i++){
+        const a=Math.random()*Math.PI*2, d=e.r*(2.2+Math.random()*2)*big;
+        ringBurst(e.x+Math.cos(a)*d,e.y+Math.sin(a)*d,2,e.r*1.1*big,"#22e6ff",.26,2);
+      }
+      emit(e.x,e.y,Math.round(9*big),"#eafcff",300,2.6,.4);
+    }else if(id==="k_prism"){
+      ringBurst(e.x,e.y,e.r*.3,e.r*3.0*big,"#ff4fd8",.44,3*big);
+      ringBurst(e.x,e.y,e.r*.3,e.r*2.2*big,"#22e6ff",.36,2.4*big);
+      ringBurst(e.x,e.y,e.r*.3,e.r*1.5*big,"#ffe34d",.28,2*big);
+    }
+  }catch(err){}
+}
+const _killed=window.RPG_onEnemyKilled;
+window.RPG_onEnemyKilled=function(e){
+  if(_killed)_killed(e);
+  killFx(e);
+};
+
+/* =========================================================
+   2 · ONBOARDING — gerçek ilerlemeden okur
+========================================================= */
+const OKEY="noryvx_onb_v1";
+const O={done:false};
+try{const p=JSON.parse(localStorage.getItem(OKEY)||"null");if(p&&p.done)O.done=true;}catch(e){}
+function oPersist(){try{localStorage.setItem(OKEY,JSON.stringify(O));}catch(e){}}
+
+const STEPS=[
+  {id:"s1",n:"İLK KOŞUNU YAP",d:"OYNA'ya bas ve bir koşu tamamla.",
+   go:null,ok:()=>{try{return (PROG.state.counters.kills|0)>0;}catch(e){return false;}}},
+  {id:"s2",n:"PARÇA TOPLA",d:"Düşmanlar parça düşürür. Envanterine bak.",
+   go:"b-rpginv",ok:()=>{try{return RPG.state.inv.length>1;}catch(e){return false;}}},
+  {id:"s3",n:"BİR PARÇA KUŞAN",d:"Karakter ekranından slot seç, parçayı kuşan.",
+   go:"b-rpgchar",ok:()=>{try{return Object.keys(RPG.state.equip).length>0;}catch(e){return false;}}},
+  {id:"s4",n:"GELİŞTİR",d:"Envanterde bir parçayı +1'e çıkar.",
+   go:"b-rpginv",ok:()=>{try{return RPG.state.inv.some(i=>i.p>0);}catch(e){return false;}}},
+  {id:"s5",n:"YENİ SEKTÖR AÇ",d:"Sektör 1'de dalga 8'e ulaş, Sektör 2 açılsın.",
+   go:"b-sectors",ok:()=>{try{return Object.keys(PROG.state.unlocked).length>1;}catch(e){return false;}}},
+  {id:"s6",n:"GÖREV ÖDÜLÜ AL",d:"Görevler ekranından tamamlanan bir ödülü al.",
+   go:"b-missions",ok:()=>{try{return Object.keys(PROG.state.claimed).length>0;}catch(e){return false;}}}
+];
+function current(){
+  for(const s of STEPS)if(!s.ok())return s;
+  return null;
+}
+
+function renderOnb(){
+  const box=document.getElementById("onb");
+  if(!box)return;
+  if(O.done){box.classList.remove("on");return;}
+  const s=current();
+  if(!s){
+    O.done=true;oPersist();
+    box.classList.remove("on");
+    return;
+  }
+  const idx=STEPS.indexOf(s)+1;
+  box.classList.add("on");
+  box.innerHTML=
+    '<div class="onb-h"><b>BAŞLANGIÇ REHBERİ</b><span>'+idx+' / '+STEPS.length+'</span></div>'+
+    '<div class="onb-n">'+s.n+'</div>'+
+    '<div class="onb-d">'+s.d+'</div>'+
+    '<div class="pg-bar"><i style="width:'+((idx-1)/STEPS.length*100).toFixed(0)+'%"></i></div>'+
+    '<div class="onb-a">'+
+      (s.go?'<button class="p3-btn" data-onb-go="'+s.go+'">GÖTÜR</button>':'')+
+      '<button class="p3-btn" data-onb-x="1">GİZLE</button>'+
+    '</div>';
+  const go=box.querySelector("[data-onb-go]");
+  if(go)go.addEventListener("click",()=>{
+    const t=document.getElementById(go.dataset.onbGo);
+    if(t)t.click();
+  });
+  const x=box.querySelector("[data-onb-x]");
+  if(x)x.addEventListener("click",()=>{
+    O.done=true;oPersist();box.classList.remove("on");
+    try{window.NEONAUDIO.SFX.tap();}catch(e){}
+  });
+}
+setInterval(()=>{
+  const m=document.getElementById("scr-menu");
+  if(m&&m.classList.contains("on"))renderOnb();
+},900);
+
+/* =========================================================
+   3 · UI — öldürme efekti ekranı
+========================================================= */
+const $$=id=>document.getElementById(id);
+const fmt=n=>n>=1000?(n/1000).toFixed(n>=10000?0:1)+"K":String(n);
+
+function renderKill(){
+  const w=$$("kill-body");if(!w)return;
+  const c=$$("kill-cur");
+  if(c)c.textContent="✦ "+fmt(PROG.state.neon)+" NEON";
+  w.innerHTML=KILLS.map(k=>{
+    const own=!!K.owned[k.id], on=K.sel===k.id;
+    return '<button class="cosm-card'+(on?" on":"")+'" data-kill="'+k.id+'" '+
+      'style="--co:'+k.c+';--cg:'+k.c+'">'+
+      '<span class="cosm-orb"></span>'+
+      '<span class="cosm-txt"><b>'+k.n+'</b><i>'+k.d+'</i></span>'+
+      '<span class="cosm-p">'+(on?"SEÇİLİ":own?"SEÇ":"✦"+k.neon)+'</span>'+
+    '</button>';
+  }).join("")+
+  '<div class="cosm-note">Öldürme efektleri yalnızca görseldir. Hasar, loot oranı '+
+  'veya herhangi bir oynanış değeri değiştirmez.</div>';
+  const msg=$$("kill-msg");
+  w.querySelectorAll("[data-kill]").forEach(b=>b.addEventListener("click",()=>{
+    const id=b.dataset.kill;
+    const r=K.owned[id]?selKill(id):buyKill(id);
+    if(msg){msg.textContent=r.msg;msg.style.color=r.ok?"#48ff9b":"#ff6b8a";}
+    renderKill();
+  }));
+}
+
+function hideAll(){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));}
+function bind(id,fn){const e=$$(id);if(e)e.addEventListener("click",fn);}
+bind("b-kill",()=>{hideAll();$$("scr-kill").classList.add("on");renderKill();});
+bind("b-kill-back",()=>{hideAll();const m=$$("scr-menu");if(m)m.classList.add("on");renderOnb();});
+
+renderOnb();
+
+window.NEONKILL={KILLS,K,buyKill,selKill,killFx};
+window.NEONONB={STEPS,O,current,renderOnb};
+
+})();
+</script>
 
 </body>
       </html>
