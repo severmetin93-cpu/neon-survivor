@@ -1770,6 +1770,55 @@ body.ls .bn{width:70px}
 }
 </style>
 
+<style id="noryvx-settings-css">
+/* AYARLAR EKRANı · Phase 14
+   Presentation only. Gameplay/logic koduna dokunulmaz. */
+.set-wrap{
+  width:min(430px,93vw);display:flex;flex-direction:column;
+  gap:var(--gap-md);margin-top:4px;
+  max-height:66vh;overflow-y:auto;padding:2px;overscroll-behavior:contain}
+.set-section{display:flex;flex-direction:column;gap:var(--gap)}
+.set-section-label{
+  font-size:9px;font-weight:900;letter-spacing:.22em;
+  color:var(--ink-3);text-transform:uppercase;padding:0 2px}
+.set-row{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:var(--gap);padding:13px 14px;border-radius:var(--r-md);
+  background:var(--s2);border:1px solid var(--line);min-height:56px}
+.set-row-info{display:flex;flex-direction:column;gap:3px}
+.set-row-label{font-size:13px;font-weight:800;letter-spacing:.06em;color:var(--ink)}
+.set-row-desc{font-size:10px;color:var(--ink-3);line-height:1.35}
+.set-tgl{
+  flex:0 0 auto;width:48px;height:27px;border-radius:999px;
+  border:1px solid rgba(234,244,255,.12);background:rgba(234,244,255,.07);
+  position:relative;cursor:pointer;
+  transition:background var(--t-fast),border-color var(--t-fast)}
+.set-tgl::after{
+  content:"";position:absolute;top:3px;left:3px;
+  width:19px;height:19px;border-radius:50%;
+  background:var(--ink-3);
+  transition:transform var(--t-fast),background var(--t-fast)}
+.set-tgl.on{background:var(--primary);border-color:var(--primary)}
+.set-tgl.on::after{transform:translateX(21px);background:var(--s0)}
+.set-info-card{
+  border-radius:var(--r-md);background:var(--s1);
+  border:1px solid var(--line);overflow:hidden}
+.set-info-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:9px 14px;border-bottom:1px solid var(--line)}
+.set-info-row:last-child{border-bottom:none}
+.set-info-k{font-size:9.5px;letter-spacing:.12em;color:var(--ink-3);text-transform:uppercase}
+.set-info-v{font-size:10.5px;font-weight:800;color:var(--ink-2);
+  letter-spacing:.06em;font-variant-numeric:tabular-nums}
+.set-danger{
+  min-height:50px;width:100%;
+  border:1px solid rgba(255,59,107,.28);border-radius:var(--r-md);
+  background:rgba(255,59,107,.05);color:var(--danger);
+  font-weight:800;font-size:11px;letter-spacing:.12em}
+.set-danger:active{transform:scale(.98)}
+@media(max-height:680px){.set-wrap{max-height:58vh}}
+</style>
+
 </head>
 
 <body>
@@ -2366,6 +2415,60 @@ body.ls .bn{width:70px}
     Ana Menü
   </button>
 
+</div>
+
+<!-- AYARLAR · Phase 14 -->
+<div class="screen" id="scr-settings">
+  <div class="tutorial-title">AYARLAR</div>
+  <div class="set-wrap">
+
+    <div class="set-section">
+      <div class="set-section-label">Ses &amp; Haptik</div>
+      <div class="set-row">
+        <div class="set-row-info">
+          <span class="set-row-label">Ses Efektleri</span>
+          <span class="set-row-desc">Silah, yetenek ve arayüz sesleri</span>
+        </div>
+        <button class="set-tgl" id="st-sound" aria-label="Ses efektlerini aç/kapat"></button>
+      </div>
+      <div class="set-row">
+        <div class="set-row-info">
+          <span class="set-row-label">Titreşim</span>
+          <span class="set-row-desc">Dokunmatik geri bildirim</span>
+        </div>
+        <button class="set-tgl" id="st-vibe" aria-label="Titreşimi aç/kapat"></button>
+      </div>
+    </div>
+
+    <div class="set-section">
+      <div class="set-section-label">Uygulama Bilgisi</div>
+      <div class="set-info-card">
+        <div class="set-info-row">
+          <span class="set-info-k">SÜRÜM</span>
+          <span class="set-info-v">V18.0.0 · UI_SET_60</span>
+        </div>
+        <div class="set-info-row">
+          <span class="set-info-k">KAYIT BOYUTU</span>
+          <span class="set-info-v" id="st-save-size">—</span>
+        </div>
+        <div class="set-info-row">
+          <span class="set-info-k">TOPLAM KOŞU</span>
+          <span class="set-info-v" id="st-runs">—</span>
+        </div>
+        <div class="set-info-row">
+          <span class="set-info-k">EN İYİ SKOR</span>
+          <span class="set-info-v" id="st-best-score">—</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="set-section">
+      <div class="set-section-label">Veri Yönetimi</div>
+      <button class="set-danger" id="b-settings-reset">VERİLERİ SIFIRLA</button>
+    </div>
+
+  </div>
+  <button class="btn ghost" id="b-settings-back">Geri</button>
 </div>
 
 </div>
@@ -14312,6 +14415,10 @@ const fmt=n=>n>=1e6?(n/1e6).toFixed(1)+"M":n>=1000?(n/1000).toFixed(n>=10000?0:1
   const pane=document.createElement("div");
   pane.className="menu-sub";
   pane.dataset.mpane="sys";
+  /* AYARLAR butonu — scr-settings'e navigasyon */
+  const bSet=document.createElement("button");
+  bSet.className="btn ghost";bSet.id="b-settings";bSet.textContent="AYARLAR";
+  pane.appendChild(bSet);
   ["b-save","b-how"].forEach(id=>{
     const b=$(id);
     if(b)pane.appendChild(b);
@@ -14451,6 +14558,101 @@ topbar();badges();
 
 window.NEONNAV={go,badges,topbar,counts:{countMissions,countBP,countAch,countShop,countSkill,countGear}};
 
+})();
+</script>
+
+<!-- AYARLAR EKRANı · Phase 14
+     Presentation only. Yalnizca Save.data.soundEnabled /
+     vibrationEnabled okur/degistirir. Gameplay state yok. -->
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const fmtN=n=>n>=1e6?(n/1e6).toFixed(1)+"M":n>=1000?(n/1000).toFixed(1)+"K":String(n|0);
+
+function hideAll(){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));}
+function goMenu(){
+  hideAll();
+  const m=$("scr-menu");if(m)m.classList.add("on");
+  try{if(window.NEONNAV)NEONNAV.topbar();}catch(e){}
+}
+
+function syncSetToggles(){
+  try{
+    const d=(typeof Save!=="undefined")?Save.data:{};
+    const s=$("st-sound"),v=$("st-vibe");
+    if(s)s.classList.toggle("on",!!d.soundEnabled);
+    if(v)v.classList.toggle("on",!!d.vibrationEnabled);
+  }catch(e){}
+}
+
+function renderSettings(){
+  syncSetToggles();
+  try{
+    const d=(typeof Save!=="undefined")?Save.data:{};
+    const sz=$("st-save-size");
+    if(sz){
+      try{sz.textContent=(JSON.stringify(localStorage).length/1024).toFixed(1)+" KB";}
+      catch(e){sz.textContent="—";}
+    }
+    const runs=$("st-runs");
+    if(runs)runs.textContent=fmtN(+(d.gamesPlayed||0));
+    const best=$("st-best-score");
+    if(best)best.textContent=fmtN(+(d.bestScore||0));
+  }catch(e){}
+}
+
+const stSound=$("st-sound");
+const stVibe=$("st-vibe");
+const resetBtn=$("b-settings-reset");
+const backBtn=$("b-settings-back");
+const scrSettings=$("scr-settings");
+
+if(stSound){
+  stSound.addEventListener("click",function(){
+    try{
+      Save.data.soundEnabled=!Save.data.soundEnabled;
+      Save.save();
+      syncSetToggles();
+      if(typeof syncToggles==="function")syncToggles();
+      try{if(typeof Audio_!=="undefined")Audio_.power();}catch(e){}
+    }catch(e){}
+  });
+}
+
+if(stVibe){
+  stVibe.addEventListener("click",function(){
+    try{
+      Save.data.vibrationEnabled=!Save.data.vibrationEnabled;
+      Save.save();
+      syncSetToggles();
+      if(typeof syncToggles==="function")syncToggles();
+      if(typeof vibrate==="function")vibrate(20);
+    }catch(e){}
+  });
+}
+
+if(resetBtn){
+  resetBtn.addEventListener("click",function(){
+    if(!confirm("Tüm ilerleme verileri kalıcı olarak silinecek.\nEmin misiniz?"))return;
+    try{localStorage.removeItem("neon_survivor_v3");}catch(e){}
+    location.reload();
+  });
+}
+
+if(backBtn)backBtn.addEventListener("click",goMenu);
+
+/* b-settings butonu buildSysPane() tarafindan runtime'da olusturulur;
+   MutationObserver veya geciktirmeli bind yerine delegasyon kullaniriz. */
+document.addEventListener("click",function(e){
+  if(e.target&&e.target.id==="b-settings"&&scrSettings){
+    hideAll();
+    scrSettings.classList.add("on");
+    renderSettings();
+  }
+});
+
+window._settingsRender=renderSettings;
 })();
 </script>
 
