@@ -15,7 +15,11 @@
    mevcut degildi (pre-existing sorun); ASSETS listesi temizlendi. */
 /* V18.0.0 — manifest.json duzeltildi: mevcut olmayan PNG ikonlar kaldirildi,
    icon.svg eklendi. manifest cache-first oldugu icin cache adi yukseltildi. */
-const CACHE = "neon-survivor-v18-0-0";
+/* V19.0.0 — Phase 12-15 UI sprint: token sistemi tamamlandi, AYARLAR ekrani,
+   oyun-sonu dalga/seviye/sektor, iOS status bar meta tag eklendi.
+   index.html network-first oldugu icin cache adi sadece eski neon-survivor-v18
+   cache'lerini temizlemek icin yukseltildi. */
+const CACHE = "neon-survivor-v19-0-0";
 
 const ASSETS = [
   "./",
