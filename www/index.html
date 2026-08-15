@@ -174,7 +174,7 @@ button,
 .tgl{
   width:46px;
   height:46px;
-  border-radius:13px;
+  border-radius:var(--r-sm);
   border:1px solid rgba(34,230,255,.25);
   background:rgba(10,16,36,.75);
   color:var(--cyan);
@@ -221,7 +221,7 @@ button,
   flex:0 0 44px;
   width:44px;
   height:44px;
-  border-radius:13px;
+  border-radius:var(--r-sm);
   display:flex;
   align-items:center;
   justify-content:center;
@@ -260,7 +260,7 @@ button,
   width:46px;
   height:46px;
   z-index:8;
-  border-radius:13px;
+  border-radius:var(--r-sm);
   border:1px solid rgba(34,230,255,.25);
   background:rgba(4,6,15,.65);
   color:var(--cyan);
@@ -581,7 +581,7 @@ button,
 .levelup-card .perk-icon{float:left;width:42px;height:42px;margin-right:12px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;background:rgba(34,230,255,.08);border:1px solid rgba(34,230,255,.25);font-size:19px;color:var(--primary)}
 .levelup-card h3{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#fff;margin:2px 0 5px}.levelup-card h3 small{font-size:9px;color:var(--primary);letter-spacing:.08em}
 .levelup-card p{font-size:11px;line-height:1.4;color:rgba(234,244,255,.55);min-height:30px}
-.levelup-card button{width:100%;margin-top:12px;min-height:44px;border:1px solid rgba(34,230,255,.3);border-radius:11px;background:linear-gradient(135deg,rgba(34,230,255,.12),rgba(59,123,255,.12));color:#eaf4ff;font-weight:900;font-size:11px;letter-spacing:.1em}
+.levelup-card button{width:100%;margin-top:12px;min-height:44px;border:1px solid rgba(34,230,255,.3);border-radius:var(--r-sm);background:linear-gradient(135deg,rgba(34,230,255,.12),rgba(59,123,255,.12));color:#eaf4ff;font-weight:900;font-size:11px;letter-spacing:.1em}
 .levelup-card button:active{transform:scale(.98)}
 .levelup-note{margin-top:14px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:rgba(234,244,255,.35);text-align:center}
 #run-countdown{position:absolute;inset:0;z-index:35;display:none;align-items:center;justify-content:center;flex-direction:column;pointer-events:none;background:rgba(4,6,15,.18)}
@@ -615,7 +615,7 @@ button,
 <style id="noryvx-phase2-css">
 .p2-build-panel{width:min(420px,92vw);max-height:72vh;overflow:auto;padding-bottom:14px}
 .p2-summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
-.p2-stat{padding:12px;border-radius:13px;background:rgba(8,15,34,.88);border:1px solid rgba(34,230,255,.14)}
+.p2-stat{padding:12px;border-radius:var(--r-sm);background:rgba(8,15,34,.88);border:1px solid rgba(34,230,255,.14)}
 .p2-k{font-size:9px;letter-spacing:.13em;color:rgba(234,244,255,.45);text-transform:uppercase}
 .p2-v{font-size:18px;font-weight:900;color:var(--ink);margin-top:3px}
 .p2-item{padding:11px;border-radius:var(--r-sm);background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);margin-bottom:7px}
@@ -657,7 +657,7 @@ button,
 .p3-wrap{width:min(430px,92vw);margin:0 auto}
 .p3-card{background:rgba(8,15,34,.90);border:1px solid rgba(34,230,255,.14);border-radius:var(--r-md);padding:12px;margin:8px 0}
 .p3-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.p3-btn{min-height:48px;border:1px solid rgba(34,230,255,.22);border-radius:11px;background:rgba(34,230,255,.06);color:#eaf4ff;font-weight:900;font-size:10px}
+.p3-btn{min-height:48px;border:1px solid rgba(34,230,255,.22);border-radius:var(--r-sm);background:rgba(34,230,255,.06);color:#eaf4ff;font-weight:900;font-size:10px}
 .p3-btn.on{border-color:rgba(34,230,255,.75);background:rgba(34,230,255,.18)}
 .p3-k{font-size:9px;letter-spacing:.12em;color:rgba(234,244,255,.52);text-transform:uppercase}
 .p3-v{font-size:20px;font-weight:900}
@@ -666,7 +666,7 @@ button,
 .p3-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--secondary))}
 .p3-row{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .p3-chip{padding:4px 7px;border-radius:7px;background:rgba(160,92,255,.12);border:1px solid rgba(160,92,255,.25);font-size:9px;font-weight:900}
-.p3-skill{padding:10px;border:1px solid rgba(255,255,255,.07);border-radius:11px;background:rgba(255,255,255,.025);margin-top:7px}
+.p3-skill{padding:10px;border:1px solid rgba(255,255,255,.07);border-radius:var(--r-sm);background:rgba(255,255,255,.025);margin-top:7px}
 .p3-skill button{margin-top:7px;width:100%;min-height:44px;border:1px solid rgba(34,230,255,.2);border-radius:8px;background:rgba(34,230,255,.06);color:#eaf4ff;font-size:9px;font-weight:900}
 </style>
 
@@ -1733,7 +1733,7 @@ body.ls #b-dash{width:72px;height:72px;
 .bn{
   position:relative;
   width:60px;padding:8px 4px 7px;
-  border:0;background:transparent;border-radius:13px;
+  border:0;background:transparent;border-radius:var(--r-sm);
   display:flex;flex-direction:column;align-items:center;gap:4px;
   color:var(--ink-3);
   transition:color var(--t-fast),background var(--t-fast);
