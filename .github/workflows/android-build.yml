@@ -133,6 +133,9 @@ jobs:
           add-job-summary: always
           # Tam acik kaynak cache isteniyorsa: cache-provider: basic
 
+      - name: gradlew izni
+        run: chmod +x android/gradlew
+
       # ------------------------------------------------------------------
       # 5) ASIL DUZELTME: Gradle dagitim indirmesini retry ile yap.
       #    Wrapper'in kendi indiricisi retry yapmaz; 503 veya
