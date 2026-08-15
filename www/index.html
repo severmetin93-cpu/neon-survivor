@@ -201,7 +201,7 @@ button,
 .tutorial-card{
   width:min(390px,88vw);
   padding:20px;
-  border-radius:22px;
+  border-radius:var(--r-lg);
   background:linear-gradient(
     180deg,
     rgba(13,24,55,.94),
@@ -550,7 +550,7 @@ button,
 }
 
 
-.progress-panel{width:min(390px,88vw);margin:18px 0 8px;padding:16px;border-radius:18px;background:rgba(8,15,34,.82);border:1px solid rgba(34,230,255,.18)}
+.progress-panel{width:min(390px,88vw);margin:18px 0 8px;padding:16px;border-radius:var(--r-md);background:rgba(8,15,34,.82);border:1px solid rgba(34,230,255,.18)}
 .level-line{display:flex;justify-content:space-between;align-items:center;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:rgba(234,244,255,.55)}
 .level-line strong{color:var(--primary);font-size:18px}
 .xp-bar{height:7px;margin-top:10px;border-radius:99px;background:rgba(234,244,255,.08);overflow:hidden}
@@ -576,7 +576,7 @@ button,
 /* IN-RUN LEVEL UP */
 .levelup-sub{margin-top:-12px;margin-bottom:18px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgba(234,244,255,.48);text-align:center}
 .levelup-grid{width:min(390px,88vw);display:grid;grid-template-columns:1fr;gap:10px;max-height:62vh;overflow:auto}
-.levelup-card{position:relative;padding:16px;border-radius:18px;background:linear-gradient(180deg,rgba(13,24,55,.96),rgba(5,9,22,.96));border:1px solid rgba(34,230,255,.2);text-align:left;box-shadow:0 0 18px rgba(34,230,255,.06)}
+.levelup-card{position:relative;padding:16px;border-radius:var(--r-md);background:linear-gradient(180deg,rgba(13,24,55,.96),rgba(5,9,22,.96));border:1px solid rgba(34,230,255,.2);text-align:left;box-shadow:0 0 18px rgba(34,230,255,.06)}
 .levelup-card:active{transform:scale(.985)}
 .levelup-card .perk-icon{float:left;width:42px;height:42px;margin-right:12px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;background:rgba(34,230,255,.08);border:1px solid rgba(34,230,255,.25);font-size:19px;color:var(--primary)}
 .levelup-card h3{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#fff;margin:2px 0 5px}.levelup-card h3 small{font-size:9px;color:var(--primary);letter-spacing:.08em}
@@ -673,7 +673,7 @@ button,
 
 <style id="noryvx-p3-selection-css">
 .p3-select-grid{display:grid;grid-template-columns:1fr;gap:9px;margin-top:10px}
-.p3-char-card{position:relative;text-align:left;padding:13px;border-radius:15px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(145deg,rgba(10,18,38,.96),rgba(5,10,24,.96));color:#eaf4ff;min-height:92px}
+.p3-char-card{position:relative;text-align:left;padding:13px;border-radius:var(--r-md);border:1px solid rgba(255,255,255,.08);background:linear-gradient(145deg,rgba(10,18,38,.96),rgba(5,10,24,.96));color:#eaf4ff;min-height:92px}
 .p3-char-card.selected{border-color:rgba(34,230,255,.85);box-shadow:0 0 0 1px rgba(34,230,255,.18),0 0 22px rgba(34,230,255,.10)}
 .p3-char-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .p3-char-name{font-size:14px;font-weight:950;letter-spacing:.06em}
@@ -681,7 +681,7 @@ button,
 .p3-char-stats{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .p3-char-stat{font-size:8px;padding:4px 6px;border-radius:6px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.06)}
 .p3-selected-mark{font-size:8px;font-weight:950;letter-spacing:.08em;color:var(--primary)}
-.p3-active-banner{display:flex;justify-content:space-between;align-items:center;padding:9px 10px;border-radius:10px;background:rgba(34,230,255,.07);border:1px solid rgba(34,230,255,.15);margin-bottom:8px}
+.p3-active-banner{display:flex;justify-content:space-between;align-items:center;padding:9px 10px;border-radius:var(--r-sm);background:rgba(34,230,255,.07);border:1px solid rgba(34,230,255,.15);margin-bottom:8px}
 .p3-active-banner b{font-size:10px}
 </style>
 
@@ -1724,7 +1724,7 @@ body.ls #b-dash{width:72px;height:72px;
   display:none;
   gap:6px;
   padding:6px;
-  border-radius:18px;
+  border-radius:var(--r-md);
   background:linear-gradient(180deg,rgba(14,22,46,.90),rgba(5,9,20,.94));
   border:1px solid var(--line);
   box-shadow:0 6px 22px rgba(0,0,0,.45);
