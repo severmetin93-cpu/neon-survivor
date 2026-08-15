@@ -6,7 +6,7 @@
     "backgroundColor": "#04060f",
     "allowMixedContent": false,
     "captureInput": false,
-    "webContentsDebuggingEnabled": false,
+    "webContentsDebuggingEnabled": true,
     "adjustMarginsForEdgeToEdge": "disable"
   },
   "server": {

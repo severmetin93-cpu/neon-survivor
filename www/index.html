@@ -6966,17 +6966,27 @@ const ATLAS={
 
 (function loadAtlas(){
   if(ATLAS.tried)return; ATLAS.tried=true;
+  window._ADLOG={step:"init"};
   try{
     fetch("./assets/atlas-units.json",{cache:"no-cache"})
-      .then(r=>r.ok?r.json():Promise.reject(0))
-      .then(meta=>new Promise((res,rej)=>{
-        const im=new Image();
-        im.onload=()=>{ATLAS.img=im;ATLAS.f=meta.frames;ATLAS.ready=true;res();};
-        im.onerror=rej;
-        im.src="./assets/"+(meta.image||"atlas-units.png");
-      }))
-      .catch(()=>{ATLAS.ready=false;});
-  }catch(e){ATLAS.ready=false;}
+      .then(r=>{
+        window._ADLOG={step:"fetch_ok",ok:r.ok,status:r.status,type:r.type};
+        console.log("[ATLAS] fetch ok",r.ok,r.status,r.type);
+        return r.ok?r.json():Promise.reject("status:"+r.status);
+      })
+      .then(meta=>{
+        window._ADLOG.step="json_ok";
+        window._ADLOG.frameCount=Object.keys(meta.frames||{}).length;
+        console.log("[ATLAS] json ok, frames:",Object.keys(meta.frames||{}));
+        return new Promise((res,rej)=>{
+          const im=new Image();
+          im.onload=()=>{window._ADLOG.step="img_ok";console.log("[ATLAS] img loaded",im.width,im.height);ATLAS.img=im;ATLAS.f=meta.frames;ATLAS.ready=true;res();};
+          im.onerror=(e)=>{window._ADLOG.step="img_fail";console.error("[ATLAS] img error",e);rej(e);};
+          im.src="./assets/"+(meta.image||"atlas-units.png");
+        });
+      })
+      .catch(e=>{window._ADLOG.step="FAIL";window._ADLOG.err=String(e);console.error("[ATLAS] FAILED",e);ATLAS.ready=false;});
+  }catch(e){window._ADLOG={step:"FAIL",err:String(e)};ATLAS.ready=false;}
 })();
 
 /* Gecerli transform'un merkezine sprite cizer. */
@@ -7378,7 +7388,8 @@ function rrController(P){
   /* SPRITE YOLU — atlas hazirsa bake edilmis govde kullanilir,
      enerji nabzi/aura CANLI kalir. Atlas yoksa asagidaki
      procedural cizim aynen calisir. */
-  if(atlasHas("controller")){
+  /* force-draw bypass: ATLAS.img+frame var ama atlasHas() false dönüyorsa yakalar */
+  if(ATLAS.img&&ATLAS.f&&ATLAS.f["controller"]||atlasHas("controller")){
     ctx.save();
     atlasDraw("controller",46);
     ctx.globalCompositeOperation="lighter";
@@ -8719,6 +8730,20 @@ function updatePowerHUD(){
 function render(dt){
 
   ctx.save();
+
+  /* DEBUG ATLAS OVERLAY — geçici teşhis için */
+  (function(){
+    const _d=window._ADLOG||{};
+    ctx.save();
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.fillStyle="rgba(0,0,0,.75)";ctx.fillRect(4,4,320,22);
+    ctx.fillStyle="#0ff";ctx.font="bold 11px monospace";ctx.textAlign="left";
+    ctx.fillText("ATLAS:"+(_d.step||"?")+
+      " ready="+ATLAS.ready+
+      " img="+!!(ATLAS.img)+
+      " f.ctrl="+!!(ATLAS.f&&ATLAS.f.controller),8,19);
+    ctx.restore();
+  })();
 
   if(
     player.shake>0
