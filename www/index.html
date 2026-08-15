@@ -11,7 +11,7 @@
 <meta name="application-name" content="Neon Survivor">
 <meta name="apple-mobile-web-app-title" content="Neon Survivor">
 <link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
-<title>NORYVX V19.0.0</title>
+<title>NORYVX V20.0.0</title>
 <link rel="manifest" href="manifest.json">
 
 <style>
@@ -1827,7 +1827,7 @@ body.ls .bn{width:70px}
 </head>
 
 <body>
-<div id="version-badge" aria-hidden="true">V19.0.0 · UI_SET_60</div>
+<div id="version-badge" aria-hidden="true">V20.0.0 · UI_SET_60</div>
 
 <div id="stage">
 
@@ -2462,7 +2462,7 @@ body.ls .bn{width:70px}
       <div class="set-info-card">
         <div class="set-info-row">
           <span class="set-info-k">SÜRÜM</span>
-          <span class="set-info-v">V19.0.0 · UI_SET_60</span>
+          <span class="set-info-v">V20.0.0 · UI_SET_60</span>
         </div>
         <div class="set-info-row">
           <span class="set-info-k">KAYIT BOYUTU</span>
@@ -2517,7 +2517,7 @@ const BALANCE={
 
   /* PHASE 0.5 · 14 — tek versiyon kaynagi. DOM rozeti ve <title>
      boot sirasinda bu degerden yazilir. */
-  version:"16.7.0",
+  version:"20.0.0",
 
   /* ---------------------------------------------------------
      FAZ 0 DUZELTME SABITLERI
@@ -11010,7 +11010,7 @@ window.RPG={
 (function(){
 "use strict";
 
-if(!window.RPG){console.warn("PROG: RPG cekirdegi yok");return;}
+if(!window.RPG){return;}
 const RPG=window.RPG;
 const KEY="noryvx_prog_v1";
 
@@ -11412,7 +11412,7 @@ window.PROG={
 (function(){
 "use strict";
 
-if(typeof updateBossEnemy!=="function"){console.warn("TITAN: boss motoru yok");return;}
+if(typeof updateBossEnemy!=="function"){return;}
 
 const T={
   breakAt:0.65,      /* faz 2 — zirh kirilmasi */
@@ -11591,7 +11591,7 @@ window.TITAN={T,phaseOf};
 (function(){
 "use strict";
 
-if(typeof P3S!=="object"||!P3S){console.warn("TECH: P3 yok");return;}
+if(typeof P3S!=="object"||!P3S){return;}
 
 const TECH={
   plasma:{n:"PLAZMA",c:"#ff8a3d",d:"Yıkım gücü",nodes:[
@@ -11841,7 +11841,7 @@ window.TECHTREE={TECH,ALL,rank,state,spend,reqMet,M,renderTech,renderMastery};
 (function(){
 "use strict";
 
-if(!window.RPG||!window.PROG){console.warn("BP: bagimlilik yok");return;}
+if(!window.RPG||!window.PROG){return;}
 const RPG=window.RPG, PROG=window.PROG;
 const KEY="noryvx_bp_v1";
 const SEASON_DAYS=30;
@@ -12770,7 +12770,7 @@ window.NEONACH={ACH,A,claimAch,renderAch,
 ========================================================= */
 (function(){
 "use strict";
-if(!window.RPG||!window.PROG){console.warn("COSM: bagimlilik yok");return;}
+if(!window.RPG||!window.PROG){return;}
 const RPG=window.RPG, PROG=window.PROG;
 
 /* =========================================================

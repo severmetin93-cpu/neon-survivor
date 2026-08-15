@@ -22,7 +22,10 @@
 /* V19.1.0 — Phase 18 PWA/offline QA: manifest.json guncellendi (lang:tr,
    purpose:"any maskable"). manifest cache-first oldugu icin cache adi
    yukseltildi; eski manifest artik bir dahaki acilista temizlenecek. */
-const CACHE = "neon-survivor-v19-1-0";
+/* V20.0.0 — Phase 20 release: BALANCE.version "20.0.0"'a yukseltildi,
+   console.warn bagimlilık uyarılari kaldirildi, tum versiyon fallback'leri
+   guncellendi. Cache adi degisiyor — eski v19 entry'leri temizlenecek. */
+const CACHE = "neon-survivor-v20-0-0";
 
 const ASSETS = [
   "./",
