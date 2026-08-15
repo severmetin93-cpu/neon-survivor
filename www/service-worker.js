@@ -10,17 +10,17 @@
    cache adi degismezse yeni atlas cihaza HIC ULASMAZ; dosyanin en
    ustundeki notun tarif ettigi hata tam olarak budur. Ad bu yuzden
    surumle birlikte yukseltildi. Temizleme mantigi degismedi. */
-const CACHE = "neon-survivor-v16-9-0";
+/* V17.0.0 — UI_SET_60 Phase 2: atlas-icons.png eklendi.
+   Onceki listede var olan atlas-units/items dosyalari www/assets altinda
+   mevcut degildi (pre-existing sorun); ASSETS listesi temizlendi. */
+const CACHE = "neon-survivor-v17-0-0";
 
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.json",
   "./assets/icons/icon.svg",
-  "./assets/atlas-units.json",
-  "./assets/atlas-units.png",
-  "./assets/atlas-items.json",
-  "./assets/atlas-items.png"
+  "./assets/atlas-icons.png"
 ];
 
 self.addEventListener("install", event => {
