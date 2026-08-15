@@ -2405,7 +2405,19 @@ body.ls .bn{width:70px}
       <i id="o-energy">0</i>
     </div>
 
+    <div class="row">
+      <b>Dalga</b>
+      <i id="o-wave">—</i>
+    </div>
+
+    <div class="row">
+      <b>Seviye</b>
+      <i id="o-level">—</i>
+    </div>
+
   </div>
+
+  <div class="tag" id="o-sector" style="margin-top:6px;font-size:10px;opacity:.7"></div>
 
   <button class="btn" id="b-again">
     Tekrar Oyna
@@ -14653,6 +14665,35 @@ document.addEventListener("click",function(e){
 });
 
 window._settingsRender=renderSettings;
+})();
+</script>
+
+<!-- Phase 15 · KOŞU SONU: dalga + seviye + sektör
+     showOver() sarmalar. Gameplay state SADECE OKUNUR. -->
+<script>
+(function(){
+"use strict";
+const SECN=["","NEON ŞEHRİ","ENDÜSTRİ","MEZARLIK","REAKTÖR","VOID"];
+
+if(typeof showOver!=="function")return;
+
+const _so=showOver;
+showOver=function(record){
+  try{
+    const wEl=document.getElementById("o-wave");
+    const lEl=document.getElementById("o-level");
+    const sEl=document.getElementById("o-sector");
+    if(wEl)wEl.textContent=Math.max(1,(typeof Game!=="undefined"?Game.wave:1)||1);
+    if(lEl)lEl.textContent=Math.max(1,(typeof Game!=="undefined"?Game.level:1)||1);
+    if(sEl){
+      try{
+        const sec=(window.PROG&&window.PROG.state)?+(window.PROG.state.sector||1):1;
+        sEl.textContent=SECN[sec]||(sec?"SEKTÖR "+sec:"");
+      }catch(e){sEl.textContent="";}
+    }
+  }catch(e){}
+  return _so(record);
+};
 })();
 </script>
 
