@@ -1,0 +1,10 @@
+node_modules/
+package-lock.json
+
+# Android build artifacts (proje dosyaları commit'lenir, build çıktıları yok sayılır)
+android/build/
+android/app/build/
+android/.gradle/
+android/.idea/
+android/local.properties
+android/capacitor-cordova-android-plugins/build/
