@@ -728,7 +728,7 @@ button,
 
 <style id="noryvx-design-system">
 /* =========================================================
-   NORYVX DESIGN SYSTEM · V19.0.0 · UI_SET_60 INTEGRATED
+   NORYVX DESIGN SYSTEM · V20.0.0 · UI_SET_60 INTEGRATED
    Bu blok SADECE gorsel katmandir. Mevcut CSS'in uzerine
    biner; hicbir id, class adi, DOM yapisi veya JS secicisi
    degistirilmemistir. HUD konumlari ve dokunma alanlari
@@ -1827,6 +1827,12 @@ body.ls .bn{width:70px}
 </head>
 
 <body>
+<script>
+window.addEventListener("error",function(e){
+  try{if(typeof toMenu==="function"&&typeof Game!=="undefined"&&Game.state!==0)toMenu();}catch(_){}
+});
+window.addEventListener("unhandledrejection",function(){});
+</script>
 <div id="version-badge" aria-hidden="true">V20.0.0 · UI_SET_60</div>
 
 <div id="stage">
@@ -9897,7 +9903,7 @@ if(
         return true;
       }
     }catch(err){
-      console.error("V15.3 hotfix:", name, err);
+      console.error("safeCall:", name, err);
     }
     return false;
   }
