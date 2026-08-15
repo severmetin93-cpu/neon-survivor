@@ -1827,13 +1827,13 @@ body.ls .bn{width:70px}
 
 <div id="stage">
 
-<canvas id="game"></canvas>
+<canvas id="game" role="application" aria-label="Neon Survivor oyun alanı"></canvas>
 
 <div id="hint" class="hide">
   Parmağını sürükle
 </div>
 
-<button id="b-pause">II</button>
+<button id="b-pause" aria-label="Oyunu duraklat">II</button>
 
 <!-- POWER HUD -->
 
@@ -1917,8 +1917,8 @@ body.ls .bn{width:70px}
 
   <div class="toggles">
 
-    <div class="tgl" id="t-sound">♪</div>
-    <div class="tgl" id="t-vibe">≈</div>
+    <div class="tgl" id="t-sound" role="button" aria-label="Ses efektleri">♪</div>
+    <div class="tgl" id="t-vibe" role="button" aria-label="Titreşim">≈</div>
 
   </div>
 
@@ -1930,7 +1930,7 @@ body.ls .bn{width:70px}
   <!-- Hero sahnesi: secili karakter combat ile AYNI cizicilerle,
        canli olarak gosterilir. Secim mantigi degistirilmedi. -->
   <div class="hero-stage">
-    <canvas id="hero-canvas"></canvas>
+    <canvas id="hero-canvas" aria-hidden="true"></canvas>
     <div class="hero-meta">
       <span class="hero-class" id="hero-class">VANGUARD</span>
       <span class="hero-role" id="hero-role">HEAVY ASSAULT · TANK</span>
