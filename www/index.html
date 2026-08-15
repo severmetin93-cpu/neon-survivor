@@ -7214,6 +7214,7 @@ function rrVanguard(P){
   /* SPRITE YOLU — atlas hazirsa bake edilmis govde kullanilir,
      enerji nabzi/aura CANLI kalir. Atlas yoksa asagidaki
      procedural cizim aynen calisir. */
+  if(!window._VLOG){window._VLOG=true;console.log("[RR] atlasHas(vanguard)="+atlasHas("vanguard")+" ATLAS.ready="+ATLAS.ready+" ATLAS.img="+!!(ATLAS.img)+" ATLAS.f="+!!(ATLAS.f));}
   if(atlasHas("vanguard")){
     ctx.save();
     atlasDraw("vanguard",47);
@@ -8731,20 +8732,6 @@ function render(dt){
 
   ctx.save();
 
-  /* DEBUG ATLAS OVERLAY — geçici teşhis için */
-  (function(){
-    const _d=window._ADLOG||{};
-    ctx.save();
-    ctx.setTransform(1,0,0,1,0,0);
-    ctx.fillStyle="rgba(0,0,0,.75)";ctx.fillRect(4,4,320,22);
-    ctx.fillStyle="#0ff";ctx.font="bold 11px monospace";ctx.textAlign="left";
-    ctx.fillText("ATLAS:"+(_d.step||"?")+
-      " ready="+ATLAS.ready+
-      " img="+!!(ATLAS.img)+
-      " f.ctrl="+!!(ATLAS.f&&ATLAS.f.controller),8,19);
-    ctx.restore();
-  })();
-
   if(
     player.shake>0
   ){
@@ -8800,6 +8787,27 @@ function render(dt){
     );
 
   }
+
+  /* DEBUG ATLAS OVERLAY — render'ın en son katmanı, hiçbir şey üstünü kapatmaz */
+  (function(){
+    const _d=window._ADLOG||{};
+    ctx.save();
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    ctx.fillStyle="rgba(0,0,0,.88)";
+    ctx.fillRect(3,3,340,26);
+    ctx.fillStyle="#0ff";
+    ctx.font="bold 13px monospace";
+    ctx.textAlign="left";
+    ctx.textBaseline="top";
+    ctx.fillText(
+      "ATLAS:"+(_d.step||"?")+
+      " rdy="+ATLAS.ready+
+      " img="+!!(ATLAS.img)+
+      " fc="+!!(ATLAS.f&&ATLAS.f.controller),
+      7,7
+    );
+    ctx.restore();
+  })();
 
 }
 
