@@ -19,7 +19,10 @@
    oyun-sonu dalga/seviye/sektor, iOS status bar meta tag eklendi.
    index.html network-first oldugu icin cache adi sadece eski neon-survivor-v18
    cache'lerini temizlemek icin yukseltildi. */
-const CACHE = "neon-survivor-v19-0-0";
+/* V19.1.0 — Phase 18 PWA/offline QA: manifest.json guncellendi (lang:tr,
+   purpose:"any maskable"). manifest cache-first oldugu icin cache adi
+   yukseltildi; eski manifest artik bir dahaki acilista temizlenecek. */
+const CACHE = "neon-survivor-v19-1-0";
 
 const ASSETS = [
   "./",
