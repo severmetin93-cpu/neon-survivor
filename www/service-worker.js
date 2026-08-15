@@ -13,7 +13,9 @@
 /* V17.0.0 — UI_SET_60 Phase 2: atlas-icons.png eklendi.
    Onceki listede var olan atlas-units/items dosyalari www/assets altinda
    mevcut degildi (pre-existing sorun); ASSETS listesi temizlendi. */
-const CACHE = "neon-survivor-v17-0-0";
+/* V18.0.0 — manifest.json duzeltildi: mevcut olmayan PNG ikonlar kaldirildi,
+   icon.svg eklendi. manifest cache-first oldugu icin cache adi yukseltildi. */
+const CACHE = "neon-survivor-v18-0-0";
 
 const ASSETS = [
   "./",
