@@ -6966,27 +6966,21 @@ const ATLAS={
 
 (function loadAtlas(){
   if(ATLAS.tried)return; ATLAS.tried=true;
-  window._ADLOG={step:"init"};
   try{
     fetch("./assets/atlas-units.json",{cache:"no-cache"})
       .then(r=>{
-        window._ADLOG={step:"fetch_ok",ok:r.ok,status:r.status,type:r.type};
-        console.log("[ATLAS] fetch ok",r.ok,r.status,r.type);
         return r.ok?r.json():Promise.reject("status:"+r.status);
       })
       .then(meta=>{
-        window._ADLOG.step="json_ok";
-        window._ADLOG.frameCount=Object.keys(meta.frames||{}).length;
-        console.log("[ATLAS] json ok, frames:",Object.keys(meta.frames||{}));
         return new Promise((res,rej)=>{
           const im=new Image();
-          im.onload=()=>{window._ADLOG.step="img_ok";console.log("[ATLAS] img loaded",im.width,im.height);ATLAS.img=im;ATLAS.f=meta.frames;ATLAS.ready=true;res();};
-          im.onerror=(e)=>{window._ADLOG.step="img_fail";console.error("[ATLAS] img error",e);rej(e);};
+          im.onload=()=>{ATLAS.img=im;ATLAS.f=meta.frames;ATLAS.ready=true;res();};
+          im.onerror=(e)=>{rej(e);};
           im.src="./assets/"+(meta.image||"atlas-units.png");
         });
       })
-      .catch(e=>{window._ADLOG.step="FAIL";window._ADLOG.err=String(e);console.error("[ATLAS] FAILED",e);ATLAS.ready=false;});
-  }catch(e){window._ADLOG={step:"FAIL",err:String(e)};ATLAS.ready=false;}
+      .catch(e=>{ATLAS.ready=false;});
+  }catch(e){ATLAS.ready=false;}
 })();
 
 /* Gecerli transform'un merkezine sprite cizer. */
