@@ -66,10 +66,10 @@ jobs:
           echo "boyut : $(wc -c < www/index.html) byte"
           echo "sha256: $(sha256sum www/index.html | cut -d' ' -f1)"
           grep -m1 -o '<title>[^<]*</title>' www/index.html || true
-          if grep -q 'V16\.7\.0' www/index.html; then
-            echo "surum : V16.7.0 rozeti bulundu"
+          if grep -q 'V20\.0\.0' www/index.html; then
+            echo "surum : V20.0.0 rozeti bulundu"
           else
-            echo "::warning::www/index.html icinde V16.7.0 rozeti bulunamadi"
+            echo "::warning::www/index.html icinde V20.0.0 rozeti bulunamadi"
           fi
           CFG=$(ls capacitor.config.json capacitor.config.ts capacitor.config.js 2>/dev/null | head -1 || true)
           if [ -n "$CFG" ]; then
