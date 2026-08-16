@@ -7382,7 +7382,6 @@ function rrController(P){
   /* SPRITE YOLU — atlas hazirsa bake edilmis govde kullanilir,
      enerji nabzi/aura CANLI kalir. Atlas yoksa asagidaki
      procedural cizim aynen calisir. */
-  /* force-draw bypass: ATLAS.img+frame var ama atlasHas() false dönüyorsa yakalar */
   if(ATLAS.img&&ATLAS.f&&ATLAS.f["controller"]||atlasHas("controller")){
     ctx.save();
     atlasDraw("controller",46);
