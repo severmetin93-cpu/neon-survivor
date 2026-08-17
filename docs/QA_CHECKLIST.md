@@ -7,11 +7,11 @@ Tamamlanan her madde işaretlenir. `[P0]` maddeler çözülmeden APK gönderilem
 
 ## 1. Build & Signing `[P0]`
 
-- [ ] `capacitor.config.json` → `webContentsDebuggingEnabled: false`
+- [x] `capacitor.config.json` → `webContentsDebuggingEnabled: false`
 - [ ] `build-apk.yml` signed APK üretiyor (`jar verified` çıktısı mevcut)
-- [ ] `versionCode 20`, `versionName "20.0.0"` (android/app/build.gradle)
-- [ ] `www/index.html` başlığı `NORYVX V20.0.0` içeriyor
-- [ ] v20.0.0 git tag push edildi, CI `build-apk.yml` yeşil
+- [x] `versionCode 20`, `versionName "20.0.0"` (android/app/build.gradle)
+- [x] `www/index.html` başlığı `NORYVX V20.0.0` içeriyor
+- [x] v20.0.0 git tag push edildi, CI `build-apk.yml` yeşil
 - [ ] Signed APK gerçek cihaza kuruldu, açılıyor
 
 ---
