@@ -16513,5 +16513,89 @@ setTimeout(function(){
 })();
 </script>
 
+<!-- ==========================================================
+     NORYVX · Phase 3.3F — Procedural item icons (SVG)
+     Overrides atlas-items.png with inline SVG glyphs per slot.
+     Rarity color continues to come from --rc via drop-shadow.
+     ========================================================== -->
+<style id="noryvx-p3-3f-icons">
+/* Neutralise atlas background — will re-provide per-slot below. */
+.rpg-ico{
+  background-image:none !important;
+  background-color:transparent !important;
+  background-size:100% 100% !important;
+  background-position:center !important;
+  background-repeat:no-repeat !important;
+  border-radius:8px;
+  position:relative;
+  isolation:isolate;
+}
+.rpg-ico::before{
+  content:"";
+  position:absolute; inset:0;
+  border-radius:inherit;
+  background:
+    radial-gradient(120% 120% at 50% 0%,
+      color-mix(in srgb,var(--rc,#9fb3cc) 22%,transparent) 0%,
+      transparent 65%),
+    linear-gradient(180deg,#0d1428 0%,#050914 100%);
+  border:1px solid color-mix(in srgb,var(--rc,#9fb3cc) 55%,rgba(255,255,255,.06));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.06),
+    inset 0 0 12px color-mix(in srgb,var(--rc,#9fb3cc) 12%,transparent);
+  z-index:0;
+}
+.rpg-ico::after{
+  content:"";
+  position:absolute; inset:0;
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:78% 78%;
+  z-index:1;
+  filter:drop-shadow(0 0 4px color-mix(in srgb,var(--rc,#9fb3cc) 80%,transparent));
+}
+
+/* --- 8 procedural SVG glyphs, monochrome silver, tinted by --rc glow --- */
+.rpg-ico[data-ico="weapon"]::after{
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><g fill='none' stroke='%23e8f2ff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'><path d='M8 40 L44 22 L54 26 L48 34 L18 46 Z'/><path d='M18 46 L14 54'/><path d='M44 22 L50 14'/><circle cx='40' cy='30' r='2.2' fill='%2334d8ff' stroke='none'/></g></svg>");
+}
+.rpg-ico[data-ico="helmet"]::after{
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><g fill='none' stroke='%23e8f2ff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'><path d='M12 40 C12 22 22 12 32 12 C42 12 52 22 52 40 L52 46 L12 46 Z'/><path d='M14 34 L50 34' stroke='%2334d8ff' stroke-width='3'/><path d='M22 22 L26 26 M42 22 L38 26'/></g></svg>");
+}
+.rpg-ico[data-ico="armor"]::after{
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><g fill='none' stroke='%23e8f2ff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'><path d='M32 8 L48 16 L44 40 L32 52 L20 40 L16 16 Z'/><path d='M32 8 L32 52'/><path d='M24 22 L40 22'/><circle cx='32' cy='30' r='3' fill='%23a785ff' stroke='none'/></g></svg>");
+}
+.rpg-ico[data-ico="gloves"]::after{
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><g fill='none' stroke='%23e8f2ff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'><path d='M14 30 L14 46 L38 54 L50 46 L50 30 L44 18 L36 22 L30 14 L22 20 L18 20 Z'/><path d='M22 34 L34 34 M22 40 L34 40'/><circle cx='44' cy='30' r='2' fill='%23ffb347' stroke='none'/></g></svg>");
+}
+.rpg-ico[data-ico="boots"]::after{
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><g fill='none' stroke='%23e8f2ff' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'><path d='M14 44 L14 22 L28 22 L28 34 L46 42 L50 46 L50 52 L14 52 Z'/><path d='M20 42 L46 42' stroke='%2334d8ff'/><path d='M18 30 L26 30'/></g></svg>");
+}
+.rpg-ico[data-ico="core"]::after{
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><g fill='none' stroke='%23e8f2ff' stroke-width='2.6' stroke-linejoin='round'><path d='M32 8 L54 20 L54 44 L32 56 L10 44 L10 20 Z'/><path d='M32 18 L46 26 L46 38 L32 46 L18 38 L18 26 Z' stroke='%2334d8ff'/><circle cx='32' cy='32' r='5' fill='%23a785ff' stroke='none'/></g></svg>");
+}
+.rpg-ico[data-ico="module"]::after{
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><g fill='none' stroke='%23e8f2ff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><rect x='16' y='16' width='32' height='32' rx='3'/><rect x='24' y='24' width='16' height='16' fill='%23a785ff' fill-opacity='.35' stroke='%2334d8ff'/><path d='M22 8 L22 16 M32 8 L32 16 M42 8 L42 16'/><path d='M22 48 L22 56 M32 48 L32 56 M42 48 L42 56'/><path d='M8 22 L16 22 M8 32 L16 32 M8 42 L16 42'/><path d='M48 22 L56 22 M48 32 L56 32 M48 42 L56 42'/></g></svg>");
+}
+.rpg-ico[data-ico="accessory"]::after{
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><g fill='none' stroke='%23e8f2ff' stroke-width='2.6' stroke-linejoin='round'><circle cx='32' cy='38' r='16'/><path d='M22 22 L26 30 M42 22 L38 30 M32 18 L32 30'/><path d='M28 14 L32 8 L36 14 Z' fill='%23ffb347' stroke='none'/></g></svg>");
+}
+
+/* Hover / rarity emphasis */
+.rpg-ico:hover::before{
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.09),
+    inset 0 0 16px color-mix(in srgb,var(--rc,#9fb3cc) 22%,transparent);
+}
+
+/* Rarity mapping for --rc when a rarity class/attr is used on the icon or its ancestor */
+.rc-common,   .rpg-ico[data-r="common"]   {--rc:#c8d3e6}
+.rc-uncommon, .rpg-ico[data-r="uncommon"] {--rc:#4ad3a7}
+.rc-rare,     .rpg-ico[data-r="rare"]     {--rc:#4a8fff}
+.rc-epic,     .rpg-ico[data-r="epic"]     {--rc:#a785ff}
+.rc-legendary,.rpg-ico[data-r="legendary"]{--rc:#ffb347}
+.rc-mythic,   .rpg-ico[data-r="mythic"]   {--rc:#ff5eb1}
+</style>
+
 </body>
       </html>
