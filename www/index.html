@@ -16044,5 +16044,131 @@ try{ console.info && console.info("[NORYVX P3-3C] HUD FX ready"); }catch(e){}
 })();
 </script>
 
+<script>
+(function(){
+"use strict";
+/* =========================================================
+   P3-3D · PLAYER/CHARACTER VISUAL ENHANCEMENT
+   Wraps rrVanguard / rrStriker / rrController with an additive
+   post-hook that draws a per-archetype detail layer (reactor
+   pulse, panel accents, aura ring). Original ship draw is fully
+   preserved; hitbox / gameplay math untouched.
+========================================================= */
+if(!window.NORYVX_VFX || !window.NORYVX_VFX.enabled) return;
+
+/* Defer to a microtask so the atlasDraw wrappers (defined near
+   end of the game script block, but still before body end) are
+   in place before we overlay ours. */
+setTimeout(function(){
+  if(typeof window.rrVanguard !== "function" ||
+     typeof window.rrStriker  !== "function" ||
+     typeof window.rrController !== "function") return;
+
+  /* Locate a canvas 2D ctx to draw against. rr* functions read
+     the game's shared `ctx` (script-scope const), so we don't
+     need our own — we just piggy-back on the current transform
+     that survives the inner ctx.save/restore of rr*. */
+
+  function pulse(t, base, amp, freq){
+    return base + amp*(0.5+0.5*Math.sin((t||0)*(freq||3)));
+  }
+
+  function postVanguard(P){
+    var ctx = (window.__nx_ctx || (window.__nx_ctx = (function(){
+      var g = document.getElementById("game");
+      return g && g.getContext ? g.getContext("2d") : null;
+    })()));
+    if(!ctx) return;
+    var t = P && P.t || 0;
+    var accRgb = "34,230,255";
+    /* Reactor core pulse — center of chest */
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    var g = ctx.createRadialGradient(0,0,0, 0,0, pulse(t,4.2,1.8,4));
+    g.addColorStop(0.0, "rgba(255,255,255,"+pulse(t,0.55,0.25,3.2)+")");
+    g.addColorStop(0.4, "rgba("+accRgb+",0.45)");
+    g.addColorStop(1.0, "rgba("+accRgb+",0)");
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(0,0,7,0,Math.PI*2); ctx.fill();
+    /* Shoulder pip highlights */
+    ctx.fillStyle = "rgba(255,255,255,"+pulse(t,0.35,0.2,2.5)+")";
+    ctx.beginPath(); ctx.arc(-13,-4.4,1.1,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc( 13,-4.4,1.1,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+
+  function postStriker(P){
+    var ctx = window.__nx_ctx;
+    if(!ctx) return;
+    var t = P && P.t || 0;
+    /* Twin engine glow at rear */
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    var eA = pulse(t,0.75,0.20,6.5);
+    var eR = pulse(t,3.2,0.8,6.5);
+    for(var i=0;i<2;i++){
+      var ex = (i===0?-3.6:3.6);
+      var g = ctx.createRadialGradient(ex,9,0, ex,9,eR*2.2);
+      g.addColorStop(0.0, "rgba(255,255,255,"+eA+")");
+      g.addColorStop(0.4, "rgba(72,217,255,"+(eA*0.55)+")");
+      g.addColorStop(1.0, "rgba(72,217,255,0)");
+      ctx.fillStyle=g;
+      ctx.beginPath(); ctx.arc(ex,9,eR*2.2,0,Math.PI*2); ctx.fill();
+    }
+    /* Blade rim — thin cyan strip along nose */
+    ctx.strokeStyle = "rgba(72,217,255,"+pulse(t,0.7,0.25,4)+")";
+    ctx.lineWidth = 0.9;
+    ctx.shadowColor = "rgba(72,217,255,.8)";
+    ctx.shadowBlur = 4;
+    ctx.beginPath();
+    ctx.moveTo(-6, -11);
+    ctx.lineTo( 6, -11);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function postController(P){
+    var ctx = window.__nx_ctx;
+    if(!ctx) return;
+    var t = P && P.t || 0;
+    /* Orbiting aura ring — 2 counter-rotating arcs */
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    var rot = t * 0.8;
+    var alpha = pulse(t,0.35,0.15,2);
+    ctx.strokeStyle = "rgba(194,140,255,"+alpha+")";
+    ctx.lineWidth = 1.1;
+    ctx.shadowColor = "rgba(194,140,255,.85)";
+    ctx.shadowBlur = 6;
+    ctx.beginPath();
+    ctx.arc(0,0,13, rot, rot+Math.PI*0.9);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(0,0,15,-rot, -rot+Math.PI*0.75);
+    ctx.stroke();
+    /* Central singularity dot */
+    ctx.fillStyle = "rgba(255,255,255,"+pulse(t,0.7,0.25,3.5)+")";
+    ctx.beginPath(); ctx.arc(0,0,1.4,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+
+  function wrap(name, post){
+    var prev = window[name];
+    if(typeof prev !== "function") return;
+    window[name] = function(P){
+      var r = prev.apply(this, arguments);
+      try{ post(P); }catch(e){}
+      return r;
+    };
+  }
+  wrap("rrVanguard",   postVanguard);
+  wrap("rrStriker",    postStriker);
+  wrap("rrController", postController);
+
+  try{ console.info && console.info("[NORYVX P3-3D] Player FX ready"); }catch(e){}
+}, 0);
+})();
+</script>
+
 </body>
       </html>
