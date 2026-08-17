@@ -115,7 +115,7 @@ Tamamlanan her madde işaretlenir. `[P0]` maddeler çözülmeden APK gönderilem
 - [ ] AYARLAR ekranında ses toggle'ları çalışıyor
 - [ ] BAŞARIMLAR listesi görünüyor, tamamlananlar işaretli
 - [ ] GÖREVLER ekranı yükleniyor
-- [ ] BATTLE PASS ve LİDERLİK butonları menüde **görünmüyor** (hidden) `[P0]`
+- [x] BATTLE PASS ve LİDERLİK butonları menüde **görünmüyor** (hidden) `[P0]`
 - [ ] Hiçbir ekranda boş veya kırık element yok
 
 ---
