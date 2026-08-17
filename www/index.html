@@ -16946,5 +16946,160 @@ setTimeout(function(){
 }
 </style>
 
+<!-- ==========================================================
+     NORYVX · Phase 3.3J — Settings / Achievements / Cosmetics / Tutorial
+     - Settings rows: hover glow + toggle animation
+     - Danger button: pulsing red border
+     - Achievement rows: completed check + progress accent
+     - Cosmetic cards: orb scale on hover
+     - Tutorial title decoration bracket
+     ========================================================== -->
+<style id="noryvx-p3-3j-menus">
+/* --- Settings --- */
+.set-section{
+  padding:12px 14px;
+  border-radius:var(--r-md, 10px);
+  background:linear-gradient(180deg,rgba(14,22,46,.62),rgba(6,10,22,.68));
+  border:1px solid rgba(255,255,255,.05);
+}
+.set-section-label{
+  position:relative;
+  padding-left:12px;
+}
+.set-section-label::before{
+  content:"";
+  position:absolute; left:0; top:15%; bottom:15%;
+  width:2px; border-radius:2px;
+  background:linear-gradient(180deg,var(--primary, #22e6ff),transparent);
+  box-shadow:0 0 6px var(--primary, #22e6ff);
+}
+.set-row{
+  transition:background-color 200ms ease, transform 160ms ease;
+  border-radius:6px;
+  padding:8px 6px;
+  margin:2px -6px;
+}
+.set-row:hover{
+  background:rgba(34,230,255,.045);
+}
+
+/* Toggle switch — reveal state via ::after + on/off state */
+.set-tgl{
+  transition:background-color 220ms ease, box-shadow 220ms ease;
+}
+.set-tgl.on{
+  background:linear-gradient(135deg,rgba(72,255,155,.34),rgba(34,230,255,.28)) !important;
+  box-shadow:0 0 12px rgba(72,255,155,.28), inset 0 0 0 1px rgba(72,255,155,.5);
+}
+.set-tgl.on::after{
+  transform:translateX(20px);
+  background:#fff !important;
+  box-shadow:0 0 8px rgba(255,255,255,.6);
+}
+
+/* Info card — highlight the value column */
+.set-info-card{
+  background:linear-gradient(180deg,rgba(9,15,32,.72),rgba(4,7,18,.78));
+  border:1px solid rgba(255,255,255,.05);
+  border-radius:var(--r-sm, 6px);
+  padding:8px 12px;
+}
+.set-info-row{
+  display:flex; justify-content:space-between; align-items:baseline;
+  padding:5px 0;
+  border-bottom:1px solid rgba(255,255,255,.03);
+  font-size:10.5px;
+}
+.set-info-row:last-child{border-bottom:0}
+.set-info-k{letter-spacing:.18em; color:var(--ink-3, rgba(234,244,255,.5))}
+.set-info-v{font-weight:900; color:var(--ink, #eaf4ff); font-variant-numeric:tabular-nums}
+
+/* Danger button — pulsing */
+.set-danger{
+  position:relative;
+  overflow:hidden;
+  transition:transform 160ms ease;
+  border-color:rgba(255,59,107,.5) !important;
+}
+.set-danger:hover{
+  box-shadow:0 0 22px rgba(255,59,107,.34);
+}
+.set-danger:active{transform:scale(.98)}
+.set-danger::after{
+  content:"";
+  position:absolute; inset:0;
+  border-radius:inherit;
+  border:1px solid rgba(255,59,107,.6);
+  animation:noryvx-p3j-danger 2.4s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes noryvx-p3j-danger{
+  0%,100%{opacity:.28; box-shadow:0 0 0 0 rgba(255,59,107,.35) inset}
+  50%   {opacity:.9;  box-shadow:0 0 0 2px rgba(255,59,107,.22) inset}
+}
+
+/* --- Achievements --- */
+.ach-wrap > *{
+  transition:transform 160ms ease, box-shadow 220ms ease;
+}
+.ach-wrap > *:hover{
+  transform:translateX(2px);
+  box-shadow:0 0 14px rgba(34,230,255,.10);
+}
+
+/* --- Cosmetics --- */
+.cosm-orb{
+  transition:transform 220ms ease, box-shadow 220ms ease;
+}
+.cosm-card:hover .cosm-orb{
+  transform:scale(1.08) rotate(-6deg);
+  box-shadow:0 0 20px color-mix(in srgb,var(--co, #22e6ff) 60%,transparent);
+}
+.cosm-card.on{
+  position:relative;
+}
+.cosm-card.on::after{
+  content:"AKTİF";
+  position:absolute; top:6px; right:8px;
+  font-size:8px; letter-spacing:.22em; font-weight:900;
+  color:var(--co, #22e6ff);
+  background:color-mix(in srgb,var(--co, #22e6ff) 22%,rgba(6,10,22,.9));
+  border:1px solid color-mix(in srgb,var(--co, #22e6ff) 55%,transparent);
+  padding:2px 6px; border-radius:2px;
+}
+
+/* --- Tutorial screen (scr-how) --- */
+.tutorial-title{
+  position:relative;
+  display:inline-block;
+  padding:0 22px;
+}
+.tutorial-title::before,
+.tutorial-title::after{
+  content:"";
+  position:absolute; top:50%; width:14px; height:12px;
+  border:1.5px solid color-mix(in srgb,var(--primary, #22e6ff) 60%,transparent);
+  opacity:.55;
+}
+.tutorial-title::before{
+  left:0; transform:translateY(-50%);
+  border-right:0;
+}
+.tutorial-title::after{
+  right:0; transform:translateY(-50%);
+  border-left:0;
+}
+
+/* Progress % badge in achievements */
+.ach-p{
+  font-variant-numeric:tabular-nums;
+  padding:2px 6px; border-radius:3px;
+  background:rgba(34,230,255,.10);
+  border:1px solid rgba(34,230,255,.28);
+  color:var(--primary, #22e6ff);
+  font-weight:900; font-size:10px; letter-spacing:.10em;
+}
+</style>
+
 </body>
       </html>
