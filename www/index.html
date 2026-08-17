@@ -15746,5 +15746,303 @@ try{ console.info && console.info("[NORYVX P3-3B] Menu FX ready"); }catch(e){}
 })();
 </script>
 
+<style id="noryvx-p3-hud-fx">
+/* =========================================================
+   P3-3C · GAMEPLAY HUD POLISH
+   Existing ids/classes only. HUD DOM is untouched. Positions
+   preserved (rely on existing top/left/bottom/right rules;
+   we only add insets via env safe-area where non-conflicting).
+========================================================= */
+
+/* --- SAFE-AREA (mobile notch / gesture bar) ------------- */
+@supports (padding: max(0px)){
+  #topbar     { padding-top:    max(6px, env(safe-area-inset-top)); }
+  #run-wave-hud{ margin-top:    max(0px, env(safe-area-inset-top)); }
+  #bottomnav  { padding-bottom: max(6px, env(safe-area-inset-bottom)); }
+  #b-pause    { top:            max(10px,env(safe-area-inset-top)); }
+  #b-dash     { bottom:         max(18px,env(safe-area-inset-bottom));
+                right:          max(16px,env(safe-area-inset-right)); }
+  #power-hud  { padding-right:  max(0px, env(safe-area-inset-right)); }
+  #weapon-hud { padding-left:   max(0px, env(safe-area-inset-left)); }
+}
+
+/* --- POWER PILLS: ready pulse + cooldown fill ---------- */
+.power-pill{
+  position:relative;
+  overflow:hidden;
+  transition:border-color var(--t-fast), background var(--t-fast), transform var(--t-fast);
+}
+.power-pill .power-time{ position:relative; z-index:1; }
+.power-pill .power-name{ position:relative; z-index:1; }
+.power-pill::before{
+  content:"";
+  position:absolute; inset:0;
+  background:linear-gradient(90deg, rgba(72,255,155,.16), transparent 60%);
+  opacity:0;
+  transition:opacity var(--t-fast);
+  pointer-events:none;
+}
+.power-pill.on::before{ opacity:1; }
+.power-pill.on{
+  border-color:rgba(72,255,155,.55);
+  background:linear-gradient(180deg, rgba(72,255,155,.10), rgba(72,255,155,.02));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.06),
+    0 0 12px rgba(72,255,155,.28);
+}
+.power-pill.ready{ animation:nx-pill-ready 1.8s ease-in-out infinite; }
+@keyframes nx-pill-ready{
+  0%,100%{ box-shadow: 0 0 0 rgba(72,255,155,0), inset 0 1px 0 rgba(255,255,255,.06); }
+  50%    { box-shadow: 0 0 14px rgba(72,255,155,.5), inset 0 1px 0 rgba(255,255,255,.10); }
+}
+
+/* --- WEAPON PILLS: active glow + level tick ----------- */
+.weapon-pill{
+  position:relative;
+  transition:border-color var(--t-fast), background var(--t-fast);
+}
+.weapon-pill.on{
+  border-color:var(--line-strong);
+  background:linear-gradient(180deg, rgba(34,230,255,.10), rgba(34,230,255,.02));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.06),
+    0 0 10px rgba(34,230,255,.22);
+}
+.weapon-pill .weapon-level{ font-variant-numeric:tabular-nums; letter-spacing:.06em; }
+
+/* --- TOPBAR CARD: progress-panel treatment ----------- */
+#topbar .tb-card{
+  position:relative;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.06),
+    0 6px 18px rgba(0,0,0,.35);
+  transition:transform var(--t-fast);
+}
+#topbar .tb-card::before{
+  content:"";
+  position:absolute; left:0; right:0; top:0; height:1px;
+  background:linear-gradient(90deg,transparent,rgba(34,230,255,.55),transparent);
+  pointer-events:none;
+}
+#topbar .tb-av{
+  position:relative;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.08),
+    0 0 12px rgba(34,230,255,.32);
+}
+#topbar .tb-xp{
+  position:relative;
+  overflow:hidden;
+}
+#topbar .tb-xp i{
+  background:linear-gradient(90deg,var(--rarity-rare),var(--rarity-epic));
+  box-shadow:0 0 10px rgba(72,217,255,.55);
+  transition:width var(--t-mid);
+}
+
+/* --- WAVE HUD: pressure bar ------------------------- */
+#run-wave-hud{
+  position:relative;
+  transition:box-shadow var(--t-fast);
+}
+#run-wave-hud .wave-value{
+  font-variant-numeric:tabular-nums;
+  letter-spacing:.08em;
+}
+#run-wave-hud .wave-pressure{
+  position:relative;
+  padding-left:12px;
+}
+#run-wave-hud .wave-pressure::before{
+  content:"";
+  position:absolute; left:2px; top:50%; transform:translateY(-50%);
+  width:6px; height:6px; border-radius:50%;
+  background:var(--danger);
+  box-shadow:0 0 8px rgba(255,59,107,.75);
+  animation:nx-pulse-dot 1.6s ease-in-out infinite;
+}
+@keyframes nx-pulse-dot{
+  0%,100%{ transform:translateY(-50%) scale(.8); opacity:.7; }
+  50%    { transform:translateY(-50%) scale(1.15); opacity:1; }
+}
+
+/* --- BOSS BAR: segmented + phase glow -------------- */
+#boss-hud .boss-name{
+  letter-spacing:.24em;
+  text-shadow:
+    0 0 10px rgba(255,59,107,.55),
+    0 0 22px rgba(255,79,216,.35);
+}
+#boss-hud .boss-bar{
+  position:relative;
+  overflow:hidden;
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,.45),
+    inset 0 1px 0 rgba(255,255,255,.05),
+    0 0 18px rgba(255,59,107,.22);
+}
+#boss-hud .boss-bar::after{
+  content:"";
+  position:absolute; inset:0;
+  background:repeating-linear-gradient(
+    90deg,
+    transparent 0px, transparent 9%,
+    rgba(0,0,0,.28) 9%, rgba(0,0,0,.28) 9.4%
+  );
+  pointer-events:none;
+}
+#boss-hud .boss-fill{
+  background:linear-gradient(90deg,#ff3b6b,#ff9a30,#ffe34d);
+  box-shadow:
+    0 0 18px rgba(255,59,107,.75),
+    inset 0 1px 0 rgba(255,255,255,.20);
+  transition:width var(--t-mid);
+}
+
+/* --- ACTION BUTTONS: pause / dash ------------------ */
+#b-pause,#b-dash{
+  transition:transform var(--t-fast), box-shadow var(--t-fast), background var(--t-fast);
+}
+#b-pause:active,#b-dash:active{ transform:scale(.94); }
+#b-dash .dash-i{
+  filter:drop-shadow(0 0 6px rgba(34,230,255,.75));
+}
+
+/* --- BOTTOM NAV: active state ---------------------- */
+#bottomnav .bn{
+  position:relative;
+  transition:color var(--t-fast), background var(--t-fast);
+}
+#bottomnav .bn.on{
+  color:var(--primary);
+  background:linear-gradient(180deg, rgba(34,230,255,.10), transparent 70%);
+}
+#bottomnav .bn.on::after{
+  content:"";
+  position:absolute; left:22%; right:22%; top:0; height:2px;
+  background:linear-gradient(90deg,transparent,var(--primary),transparent);
+  filter:drop-shadow(0 0 5px rgba(34,230,255,.7));
+}
+#bottomnav .bn .bn-i{ filter:drop-shadow(0 0 4px rgba(34,230,255,.35)); }
+
+/* --- BUILD HUD tags ------------------------------- */
+#build-hud .build-tag{
+  transition:transform var(--t-fast), box-shadow var(--t-fast);
+}
+#build-hud .build-tag.on{
+  box-shadow:0 0 12px rgba(255,255,255,.10);
+}
+
+/* --- DAMAGE FLASH: injected by JS on hp drop ----- */
+.nx-dmg-flash{
+  position:fixed; inset:0;
+  pointer-events:none;
+  background:radial-gradient(120% 60% at 50% 100%, rgba(255,59,107,.35), transparent 55%),
+             radial-gradient(120% 60% at 50%   0%, rgba(255,59,107,.28), transparent 55%);
+  animation:nx-dmg 380ms ease-out forwards;
+  z-index:9998;
+}
+@keyframes nx-dmg{
+  from{ opacity:1; }
+  to  { opacity:0; }
+}
+
+/* --- LEVEL-UP FLASH ------------------------------ */
+.nx-levelup-flash{
+  position:fixed; inset:0;
+  pointer-events:none;
+  background:radial-gradient(80% 60% at 50% 50%, rgba(34,230,255,.35), transparent 55%);
+  animation:nx-lvlup 620ms ease-out forwards;
+  z-index:9998;
+}
+@keyframes nx-lvlup{
+  from{ opacity:0; transform:scale(.9); }
+  20% { opacity:1; transform:scale(1); }
+  to  { opacity:0; transform:scale(1.15); }
+}
+</style>
+
+<script>
+(function(){
+"use strict";
+if(!window.NORYVX_VFX || !window.NORYVX_VFX.enabled) return;
+
+/* HUD reactive polish: watch power pills for "HAZIR" text
+   to add .ready class; watch boss bar for near-death threshold.
+   Non-invasive: reads DOM state, never rewrites HUD internals. */
+var pillIds = ["p-shield","p-magnet","p-overdrive","p-nova"];
+function tickHUD(){
+  try{
+    for(var i=0;i<pillIds.length;i++){
+      var el = document.getElementById(pillIds[i]);
+      if(!el) continue;
+      var tm = el.querySelector(".power-time");
+      var ready = tm && (tm.textContent||"").trim().toUpperCase()==="HAZIR";
+      var on = el.classList.contains("on");
+      /* Only pulse when READY and NOT currently active */
+      el.classList.toggle("ready", !!(ready && !on));
+    }
+    /* Boss bar: mark low-hp state */
+    var bf = document.getElementById("boss-fill");
+    if(bf){
+      var w = bf.style.width || "";
+      var m = /([\d.]+)%/.exec(w);
+      var pct = m ? parseFloat(m[1]) : 100;
+      var host = bf.closest && bf.closest(".boss-bar");
+      if(host) host.classList.toggle("nx-low", pct<=25);
+    }
+  }catch(e){}
+}
+setInterval(tickHUD, 200);
+
+/* Damage flash: watch player hp bar element for drops. */
+var hpKey="__nx_hp_last";
+function tickDamage(){
+  try{
+    var hpEl = document.getElementById("hp-fill")
+            || document.getElementById("hp-bar")
+            || document.querySelector(".hp-fill");
+    if(!hpEl) return;
+    var w = hpEl.style.width||"";
+    var m = /([\d.]+)%/.exec(w);
+    if(!m) return;
+    var cur = parseFloat(m[1]);
+    var last = window[hpKey];
+    if(typeof last==="number" && cur < last - 3){
+      var f = document.createElement("div");
+      f.className="nx-dmg-flash";
+      document.body.appendChild(f);
+      setTimeout(function(){ if(f.parentNode) f.parentNode.removeChild(f); }, 420);
+    }
+    window[hpKey] = cur;
+  }catch(e){}
+}
+setInterval(tickDamage, 120);
+
+/* Level-up flash: watch topbar level text for change */
+var lvKey="__nx_lv_last";
+function tickLevel(){
+  try{
+    var el = document.getElementById("tb-lv");
+    if(!el) return;
+    var m = /(\d+)/.exec(el.textContent||"");
+    if(!m) return;
+    var cur = parseInt(m[1],10);
+    var last = window[lvKey];
+    if(typeof last==="number" && cur > last){
+      var f = document.createElement("div");
+      f.className="nx-levelup-flash";
+      document.body.appendChild(f);
+      setTimeout(function(){ if(f.parentNode) f.parentNode.removeChild(f); }, 660);
+    }
+    window[lvKey] = cur;
+  }catch(e){}
+}
+setInterval(tickLevel, 300);
+
+try{ console.info && console.info("[NORYVX P3-3C] HUD FX ready"); }catch(e){}
+})();
+</script>
+
 </body>
       </html>
