@@ -33,7 +33,7 @@ Tamamlanan her madde işaretlenir. `[P0]` maddeler çözülmeden APK gönderilem
 - [ ] Vanguard, Striker, Controller oyuncuları atlas sprite ile çiziliyor (procedural değil)
 - [ ] Boss ve Elite atlas sprite ile çiziliyor
 - [ ] Hunter ve Weaver atlas sprite ile çiziliyor
-- [ ] Tank, Orbiter, Dasher — procedural fallback görünüyor, görsel sorun yok
+- [ ] Tank, Orbiter, Dasher — atlas sprite ile çiziliyor (procedural fallback değil)
 - [ ] Sprite boyutları ve hizalaması `ATLAS.k` katsayılarıyla tutarlı
 
 ---
