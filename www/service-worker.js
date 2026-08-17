@@ -10,29 +10,17 @@
    cache adi degismezse yeni atlas cihaza HIC ULASMAZ; dosyanin en
    ustundeki notun tarif ettigi hata tam olarak budur. Ad bu yuzden
    surumle birlikte yukseltildi. Temizleme mantigi degismedi. */
-/* V17.0.0 — UI_SET_60 Phase 2: atlas-icons.png eklendi.
-   Onceki listede var olan atlas-units/items dosyalari www/assets altinda
-   mevcut degildi (pre-existing sorun); ASSETS listesi temizlendi. */
-/* V18.0.0 — manifest.json duzeltildi: mevcut olmayan PNG ikonlar kaldirildi,
-   icon.svg eklendi. manifest cache-first oldugu icin cache adi yukseltildi. */
-/* V19.0.0 — Phase 12-15 UI sprint: token sistemi tamamlandi, AYARLAR ekrani,
-   oyun-sonu dalga/seviye/sektor, iOS status bar meta tag eklendi.
-   index.html network-first oldugu icin cache adi sadece eski neon-survivor-v18
-   cache'lerini temizlemek icin yukseltildi. */
-/* V19.1.0 — Phase 18 PWA/offline QA: manifest.json guncellendi (lang:tr,
-   purpose:"any maskable"). manifest cache-first oldugu icin cache adi
-   yukseltildi; eski manifest artik bir dahaki acilista temizlenecek. */
-/* V20.0.0 — Phase 20 release: BALANCE.version "20.0.0"'a yukseltildi,
-   console.warn bagimlilık uyarılari kaldirildi, tum versiyon fallback'leri
-   guncellendi. Cache adi degisiyor — eski v19 entry'leri temizlenecek. */
-const CACHE = "neon-survivor-v20-0-0";
+const CACHE = "neon-survivor-v16-9-0";
 
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.json",
   "./assets/icons/icon.svg",
-  "./assets/atlas-icons.png"
+  "./assets/atlas-units.json",
+  "./assets/atlas-units.png",
+  "./assets/atlas-items.json",
+  "./assets/atlas-items.png"
 ];
 
 self.addEventListener("install", event => {
