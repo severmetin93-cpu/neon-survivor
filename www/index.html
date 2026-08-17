@@ -16369,5 +16369,149 @@ setTimeout(function(){
 })();
 </script>
 
+<!-- ==========================================================
+     NORYVX · Phase 3.3G — Combat FX + Particles integration
+     - Wires Particles.update / draw into game loop
+     - Adds hooks for muzzle flash, hit spark, kill explosion,
+       shield burst, screen shake pulse
+     ========================================================== -->
+<script>
+(function(){
+  var W = window;
+  if(!W.NORYVX_VFX){ W.NORYVX_VFX = { enabled:true }; }
+  var VFX = W.NORYVX_VFX;
+  if(!W.Particles){ try{ console.warn && console.warn("[NORYVX P3-3G] Particles unavailable"); }catch(e){} return; }
+
+  /* Shared canvas context resolver */
+  var _ctx = null;
+  function ctxOf(){
+    if(_ctx) return _ctx;
+    var g = document.getElementById("game");
+    _ctx = g && g.getContext ? g.getContext("2d") : null;
+    return _ctx;
+  }
+
+  /* Rate limiter to prevent spam from tight inner loops */
+  function budgetOK(){
+    if(!VFX.enabled) return false;
+    var c = W.Particles.count ? W.Particles.count() : 0;
+    return c < 260;
+  }
+
+  setTimeout(function(){
+
+    /* ---------- 1) Update loop wrap ---------- */
+    (function wrapUpdate(){
+      var prev = W.update;
+      if(typeof prev !== "function") return;
+      W.update = function(dt){
+        var r = prev.apply(this, arguments);
+        try{ if(VFX.enabled) W.Particles.update(dt||0); }catch(e){}
+        return r;
+      };
+    })();
+
+    /* ---------- 2) Draw pipeline wrap
+         drawFX is called AFTER enemies and BEFORE HUD
+         in render() — ideal z-order for particles. */
+    (function wrapDrawFX(){
+      var prev = W.drawFX;
+      if(typeof prev !== "function") return;
+      W.drawFX = function(){
+        var r = prev.apply(this, arguments);
+        try{
+          if(!VFX.enabled) return r;
+          var c = ctxOf();
+          if(c) W.Particles.draw(c);
+        }catch(e){}
+        return r;
+      };
+    })();
+
+    /* ---------- 3) Player fire → muzzle flash ---------- */
+    (function wrapFire(){
+      var prev = W.fireProjectile;
+      if(typeof prev !== "function") return;
+      W.fireProjectile = function(key){
+        var r;
+        var pl = W.player;
+        var beforeAng = 0;
+        if(pl){
+          try{
+            /* aim at nearest enemy for muzzle direction */
+            var ne = (typeof W.nearestEnemy === "function") ? W.nearestEnemy() : null;
+            if(ne){
+              beforeAng = Math.atan2((ne.y||0) - (pl.y||0), (ne.x||0) - (pl.x||0));
+            }
+          }catch(e){}
+        }
+        r = prev.apply(this, arguments);
+        try{
+          if(!budgetOK() || !pl) return r;
+          var W_ = W.WEAPONS && W.WEAPONS[key];
+          var col = (W_ && W_.color) ? W_.color : "#22e6ff";
+          var rgb = hexToRgb(col);
+          if(key === "novaWeapon"){
+            /* Nova → shockwave + shield burst */
+            W.Particles.preset.shockwave(pl.x, pl.y, rgb, 1.6);
+            W.Particles.preset.explosion(pl.x, pl.y, rgb, 0.7);
+          } else {
+            W.Particles.preset.muzzle(pl.x, pl.y, rgb, beforeAng);
+          }
+        }catch(e){}
+        return r;
+      };
+    })();
+
+    /* ---------- 4) Enemy damage / kill → sparks + explosion ---------- */
+    (function wrapDamage(){
+      var prev = W.damageEnemy;
+      if(typeof prev !== "function") return;
+      W.damageEnemy = function(e, amount, color, src){
+        var wasAlive = e && e.alive;
+        var r = prev.apply(this, arguments);
+        try{
+          if(!budgetOK() || !e) return r;
+          var rgb = hexToRgb(color || "#ffffff");
+          if(wasAlive){
+            if(e.alive){
+              /* hit spark only */
+              W.Particles.preset.hitSpark(e.x, e.y, rgb);
+            } else {
+              /* death → explosion scaled by tier */
+              var scale = e.boss ? 2.4 : (e.elite ? 1.4 : 0.85);
+              var deathRgb = e.boss ? "255,90,140" : (e.elite ? "255,220,90" : rgb);
+              W.Particles.preset.explosion(e.x, e.y, deathRgb, scale);
+              if(e.boss){
+                W.Particles.preset.shockwave(e.x, e.y, "255,255,255", 3.5);
+                W.Particles.preset.shockwave(e.x, e.y, "255,90,140", 2.6);
+              } else if(e.elite){
+                W.Particles.preset.shockwave(e.x, e.y, "255,220,90", 1.6);
+              }
+            }
+          }
+        }catch(e2){}
+        return r;
+      };
+    })();
+
+    /* ---------- 5) Colour helpers ---------- */
+    function hexToRgb(hex){
+      if(!hex) return "255,255,255";
+      if(hex.charAt(0) !== "#") return hex;
+      var h = hex.replace("#","");
+      if(h.length === 3){
+        h = h.charAt(0)+h.charAt(0)+h.charAt(1)+h.charAt(1)+h.charAt(2)+h.charAt(2);
+      }
+      var n = parseInt(h, 16);
+      if(isNaN(n)) return "255,255,255";
+      return ((n>>16)&255)+","+((n>>8)&255)+","+(n&255);
+    }
+
+    try{ console.info && console.info("[NORYVX P3-3G] Combat FX ready"); }catch(e){}
+  }, 0);
+})();
+</script>
+
 </body>
       </html>
