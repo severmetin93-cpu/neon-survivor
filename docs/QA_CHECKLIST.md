@@ -135,12 +135,12 @@ Tamamlanan her madde işaretlenir. `[P0]` maddeler çözülmeden APK gönderilem
 Bu bölüm yalnızca **dosyaların repoda mevcut olduğunu** doğrular.
 Oyun UI'sına entegrasyon ayrıca test edilmelidir.
 
-- [ ] UI Sets 01–60 dosyaları repoda mevcut
-- [ ] Her set bağımsız adreslenebilir
-- [ ] JSON manifest dosyaları korunmuş
-- [ ] Integration guide dosyaları korunmuş
-- [ ] Set 60 global UI konvansiyonları referans olarak kullanılıyor
-- [ ] Hiçbir set yıkıcı şekilde başka bir setle birleştirilmemiş
+- [x] UI Sets 01–60 dosyaları repoda mevcut
+- [x] Her set bağımsız adreslenebilir
+- [x] JSON manifest dosyaları korunmuş
+- [x] Integration guide dosyaları korunmuş
+- [x] Set 60 global UI konvansiyonları referans olarak kullanılıyor
+- [x] Hiçbir set yıkıcı şekilde başka bir setle birleştirilmemiş
 - [ ] **UI oyun ekranlarına entegrasyon gerçek cihazda ayrıca doğrulandı** (yukarıdaki bölümlerde)
 
 ---
