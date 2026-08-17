@@ -8910,17 +8910,12 @@ function toMenu(){
 
 function startGame(){
 
-  hide(scrMenu);
-  hide(scrHow);
-  hide(scrUpgrades);
-  hide(scrSkins);
-  hide(scrPause);
-  hide(scrLevelup);
-  hide(scrOver);
-  /* PHASE 3D — karakter ekrani da kapanmali. Bu ekran startGame()
-     yazildiginda yoktu; RUN RESET oyunu ekranin ALTINDA basliyordu. */
-  const scrPhase3=document.getElementById("scr-phase3");
-  if(scrPhase3)hide(scrPhase3);
+  /* REGRESSION FIX: sadece cache'lenmis ekranlari degil, TUM .screen
+     dugumlerini kapat. Aksi halde RPG/EVO/TECH/MASTERY vb. ekranlar
+     acikken OYNA'ya basildiginda oyun ekranin ALTINDA baslayabilir. */
+  document.querySelectorAll(".screen").forEach(function(s){
+    s.classList.remove("on");
+  });
   runCountdown.classList.remove("on");
 
   Game.start();
