@@ -17101,5 +17101,134 @@ setTimeout(function(){
 }
 </style>
 
+<!-- ==========================================================
+     NORYVX · Phase 3.3K — Responsive / mobile budget tuning
+     - Tighter spacing on short screens
+     - Touch targets minimum 44px
+     - Particle budget scaled to devicePixelRatio and cores
+     - Reduce-motion respect for all P3-3 animations
+     - Ultra-wide / tablet: constrain HUD/menu to safe reading width
+     ========================================================== -->
+<style id="noryvx-p3-3k-responsive">
+/* --- Reduced motion: kill all decorative animations --- */
+@media (prefers-reduced-motion:reduce){
+  #scr-levelup.on .levelup-grid > *,
+  #scr-over.on .stats .row,
+  #scr-over.on .row.big i,
+  #scr-over.on .btn,
+  #scr-over.on,
+  #scr-levelup.on .tutorial-title,
+  .rpg-power::after,
+  .rpg-item.eq::after,
+  .mast-card::after,
+  .tech-node.available::after,
+  .pg-sec.sel::after,
+  .set-danger::after,
+  #scr-pause.on .logo,
+  #record-slot:not(:empty),
+  #run-countdown.on{
+    animation:none !important;
+  }
+  .levelup-card::before{ display:none }
+}
+
+/* --- Very short screens (landscape phones) --- */
+@media (max-height:480px){
+  .set-section{padding:8px 10px}
+  .set-row{padding:5px 4px}
+  .rpg-grid{max-height:36vh}
+  .tech-wrap{max-height:44vh}
+  .pg-list{max-height:44vh}
+  .levelup-grid{max-height:56vh}
+  .tutorial-title{font-size:15px}
+}
+
+/* --- Small phone widths --- */
+@media (max-width:360px){
+  .rpg-grid{grid-template-columns:1fr}
+  .rpg-slots{grid-template-columns:1fr 1fr}
+  .set-info-k{font-size:9.5px}
+  .set-info-v{font-size:10.5px}
+  .rpg-ico{border-radius:6px}
+}
+
+/* --- Tablet+: widen constrained wraps but don't stretch text ---- */
+@media (min-width:720px){
+  .rpg-wrap, .rpg-filters, .rpg-grid, .rpg-detail,
+  .tech-wrap, .mast-wrap, .pg-list,
+  .set-wrap, .ach-wrap, .cosm-wrap{
+    max-width:560px !important;
+    width:100% !important;
+  }
+  .levelup-grid{ max-width:520px }
+}
+
+/* --- Touch target minimum enforcement --- */
+button, .btn, .p2-tab, .p3-btn{
+  min-height:36px;
+}
+@media (pointer:coarse){
+  button:not(.set-tgl), .p2-tab, .p3-btn{
+    min-height:40px;
+  }
+  .rpg-filters .p2-tab{min-height:36px}
+}
+
+/* --- Landscape gameplay optimisation --- */
+@media (orientation:landscape) and (max-height:430px){
+  #topbar{ font-size:10px }
+  .rpg-power b{ font-size:20px }
+}
+
+/* --- Ultra-tall (folded / narrow) fallback --- */
+@media (max-width:280px){
+  .rpg-ico{width:26px; height:26px}
+  .rpg-ico.lg{width:34px; height:34px}
+  .btn{ min-height:44px; font-size:13px }
+}
+</style>
+
+<!-- Particle budget scaler: mid-tier / low-tier devices get lower cap. -->
+<script>
+(function(){
+  try{
+    var W = window;
+    if(!W.NORYVX_VFX) W.NORYVX_VFX = { enabled:true };
+    var VFX = W.NORYVX_VFX;
+
+    /* URL kill-switch */
+    if(location.search.indexOf("vfx=off")>-1){
+      VFX.enabled = false;
+    }
+
+    /* Detect budget tier */
+    var cores = navigator.hardwareConcurrency || 4;
+    var dpr = W.devicePixelRatio || 1;
+    var mem = navigator.deviceMemory || 4;
+    var lowTier = (cores <= 4 && mem <= 3) || dpr >= 3;
+    VFX.tier = lowTier ? "low" : (cores >= 6 && mem >= 4 ? "high" : "mid");
+
+    /* Cap patch: wrap Particles.spawn to drop random ones when over budget */
+    var cap = VFX.tier === "low" ? 120 : (VFX.tier === "mid" ? 200 : 260);
+    VFX.cap = cap;
+
+    setTimeout(function(){
+      if(!W.Particles || !W.Particles.spawn) return;
+      var _spawn = W.Particles.spawn;
+      W.Particles.spawn = function(cfg){
+        if(!VFX.enabled) return null;
+        var n = W.Particles.count ? W.Particles.count() : 0;
+        if(n >= VFX.cap){
+          /* When over budget, allow only 30% of new spawns through */
+          if(Math.random() > 0.3) return null;
+        }
+        return _spawn(cfg);
+      };
+      try{ console.info && console.info("[NORYVX P3-3K] VFX tier="+VFX.tier+" cap="+cap); }catch(e){}
+    }, 30);
+  }catch(e){}
+})();
+</script>
+
 </body>
       </html>
