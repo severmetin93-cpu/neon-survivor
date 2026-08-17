@@ -16799,5 +16799,152 @@ setTimeout(function(){
 }
 </style>
 
+<!-- ==========================================================
+     NORYVX · Phase 3.3I — Level-up / Game Over reveal polish
+     - Level-up cards enter with staggered rise
+     - Rarity ring pulses on high-tier level-up perks
+     - Game Over screen — dramatic red desaturate + record
+     - Big score count-up on defeat
+     ========================================================== -->
+<style id="noryvx-p3-3i-reveal">
+/* --- Level up card entrance --- */
+#scr-levelup.on .levelup-grid > *{
+  animation:noryvx-p3i-cardin 480ms cubic-bezier(.2,.7,.25,1) both;
+}
+#scr-levelup.on .levelup-grid > *:nth-child(1){animation-delay:60ms}
+#scr-levelup.on .levelup-grid > *:nth-child(2){animation-delay:140ms}
+#scr-levelup.on .levelup-grid > *:nth-child(3){animation-delay:220ms}
+#scr-levelup.on .levelup-grid > *:nth-child(4){animation-delay:300ms}
+@keyframes noryvx-p3i-cardin{
+  from{opacity:0; transform:translateY(18px) scale(.97)}
+  to  {opacity:1; transform:translateY(0) scale(1)}
+}
+
+/* Level-up cards get a subtle shine on hover/tap */
+.levelup-card{
+  position:relative;
+  overflow:hidden;
+  transition:transform 160ms ease, box-shadow 220ms ease;
+}
+.levelup-card::before{
+  content:"";
+  position:absolute; inset:0;
+  background:linear-gradient(115deg,
+    transparent 0%,
+    rgba(34,230,255,.10) 45%,
+    transparent 55%);
+  transform:translateX(-100%);
+  transition:transform 700ms ease;
+  pointer-events:none;
+}
+.levelup-card:hover{
+  box-shadow:0 0 24px rgba(34,230,255,.16), 0 0 0 1px rgba(34,230,255,.35) inset;
+}
+.levelup-card:hover::before{transform:translateX(100%)}
+
+/* Rarity hint (data-rar attr optional) */
+.levelup-card[data-rar="rare"]     {border-color:rgba(74,143,255,.5) !important}
+.levelup-card[data-rar="epic"]     {border-color:rgba(167,133,255,.55) !important}
+.levelup-card[data-rar="legendary"]{border-color:rgba(255,179,71,.6) !important;
+  box-shadow:0 0 22px rgba(255,179,71,.18)}
+.levelup-card[data-rar="mythic"]   {border-color:rgba(255,94,177,.65) !important;
+  box-shadow:0 0 26px rgba(255,94,177,.22)}
+.levelup-card[data-rar="legendary"] .perk-icon,
+.levelup-card[data-rar="mythic"] .perk-icon{
+  animation:noryvx-p3i-icnpulse 1.8s ease-in-out infinite;
+}
+@keyframes noryvx-p3i-icnpulse{
+  0%,100%{filter:drop-shadow(0 0 4px currentColor)}
+  50%   {filter:drop-shadow(0 0 12px currentColor)}
+}
+
+/* Level-up title flash */
+#scr-levelup.on .tutorial-title{
+  animation:noryvx-p3i-titleflash 720ms ease-out both;
+}
+@keyframes noryvx-p3i-titleflash{
+  0%   {opacity:0; letter-spacing:.5em; filter:brightness(2)}
+  60%  {opacity:1; letter-spacing:.16em; filter:brightness(1.4)}
+  100% {opacity:1; letter-spacing:.14em; filter:brightness(1)}
+}
+
+/* --- Game Over reveal --- */
+#scr-over.on{
+  animation:noryvx-p3i-overfade 640ms ease-out both;
+}
+@keyframes noryvx-p3i-overfade{
+  from{opacity:0; filter:hue-rotate(20deg) saturate(1.4)}
+  to  {opacity:1; filter:hue-rotate(0) saturate(1)}
+}
+#scr-over.on .stats .row{
+  animation:noryvx-p3i-rowin 360ms cubic-bezier(.2,.7,.25,1) both;
+}
+#scr-over.on .stats .row:nth-child(1){animation-delay:200ms}
+#scr-over.on .stats .row:nth-child(2){animation-delay:270ms}
+#scr-over.on .stats .row:nth-child(3){animation-delay:330ms}
+#scr-over.on .stats .row:nth-child(4){animation-delay:380ms}
+#scr-over.on .stats .row:nth-child(5){animation-delay:430ms}
+#scr-over.on .stats .row:nth-child(6){animation-delay:470ms}
+#scr-over.on .stats .row:nth-child(7){animation-delay:510ms}
+@keyframes noryvx-p3i-rowin{
+  from{opacity:0; transform:translateX(-8px)}
+  to  {opacity:1; transform:translateX(0)}
+}
+#scr-over.on .row.big i{
+  animation:noryvx-p3i-bigglow 1.6s ease-out both;
+  animation-delay:600ms;
+}
+@keyframes noryvx-p3i-bigglow{
+  0%  {text-shadow:0 0 0 rgba(34,230,255,0); transform:scale(.9)}
+  40% {text-shadow:0 0 32px rgba(34,230,255,.8); transform:scale(1.08)}
+  100%{text-shadow:0 0 22px rgba(34,230,255,.55); transform:scale(1)}
+}
+#scr-over.on .btn{
+  animation:noryvx-p3i-btnrise 480ms cubic-bezier(.2,.7,.25,1) both;
+  animation-delay:900ms;
+}
+#scr-over.on .btn.ghost{ animation-delay:980ms }
+@keyframes noryvx-p3i-btnrise{
+  from{opacity:0; transform:translateY(10px)}
+  to  {opacity:1; transform:translateY(0)}
+}
+
+/* --- Pause overlay pulse --- */
+#scr-pause.on .logo{
+  animation:noryvx-p3i-pauseglow 2.4s ease-in-out infinite alternate;
+}
+@keyframes noryvx-p3i-pauseglow{
+  from{text-shadow:0 0 8px rgba(34,230,255,.35)}
+  to  {text-shadow:0 0 24px rgba(34,230,255,.75), 0 0 40px rgba(34,230,255,.25)}
+}
+
+/* Countdown ring reveal */
+#run-countdown.on{
+  animation:noryvx-p3i-cdreveal 360ms cubic-bezier(.2,.7,.25,1);
+}
+@keyframes noryvx-p3i-cdreveal{
+  from{opacity:0; transform:scale(.5)}
+  to  {opacity:1; transform:scale(1)}
+}
+
+/* Record slot flourish (when a new best is achieved) */
+#record-slot:not(:empty){
+  position:relative;
+  padding:8px 14px;
+  margin-bottom:14px;
+  border-radius:var(--r-sm, 6px);
+  background:linear-gradient(135deg,rgba(255,179,71,.14),rgba(255,94,177,.10));
+  border:1px solid rgba(255,179,71,.44);
+  color:#ffe1b6;
+  font-size:11px; font-weight:900; letter-spacing:.24em;
+  text-align:center;
+  animation:noryvx-p3i-record 1.4s ease-in-out infinite alternate;
+}
+@keyframes noryvx-p3i-record{
+  from{box-shadow:0 0 10px rgba(255,179,71,.25)}
+  to  {box-shadow:0 0 22px rgba(255,179,71,.55), 0 0 40px rgba(255,94,177,.28)}
+}
+</style>
+
 </body>
       </html>
