@@ -16170,5 +16170,204 @@ setTimeout(function(){
 })();
 </script>
 
+<script>
+(function(){
+"use strict";
+/* =========================================================
+   P3-3E · ENEMY / ELITE / BOSS VISUAL ENHANCEMENT
+   Wraps rrEnemyUnit, rrEliteUnit, rrBossUnit with additive
+   post-hooks. Silhouettes, hitbox radius, HP bars, and enemy
+   state fields are preserved.
+========================================================= */
+if(!window.NORYVX_VFX || !window.NORYVX_VFX.enabled) return;
+
+setTimeout(function(){
+  var W = window;
+  function ctxOf(){
+    if(W.__nx_ctx) return W.__nx_ctx;
+    var g = document.getElementById("game");
+    W.__nx_ctx = g && g.getContext ? g.getContext("2d") : null;
+    return W.__nx_ctx;
+  }
+  function pulse(t, base, amp, freq){
+    return base + amp*(0.5+0.5*Math.sin((t||0)*(freq||3)));
+  }
+
+  /* Spawn spark particles on high hitFlash — but debounce per-enemy
+     via a WeakMap to avoid per-frame spam. */
+  var hitState = (typeof WeakMap!=="undefined") ? new WeakMap() : null;
+  function tryHitSpark(e, x, y, rgb){
+    if(!(e && e.hitFlash>0.4)) return;
+    if(!hitState || !W.Particles) return;
+    var last = hitState.get(e) || 0;
+    var now = e.t || 0;
+    if(now - last < 0.09) return;
+    hitState.set(e, now);
+    W.Particles.preset.hitSpark(x, y, rgb || "255,240,220");
+  }
+
+  function postEnemy(e, paint, r, lod){
+    var ctx = ctxOf();
+    if(!ctx) return;
+    var t = (e && e.t) || 0;
+    var er = (e && e.r) || 10;
+
+    /* Ambient rim glow, softens with LOD */
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    var rimRgb = "180,220,255";
+    var typ = e && e.type;
+    if(typ==="tank")       rimRgb="255,120,80";
+    else if(typ==="orbiter")rimRgb="194,140,255";
+    else if(typ==="dasher") rimRgb="72,255,155";
+    else if(typ==="weaver") rimRgb="255,79,216";
+    else if(typ==="hunter") rimRgb="72,217,255";
+
+    var g = ctx.createRadialGradient(0,0,er*0.55, 0,0, er*1.35);
+    var a = pulse(t, 0.14, 0.10, 3.2);
+    g.addColorStop(0.0, "rgba("+rimRgb+","+a+")");
+    g.addColorStop(0.6, "rgba("+rimRgb+","+(a*0.35)+")");
+    g.addColorStop(1.0, "rgba("+rimRgb+",0)");
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(0,0,er*1.35,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+
+    /* Hit spark */
+    tryHitSpark(e, 0, 0, rimRgb);
+  }
+
+  function postElite(e, paint, lod){
+    var ctx = ctxOf();
+    if(!ctx) return;
+    var t = (e && e.t) || 0;
+    var er = (e && e.r) || 12;
+
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    /* Layered golden aura ring, slow rotation */
+    var rot = t * 0.6;
+    for(var i=0;i<3;i++){
+      var rr = er * (1.42 + i*0.14);
+      var alpha = pulse(t, 0.18, 0.12, 2.4) * (1 - i*0.28);
+      ctx.strokeStyle = "rgba(255,227,77,"+alpha+")";
+      ctx.lineWidth = 1.2 - i*0.25;
+      ctx.beginPath();
+      ctx.arc(0,0, rr, rot + i*0.8, rot + i*0.8 + Math.PI*1.25);
+      ctx.stroke();
+    }
+    /* Occasional lightning arc */
+    if(Math.floor(t*3)%7===0){
+      ctx.strokeStyle = "rgba(255,255,190,"+pulse(t,0.35,0.3,10)+")";
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      var start = Math.random()*Math.PI*2;
+      var end = start + Math.PI + (Math.random()-0.5)*0.6;
+      var sx = Math.cos(start)*er*1.35, sy = Math.sin(start)*er*1.35;
+      var ex = Math.cos(end)*er*1.35, ey = Math.sin(end)*er*1.35;
+      var mx = (sx+ex)*0.5 + (Math.random()-0.5)*er*0.6;
+      var my = (sy+ey)*0.5 + (Math.random()-0.5)*er*0.6;
+      ctx.moveTo(sx,sy);
+      ctx.quadraticCurveTo(mx,my,ex,ey);
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    tryHitSpark(e, 0, 0, "255,240,150");
+  }
+
+  function postBoss(e, lod){
+    var ctx = ctxOf();
+    if(!ctx) return;
+    var t = (e && e.t) || 0;
+    var er = (e && e.r) || 30;
+    var tp = (e && e.titanPhase) || 1;
+
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+
+    /* Phase-tinted outer shield ripple */
+    var shieldRgb = tp===3 ? "255,59,107" : (tp===2 ? "255,150,60" : "72,217,255");
+    for(var i=0;i<2;i++){
+      var breath = pulse(t, 1.02, 0.06, 1.6 + i*0.5);
+      var rr = er * (1.14 + i*0.10) * breath;
+      var a = pulse(t, 0.22, 0.16, 2.0) * (1 - i*0.3);
+      ctx.strokeStyle = "rgba("+shieldRgb+","+a+")";
+      ctx.lineWidth = 1.6 - i*0.4;
+      ctx.beginPath();
+      ctx.arc(0,0, rr, 0, Math.PI*2);
+      ctx.stroke();
+    }
+
+    /* Weak-point telegraph enhancement */
+    if(e && e.weakOpen){
+      var w = pulse(t, 0.55, 0.30, 12);
+      var g = ctx.createRadialGradient(0,0,er*0.15, 0,0, er*0.7);
+      g.addColorStop(0.0, "rgba(255,255,255,"+w+")");
+      g.addColorStop(0.4, "rgba(255,227,77,"+(w*0.65)+")");
+      g.addColorStop(1.0, "rgba(255,227,77,0)");
+      ctx.fillStyle = g;
+      ctx.beginPath(); ctx.arc(0,0,er*0.7,0,Math.PI*2); ctx.fill();
+    }
+
+    /* Charge/telegraph tell — briefly ramps energy sparks */
+    if(e && (e.bossTelegraph>0 || e.telegraph>0)){
+      if(W.Particles){
+        for(var k=0;k<2;k++){
+          var ang = Math.random()*Math.PI*2;
+          var rd  = er * (0.7 + Math.random()*0.4);
+          W.Particles.spawn({
+            x: Math.cos(ang)*rd,
+            y: Math.sin(ang)*rd,
+            vx: -Math.cos(ang)*40,
+            vy: -Math.sin(ang)*40,
+            ttl: 0.35, size: 1.8,
+            rgb: tp===3 ? "255,79,216" : "72,217,255",
+            kind:"flare"
+          });
+        }
+      }
+    }
+
+    /* Phase-3 rage overlay */
+    if(tp===3){
+      ctx.strokeStyle = "rgba(255,59,107,"+pulse(t,0.35,0.25,6)+")";
+      ctx.lineWidth = 2.2;
+      ctx.shadowColor = "rgba(255,59,107,.8)";
+      ctx.shadowBlur = 12;
+      ctx.beginPath();
+      var n=8;
+      for(var j=0;j<n;j++){
+        var a2 = j*(Math.PI*2/n) + t*0.7;
+        var x1 = Math.cos(a2)*er*1.05;
+        var y1 = Math.sin(a2)*er*1.05;
+        var x2 = Math.cos(a2)*er*1.28;
+        var y2 = Math.sin(a2)*er*1.28;
+        ctx.moveTo(x1,y1); ctx.lineTo(x2,y2);
+      }
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    tryHitSpark(e, 0, 0, tp===3?"255,150,180":"255,220,150");
+  }
+
+  function wrap(name, post){
+    var prev = W[name];
+    if(typeof prev !== "function") return;
+    W[name] = function(){
+      var r = prev.apply(this, arguments);
+      try{ post.apply(null, arguments); }catch(e){}
+      return r;
+    };
+  }
+  wrap("rrEnemyUnit", postEnemy);
+  wrap("rrEliteUnit", postElite);
+  wrap("rrBossUnit",  postBoss);
+
+  try{ console.info && console.info("[NORYVX P3-3E] Enemy/Elite/Boss FX ready"); }catch(e){}
+}, 0);
+})();
+</script>
+
 </body>
       </html>
