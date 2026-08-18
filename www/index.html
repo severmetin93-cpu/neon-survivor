@@ -11,8 +11,11 @@
 <meta name="application-name" content="Neon Survivor">
 <meta name="apple-mobile-web-app-title" content="Neon Survivor">
 <link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml">
-<title>NORYVX V20.0.0</title>
+<title>NORYVX V20.1.0</title>
 <link rel="manifest" href="manifest.json">
+<!-- Phase 3: NORYVX design typography — Chakra Petch + IBM Plex Mono -->
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 
 <style>
 :root{
@@ -38,7 +41,7 @@ html,body{
   position:fixed;
   background:var(--bg);
   color:var(--ink);
-  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  font-family:'Chakra Petch',system-ui,-apple-system,sans-serif;
   touch-action:none;
   overscroll-behavior:none;
   user-select:none;
@@ -124,6 +127,7 @@ button,
 }
 
 .tag{
+  font-family:'IBM Plex Mono',monospace;
   margin-top:22px;
   font-size:13px;
   letter-spacing:.22em;
@@ -189,9 +193,10 @@ button,
 }
 
 .tutorial-title{
+  font-family:'Chakra Petch',system-ui,sans-serif;
   font-size:clamp(25px,7vw,38px);
-  font-weight:900;
-  letter-spacing:.12em;
+  font-weight:700;
+  letter-spacing:.14em;
   text-transform:uppercase;
   text-align:center;
   margin-bottom:26px;
@@ -852,18 +857,31 @@ button,
 
 /* ---------- TYPOGRAPHY ---------- */
 .logo{
+  font-family:'Chakra Petch',system-ui,sans-serif !important;
   letter-spacing:.26em !important;
   text-shadow:
-    0 0 14px rgba(34,230,255,.55),
-    0 0 40px rgba(160,92,255,.35),
-    0 2px 0 rgba(0,0,0,.6) !important;
+    0 0 30px rgba(34,230,255,.4),
+    0 0 72px rgba(34,230,255,.12) !important;
+  position:relative;
+  display:inline-block;
+}
+/* Underline decoration from design reference */
+.logo::after{
+  content:'';
+  position:absolute;
+  left:8%;right:8%;bottom:-10px;
+  height:1px;
+  background:linear-gradient(90deg,transparent,#22e6ff,transparent);
+  display:block;
 }
 .logo span{
-  letter-spacing:.42em !important;
-  color:var(--ink-2) !important;
-  font-weight:700;
-  font-size:.30em !important;
-  margin-top:.9em !important;
+  font-family:'IBM Plex Mono',monospace !important;
+  letter-spacing:.36em !important;
+  color:rgba(234,244,255,.36) !important;
+  font-weight:500;
+  font-size:.18em !important;
+  margin-top:1.2em !important;
+  display:block;
 }
 .tutorial-title,
 .p3-char-name,
@@ -1835,8 +1853,8 @@ body.ls #b-dash{width:72px;height:72px;
   text-shadow:0 0 10px rgba(34,230,255,.6);
 }
 .tb-txt{display:flex;flex-direction:column;gap:3px;min-width:0}
-.tb-name{font-size:11.5px;font-weight:900;letter-spacing:.16em;line-height:1}
-.tb-lv{font-size:8.5px;letter-spacing:.14em;color:var(--ink-3)}
+.tb-name{font-family:'Chakra Petch',system-ui,sans-serif;font-size:11.5px;font-weight:600;letter-spacing:.06em;line-height:1}
+.tb-lv{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:.14em;color:var(--ink-3)}
 .tb-xp{height:3px;width:96px;border-radius:999px;background:rgba(2,5,14,.9);overflow:hidden}
 .tb-xp i{display:block;height:100%;background:linear-gradient(90deg,var(--primary),#7cc0ff)}
 .tb-cur{
@@ -1879,7 +1897,7 @@ body.ls #b-dash{width:72px;height:72px;
   transition:color var(--t-fast),background var(--t-fast);
 }
 .bn .bn-i{font-size:17px;line-height:1}
-.bn .bn-t{font-size:8px;letter-spacing:.10em;font-weight:800}
+.bn .bn-t{font-size:8px;letter-spacing:.10em;font-weight:600;font-family:'IBM Plex Mono',monospace}
 .bn.on{
   color:var(--ink);
   background:linear-gradient(180deg,rgba(34,230,255,.16),rgba(8,13,28,.6));
@@ -2109,6 +2127,11 @@ window.addEventListener("unhandledrejection",function(){});
        canli olarak gosterilir. Secim mantigi degistirilmedi. -->
   <div class="hero-stage">
     <canvas id="hero-canvas" aria-hidden="true"></canvas>
+    <!-- Phase 3: floating ambient particles matching NORYVX reference -->
+    <div class="nvx-particle" aria-hidden="true"></div>
+    <div class="nvx-particle" aria-hidden="true"></div>
+    <div class="nvx-particle" aria-hidden="true"></div>
+    <div class="nvx-particle" aria-hidden="true"></div>
     <div class="hero-meta">
       <span class="hero-class" id="hero-class">VANGUARD</span>
       <span class="hero-role" id="hero-role">HEAVY ASSAULT · TANK</span>
@@ -4285,29 +4308,61 @@ function inputMove(x,y){
     extraSpeedStacks*BALANCE.player.runUpgrade.postCapSpeed;
 
   const baseBoost=1+runSpeedBonus+metaSpeed;
-  const boost=
-    baseBoost*(Game.powers.overdrive>0?1.35:1);
+
+  /* ── Phase 4 · Touch Control Improvements ──────────────────────
+     1. DEAD ZONE: ignore micro-jitter below 1.5 px per frame.
+        Prevents character drift from thumb resting on screen.
+     2. DIRECTION NORMALIZATION: compute unit vector from (dx,dy)
+        so diagonal movement (45°) is exactly equal to cardinal.
+        Without normalization diagonal = √2 × cardinal speed.
+     3. SMOOTH ACCELERATION CURVE: apply sqrt ramp on magnitude
+        [1.5–40 px range]. Gentle starts, strong mid-swipe, plateau
+        at max — feels natural regardless of finger speed.
+     4. MAGNITUDE CAP: prevents single large-delta jump from phone
+        CPU throttle causing multi-frame skip artefact.
+     5. OVERDRIVE FIX (Phase 5): overdriveMultiplier applied ONLY
+        to final velocity, NOT to input sensitivity. Overdrive makes
+        the character faster, not the touch mapping more aggressive.
+  ──────────────────────────────────────────────────────────────── */
+  const DEAD_ZONE   = 1.5;   /* px — ignore jitter below this */
+  const MAG_MAX     = 48;    /* px — cap raw delta to prevent jump artefacts */
+  const RAMP_SCALE  = 0.18;  /* tuning: sqrt ramp gain */
+
+  const rawMag = Math.hypot(dx, dy);
+  if(rawMag < DEAD_ZONE) return; /* dead-zone: no movement */
+
+  /* Unit direction vector — diagonal-safe (no √2 speed bonus) */
+  const invMag = 1 / rawMag;
+  const normDx = dx * invMag;
+  const normDy = dy * invMag;
+
+  /* Smooth acceleration: sqrt ramp from dead zone to MAG_MAX.
+     mapMag goes 0→1 as rawMag goes DEAD_ZONE→MAG_MAX.
+     Final pixel displacement per frame = ramp * MAG_MAX. */
+  const clampedMag = Math.min(rawMag, MAG_MAX);
+  const mapMag = (clampedMag - DEAD_ZONE) / (MAG_MAX - DEAD_ZONE);
+  const rampedMag = Math.sqrt(mapMag) * MAG_MAX * RAMP_SCALE;
+
+  /* Speed modifiers: baseBoost from upgrades, overdrive separate */
+  const overdriveMultiplier = Game.powers.overdrive > 0 ? 1.35 : 1;
+  const moveMag = rampedMag * baseBoost * overdriveMultiplier;
 
   player.x=
     clamp(
-      player.x+dx*boost,
+      player.x+normDx*moveMag,
       player.r||BALANCE.player.radius,
       W-(player.r||BALANCE.player.radius)
     );
 
   player.y=
     clamp(
-      player.y+dy*boost,
+      player.y+normDy*moveMag,
       BALANCE.player.radius,
       H-BALANCE.player.radius
     );
 
-  if(
-    Math.abs(dx)+Math.abs(dy)>2
-  ){
-
+  if(rawMag > DEAD_ZONE){
     hideHint();
-
   }
 
 }
@@ -14560,6 +14615,8 @@ canvas.addEventListener("mousemove",e=>{if(JOY.on)move(e.clientX,e.clientY);},{p
 canvas.addEventListener("mouseup",up,{passive:true});
 
 function drawJoy(dt){
+  /* Phase 4: visible joystick indicator removed; natural touch movement only */
+  return;
   if(!JOY.on)JOY.fade=Math.max(0,JOY.fade-dt*3.2);
   if(JOY.fade<=0.01)return;
   const a=JOY.fade;
@@ -16531,11 +16588,64 @@ try{
 }
 #nx-menu-bg.on{ opacity:.92; }
 
-/* Logo — subtle pulse (extends existing text-shadow) */
+/* Logo — subtle pulse */
 .logo{ animation:nx-logo-pulse 6s ease-in-out infinite; }
 @keyframes nx-logo-pulse{
-  0%,100%{ text-shadow:0 0 14px rgba(34,230,255,.55),0 0 40px rgba(160,92,255,.35),0 2px 0 rgba(0,0,0,.6); }
-  50%    { text-shadow:0 0 22px rgba(34,230,255,.78),0 0 58px rgba(160,92,255,.48),0 2px 0 rgba(0,0,0,.6); }
+  0%,100%{ text-shadow:0 0 30px rgba(34,230,255,.4),0 0 72px rgba(34,230,255,.12); }
+  50%    { text-shadow:0 0 40px rgba(34,230,255,.65),0 0 96px rgba(34,230,255,.22); }
+}
+
+/* PLAY button — 72px premium design matching reference */
+#b-play{
+  width:min(340px,84vw) !important;
+  height:72px !important;
+  min-height:72px !important;
+  border-radius:18px !important;
+  font-family:'Chakra Petch',system-ui,sans-serif !important;
+  font-size:22px !important;
+  font-weight:700 !important;
+  letter-spacing:.28em !important;
+  text-indent:.28em !important;
+  color:#03121c !important;
+  background:linear-gradient(135deg,#2ff0ff 0%,#22a8ff 52%,#7a5cff 100%) !important;
+  box-shadow:0 14px 38px rgba(34,230,255,.28),inset 0 0 0 1px rgba(255,255,255,.18) !important;
+  transition:transform .16s cubic-bezier(.2,.8,.3,1),box-shadow .16s !important;
+}
+#b-play:active{
+  transform:scale(.975) !important;
+  box-shadow:0 8px 20px rgba(34,230,255,.20),inset 0 0 0 1px rgba(255,255,255,.12) !important;
+}
+
+/* Hero stage glow orb */
+.hero-stage::before{
+  content:"";
+  position:absolute;left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  width:280px;height:280px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(34,230,255,.08),transparent 62%);
+  pointer-events:none;
+}
+
+/* Floating particles in hero stage */
+.hero-stage .nvx-particle{
+  position:absolute;border-radius:50%;pointer-events:none;
+  animation:nvxFloat 6s ease-in-out infinite;
+}
+.hero-stage .nvx-particle:nth-child(1){width:4px;height:4px;left:34px;bottom:70px;background:#22e6ff;animation-duration:6s}
+.hero-stage .nvx-particle:nth-child(2){width:3px;height:3px;right:44px;bottom:120px;background:#a05cff;animation-duration:7.5s;animation-delay:1.2s}
+.hero-stage .nvx-particle:nth-child(3){width:5px;height:5px;right:24px;bottom:40px;background:#22e6ff;animation-duration:8.5s;animation-delay:.6s}
+.hero-stage .nvx-particle:nth-child(4){width:3px;height:3px;left:58px;bottom:170px;background:#a05cff;animation-duration:9s;animation-delay:2s}
+
+/* Hero class/role — improved Chakra Petch typography */
+.hero-class{
+  font-family:'Chakra Petch',system-ui,sans-serif !important;
+  font-weight:700 !important;
+  letter-spacing:.16em !important;
+}
+.hero-role{
+  font-family:'IBM Plex Mono',monospace !important;
+  letter-spacing:.14em !important;
 }
 
 /* Menu tab — sliding underline on active */

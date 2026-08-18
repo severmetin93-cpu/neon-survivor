@@ -10,10 +10,15 @@
    cache adi degismezse yeni atlas cihaza HIC ULASMAZ; dosyanin en
    ustundeki notun tarif ettigi hata tam olarak budur. Ad bu yuzden
    surumle birlikte yukseltildi. Temizleme mantigi degismedi. */
-/* NORYVX V20.1.0 — full-body hero canvas renderer + I18N + dual
-   currency + MYTHIC rarity + boss intro overlay + phase HUD.
+/* NORYVX V20.2.0 — Phase 3-5 design + touch + overdrive fixes.
+   Phase 3: Chakra Petch/IBM Plex Mono fonts, logo underline, PLAY button redesign,
+            floating hero particles, bottom nav IBM Plex Mono labels.
+   Phase 4: Joystick indicator removed, dead zone + sqrt acceleration curve,
+            diagonal normalization, MAG_MAX cap for jump artefact prevention.
+   Phase 5: Overdrive sensitivity fix — overdriveMultiplier applied to velocity
+            only, not input delta, so control precision is unchanged.
    Cache adi guncellendi (aksi halde eski asset'ler ilkanminlarak calisir). */
-const CACHE = "neon-survivor-v20-1-0";
+const CACHE = "neon-survivor-v20-2-0";
 
 const ASSETS = [
   "./",
