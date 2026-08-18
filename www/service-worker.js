@@ -18,7 +18,7 @@
    Phase 5: Overdrive sensitivity fix — overdriveMultiplier applied to velocity
             only, not input delta, so control precision is unchanged.
    Cache adi guncellendi (aksi halde eski asset'ler ilkanminlarak calisir). */
-const CACHE = "neon-survivor-v21-0-0";
+const CACHE = "neon-survivor-v21-1-0";
 
 const ASSETS = [
   "./",

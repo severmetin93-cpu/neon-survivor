@@ -897,7 +897,7 @@ button,
   background:
     radial-gradient(130% 78% at 50% -6%,rgba(34,230,255,.10),transparent 58%),
     radial-gradient(120% 70% at 50% 108%,rgba(160,92,255,.10),transparent 60%),
-    rgba(3,5,12,.90) !important;
+    rgba(3,5,12,.90);
   transition:
     opacity var(--t-mid),
     transform var(--t-mid),
@@ -11920,7 +11920,7 @@ function openInv(){hideAllScreens();$$("scr-rpginv").classList.add("on");renderI
 function backToMenu(){hideAllScreens();$$("scr-menu").classList.add("on");}
 
 function bind(id,fn){const el=$$(id);if(el)el.addEventListener("click",fn);}
-bind("b-rpgchar",openChar);
+tap($$("b-rpgchar"),openChar);
 bind("b-rpginv",()=>{invFilter="all";openInv();});
 bind("b-rpgchar-back",backToMenu);
 bind("b-rpginv-back",backToMenu);
@@ -12765,8 +12765,8 @@ function renderMastery(){
 function hideAll(){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));}
 function back(){hideAll();const m=$$("scr-menu");if(m)m.classList.add("on");}
 function bind(id,fn){const e=$$(id);if(e)e.addEventListener("click",fn);}
-bind("b-tech",()=>{hideAll();$$("scr-tech").classList.add("on");renderTech();});
-bind("b-mastery",()=>{hideAll();$$("scr-mastery").classList.add("on");renderMastery();});
+tap($$("b-tech"),()=>{hideAll();$$("scr-tech").classList.add("on");renderTech();});
+tap($$("b-mastery"),()=>{hideAll();$$("scr-mastery").classList.add("on");renderMastery();});
 bind("b-tech-back",back);
 bind("b-mastery-back",back);
 bind("b-tech-mast",()=>{hideAll();$$("scr-mastery").classList.add("on");renderMastery();});
@@ -15641,15 +15641,22 @@ if(resetBtn){
 
 if(backBtn)backBtn.addEventListener("click",goMenu);
 
-/* b-settings butonu buildSysPane() tarafindan runtime'da olusturulur;
-   MutationObserver veya geciktirmeli bind yerine delegasyon kullaniriz. */
+/* b-settings: delegation covers dynamically-created button; tap() covers static NORYVX button */
 document.addEventListener("click",function(e){
   if(e.target&&e.target.id==="b-settings"&&scrSettings){
-    hideAll();
-    scrSettings.classList.add("on");
-    renderSettings();
+    hideAll();scrSettings.classList.add("on");renderSettings();
   }
 });
+document.addEventListener("touchend",function(e){
+  if(e.target&&e.target.id==="b-settings"&&scrSettings){
+    e.preventDefault();
+    hideAll();scrSettings.classList.add("on");renderSettings();
+  }
+},{passive:false});
+(function(){
+  var bst=document.getElementById("b-settings");
+  if(bst&&typeof tap==="function")tap(bst,function(){if(scrSettings){hideAll();scrSettings.classList.add("on");renderSettings();}});
+})();
 
 window._settingsRender=renderSettings;
 })();
@@ -18212,7 +18219,7 @@ button, .btn, .p2-tab, .p3-btn{
   .btn{ min-height:44px; font-size:13px }
 }
 
-/* ── NORYVX screens: override .screen class alignment/padding/background ── */
+/* ── NORYVX screens: override .screen class alignment ── */
 #scr-menu,
 #scr-pause,
 #scr-levelup,
@@ -18224,10 +18231,11 @@ button, .btn, .p2-tab, .p3-btn{
 #scr-tech {
   align-items: stretch !important;
   justify-content: flex-start !important;
-  padding: 0 !important;
-  background: none !important;
   transform: none !important;
 }
+
+/* Old overlay bars replaced by built-in NORYVX menu header/nav */
+#topbar, #bottomnav { display: none !important; }
 #scr-menu.on,
 #scr-pause.on,
 #scr-levelup.on,
