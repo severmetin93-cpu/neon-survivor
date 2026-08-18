@@ -549,14 +549,14 @@ button,
 /* NORYVX motion tokenlari — evrensel keyframe kutuphanesi.
    Kullanim: any element with class="nvx-idle" alir. Skin ic scriptleri
    canvasa ozeldir; DOM overlay'ler burasi. */
-@keyframes nvxIdle    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+@keyframes nvxIdle    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
 @keyframes nvxReactor { 0%,100%{opacity:.72;filter:brightness(1)} 50%{opacity:1;filter:brightness(1.3)} }
-@keyframes nvxSweep   { 0%{transform:translateX(-120%)} 100%{transform:translateX(220%)} }
-@keyframes nvxPulse   { 0%,100%{transform:scale(1);opacity:.9} 50%{transform:scale(1.06);opacity:1} }
-@keyframes nvxBar     { 0%{transform:scaleX(0);transform-origin:left center} 100%{transform:scaleX(1)} }
-@keyframes nvxRise    { 0%{opacity:0;transform:translateY(10px)} 100%{opacity:1;transform:translateY(0)} }
-@keyframes nvxRadar   { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
-@keyframes nvxFloat   { 0%,100%{transform:translateY(0) rotate(0deg)} 50%{transform:translateY(-6px) rotate(1deg)} }
+@keyframes nvxSweep   { 0%{transform:translateY(-140%)} 100%{transform:translateY(460%)} }
+@keyframes nvxPulse   { 0%,100%{opacity:.5} 50%{opacity:1} }
+@keyframes nvxBar     { from{width:0} }
+@keyframes nvxRise    { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+@keyframes nvxRadar   { 0%{opacity:.45;transform:scale(.28)} 100%{opacity:0;transform:scale(1)} }
+@keyframes nvxFloat   { 0%,100%{transform:translateY(0);opacity:.25} 50%{transform:translateY(-16px);opacity:.75} }
 @keyframes nvxHover   { 0%,100%{box-shadow:0 0 0 rgba(34,230,255,0)} 50%{box-shadow:0 0 22px rgba(34,230,255,.55)} }
 .nvx-idle{animation:nvxIdle 4.6s ease-in-out infinite}
 .nvx-reactor{animation:nvxReactor 2.6s ease-in-out infinite}
@@ -2109,98 +2109,97 @@ window.addEventListener("unhandledrejection",function(){});
 
 <!-- MENU -->
 
-<div class="screen on" id="scr-menu">
+<div class="screen on" id="scr-menu" style="display:flex;flex-direction:column;padding:52px 20px 24px;background:radial-gradient(110% 62% at 50% 4%,rgba(34,230,255,.09),transparent 62%),radial-gradient(100% 52% at 50% 104%,rgba(160,92,255,.12),transparent 64%),#04060f">
 
-  <div class="toggles">
-
-    <div class="tgl" id="t-sound" role="button" aria-label="Ses efektleri">♪</div>
-    <div class="tgl" id="t-vibe" role="button" aria-label="Titreşim">≈</div>
-
+  <!-- Ambient columns -->
+  <div style="position:absolute;left:0;right:0;bottom:0;height:340px;display:flex;align-items:flex-end;justify-content:space-between;opacity:.42;pointer-events:none">
+    <div style="width:30px;height:44%;background:linear-gradient(180deg,rgba(34,230,255,.13),transparent)"></div>
+    <div style="width:18px;height:66%;background:linear-gradient(180deg,rgba(160,92,255,.11),transparent)"></div>
+    <div style="width:38px;height:32%;background:linear-gradient(180deg,rgba(34,230,255,.08),transparent)"></div>
+    <div style="width:16px;height:74%;background:linear-gradient(180deg,rgba(34,230,255,.07),transparent)"></div>
+    <div style="width:32px;height:50%;background:linear-gradient(180deg,rgba(160,92,255,.1),transparent)"></div>
+    <div style="width:22px;height:38%;background:linear-gradient(180deg,rgba(34,230,255,.09),transparent)"></div>
   </div>
 
-  <div class="logo">
-    NORYVX
-    <span>Tactical Survivor</span>
-  </div>
-
-  <!-- Hero sahnesi: secili karakter combat ile AYNI cizicilerle,
-       canli olarak gosterilir. Secim mantigi degistirilmedi. -->
-  <div class="hero-stage">
-    <canvas id="hero-canvas" aria-hidden="true"></canvas>
-    <!-- Phase 3: floating ambient particles matching NORYVX reference -->
-    <div class="nvx-particle" aria-hidden="true"></div>
-    <div class="nvx-particle" aria-hidden="true"></div>
-    <div class="nvx-particle" aria-hidden="true"></div>
-    <div class="nvx-particle" aria-hidden="true"></div>
-    <div class="hero-meta">
-      <span class="hero-class" id="hero-class">VANGUARD</span>
-      <span class="hero-role" id="hero-role">HEAVY ASSAULT · TANK</span>
+  <!-- Topbar -->
+  <div style="flex:none;display:flex;align-items:center;justify-content:space-between;gap:12px;height:44px">
+    <div style="display:flex;align-items:center;gap:10px;min-width:0">
+      <span style="flex:none;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:linear-gradient(150deg,rgba(34,230,255,.2),rgba(160,92,255,.14));border:1px solid rgba(34,230,255,.32);font:700 15px/1 'Chakra Petch',sans-serif;color:#bff4ff">N</span>
+      <span style="min-width:0;display:flex;flex-direction:column;gap:5px">
+        <b style="font:600 12px/1 'Chakra Petch',sans-serif;letter-spacing:.06em;white-space:nowrap">NORYVX · LV <span id="profile-level">1</span></b>
+        <i style="display:block;width:96px;height:3px;border-radius:99px;background:rgba(234,244,255,.1);overflow:hidden"><b id="profile-xp-fill" style="display:block;width:20%;height:100%;background:linear-gradient(90deg,#22e6ff,#a05cff)"></b></i>
+      </span>
+    </div>
+    <div style="flex:none;display:flex;align-items:center;gap:12px;white-space:nowrap;font:500 11px/1 'IBM Plex Mono',monospace">
+      <span id="profile-currency" style="color:#ffd24d">◆ 0</span>
+      <div id="t-sound" role="button" style="cursor:pointer;width:28px;height:28px;border-radius:8px;background:rgba(34,230,255,.06);border:1px solid rgba(34,230,255,.2);display:flex;align-items:center;justify-content:center;font-size:13px">♪</div>
+      <div id="t-vibe" role="button" style="cursor:pointer;width:28px;height:28px;border-radius:8px;background:rgba(34,230,255,.06);border:1px solid rgba(34,230,255,.2);display:flex;align-items:center;justify-content:center;font-size:13px">≈</div>
     </div>
   </div>
 
-  <div class="tag" id="menu-best">
-    En iyi skor · 0
-  </div>
-
-  <div class="tag" id="pg-menu-sector" style="margin-top:6px;color:var(--primary);font-weight:800">
-    SEKTÖR 01 · NEON ŞEHRİ
-  </div>
-
-  <div class="progress-panel">
-    <div class="level-line">
-      <span>Profil Seviyesi</span>
-      <strong id="profile-level">1</strong>
+  <!-- Logo -->
+  <div style="flex:none;margin-top:20px;text-align:center">
+    <div class="logo" style="position:relative;display:inline-block;font:700 52px/1 'Chakra Petch',sans-serif;letter-spacing:.2em;text-indent:.2em;color:#f4fcff;text-shadow:0 0 30px rgba(34,230,255,.4),0 0 72px rgba(34,230,255,.12)">NORYVX
+      <i style="position:absolute;left:8%;right:8%;bottom:-8px;height:1px;background:linear-gradient(90deg,transparent,#22e6ff,transparent)"></i>
     </div>
-    <div class="xp-bar"><div class="xp-fill" id="profile-xp-fill"></div></div>
-    <div class="currency" id="profile-currency">◆ 0 ÇEKİRDEK</div>
+    <div style="margin-top:16px;font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.36em;color:rgba(234,244,255,.36)">TACTICAL SURVIVOR</div>
   </div>
 
-  <div class="menu-actions">
-    <button class="btn" id="b-play">
-      Oyna
-    </button>
+  <!-- Best score -->
+  <div id="menu-best" style="flex:none;margin-top:10px;text-align:center;font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;color:rgba(234,244,255,.4)">En iyi skor · 0</div>
+
+  <!-- Hero stage -->
+  <div class="hero-stage" style="position:relative;flex:1;min-height:0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px">
+    <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(34,230,255,.08),transparent 62%)"></div>
+    <div class="nvx-particle" aria-hidden="true"></div>
+    <div class="nvx-particle" aria-hidden="true"></div>
+    <div class="nvx-particle" aria-hidden="true"></div>
+    <div class="nvx-particle" aria-hidden="true"></div>
+    <div style="position:relative;animation:nvxIdle 4.6s ease-in-out infinite">
+      <canvas id="hero-canvas" aria-hidden="true"></canvas>
+    </div>
+    <div class="hero-meta" style="position:absolute;bottom:12px;left:0;right:0;text-align:center">
+      <span class="hero-class" id="hero-class" style="display:block;font:700 24px/1 'Chakra Petch',sans-serif;letter-spacing:.16em">VANGUARD</span>
+      <span class="hero-role" id="hero-role" style="display:block;margin-top:8px;font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#22e6ff">HEAVY ASSAULT · TANK</span>
+    </div>
   </div>
 
-  <div id="onb"></div>
+  <!-- PLAY button -->
+  <button class="btn" id="b-play" style="flex:none;position:relative;margin-top:20px;width:100%;height:72px;border:0;border-radius:18px;cursor:pointer;overflow:hidden;background:linear-gradient(135deg,#2ff0ff 0%,#22a8ff 52%,#7a5cff 100%);box-shadow:0 14px 38px rgba(34,230,255,.28),inset 0 0 0 1px rgba(255,255,255,.18);color:#03121c;font:700 24px/1 'Chakra Petch',sans-serif;letter-spacing:.28em;text-indent:.28em;transition:transform .16s cubic-bezier(.2,.8,.3,1)">
+    <span style="position:absolute;left:0;right:0;top:0;height:36%;background:linear-gradient(180deg,rgba(255,255,255,.28),transparent);pointer-events:none"></span>
+    PLAY
+  </button>
 
-  <!-- Menu artik 4 sekmeli. Buton ID'leri DEGISMEDI; her blok
-       kendi butonunu ayni id ile bulmaya devam eder. -->
-  <div class="menu-tabs" id="menu-tabs">
-    <button class="menu-tab on" data-mtab="char">KARAKTER</button>
-    <button class="menu-tab" data-mtab="war">SAVAŞ</button>
-    <button class="menu-tab" data-mtab="prog">İLERLEME</button>
-    <button class="menu-tab" data-mtab="store">MAĞAZA</button>
+  <!-- 5 nav buttons -->
+  <div style="flex:none;margin-top:14px;display:grid;grid-template-columns:repeat(5,1fr);gap:8px">
+    <button id="b-rpgchar" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;height:64px;padding:0;cursor:pointer;border-radius:14px;background:linear-gradient(180deg,rgba(16,26,54,.86),rgba(6,11,24,.86));border:1px solid rgba(120,170,220,.14);color:rgba(234,244,255,.7);font:600 7.5px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;transition:border-color .16s,transform .16s">
+      <i style="width:15px;height:15px;background:#22e6ff;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);box-shadow:0 0 10px rgba(34,230,255,.6)"></i>HERO</button>
+    <button id="b-phase3" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;height:64px;padding:0;cursor:pointer;border-radius:14px;background:linear-gradient(180deg,rgba(16,26,54,.86),rgba(6,11,24,.86));border:1px solid rgba(120,170,220,.14);color:rgba(234,244,255,.7);font:600 7.5px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;transition:border-color .16s,transform .16s">
+      <i style="width:14px;height:14px;border:2px solid #a05cff;border-radius:2px;transform:rotate(45deg)"></i>DEVELOP</button>
+    <button id="b-mastery" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;height:64px;padding:0;cursor:pointer;border-radius:14px;background:linear-gradient(180deg,rgba(16,26,54,.86),rgba(6,11,24,.86));border:1px solid rgba(120,170,220,.14);color:rgba(234,244,255,.7);font:600 7.5px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;transition:border-color .16s,transform .16s">
+      <i style="width:16px;height:14px;background:linear-gradient(90deg,#ff4fd8,#22e6ff);clip-path:polygon(0 38%,62% 38%,62% 0,100% 50%,62% 100%,62% 62%,0 62%)"></i>WEAPONS</button>
+    <button id="b-tech" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;height:64px;padding:0;cursor:pointer;border-radius:14px;background:linear-gradient(180deg,rgba(16,26,54,.86),rgba(6,11,24,.86));border:1px solid rgba(120,170,220,.14);color:rgba(234,244,255,.7);font:600 7.5px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;transition:border-color .16s,transform .16s">
+      <i style="position:relative;display:inline-block;width:16px;height:14px"><b style="position:absolute;left:6px;top:0;width:4px;height:4px;border-radius:50%;background:#22e6ff"></b><b style="position:absolute;left:0;bottom:0;width:4px;height:4px;border-radius:50%;background:#a05cff"></b><b style="position:absolute;right:0;bottom:0;width:4px;height:4px;border-radius:50%;background:#a05cff"></b></i>SKILLS</button>
+    <button id="b-settings" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;height:64px;padding:0;cursor:pointer;border-radius:14px;background:linear-gradient(180deg,rgba(16,26,54,.86),rgba(6,11,24,.86));border:1px solid rgba(120,170,220,.14);color:rgba(234,244,255,.7);font:600 7.5px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;transition:border-color .16s,transform .16s">
+      <i style="width:14px;height:14px;border:2px solid rgba(234,244,255,.56);border-radius:50%"></i>SYSTEM</button>
   </div>
 
-  <div class="menu-sub on" data-mpane="char">
-    <button class="btn ghost" id="b-rpgchar">KARAKTER</button>
-    <button class="btn ghost" id="b-rpginv">ENVANTER</button>
-    <button class="btn ghost" id="b-evo">EVRİM</button>
-    <button class="btn ghost" id="b-tech">YETENEKLER</button>
-    <button class="btn ghost" id="b-mastery">USTALIK</button>
-    <button class="btn ghost" id="b-phase3">GELİŞİM</button>
-  </div>
-
-  <div class="menu-sub" data-mpane="war">
-    <button class="btn ghost" id="b-sectors">SEKTÖRLER</button>
-    <button class="btn ghost" id="b-build">BUILD &amp; SİLAH</button>
-    <button class="btn ghost" id="b-upgrades">GELİŞTİRME</button>
-    <button class="btn ghost" id="b-how">NASIL OYNANIR</button>
-  </div>
-
-  <div class="menu-sub" data-mpane="prog">
-    <button class="btn ghost" id="b-missions">GÖREVLER</button>
-    <button class="btn ghost" id="b-ach">BAŞARIMLAR</button>
-    <button class="btn ghost" id="b-bp" hidden>BATTLE PASS</button>
-    <button class="btn ghost" id="b-lead" hidden>LİDERLİK</button>
-    <button class="btn ghost" id="b-save">KAYIT &amp; YEDEK</button>
-  </div>
-
-  <div class="menu-sub" data-mpane="store">
-    <button class="btn ghost" id="b-shop">MAĞAZA</button>
-    <button class="btn ghost" id="b-cosm">KOZMETİK</button>
-    <button class="btn ghost" id="b-kill">ÖLDÜRME EFEKTİ</button>
-    <button class="btn ghost" id="b-skins">ÇEKİRDEKLER</button>
+  <!-- Hidden legacy buttons JS hooks into -->
+  <div style="display:none">
+    <button id="b-how"></button>
+    <button id="b-upgrades"></button>
+    <button id="b-sectors"></button>
+    <button id="b-build"></button>
+    <button id="b-missions"></button>
+    <button id="b-ach"></button>
+    <button id="b-save"></button>
+    <button id="b-shop"></button>
+    <button id="b-cosm"></button>
+    <button id="b-kill"></button>
+    <button id="b-skins"></button>
+    <button id="b-evo"></button>
+    <button id="b-rpginv"></button>
+    <div id="onb"></div>
   </div>
 
 </div>
@@ -2274,19 +2273,23 @@ window.addEventListener("unhandledrejection",function(){});
   <button class="btn ghost" id="b-shop-back">Geri</button>
 </div>
 
-<div class="screen" id="scr-tech">
-  <div class="tutorial-title">TEKNOLOJİ AĞACI</div>
-  <div class="tag" id="tech-points">YETENEK PUANI · 0</div>
-  <div class="tech-wrap" id="tech-body"></div>
+<div class="screen" id="scr-tech" style="position:absolute;inset:0;padding:52px 20px 24px;display:flex;flex-direction:column;background:#04060f">
+  <div style="flex:none;display:flex;align-items:center;gap:12px;height:40px">
+    <button id="b-tech-back" style="width:40px;height:40px;flex:none;cursor:pointer;border-radius:12px;background:rgba(12,20,42,.86);border:1px solid rgba(120,170,220,.16);color:#eaf4ff;font:600 17px/1 'Chakra Petch',sans-serif">‹</button>
+    <div style="flex:1;font:600 12px/1 'IBM Plex Mono',monospace;letter-spacing:.24em;color:rgba(234,244,255,.6)">SKILL TREE</div>
+    <span id="tech-points" style="font:600 11px/1 'IBM Plex Mono',monospace;color:#22e6ff;letter-spacing:.08em">0 SP</span>
+  </div>
+  <div class="tech-wrap" id="tech-body" style="flex:1;min-height:0;margin-top:20px;overflow-y:auto"></div>
   <div class="pg-msg" id="tech-msg"></div>
-  <button class="btn ghost" id="b-tech-mast">SİLAH USTALIĞI</button>
-  <button class="btn ghost" id="b-tech-back">Geri</button>
+  <button class="btn ghost" id="b-tech-mast" style="flex:none;margin-top:12px;width:100%;height:48px;border-radius:13px;cursor:pointer;background:rgba(160,92,255,.07);border:1px solid rgba(160,92,255,.28);color:rgba(234,244,255,.8);font:600 11px/1 'Chakra Petch',sans-serif;letter-spacing:.18em">WEAPON MASTERY</button>
 </div>
 
-<div class="screen" id="scr-mastery">
-  <div class="tutorial-title">SİLAH USTALIĞI</div>
-  <div class="mast-wrap" id="mast-body"></div>
-  <button class="btn ghost" id="b-mastery-back">Geri</button>
+<div class="screen" id="scr-mastery" style="position:absolute;inset:0;padding:52px 20px 24px;display:flex;flex-direction:column;background:#04060f">
+  <div style="flex:none;display:flex;align-items:center;gap:12px;height:40px">
+    <button id="b-mastery-back" style="width:40px;height:40px;flex:none;cursor:pointer;border-radius:12px;background:rgba(12,20,42,.86);border:1px solid rgba(120,170,220,.16);color:#eaf4ff;font:600 17px/1 'Chakra Petch',sans-serif">‹</button>
+    <div style="flex:1;font:600 12px/1 'IBM Plex Mono',monospace;letter-spacing:.24em;color:rgba(234,244,255,.6)">WEAPON MASTERY</div>
+  </div>
+  <div class="mast-wrap" id="mast-body" style="flex:1;min-height:0;margin-top:20px;overflow-y:auto"></div>
 </div>
 
 <div class="screen" id="scr-bp" hidden>
@@ -2351,84 +2354,34 @@ window.addEventListener("unhandledrejection",function(){});
   <button class="btn ghost" id="b-save-back">Geri</button>
 </div>
 
-<div class="screen" id="scr-how">
-
-  <div class="tutorial-title">
-    Nasıl Oynanır?
+<div class="screen" id="scr-how" style="position:absolute;inset:0;padding:52px 20px 24px;display:flex;flex-direction:column;background:#04060f">
+  <div style="flex:none;display:flex;align-items:center;gap:12px;height:40px">
+    <button id="b-how-back" style="width:40px;height:40px;flex:none;cursor:pointer;border-radius:12px;background:rgba(12,20,42,.86);border:1px solid rgba(120,170,220,.16);color:#eaf4ff;font:600 17px/1 'Chakra Petch',sans-serif">‹</button>
+    <div style="flex:1;font:600 12px/1 'IBM Plex Mono',monospace;letter-spacing:.24em;color:rgba(234,244,255,.6)">HOW TO PLAY</div>
   </div>
-
-  <div class="tutorial-card">
-
-    <div class="tutorial-step">
-      <div class="step-icon">☝</div>
-      <div class="step-text">
-        <b>Parmağını sürükle</b>
-        Neon çekirdeğini parmağınla hareket ettir.
-      </div>
-    </div>
-
-    <div class="tutorial-step">
-      <div class="step-icon">◆</div>
-      <div class="step-text">
-        <b>Enerji topla</b>
-        Mavi küreleri topladıkça skorun ve combo'n yükselir.
-      </div>
-    </div>
-
-    <div class="tutorial-step">
-      <div class="step-icon">◈</div>
-      <div class="step-text">
-        <b>Düşmanlardan kaç</b>
-        Düşmanlara çarpma. Üç canın var.
-      </div>
-    </div>
-
-    <div class="tutorial-step">
-      <div class="step-icon">⚡</div>
-      <div class="step-text">
-        <b>Power-up'ları topla</b>
-        Özel güçler kısa süreli avantaj sağlar.
-      </div>
-    </div>
-
-    <div class="power-list">
-
-      <div>
-        <b style="color:#48d9ff">SHIELD</b>
-        Bir darbeyi engeller.
-      </div>
-
-      <div>
-        <b style="color:#ff54d9">MAGNET</b>
-        Enerjileri kendine çeker.
-      </div>
-
-      <div>
-        <b style="color:#ffe34d">OVERDRIVE</b>
-        Skor çarpanını yükseltir.
-      </div>
-
-      <div>
-        <b style="color:#ff6b3b">NOVA</b>
-        Yakındaki düşmanları yok eder.
-      </div>
-
-    </div>
-
-    <div class="tutorial-tip">
-      Amaç mümkün olduğunca uzun yaşamak.
-    </div>
-
+  <div style="flex:none;margin-top:32px">
+    <div style="font:700 30px/1.1 'Chakra Petch',sans-serif;letter-spacing:.06em">Survive the<br>neon sector.</div>
+    <div style="margin-top:14px;font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.2em;color:rgba(234,244,255,.36)">COMBAT BRIEFING · SECTOR 01</div>
   </div>
-
-  <button class="btn" id="b-start-from-how">
-    Oyuna Başla
-  </button>
-
-  <button class="btn ghost" id="b-how-back">
-    Geri
-  </button>
-
+  <div style="flex:1;min-height:0;margin-top:32px;display:flex;flex-direction:column;justify-content:space-between;gap:20px">
+    <div style="display:flex;gap:16px">
+      <i style="flex:none;width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:rgba(34,230,255,.07);border:1px solid rgba(34,230,255,.28)"><b style="width:15px;height:15px;border-radius:50%;background:#22e6ff;box-shadow:0 0 14px #22e6ff"></b></i>
+      <span style="flex:1;min-width:0"><b style="display:block;font:600 13px/1 'Chakra Petch',sans-serif;letter-spacing:.14em">MOVE</b><i style="display:block;margin-top:8px;font:400 12px/1.45 'Chakra Petch',sans-serif;font-style:normal;color:rgba(234,244,255,.54)">Drag anywhere on screen. Your unit follows the vector — weapons fire automatically.</i></span>
+    </div>
+    <div style="display:flex;gap:16px">
+      <i style="flex:none;width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:rgba(160,92,255,.07);border:1px solid rgba(160,92,255,.28)"><b style="width:14px;height:16px;background:#a05cff;clip-path:polygon(60% 0,100% 0,40% 44%,100% 44%,20% 100%,45% 52%,0 52%)"></b></i>
+      <span style="flex:1;min-width:0"><b style="display:block;font:600 13px/1 'Chakra Petch',sans-serif;letter-spacing:.14em">OVERDRIVE</b><i style="display:block;margin-top:8px;font:400 12px/1.45 'Chakra Petch',sans-serif;font-style:normal;color:rgba(234,244,255,.54)">Collect the overdrive power-up to boost your score multiplier temporarily.</i></span>
+    </div>
+    <div style="display:flex;gap:16px">
+      <i style="flex:none;width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:rgba(255,79,216,.07);border:1px solid rgba(255,79,216,.28)"><b style="width:15px;height:15px;background:#ff4fd8;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)"></b></i>
+      <span style="flex:1;min-width:0"><b style="display:block;font:600 13px/1 'Chakra Petch',sans-serif;letter-spacing:.14em">COLLECT CORES</b><i style="display:block;margin-top:8px;font:400 12px/1.45 'Chakra Petch',sans-serif;font-style:normal;color:rgba(234,244,255,.54)">Destroyed machines drop energy cores. Cores raise your level mid-run and open a perk choice.</i></span>
+    </div>
+    <div style="display:flex;gap:16px">
+      <i style="flex:none;width:44px;height:44px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:rgba(255,59,107,.07);border:1px solid rgba(255,59,107,.3)"><b style="width:15px;height:15px;background:#ff3b6b;clip-path:polygon(50% 0,100% 100%,0 100%)"></b></i>
+      <span style="flex:1;min-width:0"><b style="display:block;font:600 13px/1 'Chakra Petch',sans-serif;letter-spacing:.14em">PRESSURE</b><i style="display:block;margin-top:8px;font:400 12px/1.45 'Chakra Petch',sans-serif;font-style:normal;color:rgba(234,244,255,.54)">Pressure climbs every wave. At 100% a boss core breaches the sector — survive it for rare rewards.</i></span>
+    </div>
+  </div>
+  <button class="btn" id="b-start-from-how" style="flex:none;margin-top:24px;width:100%;height:64px;border:0;border-radius:16px;cursor:pointer;background:linear-gradient(135deg,#2ff0ff,#22a8ff 55%,#7a5cff);box-shadow:0 12px 30px rgba(34,230,255,.24);color:#03121c;font:700 18px/1 'Chakra Petch',sans-serif;letter-spacing:.24em;text-indent:.24em">DEPLOY</button>
 </div>
 
 <!-- PAUSE -->
@@ -2501,10 +2454,13 @@ window.addEventListener("unhandledrejection",function(){});
 </div>
 
 
-<div class="screen" id="scr-phase3">
-  <div class="tutorial-title">KARAKTER GELİŞİMİ</div>
-  <div class="tag" id="p3-version-tag">PHASE 3</div>
-  <div class="p3-wrap">
+<div class="screen" id="scr-phase3" style="position:absolute;inset:0;padding:52px 20px 24px;display:flex;flex-direction:column;background:#04060f">
+  <div style="flex:none;display:flex;align-items:center;gap:12px;height:40px">
+    <button id="b-phase3-back" style="width:40px;height:40px;flex:none;cursor:pointer;border-radius:12px;background:rgba(12,20,42,.86);border:1px solid rgba(120,170,220,.16);color:#eaf4ff;font:600 17px/1 'Chakra Petch',sans-serif">‹</button>
+    <div style="flex:1;font:600 12px/1 'IBM Plex Mono',monospace;letter-spacing:.24em;color:rgba(234,244,255,.6)">CHARACTER DEVELOP</div>
+    <span id="p3-points" style="font:600 11px/1 'IBM Plex Mono',monospace;color:#22e6ff;letter-spacing:.08em">0 SP</span>
+  </div>
+  <div class="p3-wrap" style="flex:1;min-height:0;margin-top:20px;overflow-y:auto">
     <div class="p3-card">
       <div class="p3-row">
         <div><div class="p3-k">Karakter Seviyesi</div><div class="p3-v" id="p3-level">Lv.1</div></div>
@@ -2517,7 +2473,7 @@ window.addEventListener("unhandledrejection",function(){});
     <div class="p3-card">
       <div class="p3-active-banner">
         <div><div class="p3-k">Aktif Karakter</div><b id="p3-active-name">VANGUARD</b></div>
-        <span class="p3-chip" id="p3-points">0 SP</span>
+        <span class="p3-chip">0 SP</span>
       </div>
       <div class="p3-k">Karakter Seçimi</div>
       <div class="p3-select-grid">
@@ -2544,26 +2500,18 @@ window.addEventListener("unhandledrejection",function(){});
       <div class="p3-row"><div><div class="p3-k">Skill Tree</div><div class="p3-v">Kalıcı Yetenekler</div></div><span class="p3-chip" id="p3-skill-points">0 SP</span></div>
       <div id="p3-skill-list"></div>
     </div>
-    <button class="btn ghost" id="b-phase3-back">Geri</button>
   </div>
 </div>
 
 <!-- IN-RUN LEVEL UP -->
 
-<div class="screen" id="scr-levelup">
-
-  <div class="tutorial-title">Seviye Atladın</div>
-
-  <div class="levelup-sub" id="levelup-sub">Seviye 2 · Bir geliştirme seç</div>
-
-  <!-- PHASE 0.5 · P0-5
-       Statik kartlar kaldirildi. Bu kartlarin butonlarina hicbir event
-       bagli degildi; renderLevelChoices() hata verirse kosu kilitleniyordu.
-       Kartlar artik SADECE renderLevelChoices() tarafindan uretilir. -->
-  <div class="levelup-grid" id="levelup-grid"></div>
-
-  <div class="levelup-note">Birini seçmeden oyun devam etmez.</div>
-
+<div class="screen" id="scr-levelup" style="position:absolute;inset:0;z-index:20;padding:52px 20px 24px;display:flex;flex-direction:column;background:radial-gradient(80% 40% at 50% 18%,rgba(34,230,255,.13),transparent 66%),rgba(3,6,16,.88);backdrop-filter:blur(16px)">
+  <div style="flex:none;margin-top:32px;text-align:center;animation:nvxRise .3s cubic-bezier(.2,.8,.3,1)">
+    <i style="margin:0 auto;width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,rgba(34,230,255,.28),transparent 70%);border:1px solid rgba(34,230,255,.48);box-shadow:0 0 36px rgba(34,230,255,.32)"><b style="width:18px;height:18px;background:#22e6ff;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);box-shadow:0 0 18px #22e6ff"></b></i>
+    <div id="levelup-sub" style="margin-top:20px;font:700 22px/1 'Chakra Petch',sans-serif;letter-spacing:.18em;text-shadow:0 0 26px rgba(34,230,255,.38)">Seviye 2 · Bir geliştirme seç</div>
+  </div>
+  <div id="levelup-grid" style="flex:1;min-height:0;margin-top:32px;display:flex;flex-direction:column;justify-content:center;gap:12px"></div>
+  <div class="levelup-note" style="flex:none;text-align:center;font:500 8.5px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;color:rgba(234,244,255,.28)">COMBAT RESUMES ON SELECTION</div>
 </div>
 
 <div id="run-countdown" aria-hidden="true">
@@ -2572,143 +2520,111 @@ window.addEventListener("unhandledrejection",function(){});
   <div class="countdown-number" id="run-countdown-number">1</div>
 </div>
 
-<div class="screen" id="scr-pause">
-
-  <div class="logo" style="font-size:clamp(26px,8vw,40px)">
-    Duraklatıldı
+<div class="screen" id="scr-pause" style="position:absolute;inset:0;z-index:20;padding:52px 24px 24px;display:flex;flex-direction:column;background:rgba(3,6,16,.84);backdrop-filter:blur(16px)">
+  <div style="flex:none;margin-top:56px;text-align:center">
+    <div style="font:700 34px/1 'Chakra Petch',sans-serif;letter-spacing:.3em;text-indent:.3em;text-shadow:0 0 28px rgba(34,230,255,.28)">PAUSED</div>
+    <div id="p-info" style="margin-top:16px;font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.22em;color:rgba(234,244,255,.4)">Skor · 0</div>
   </div>
-
-  <div class="tag" id="p-info">
-    Skor · 0
-  </div>
-
-  <button class="btn" id="b-resume" data-i18n="resume">
-    Devam Et
-  </button>
-
-  <button class="btn ghost" id="b-quit" data-i18n="menu">
-    Ana Menü
-  </button>
-
+  <div style="flex:1"></div>
+  <button class="btn" id="b-resume" style="flex:none;width:100%;height:68px;border:0;border-radius:17px;cursor:pointer;background:linear-gradient(135deg,#2ff0ff,#22a8ff 55%,#7a5cff);box-shadow:0 12px 32px rgba(34,230,255,.26);color:#03121c;font:700 19px/1 'Chakra Petch',sans-serif;letter-spacing:.26em;text-indent:.26em">RESUME</button>
+  <button class="btn ghost" id="b-quit" style="flex:none;margin-top:8px;width:100%;height:56px;cursor:pointer;border-radius:15px;background:transparent;border:1px solid rgba(255,59,107,.24);color:rgba(255,130,158,.9);font:600 12px/1 'Chakra Petch',sans-serif;letter-spacing:.2em">ABANDON</button>
 </div>
 
 <!-- GAME OVER -->
 
-<div class="screen" id="scr-over">
-
-  <div id="record-slot"></div>
-
-  <div class="stats">
-
-    <div class="row big">
-      <b>Skor</b>
-      <i id="o-score">0</i>
-    </div>
-
-    <div class="row">
-      <b>En iyi</b>
-      <i id="o-best">0</i>
-    </div>
-
-    <div class="row">
-      <b>Süre</b>
-      <i id="o-time">0.0s</i>
-    </div>
-
-    <div class="row">
-      <b>Max combo</b>
-      <i id="o-combo">x1</i>
-    </div>
-
-    <div class="row">
-      <b>Enerji</b>
-      <i id="o-energy">0</i>
-    </div>
-
-    <div class="row">
-      <b>Dalga</b>
-      <i id="o-wave">—</i>
-    </div>
-
-    <div class="row">
-      <b>Seviye</b>
-      <i id="o-level">—</i>
-    </div>
-
+<div class="screen" id="scr-over" style="position:absolute;inset:0;z-index:20;padding:52px 24px 24px;display:flex;flex-direction:column;background:radial-gradient(80% 40% at 50% 16%,rgba(255,59,107,.15),transparent 66%),rgba(3,6,16,.9);backdrop-filter:blur(16px)">
+  <div style="flex:none;margin-top:32px;text-align:center;animation:nvxRise .32s cubic-bezier(.2,.8,.3,1)">
+    <div style="font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.3em;color:rgba(255,140,166,.76)">UNIT DISABLED</div>
+    <div style="margin-top:18px;font:700 38px/1 'Chakra Petch',sans-serif;letter-spacing:.14em;text-indent:.14em;color:#ffe4ea;text-shadow:0 0 32px rgba(255,59,107,.4)">RUN ENDED</div>
+    <div id="record-slot" style="margin-top:14px"></div>
   </div>
-
-  <div class="tag" id="o-sector" style="margin-top:6px;font-size:10px;opacity:.7"></div>
-
-  <button class="btn" id="b-again">
-    Tekrar Oyna
-  </button>
-
-  <button class="btn ghost" id="b-menu">
-    Ana Menü
-  </button>
-
+  <div style="flex:none;margin-top:28px;text-align:center">
+    <div style="font:500 8.5px/1 'IBM Plex Mono',monospace;letter-spacing:.2em;color:rgba(234,244,255,.4)">FINAL SCORE</div>
+    <div id="o-score" style="margin-top:10px;font:700 52px/1 'IBM Plex Mono',monospace;text-shadow:0 0 26px rgba(34,230,255,.3)">0</div>
+  </div>
+  <div style="flex:none;margin-top:28px;display:grid;grid-template-columns:1fr 1fr;gap:16px 12px">
+    <div><div style="font:500 8px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;color:rgba(234,244,255,.4)">SURVIVED</div><div id="o-time" style="margin-top:7px;font:600 18px/1 'IBM Plex Mono',monospace">0.0s</div></div>
+    <div style="text-align:right"><div style="font:500 8px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;color:rgba(234,244,255,.4)">WAVE</div><div id="o-wave" style="margin-top:7px;font:600 18px/1 'IBM Plex Mono',monospace">—</div></div>
+    <div><div style="font:500 8px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;color:rgba(234,244,255,.4)">BEST SCORE</div><div id="o-best" style="margin-top:7px;font:600 18px/1 'IBM Plex Mono',monospace">0</div></div>
+    <div style="text-align:right"><div style="font:500 8px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;color:rgba(234,244,255,.4)">BEST COMBO</div><div id="o-combo" style="margin-top:7px;font:600 18px/1 'IBM Plex Mono',monospace;color:#ff4fd8">x1</div></div>
+    <div><div style="font:500 8px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;color:rgba(234,244,255,.4)">ENERGY</div><div id="o-energy" style="margin-top:7px;font:600 14px/1 'IBM Plex Mono',monospace">0</div></div>
+    <div style="text-align:right"><div style="font:500 8px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;color:rgba(234,244,255,.4)">LEVEL</div><div id="o-level" style="margin-top:7px;font:600 14px/1 'IBM Plex Mono',monospace">—</div></div>
+  </div>
+  <div id="o-sector" style="flex:none;margin-top:8px;text-align:center;font:500 9px/1 'IBM Plex Mono',monospace;color:rgba(234,244,255,.4);letter-spacing:.12em"></div>
+  <div style="flex:1"></div>
+  <button class="btn" id="b-again" style="flex:none;width:100%;height:68px;border:0;border-radius:17px;cursor:pointer;background:linear-gradient(135deg,#2ff0ff,#22a8ff 55%,#7a5cff);box-shadow:0 12px 32px rgba(34,230,255,.26);color:#03121c;font:700 19px/1 'Chakra Petch',sans-serif;letter-spacing:.26em;text-indent:.26em">RETRY</button>
+  <button class="btn ghost" id="b-menu" style="flex:none;margin-top:8px;width:100%;height:56px;cursor:pointer;border-radius:15px;background:rgba(9,15,32,.8);border:1px solid rgba(120,170,220,.16);color:rgba(234,244,255,.8);font:600 12px/1 'Chakra Petch',sans-serif;letter-spacing:.2em">COMMAND CENTER</button>
 </div>
 
 <!-- AYARLAR · Phase 14 -->
-<div class="screen" id="scr-settings">
-  <div class="tutorial-title">AYARLAR</div>
-  <div class="set-wrap">
+<div class="screen" id="scr-settings" style="position:absolute;inset:0;padding:52px 20px 24px;display:flex;flex-direction:column;background:#04060f">
+  <div style="flex:none;display:flex;align-items:center;gap:12px;height:40px">
+    <button id="b-settings-back" style="width:40px;height:40px;flex:none;cursor:pointer;border-radius:12px;background:rgba(12,20,42,.86);border:1px solid rgba(120,170,220,.16);color:#eaf4ff;font:600 17px/1 'Chakra Petch',sans-serif">‹</button>
+    <div style="flex:1;font:600 12px/1 'IBM Plex Mono',monospace;letter-spacing:.24em;color:rgba(234,244,255,.6)">SYSTEM SETTINGS</div>
+  </div>
+  <div style="flex:1;min-height:0;margin-top:28px;overflow-y:auto;display:flex;flex-direction:column;gap:20px">
 
-    <div class="set-section">
-      <div class="set-section-label">Ses &amp; Haptik</div>
-      <div class="set-row">
-        <div class="set-row-info">
-          <span class="set-row-label">Ses Efektleri</span>
-          <span class="set-row-desc">Silah, yetenek ve arayüz sesleri</span>
+    <!-- Audio & Haptics -->
+    <div style="border-radius:16px;background:rgba(12,20,42,.7);border:1px solid rgba(120,170,220,.1);overflow:hidden">
+      <div style="padding:12px 16px;font:600 9px/1 'IBM Plex Mono',monospace;letter-spacing:.22em;color:rgba(234,244,255,.4);border-bottom:1px solid rgba(120,170,220,.08)">AUDIO &amp; HAPTICS</div>
+      <div style="padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid rgba(120,170,220,.06)">
+        <div>
+          <div style="font:600 13px/1 'Chakra Petch',sans-serif;letter-spacing:.08em">Sound Effects</div>
+          <div style="margin-top:5px;font:400 10px/1 'IBM Plex Mono',monospace;color:rgba(234,244,255,.4)">Weapons, abilities &amp; UI</div>
         </div>
-        <button class="set-tgl" id="st-sound" aria-label="Ses efektlerini aç/kapat"></button>
+        <button id="st-sound" aria-label="Toggle sound" style="flex:none;width:52px;height:28px;border-radius:99px;border:0;cursor:pointer;background:rgba(34,230,255,.14);border:1px solid rgba(34,230,255,.3);position:relative;transition:background .2s"></button>
       </div>
-      <div class="set-row">
-        <div class="set-row-info">
-          <span class="set-row-label">Titreşim</span>
-          <span class="set-row-desc">Dokunmatik geri bildirim</span>
+      <div style="padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+        <div>
+          <div style="font:600 13px/1 'Chakra Petch',sans-serif;letter-spacing:.08em">Vibration</div>
+          <div style="margin-top:5px;font:400 10px/1 'IBM Plex Mono',monospace;color:rgba(234,244,255,.4)">Haptic feedback</div>
         </div>
-        <button class="set-tgl" id="st-vibe" aria-label="Titreşimi aç/kapat"></button>
-      </div>
-    </div>
-
-    <div class="set-section">
-      <div class="set-section-label">Dil / Language</div>
-      <div class="set-lang-row">
-        <button class="set-lang-btn" data-lang="tr" id="st-lang-tr">TÜRKÇE</button>
-        <button class="set-lang-btn" data-lang="en" id="st-lang-en">ENGLISH</button>
+        <button id="st-vibe" aria-label="Toggle vibration" style="flex:none;width:52px;height:28px;border-radius:99px;border:0;cursor:pointer;background:rgba(34,230,255,.14);border:1px solid rgba(34,230,255,.3);position:relative;transition:background .2s"></button>
       </div>
     </div>
 
-    <div class="set-section">
-      <div class="set-section-label">Uygulama Bilgisi</div>
-      <div class="set-info-card">
-        <div class="set-info-row">
-          <span class="set-info-k">SÜRÜM</span>
-          <span class="set-info-v">V20.1.0 · NORYVX</span>
+    <!-- Language -->
+    <div style="border-radius:16px;background:rgba(12,20,42,.7);border:1px solid rgba(120,170,220,.1);overflow:hidden">
+      <div style="padding:12px 16px;font:600 9px/1 'IBM Plex Mono',monospace;letter-spacing:.22em;color:rgba(234,244,255,.4);border-bottom:1px solid rgba(120,170,220,.08)">LANGUAGE</div>
+      <div style="padding:14px 16px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <button id="st-lang-tr" data-lang="tr" style="height:40px;border-radius:10px;cursor:pointer;background:rgba(34,230,255,.07);border:1px solid rgba(34,230,255,.24);color:#eaf4ff;font:600 11px/1 'Chakra Petch',sans-serif;letter-spacing:.12em">TÜRKÇE</button>
+        <button id="st-lang-en" data-lang="en" style="height:40px;border-radius:10px;cursor:pointer;background:rgba(34,230,255,.07);border:1px solid rgba(34,230,255,.24);color:#eaf4ff;font:600 11px/1 'Chakra Petch',sans-serif;letter-spacing:.12em">ENGLISH</button>
+      </div>
+    </div>
+
+    <!-- App Info -->
+    <div style="border-radius:16px;background:rgba(12,20,42,.7);border:1px solid rgba(120,170,220,.1);overflow:hidden">
+      <div style="padding:12px 16px;font:600 9px/1 'IBM Plex Mono',monospace;letter-spacing:.22em;color:rgba(234,244,255,.4);border-bottom:1px solid rgba(120,170,220,.08)">SYSTEM INFO</div>
+      <div style="padding:4px 0">
+        <div style="padding:10px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(120,170,220,.06)">
+          <span style="font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(234,244,255,.4)">VERSION</span>
+          <span style="font:600 11px/1 'IBM Plex Mono',monospace;color:#22e6ff">V20.1.0 · NORYVX</span>
         </div>
-        <div class="set-info-row">
-          <span class="set-info-k">KAYIT BOYUTU</span>
-          <span class="set-info-v" id="st-save-size">—</span>
+        <div style="padding:10px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(120,170,220,.06)">
+          <span style="font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(234,244,255,.4)">SAVE SIZE</span>
+          <span id="st-save-size" style="font:600 11px/1 'IBM Plex Mono',monospace">—</span>
         </div>
-        <div class="set-info-row">
-          <span class="set-info-k">TOPLAM KOŞU</span>
-          <span class="set-info-v" id="st-runs">—</span>
+        <div style="padding:10px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(120,170,220,.06)">
+          <span style="font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(234,244,255,.4)">TOTAL RUNS</span>
+          <span id="st-runs" style="font:600 11px/1 'IBM Plex Mono',monospace">—</span>
         </div>
-        <div class="set-info-row">
-          <span class="set-info-k">EN İYİ SKOR</span>
-          <span class="set-info-v" id="st-best-score">—</span>
+        <div style="padding:10px 16px;display:flex;justify-content:space-between;align-items:center">
+          <span style="font:500 10px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(234,244,255,.4)">BEST SCORE</span>
+          <span id="st-best-score" style="font:600 11px/1 'IBM Plex Mono',monospace">—</span>
         </div>
       </div>
     </div>
 
-    <div class="set-section">
-      <div class="set-section-label">Veri Yönetimi</div>
-      <button class="set-danger" id="b-settings-reset">VERİLERİ SIFIRLA</button>
+    <!-- Data management -->
+    <div style="border-radius:16px;background:rgba(12,20,42,.7);border:1px solid rgba(120,170,220,.1);overflow:hidden">
+      <div style="padding:12px 16px;font:600 9px/1 'IBM Plex Mono',monospace;letter-spacing:.22em;color:rgba(234,244,255,.4);border-bottom:1px solid rgba(120,170,220,.08)">DATA MANAGEMENT</div>
+      <div style="padding:14px 16px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <button onclick="try{showHow();}catch(e){try{hide(document.getElementById('scr-settings'));show(document.getElementById('scr-how'));}catch(e2){}}" style="height:44px;border-radius:12px;cursor:pointer;background:rgba(34,230,255,.07);border:1px solid rgba(34,230,255,.26);color:#bff4ff;font:600 10px/1 'Chakra Petch',sans-serif;letter-spacing:.12em">HOW TO PLAY</button>
+        <button id="b-settings-reset" style="height:44px;border-radius:12px;cursor:pointer;background:rgba(255,59,107,.07);border:1px solid rgba(255,59,107,.28);color:rgba(255,130,158,.9);font:600 10px/1 'Chakra Petch',sans-serif;letter-spacing:.12em">RESET DATA</button>
+      </div>
     </div>
 
   </div>
-  <button class="btn ghost" id="b-settings-back">Geri</button>
 </div>
 
 </div>
@@ -4308,61 +4224,29 @@ function inputMove(x,y){
     extraSpeedStacks*BALANCE.player.runUpgrade.postCapSpeed;
 
   const baseBoost=1+runSpeedBonus+metaSpeed;
-
-  /* ── Phase 4 · Touch Control Improvements ──────────────────────
-     1. DEAD ZONE: ignore micro-jitter below 1.5 px per frame.
-        Prevents character drift from thumb resting on screen.
-     2. DIRECTION NORMALIZATION: compute unit vector from (dx,dy)
-        so diagonal movement (45°) is exactly equal to cardinal.
-        Without normalization diagonal = √2 × cardinal speed.
-     3. SMOOTH ACCELERATION CURVE: apply sqrt ramp on magnitude
-        [1.5–40 px range]. Gentle starts, strong mid-swipe, plateau
-        at max — feels natural regardless of finger speed.
-     4. MAGNITUDE CAP: prevents single large-delta jump from phone
-        CPU throttle causing multi-frame skip artefact.
-     5. OVERDRIVE FIX (Phase 5): overdriveMultiplier applied ONLY
-        to final velocity, NOT to input sensitivity. Overdrive makes
-        the character faster, not the touch mapping more aggressive.
-  ──────────────────────────────────────────────────────────────── */
-  const DEAD_ZONE   = 1.5;   /* px — ignore jitter below this */
-  const MAG_MAX     = 48;    /* px — cap raw delta to prevent jump artefacts */
-  const RAMP_SCALE  = 0.18;  /* tuning: sqrt ramp gain */
-
-  const rawMag = Math.hypot(dx, dy);
-  if(rawMag < DEAD_ZONE) return; /* dead-zone: no movement */
-
-  /* Unit direction vector — diagonal-safe (no √2 speed bonus) */
-  const invMag = 1 / rawMag;
-  const normDx = dx * invMag;
-  const normDy = dy * invMag;
-
-  /* Smooth acceleration: sqrt ramp from dead zone to MAG_MAX.
-     mapMag goes 0→1 as rawMag goes DEAD_ZONE→MAG_MAX.
-     Final pixel displacement per frame = ramp * MAG_MAX. */
-  const clampedMag = Math.min(rawMag, MAG_MAX);
-  const mapMag = (clampedMag - DEAD_ZONE) / (MAG_MAX - DEAD_ZONE);
-  const rampedMag = Math.sqrt(mapMag) * MAG_MAX * RAMP_SCALE;
-
-  /* Speed modifiers: baseBoost from upgrades, overdrive separate */
-  const overdriveMultiplier = Game.powers.overdrive > 0 ? 1.35 : 1;
-  const moveMag = rampedMag * baseBoost * overdriveMultiplier;
+  const boost=
+    baseBoost*(Game.powers.overdrive>0?1.35:1);
 
   player.x=
     clamp(
-      player.x+normDx*moveMag,
+      player.x+dx*boost,
       player.r||BALANCE.player.radius,
       W-(player.r||BALANCE.player.radius)
     );
 
   player.y=
     clamp(
-      player.y+normDy*moveMag,
+      player.y+dy*boost,
       BALANCE.player.radius,
       H-BALANCE.player.radius
     );
 
-  if(rawMag > DEAD_ZONE){
+  if(
+    Math.abs(dx)+Math.abs(dy)>2
+  ){
+
     hideHint();
+
   }
 
 }
@@ -18326,6 +18210,46 @@ button, .btn, .p2-tab, .p3-btn{
   .rpg-ico{width:26px; height:26px}
   .rpg-ico.lg{width:34px; height:34px}
   .btn{ min-height:44px; font-size:13px }
+}
+
+/* ── NORYVX screens: override .screen class alignment/padding/background ── */
+#scr-menu,
+#scr-pause,
+#scr-levelup,
+#scr-over,
+#scr-how,
+#scr-settings,
+#scr-phase3,
+#scr-mastery,
+#scr-tech {
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  padding: 0 !important;
+  background: none !important;
+  transform: none !important;
+}
+#scr-menu.on,
+#scr-pause.on,
+#scr-levelup.on,
+#scr-over.on,
+#scr-how.on,
+#scr-settings.on,
+#scr-phase3.on,
+#scr-mastery.on,
+#scr-tech.on {
+  transform: none !important;
+}
+/* scan-line animation: suppress on NORYVX screens */
+#scr-menu.on::before,
+#scr-pause.on::before,
+#scr-levelup.on::before,
+#scr-over.on::before,
+#scr-how.on::before,
+#scr-settings.on::before,
+#scr-phase3.on::before,
+#scr-mastery.on::before,
+#scr-tech.on::before {
+  display: none;
 }
 </style>
 
