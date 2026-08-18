@@ -2145,23 +2145,25 @@ window.addEventListener("unhandledrejection",function(){});
     <div style="margin-top:16px;font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.36em;color:rgba(234,244,255,.36)">TACTICAL SURVIVOR</div>
   </div>
 
-  <!-- Best score -->
-  <div id="menu-best" style="flex:none;margin-top:10px;text-align:center;font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;color:rgba(234,244,255,.4)">En iyi skor · 0</div>
-
   <!-- Hero stage -->
   <div class="hero-stage" style="position:relative;flex:1;min-height:0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px">
     <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(34,230,255,.08),transparent 62%)"></div>
-    <div class="nvx-particle" aria-hidden="true"></div>
-    <div class="nvx-particle" aria-hidden="true"></div>
-    <div class="nvx-particle" aria-hidden="true"></div>
-    <div class="nvx-particle" aria-hidden="true"></div>
+    <div style="position:absolute;left:50%;bottom:6px;transform:translateX(-50%);width:250px;height:30px;border-radius:50%;background:radial-gradient(50% 50%,#22e6ff,transparent 68%);opacity:.3;filter:blur(4px)"></div>
+    <div style="position:absolute;left:34px;bottom:70px;width:4px;height:4px;border-radius:50%;background:#22e6ff;animation:nvxFloat 6s ease-in-out infinite"></div>
+    <div style="position:absolute;right:44px;bottom:120px;width:3px;height:3px;border-radius:50%;background:#22e6ff;animation:nvxFloat 7.5s ease-in-out infinite 1.2s"></div>
+    <div style="position:absolute;right:24px;bottom:40px;width:5px;height:5px;border-radius:50%;background:#22e6ff;animation:nvxFloat 8.5s ease-in-out infinite .6s"></div>
     <div style="position:relative;animation:nvxIdle 4.6s ease-in-out infinite">
       <canvas id="hero-canvas" aria-hidden="true"></canvas>
     </div>
-    <div class="hero-meta" style="position:absolute;bottom:12px;left:0;right:0;text-align:center">
-      <span class="hero-class" id="hero-class" style="display:block;font:700 24px/1 'Chakra Petch',sans-serif;letter-spacing:.16em">VANGUARD</span>
-      <span class="hero-role" id="hero-role" style="display:block;margin-top:8px;font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#22e6ff">HEAVY ASSAULT · TANK</span>
+  </div>
+
+  <!-- Hero name/role row (outside stage, in flex flow) -->
+  <div style="flex:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 4px;margin-top:4px">
+    <div style="min-width:0">
+      <div id="hero-class" style="font:700 24px/1 'Chakra Petch',sans-serif;letter-spacing:.16em;white-space:nowrap">VANGUARD</div>
+      <div id="hero-role" style="margin-top:8px;font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#22e6ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">HEAVY ASSAULT · TANK</div>
     </div>
+    <span id="menu-best" style="flex:none;padding:7px 11px;border-radius:8px;font:600 10px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;background:rgba(34,230,255,.08);border:1px solid rgba(34,230,255,.26);color:#9be9ff">LV 1</span>
   </div>
 
   <!-- PLAY button -->
@@ -2206,30 +2208,62 @@ window.addEventListener("unhandledrejection",function(){});
 
 <!-- TUTORIAL -->
 
-<div class="screen" id="scr-rpgchar">
-  <div class="tutorial-title">KARAKTER</div>
-  <div class="tag" id="rpg-char-cur">◎ 0   ◆ 0</div>
+<div class="screen" id="scr-rpgchar" style="position:absolute;inset:0;padding:52px 20px 24px;display:flex;flex-direction:column;background:radial-gradient(110% 62% at 50% 4%,rgba(34,230,255,.09),transparent 62%),radial-gradient(100% 52% at 50% 104%,rgba(160,92,255,.12),transparent 64%),#04060f">
 
-  <!-- NORYVX Hero Carousel -->
-  <div class="nvx-carousel" id="nvx-hero-carousel">
-    <button class="nvx-arrow nvx-arrow-l" id="nvx-hero-prev" aria-label="Önceki">◄</button>
-    <div class="nvx-hero-preview">
+  <div style="flex:none;display:flex;align-items:center;gap:12px;height:40px">
+    <button id="b-rpgchar-back" style="width:40px;height:40px;flex:none;cursor:pointer;border-radius:12px;background:rgba(12,20,42,.86);border:1px solid rgba(120,170,220,.16);color:#eaf4ff;font:600 17px/1 'Chakra Petch',sans-serif">‹</button>
+    <div style="flex:1;font:600 12px/1 'IBM Plex Mono',monospace;letter-spacing:.24em;color:rgba(234,244,255,.6)">HERO SELECT</div>
+    <span id="rpg-char-cur" style="flex:none;font:500 11px/1 'IBM Plex Mono',monospace;color:#ffd24d">◆ 0</span>
+  </div>
+
+  <div style="position:relative;flex:1;min-height:0;display:flex;align-items:flex-end;justify-content:center;margin-top:8px">
+    <div style="position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);width:290px;height:290px;border-radius:50%;background:radial-gradient(circle,rgba(34,230,255,.08),transparent 62%)"></div>
+    <div style="position:absolute;left:50%;bottom:4px;transform:translateX(-50%);width:230px;height:26px;border-radius:50%;background:radial-gradient(50% 50%,#22e6ff,transparent 68%);opacity:.3;filter:blur(4px)"></div>
+    <div style="position:absolute;left:8px;top:8px;font:500 8.5px/1.8 'IBM Plex Mono',monospace;letter-spacing:.12em;color:rgba(234,244,255,.3)">UNIT CODE<br>CORE MK III</div>
+    <div style="position:absolute;left:30px;bottom:60px;width:4px;height:4px;border-radius:50%;background:#22e6ff;animation:nvxFloat 6.5s ease-in-out infinite"></div>
+    <div style="position:absolute;right:30px;bottom:110px;width:3px;height:3px;border-radius:50%;background:#22e6ff;animation:nvxFloat 8s ease-in-out infinite 1s"></div>
+    <div style="position:relative;animation:nvxIdle 4.6s ease-in-out infinite">
       <canvas id="nvx-hero-canvas" aria-hidden="true"></canvas>
-      <div class="nvx-hero-name" id="nvx-hero-name">VANGUARD</div>
-      <div class="nvx-hero-role" id="nvx-hero-role">TANK · HEAVY ASSAULT</div>
     </div>
-    <button class="nvx-arrow nvx-arrow-r" id="nvx-hero-next" aria-label="Sonraki">►</button>
   </div>
-  <div class="nvx-stats" id="nvx-hero-stats">
-    <div class="nvx-stat"><span class="nvx-stat-k">ATK</span><span class="nvx-stat-bar"><i id="nvx-stat-atk"></i></span></div>
-    <div class="nvx-stat"><span class="nvx-stat-k">DEF</span><span class="nvx-stat-bar"><i id="nvx-stat-def"></i></span></div>
-    <div class="nvx-stat"><span class="nvx-stat-k">SPD</span><span class="nvx-stat-bar"><i id="nvx-stat-spd"></i></span></div>
-  </div>
-  <button class="btn" id="b-hero-select">SEÇ</button>
 
-  <div class="rpg-wrap" id="rpg-char-body"></div>
-  <button class="btn ghost" id="b-rpgchar-inv">ENVANTER</button>
-  <button class="btn ghost" id="b-rpgchar-back">Geri</button>
+  <!-- prev/next arrows (hidden via opacity but kept for JS) -->
+  <button id="nvx-hero-prev" aria-label="Önceki" style="position:absolute;left:8px;top:50%;transform:translateY(-50%);opacity:.4;width:32px;height:32px;border-radius:50%;cursor:pointer;background:rgba(12,20,42,.86);border:1px solid rgba(120,170,220,.16);color:#eaf4ff;font:600 14px/1 'Chakra Petch',sans-serif;z-index:5">‹</button>
+  <button id="nvx-hero-next" aria-label="Sonraki" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);opacity:.4;width:32px;height:32px;border-radius:50%;cursor:pointer;background:rgba(12,20,42,.86);border:1px solid rgba(120,170,220,.16);color:#eaf4ff;font:600 14px/1 'Chakra Petch',sans-serif;z-index:5">›</button>
+
+  <div style="flex:none;margin-top:12px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px">
+    <div style="min-width:0">
+      <div id="nvx-hero-name" style="font:700 30px/1 'Chakra Petch',sans-serif;letter-spacing:.14em;white-space:nowrap">VANGUARD</div>
+      <div id="nvx-hero-role" style="margin-top:8px;font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#22e6ff">HEAVY ASSAULT · TANK</div>
+    </div>
+    <div style="flex:none;text-align:right">
+      <div style="font:500 8px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;color:rgba(234,244,255,.4)">LEVEL</div>
+      <div style="margin-top:6px;font:700 24px/1 'IBM Plex Mono',monospace">14</div>
+    </div>
+  </div>
+
+  <div id="nvx-hero-stats" class="nvx-stats" style="flex:none;margin-top:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+    <div class="nvx-stat"><span class="nvx-stat-k" style="font:500 7.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(234,244,255,.4)">ATK</span><div style="margin-top:6px;height:3px;border-radius:99px;background:rgba(234,244,255,.08);overflow:hidden"><i id="nvx-stat-atk" style="display:block;height:100%;width:54%;background:linear-gradient(90deg,#22e6ff,#3b7bff);animation:nvxBar .5s cubic-bezier(.2,.8,.3,1)"></i></div></div>
+    <div class="nvx-stat"><span class="nvx-stat-k" style="font:500 7.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(234,244,255,.4)">DEF</span><div style="margin-top:6px;height:3px;border-radius:99px;background:rgba(234,244,255,.08);overflow:hidden"><i id="nvx-stat-def" style="display:block;height:100%;width:86%;background:linear-gradient(90deg,#22e6ff,#a05cff);animation:nvxBar .5s cubic-bezier(.2,.8,.3,1)"></i></div></div>
+    <div class="nvx-stat"><span class="nvx-stat-k" style="font:500 7.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(234,244,255,.4)">SPD</span><div style="margin-top:6px;height:3px;border-radius:99px;background:rgba(234,244,255,.08);overflow:hidden"><i id="nvx-stat-spd" style="display:block;height:100%;width:38%;background:linear-gradient(90deg,#ff4fd8,#ff3b6b);animation:nvxBar .5s cubic-bezier(.2,.8,.3,1)"></i></div></div>
+  </div>
+
+  <div style="flex:none;margin-top:12px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+    <button class="p3-char-card" data-p3-arch="vanguard" style="cursor:pointer;height:56px;padding:0;border-radius:13px;border:1px solid rgba(34,230,255,.28);background:linear-gradient(180deg,rgba(24,38,74,.92),rgba(8,13,28,.92));color:#eaf4ff;font:600 8.5px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;transition:border-color .18s">
+      <i style="width:22px;height:22px;border-radius:7px;background:radial-gradient(circle at 50% 38%,#22e6ff,rgba(9,15,32,.15) 74%);box-shadow:0 0 14px rgba(34,230,255,.16)"></i>VANGUARD</button>
+    <button class="p3-char-card" data-p3-arch="striker" style="cursor:pointer;height:56px;padding:0;border-radius:13px;border:1px solid rgba(120,170,220,.14);background:rgba(9,15,32,.72);color:rgba(234,244,255,.54);font:600 8.5px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;transition:border-color .18s">
+      <i style="width:22px;height:22px;border-radius:7px;background:radial-gradient(circle at 50% 38%,#ff4fd8,rgba(9,15,32,.15) 74%);box-shadow:0 0 14px rgba(255,79,216,.16)"></i>STRIKER</button>
+    <button class="p3-char-card" data-p3-arch="controller" style="cursor:pointer;height:56px;padding:0;border-radius:13px;border:1px solid rgba(120,170,220,.14);background:rgba(9,15,32,.72);color:rgba(234,244,255,.54);font:600 8.5px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;transition:border-color .18s">
+      <i style="width:22px;height:22px;border-radius:7px;background:radial-gradient(circle at 50% 38%,#a05cff,rgba(9,15,32,.15) 74%);box-shadow:0 0 14px rgba(160,92,255,.16)"></i>CONTROLLER</button>
+  </div>
+
+  <!-- hidden elements JS needs -->
+  <div style="display:none">
+    <button id="b-rpgchar-inv"></button>
+    <div id="rpg-char-body"></div>
+  </div>
+
+  <button id="b-hero-select" style="flex:none;margin-top:14px;width:100%;height:64px;border:0;border-radius:16px;cursor:pointer;background:linear-gradient(135deg,#2ff0ff,#22a8ff 55%,#7a5cff);box-shadow:0 12px 30px rgba(34,230,255,.24);color:#03121c;font:700 19px/1 'Chakra Petch',sans-serif;letter-spacing:.26em;text-indent:.26em">DEPLOY</button>
 </div>
 
 <div class="screen" id="scr-rpginv">
@@ -2273,7 +2307,7 @@ window.addEventListener("unhandledrejection",function(){});
   <button class="btn ghost" id="b-shop-back">Geri</button>
 </div>
 
-<div class="screen" id="scr-tech" style="position:absolute;inset:0;padding:52px 20px 24px;display:flex;flex-direction:column;background:#04060f">
+<div class="screen" id="scr-tech" style="position:absolute;inset:0;padding:52px 20px 24px;display:flex;flex-direction:column;background:radial-gradient(110% 62% at 50% 4%,rgba(34,230,255,.07),transparent 62%),radial-gradient(100% 52% at 50% 104%,rgba(160,92,255,.08),transparent 64%),#04060f">
   <div style="flex:none;display:flex;align-items:center;gap:12px;height:40px">
     <button id="b-tech-back" style="width:40px;height:40px;flex:none;cursor:pointer;border-radius:12px;background:rgba(12,20,42,.86);border:1px solid rgba(120,170,220,.16);color:#eaf4ff;font:600 17px/1 'Chakra Petch',sans-serif">‹</button>
     <div style="flex:1;font:600 12px/1 'IBM Plex Mono',monospace;letter-spacing:.24em;color:rgba(234,244,255,.6)">SKILL TREE</div>
@@ -2284,7 +2318,7 @@ window.addEventListener("unhandledrejection",function(){});
   <button class="btn ghost" id="b-tech-mast" style="flex:none;margin-top:12px;width:100%;height:48px;border-radius:13px;cursor:pointer;background:rgba(160,92,255,.07);border:1px solid rgba(160,92,255,.28);color:rgba(234,244,255,.8);font:600 11px/1 'Chakra Petch',sans-serif;letter-spacing:.18em">WEAPON MASTERY</button>
 </div>
 
-<div class="screen" id="scr-mastery" style="position:absolute;inset:0;padding:52px 20px 24px;display:flex;flex-direction:column;background:#04060f">
+<div class="screen" id="scr-mastery" style="position:absolute;inset:0;padding:52px 20px 24px;display:flex;flex-direction:column;background:radial-gradient(110% 62% at 50% 4%,rgba(255,79,216,.07),transparent 62%),radial-gradient(100% 52% at 50% 104%,rgba(34,230,255,.06),transparent 64%),#04060f">
   <div style="flex:none;display:flex;align-items:center;gap:12px;height:40px">
     <button id="b-mastery-back" style="width:40px;height:40px;flex:none;cursor:pointer;border-radius:12px;background:rgba(12,20,42,.86);border:1px solid rgba(120,170,220,.16);color:#eaf4ff;font:600 17px/1 'Chakra Petch',sans-serif">‹</button>
     <div style="flex:1;font:600 12px/1 'IBM Plex Mono',monospace;letter-spacing:.24em;color:rgba(234,244,255,.6)">WEAPON MASTERY</div>
@@ -2454,52 +2488,71 @@ window.addEventListener("unhandledrejection",function(){});
 </div>
 
 
-<div class="screen" id="scr-phase3" style="position:absolute;inset:0;padding:52px 20px 24px;display:flex;flex-direction:column;background:#04060f">
+<div class="screen" id="scr-phase3" style="position:absolute;inset:0;padding:52px 20px 24px;display:flex;flex-direction:column;background:radial-gradient(110% 62% at 50% 4%,rgba(160,92,255,.09),transparent 62%),radial-gradient(100% 52% at 50% 104%,rgba(34,230,255,.08),transparent 64%),#04060f">
   <div style="flex:none;display:flex;align-items:center;gap:12px;height:40px">
     <button id="b-phase3-back" style="width:40px;height:40px;flex:none;cursor:pointer;border-radius:12px;background:rgba(12,20,42,.86);border:1px solid rgba(120,170,220,.16);color:#eaf4ff;font:600 17px/1 'Chakra Petch',sans-serif">‹</button>
     <div style="flex:1;font:600 12px/1 'IBM Plex Mono',monospace;letter-spacing:.24em;color:rgba(234,244,255,.6)">CHARACTER DEVELOP</div>
     <span id="p3-points" style="font:600 11px/1 'IBM Plex Mono',monospace;color:#22e6ff;letter-spacing:.08em">0 SP</span>
   </div>
-  <div class="p3-wrap" style="flex:1;min-height:0;margin-top:20px;overflow-y:auto">
-    <div class="p3-card">
-      <div class="p3-row">
-        <div><div class="p3-k">Karakter Seviyesi</div><div class="p3-v" id="p3-level">Lv.1</div></div>
-        <span class="p3-chip" id="p3-archetype">VANGUARD</span>
+
+  <div style="flex:1;min-height:0;margin-top:16px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;display:flex;flex-direction:column;gap:12px;padding-bottom:8px">
+
+    <!-- Level + XP Card -->
+    <div style="flex:none;padding:18px;border-radius:16px;background:linear-gradient(135deg,rgba(34,230,255,.08),rgba(160,92,255,.06));border:1px solid rgba(34,230,255,.18)">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+        <div>
+          <div style="font:500 8px/1 'IBM Plex Mono',monospace;letter-spacing:.22em;color:rgba(234,244,255,.4)">CHARACTER LEVEL</div>
+          <div id="p3-level" style="margin-top:8px;font:700 48px/1 'IBM Plex Mono',monospace;color:#f4fcff">Lv.1</div>
+        </div>
+        <span id="p3-archetype" style="flex:none;padding:5px 10px;border-radius:8px;background:rgba(34,230,255,.1);border:1px solid rgba(34,230,255,.3);font:600 9px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#22e6ff">VANGUARD</span>
       </div>
-      <div class="p3-k" id="p3-xp">0 / 80 XP</div>
-      <div class="p3-bar"><div class="p3-fill" id="p3-xp-fill"></div></div>
-      <div class="p3-desc" id="p3-desc"></div>
-    </div>
-    <div class="p3-card">
-      <div class="p3-active-banner">
-        <div><div class="p3-k">Aktif Karakter</div><b id="p3-active-name">VANGUARD</b></div>
-        <span class="p3-chip">0 SP</span>
+      <div style="margin-top:14px;font:500 8.5px/1 'IBM Plex Mono',monospace;color:rgba(234,244,255,.4)" id="p3-xp">0 / 80 XP</div>
+      <div style="margin-top:7px;height:4px;border-radius:99px;background:rgba(234,244,255,.08);overflow:hidden">
+        <div id="p3-xp-fill" style="height:100%;width:0%;background:linear-gradient(90deg,#22e6ff,#a05cff);transition:width .4s cubic-bezier(.2,.8,.3,1)"></div>
       </div>
-      <div class="p3-k">Karakter Seçimi</div>
-      <div class="p3-select-grid">
-        <button class="p3-char-card" data-p3-arch="vanguard">
-          <div class="p3-char-top"><div><div class="p3-char-name">VANGUARD</div><div class="p3-char-role">Tank / Dayanıklılık</div></div><span class="p3-selected-mark" data-p3-selected="vanguard"></span></div>
-          <div class="p3-char-stats"><span class="p3-char-stat">MAX HP +10%</span><span class="p3-char-stat">HASAR ALIMI -10%</span></div>
+      <div id="p3-desc" style="margin-top:10px;font:400 11px/1.45 'Chakra Petch',sans-serif;color:rgba(234,244,255,.5)"></div>
+    </div>
+
+    <!-- Active unit + character selector -->
+    <div style="flex:none;padding:16px;border-radius:16px;background:rgba(12,20,42,.7);border:1px solid rgba(120,170,220,.1)">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px">
+        <div style="font:500 8px/1 'IBM Plex Mono',monospace;letter-spacing:.22em;color:rgba(234,244,255,.4)">ACTIVE UNIT</div>
+        <b id="p3-active-name" style="font:600 12px/1 'Chakra Petch',sans-serif;letter-spacing:.1em;color:#22e6ff">VANGUARD</b>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+        <button class="p3-char-card" data-p3-arch="vanguard" style="cursor:pointer;height:64px;padding:6px 0;border-radius:13px;border:1px solid rgba(34,230,255,.28);background:linear-gradient(180deg,rgba(24,38,74,.92),rgba(8,13,28,.92));color:#eaf4ff;font:600 8px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;transition:border-color .18s">
+          <i style="flex:none;width:18px;height:18px;border-radius:5px;background:radial-gradient(circle at 50% 38%,#22e6ff,rgba(9,15,32,.1) 74%);box-shadow:0 0 10px rgba(34,230,255,.3)"></i>
+          <span class="p3-selected-mark" data-p3-selected="vanguard" style="font:700 7px/1 'IBM Plex Mono',monospace;color:#22e6ff;min-height:8px;letter-spacing:.06em"></span>
+          VANGUARD
         </button>
-        <button class="p3-char-card" data-p3-arch="striker">
-          <div class="p3-char-top"><div><div class="p3-char-name">STRIKER</div><div class="p3-char-role">Assault / Hız</div></div><span class="p3-selected-mark" data-p3-selected="striker"></span></div>
-          <div class="p3-char-stats"><span class="p3-char-stat">HASAR +8%</span><span class="p3-char-stat">HIZ +5%</span></div>
+        <button class="p3-char-card" data-p3-arch="striker" style="cursor:pointer;height:64px;padding:6px 0;border-radius:13px;border:1px solid rgba(120,170,220,.14);background:rgba(9,15,32,.72);color:rgba(234,244,255,.54);font:600 8px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;transition:border-color .18s">
+          <i style="flex:none;width:18px;height:18px;border-radius:5px;background:radial-gradient(circle at 50% 38%,#ff4fd8,rgba(9,15,32,.1) 74%);box-shadow:0 0 10px rgba(255,79,216,.3)"></i>
+          <span class="p3-selected-mark" data-p3-selected="striker" style="font:700 7px/1 'IBM Plex Mono',monospace;color:#ff4fd8;min-height:8px;letter-spacing:.06em"></span>
+          STRIKER
         </button>
-        <button class="p3-char-card" data-p3-arch="controller">
-          <div class="p3-char-top"><div><div class="p3-char-name">CONTROLLER</div><div class="p3-char-role">Control / Alan</div></div><span class="p3-selected-mark" data-p3-selected="controller"></span></div>
-          <div class="p3-char-stats"><span class="p3-char-stat">CONTROL +10%</span><span class="p3-char-stat">COOLDOWN ETKİSİ</span></div>
+        <button class="p3-char-card" data-p3-arch="controller" style="cursor:pointer;height:64px;padding:6px 0;border-radius:13px;border:1px solid rgba(120,170,220,.14);background:rgba(9,15,32,.72);color:rgba(234,244,255,.54);font:600 8px/1 'IBM Plex Mono',monospace;letter-spacing:.08em;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;transition:border-color .18s">
+          <i style="flex:none;width:18px;height:18px;border-radius:5px;background:radial-gradient(circle at 50% 38%,#a05cff,rgba(9,15,32,.1) 74%);box-shadow:0 0 10px rgba(160,92,255,.3)"></i>
+          <span class="p3-selected-mark" data-p3-selected="controller" style="font:700 7px/1 'IBM Plex Mono',monospace;color:#a05cff;min-height:8px;letter-spacing:.06em"></span>
+          CONTROLLER
         </button>
       </div>
-      <button class="p3-btn" id="p3-reset-run" style="width:100%;margin-top:9px">RUN RESET</button>
+      <button class="p3-btn" id="p3-reset-run" style="width:100%;margin-top:10px;min-height:44px;border-radius:12px">RUN RESET</button>
     </div>
-    <div class="p3-card">
-      <div class="p3-row"><div><div class="p3-k">Mastery</div><div class="p3-v">Silah Ustalığı</div></div><span class="p3-chip" id="p3-mastery-total">0</span></div>
-      <div id="p3-mastery-list"></div>
+
+    <!-- 2-col: Mastery + Skills -->
+    <div style="flex:none;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <div style="padding:14px;border-radius:14px;background:rgba(255,79,216,.06);border:1px solid rgba(255,79,216,.2)">
+        <div style="font:500 7px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;color:rgba(234,244,255,.4)">WEAPON MASTERY</div>
+        <span id="p3-mastery-total" style="display:inline-block;margin-top:8px;padding:4px 8px;border-radius:7px;background:rgba(255,79,216,.1);border:1px solid rgba(255,79,216,.3);font:600 9px/1 'IBM Plex Mono',monospace;color:#ff4fd8">0</span>
+        <div id="p3-mastery-list" style="margin-top:10px;display:flex;flex-direction:column;gap:6px"></div>
+      </div>
+      <div style="padding:14px;border-radius:14px;background:rgba(160,92,255,.06);border:1px solid rgba(160,92,255,.2)">
+        <div style="font:500 7px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;color:rgba(234,244,255,.4)">SKILL NODES</div>
+        <span id="p3-skill-points" style="display:inline-block;margin-top:8px;padding:4px 8px;border-radius:7px;background:rgba(160,92,255,.1);border:1px solid rgba(160,92,255,.3);font:600 9px/1 'IBM Plex Mono',monospace;color:#a05cff">0 SP</span>
+        <div id="p3-skill-list" style="margin-top:10px;display:flex;flex-direction:column;gap:6px"></div>
+      </div>
     </div>
-    <div class="p3-card">
-      <div class="p3-row"><div><div class="p3-k">Skill Tree</div><div class="p3-v">Kalıcı Yetenekler</div></div><span class="p3-chip" id="p3-skill-points">0 SP</span></div>
-      <div id="p3-skill-list"></div>
-    </div>
+
   </div>
 </div>
 
@@ -2527,7 +2580,8 @@ window.addEventListener("unhandledrejection",function(){});
   </div>
   <div style="flex:1"></div>
   <button class="btn" id="b-resume" style="flex:none;width:100%;height:68px;border:0;border-radius:17px;cursor:pointer;background:linear-gradient(135deg,#2ff0ff,#22a8ff 55%,#7a5cff);box-shadow:0 12px 32px rgba(34,230,255,.26);color:#03121c;font:700 19px/1 'Chakra Petch',sans-serif;letter-spacing:.26em;text-indent:.26em">RESUME</button>
-  <button class="btn ghost" id="b-quit" style="flex:none;margin-top:8px;width:100%;height:56px;cursor:pointer;border-radius:15px;background:transparent;border:1px solid rgba(255,59,107,.24);color:rgba(255,130,158,.9);font:600 12px/1 'Chakra Petch',sans-serif;letter-spacing:.2em">ABANDON</button>
+  <button id="b-pause-system" style="flex:none;margin-top:8px;width:100%;height:56px;cursor:pointer;border-radius:15px;background:rgba(9,15,32,.8);border:1px solid rgba(120,170,220,.16);color:rgba(234,244,255,.8);font:600 12px/1 'Chakra Petch',sans-serif;letter-spacing:.2em">SYSTEM</button>
+  <button class="btn ghost" id="b-quit" style="flex:none;margin-top:8px;width:100%;height:56px;cursor:pointer;border-radius:15px;background:transparent;border:1px solid rgba(255,59,107,.24);color:rgba(255,130,158,.9);font:600 12px/1 'Chakra Petch',sans-serif;letter-spacing:.2em">ABANDON RUN</button>
 </div>
 
 <!-- GAME OVER -->
@@ -2590,6 +2644,13 @@ window.addEventListener("unhandledrejection",function(){});
         <button id="st-lang-tr" data-lang="tr" style="height:40px;border-radius:10px;cursor:pointer;background:rgba(34,230,255,.07);border:1px solid rgba(34,230,255,.24);color:#eaf4ff;font:600 11px/1 'Chakra Petch',sans-serif;letter-spacing:.12em">TÜRKÇE</button>
         <button id="st-lang-en" data-lang="en" style="height:40px;border-radius:10px;cursor:pointer;background:rgba(34,230,255,.07);border:1px solid rgba(34,230,255,.24);color:#eaf4ff;font:600 11px/1 'Chakra Petch',sans-serif;letter-spacing:.12em">ENGLISH</button>
       </div>
+      <div style="padding:0 14px 14px">
+        <button id="b-language-open" style="width:100%;height:52px;padding:0 14px;cursor:pointer;display:flex;align-items:center;gap:12px;text-align:left;border-radius:13px;background:rgba(9,15,32,.6);border:1px solid rgba(120,170,220,.12);color:#eaf4ff;font:500 13px/1 'Chakra Petch',sans-serif;letter-spacing:.06em">
+          <span style="flex:none;width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:rgba(34,230,255,.08);border:1px solid rgba(34,230,255,.26);font:600 9px/1 'IBM Plex Mono',monospace;color:#9be9ff" id="lang-current-code">TR</span>
+          <span style="flex:1">Language / Dil</span>
+          <span style="flex:none;font:400 17px/1 'Chakra Petch',sans-serif;color:rgba(234,244,255,.34)">›</span>
+        </button>
+      </div>
     </div>
 
     <!-- App Info -->
@@ -2625,6 +2686,27 @@ window.addEventListener("unhandledrejection",function(){});
     </div>
 
   </div>
+</div>
+
+<div class="screen" id="scr-language" style="position:absolute;inset:0;padding:52px 20px 24px;display:flex;flex-direction:column;background:#04060f">
+  <div style="flex:none;display:flex;align-items:center;gap:12px;height:40px">
+    <button id="b-language-back" style="width:40px;height:40px;flex:none;cursor:pointer;border-radius:12px;background:rgba(12,20,42,.86);border:1px solid rgba(120,170,220,.16);color:#eaf4ff;font:600 17px/1 'Chakra Petch',sans-serif">‹</button>
+    <div style="flex:1;font:600 12px/1 'IBM Plex Mono',monospace;letter-spacing:.24em;color:rgba(234,244,255,.6)">LANGUAGE</div>
+    <span style="flex:none;font:500 9px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;color:rgba(234,244,255,.3)">2</span>
+  </div>
+  <div style="flex:1;min-height:0;margin-top:24px;display:flex;flex-direction:column;gap:8px">
+    <button id="lang-btn-tr" data-lang="tr" style="flex:1;min-height:56px;padding:0 16px;cursor:pointer;display:flex;align-items:center;gap:14px;text-align:left;border-radius:14px;background:rgba(9,15,32,.72);border:1px solid rgba(120,170,220,.12);color:rgba(234,244,255,.72);transition:border-color .18s">
+      <span style="flex:none;width:34px;font:600 9px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(234,244,255,.42)">TR</span>
+      <span style="flex:1;font:600 14px/1.2 'Chakra Petch',sans-serif;letter-spacing:.04em">Türkçe</span>
+      <span id="lang-mark-tr" style="flex:none;width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(120,170,220,.28);display:flex;align-items:center;justify-content:center"><i style="width:9px;height:9px;border-radius:50%;background:transparent"></i></span>
+    </button>
+    <button id="lang-btn-en" data-lang="en" style="flex:1;min-height:56px;padding:0 16px;cursor:pointer;display:flex;align-items:center;gap:14px;text-align:left;border-radius:14px;background:rgba(9,15,32,.72);border:1px solid rgba(120,170,220,.12);color:rgba(234,244,255,.72);transition:border-color .18s">
+      <span style="flex:none;width:34px;font:600 9px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;color:rgba(234,244,255,.42)">EN</span>
+      <span style="flex:1;font:600 14px/1.2 'Chakra Petch',sans-serif;letter-spacing:.04em">English</span>
+      <span id="lang-mark-en" style="flex:none;width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(120,170,220,.28);display:flex;align-items:center;justify-content:center"><i style="width:9px;height:9px;border-radius:50%;background:transparent"></i></span>
+    </button>
+  </div>
+  <div style="flex:none;margin-top:16px;font:400 10.5px/1.4 'Chakra Petch',sans-serif;color:rgba(234,244,255,.32)">Applies immediately. Unit, weapon and boss names stay untranslated.</div>
 </div>
 
 </div>
@@ -11922,7 +12004,7 @@ function backToMenu(){hideAllScreens();$$("scr-menu").classList.add("on");}
 function bind(id,fn){const el=$$(id);if(el)el.addEventListener("click",fn);}
 tap($$("b-rpgchar"),openChar);
 bind("b-rpginv",()=>{invFilter="all";openInv();});
-bind("b-rpgchar-back",backToMenu);
+tap($$("b-rpgchar-back"),backToMenu);
 bind("b-rpginv-back",backToMenu);
 bind("b-rpgchar-inv",()=>{invFilter="all";openInv();});
 document.querySelectorAll("[data-invf]").forEach(b=>{
@@ -12767,9 +12849,9 @@ function back(){hideAll();const m=$$("scr-menu");if(m)m.classList.add("on");}
 function bind(id,fn){const e=$$(id);if(e)e.addEventListener("click",fn);}
 tap($$("b-tech"),()=>{hideAll();$$("scr-tech").classList.add("on");renderTech();});
 tap($$("b-mastery"),()=>{hideAll();$$("scr-mastery").classList.add("on");renderMastery();});
-bind("b-tech-back",back);
-bind("b-mastery-back",back);
-bind("b-tech-mast",()=>{hideAll();$$("scr-mastery").classList.add("on");renderMastery();});
+tap($$("b-tech-back"),back);
+tap($$("b-mastery-back"),back);
+tap($$("b-tech-mast"),()=>{hideAll();$$("scr-mastery").classList.add("on");renderMastery();});
 
 window.TECHTREE={TECH,ALL,rank,state,spend,reqMet,M,renderTech,renderMastery};
 
@@ -15659,6 +15741,39 @@ document.addEventListener("touchend",function(e){
 })();
 
 window._settingsRender=renderSettings;
+
+/* b-pause-system: pause → settings */
+(function(){
+  var bps=document.getElementById("b-pause-system");
+  if(bps&&typeof tap==="function")tap(bps,function(){
+    var ps=document.getElementById("scr-pause");
+    var ss=document.getElementById("scr-settings");
+    if(ps)ps.classList.remove("on");
+    if(ss){ss.classList.add("on");if(typeof renderSettings==="function")renderSettings();}
+  });
+})();
+
+/* b-language-back: language → settings */
+(function(){
+  var lb=document.getElementById("b-language-back");
+  if(lb&&typeof tap==="function")tap(lb,function(){
+    var ls=document.getElementById("scr-language");
+    var ss=document.getElementById("scr-settings");
+    if(ls)ls.classList.remove("on");
+    if(ss){ss.classList.add("on");if(typeof renderSettings==="function")renderSettings();}
+  });
+})();
+
+/* b-language-open: settings → language */
+(function(){
+  var lo=document.getElementById("b-language-open");
+  if(lo&&typeof tap==="function")tap(lo,function(){
+    var ls=document.getElementById("scr-language");
+    var ss=document.getElementById("scr-settings");
+    if(ss)ss.classList.remove("on");
+    if(ls)ls.classList.add("on");
+  });
+})();
 })();
 </script>
 
@@ -18221,11 +18336,13 @@ button, .btn, .p2-tab, .p3-btn{
 
 /* ── NORYVX screens: override .screen class alignment ── */
 #scr-menu,
+#scr-rpgchar,
 #scr-pause,
 #scr-levelup,
 #scr-over,
 #scr-how,
 #scr-settings,
+#scr-language,
 #scr-phase3,
 #scr-mastery,
 #scr-tech {
@@ -18237,11 +18354,13 @@ button, .btn, .p2-tab, .p3-btn{
 /* Old overlay bars replaced by built-in NORYVX menu header/nav */
 #topbar, #bottomnav { display: none !important; }
 #scr-menu.on,
+#scr-rpgchar.on,
 #scr-pause.on,
 #scr-levelup.on,
 #scr-over.on,
 #scr-how.on,
 #scr-settings.on,
+#scr-language.on,
 #scr-phase3.on,
 #scr-mastery.on,
 #scr-tech.on {
@@ -18249,11 +18368,13 @@ button, .btn, .p2-tab, .p3-btn{
 }
 /* scan-line animation: suppress on NORYVX screens */
 #scr-menu.on::before,
+#scr-rpgchar.on::before,
 #scr-pause.on::before,
 #scr-levelup.on::before,
 #scr-over.on::before,
 #scr-how.on::before,
 #scr-settings.on::before,
+#scr-language.on::before,
 #scr-phase3.on::before,
 #scr-mastery.on::before,
 #scr-tech.on::before {
