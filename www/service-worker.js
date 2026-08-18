@@ -10,7 +10,10 @@
    cache adi degismezse yeni atlas cihaza HIC ULASMAZ; dosyanin en
    ustundeki notun tarif ettigi hata tam olarak budur. Ad bu yuzden
    surumle birlikte yukseltildi. Temizleme mantigi degismedi. */
-const CACHE = "neon-survivor-v16-9-0";
+/* NORYVX V20.1.0 — full-body hero canvas renderer + I18N + dual
+   currency + MYTHIC rarity + boss intro overlay + phase HUD.
+   Cache adi guncellendi (aksi halde eski asset'ler ilkanminlarak calisir). */
+const CACHE = "neon-survivor-v20-1-0";
 
 const ASSETS = [
   "./",
@@ -20,7 +23,8 @@ const ASSETS = [
   "./assets/atlas-units.json",
   "./assets/atlas-units.png",
   "./assets/atlas-items.json",
-  "./assets/atlas-items.png"
+  "./assets/atlas-items.png",
+  "./assets/neon-noryvx-icon.svg"
 ];
 
 self.addEventListener("install", event => {

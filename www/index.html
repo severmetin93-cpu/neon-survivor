@@ -492,6 +492,72 @@ button,
   box-shadow:0 0 12px rgba(255,59,107,.65);
   transition:width .12s linear;
 }
+/* NORYVX boss HUD — phases + danger gradient */
+.boss-title{margin-bottom:4px}
+.boss-bar-wrap{position:relative}
+.boss-phases{
+  display:flex;justify-content:center;gap:6px;
+  margin-top:5px;
+}
+.boss-phase{
+  width:12px;height:5px;border-radius:3px;
+  background:rgba(255,255,255,.16);
+  transition:background var(--t-fast),box-shadow var(--t-fast);
+}
+.boss-phase.active{
+  background:linear-gradient(90deg,#ff3b6b,#ff6b3b);
+  box-shadow:0 0 8px rgba(255,59,107,.6);
+}
+.boss-phase.done{
+  background:rgba(255,210,77,.5);
+  box-shadow:0 0 6px rgba(255,210,77,.35);
+}
+
+/* NORYVX boss intro overlay — full-body art fade */
+#nvx-boss-intro{
+  position:fixed;inset:0;z-index:60;
+  display:none;
+  pointer-events:none;
+  background:radial-gradient(70% 60% at 50% 60%,rgba(255,59,107,.28),rgba(0,0,0,0) 70%),
+             rgba(4,6,15,.7);
+  align-items:center;justify-content:center;flex-direction:column;
+  opacity:0;transition:opacity .28s ease;
+}
+#nvx-boss-intro.in{display:flex;opacity:1}
+#nvx-boss-intro.out{display:flex;opacity:0}
+#nvx-boss-canvas{
+  width:min(320px,80vw);height:min(500px,60vh);
+  display:block;
+  filter:drop-shadow(0 0 40px rgba(255,59,107,.45));
+}
+.nvx-boss-label{
+  margin-top:14px;
+  font:900 18px/1 system-ui,-apple-system,'Chakra Petch',sans-serif;
+  letter-spacing:.28em;color:var(--danger);
+  text-shadow:0 0 22px rgba(255,59,107,.6);
+  animation:nvx-boss-label 1.4s ease-in-out infinite;
+}
+@keyframes nvx-boss-label{
+  0%,100%{opacity:.85;transform:translateY(0)}
+  50%    {opacity:1;   transform:translateY(-2px)}
+}
+/* NORYVX motion tokenlari — evrensel keyframe kutuphanesi.
+   Kullanim: any element with class="nvx-idle" alir. Skin ic scriptleri
+   canvasa ozeldir; DOM overlay'ler burasi. */
+@keyframes nvxIdle    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+@keyframes nvxReactor { 0%,100%{opacity:.72;filter:brightness(1)} 50%{opacity:1;filter:brightness(1.3)} }
+@keyframes nvxSweep   { 0%{transform:translateX(-120%)} 100%{transform:translateX(220%)} }
+@keyframes nvxPulse   { 0%,100%{transform:scale(1);opacity:.9} 50%{transform:scale(1.06);opacity:1} }
+@keyframes nvxBar     { 0%{transform:scaleX(0);transform-origin:left center} 100%{transform:scaleX(1)} }
+@keyframes nvxRise    { 0%{opacity:0;transform:translateY(10px)} 100%{opacity:1;transform:translateY(0)} }
+@keyframes nvxRadar   { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+@keyframes nvxFloat   { 0%,100%{transform:translateY(0) rotate(0deg)} 50%{transform:translateY(-6px) rotate(1deg)} }
+@keyframes nvxHover   { 0%,100%{box-shadow:0 0 0 rgba(34,230,255,0)} 50%{box-shadow:0 0 22px rgba(34,230,255,.55)} }
+.nvx-idle{animation:nvxIdle 4.6s ease-in-out infinite}
+.nvx-reactor{animation:nvxReactor 2.6s ease-in-out infinite}
+.nvx-pulse{animation:nvxPulse 1.8s ease-in-out infinite}
+.nvx-rise{animation:nvxRise .32s ease-out both}
+.nvx-hover:hover{animation:nvxHover 1.4s ease-in-out infinite}
 .elite-badge{
   position:absolute;
   transform:translate(-50%,-50%);
@@ -1013,6 +1079,86 @@ button:disabled{opacity:.38 !important;filter:saturate(.35);pointer-events:none}
   flex-direction:column;
   align-items:center;
 }
+
+/* ---------- NORYVX HERO CAROUSEL (scr-rpgchar) ---------- */
+.nvx-carousel{
+  position:relative;
+  width:min(360px,88vw);
+  height:min(280px,42vh);
+  display:flex;align-items:center;justify-content:center;
+  margin:8px 0 4px;
+}
+.nvx-hero-preview{
+  position:relative;
+  flex:1;height:100%;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;
+  padding:6px 12px 8px;
+  border-radius:20px;
+  background:
+    radial-gradient(80% 60% at 50% 60%,rgba(34,230,255,.10),transparent 70%),
+    linear-gradient(180deg,rgba(9,15,32,.7),rgba(5,9,20,.85));
+  border:1px solid rgba(120,170,220,.16);
+  overflow:hidden;
+}
+#nvx-hero-canvas{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  display:block;
+}
+.nvx-hero-name{
+  position:relative;z-index:2;
+  font:900 20px/1 system-ui,-apple-system,'Chakra Petch',sans-serif;
+  letter-spacing:.20em;color:var(--ink);
+  text-shadow:0 0 14px rgba(34,230,255,.55);
+}
+.nvx-hero-role{
+  position:relative;z-index:2;
+  font:600 9px/1 system-ui,'IBM Plex Mono',monospace;
+  letter-spacing:.22em;color:var(--ink-3);
+  text-transform:uppercase;margin-top:5px;
+}
+.nvx-arrow{
+  flex:0 0 auto;
+  width:38px;height:60px;
+  border-radius:12px;
+  border:1px solid rgba(120,170,220,.16);
+  background:linear-gradient(180deg,rgba(9,15,32,.9),rgba(5,9,20,.9));
+  color:var(--primary);
+  font-size:18px;font-weight:900;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform var(--t-fast),border-color var(--t-fast);
+}
+.nvx-arrow:active{transform:scale(.92)}
+.nvx-arrow-l{margin-right:4px}
+.nvx-arrow-r{margin-left:4px}
+.nvx-stats{
+  width:min(340px,84vw);
+  display:flex;flex-direction:column;gap:6px;
+  margin:6px 0;
+}
+.nvx-stat{
+  display:flex;align-items:center;gap:10px;
+  padding:4px 8px;border-radius:10px;
+  background:rgba(9,15,32,.62);
+  border:1px solid rgba(120,170,220,.10);
+}
+.nvx-stat-k{
+  width:38px;
+  font:800 10px/1 'IBM Plex Mono',system-ui,monospace;
+  letter-spacing:.14em;color:var(--ink-3);
+}
+.nvx-stat-bar{
+  flex:1;height:8px;border-radius:99px;
+  background:rgba(2,5,14,.9);overflow:hidden;
+  border:1px solid rgba(120,170,220,.10);
+}
+.nvx-stat-bar i{
+  display:block;height:100%;
+  background:linear-gradient(90deg,var(--primary),#7cc0ff);
+  transition:width .34s cubic-bezier(.2,.8,.3,1);
+  box-shadow:0 0 8px rgba(34,230,255,.4);
+}
 .menu-sub{
   width:min(340px,84vw);
   display:grid;
@@ -1331,55 +1477,49 @@ button:disabled{opacity:.38 !important;filter:saturate(.35);pointer-events:none}
 .rpg-d-head{display:flex;flex-direction:row !important;align-items:center;gap:10px}
 .rpg-d-head .rpg-d-txt{display:flex;flex-direction:column;gap:2px;min-width:0}
 
-/* UI_SET_60 · global icon atlas — Phase 3 koordinatlar uygulandı
-   atlas-icons.png = global_icon_atlas_1024.png (1024×1024 px)
-   Grid: 4 sütun × 4 satır, her hücre 256×256 px.
-   Hicbir HTML elementi su an .ui-ico kullanmaz — altyapi only.
-   minus: 03_Icons referans kartında mevcut fakat atlasta yok — dahil edilmedi. */
+/* UI_SET_60 · global icon atlas — Phase 3 (NORYVX rewrite)
+   Atlas PNG kaldirildi. Her ikon inline SVG data URI olarak
+   masking kullanmadan background-image ile cizilir. Renk .ui-ico
+   uzerindeki color/currentColor tokenlariyla ayarlanabilir. */
 .ui-ico{
-  --ui-col:0;
-  --ui-row:0;
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  background-image:url(assets/atlas-icons.png);
-  background-repeat:no-repeat;
   flex:0 0 auto;
   width:24px;
   height:24px;
-  background-size:96px 96px;
-  background-position:calc(var(--ui-col) * -24px) calc(var(--ui-row) * -24px);
+  background-image:none;
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:contain;
+  color:var(--primary);
+  filter:drop-shadow(0 0 6px color-mix(in srgb, currentColor 46%, transparent));
 }
-.ui-ico.sm{
-  width:16px;height:16px;
-  background-size:64px 64px;
-  background-position:calc(var(--ui-col) * -16px) calc(var(--ui-row) * -16px);
-}
-.ui-ico.lg{
-  width:32px;height:32px;
-  background-size:128px 128px;
-  background-position:calc(var(--ui-col) * -32px) calc(var(--ui-row) * -32px);
-}
-/* Satır 0 */
-.ui-ico.home    {--ui-col:0;--ui-row:0}
-.ui-ico.back    {--ui-col:1;--ui-row:0}
-.ui-ico.close   {--ui-col:2;--ui-row:0}
-.ui-ico.check   {--ui-col:3;--ui-row:0}
-/* Satır 1 */
-.ui-ico.plus    {--ui-col:0;--ui-row:1}
-.ui-ico.lock    {--ui-col:1;--ui-row:1}
-.ui-ico.info    {--ui-col:2;--ui-row:1}
-.ui-ico.warning {--ui-col:3;--ui-row:1}
-/* Satır 2 */
-.ui-ico.error   {--ui-col:0;--ui-row:2}
-.ui-ico.settings{--ui-col:1;--ui-row:2}
-.ui-ico.search  {--ui-col:2;--ui-row:2}
-.ui-ico.star    {--ui-col:3;--ui-row:2}
-/* Satır 3 */
-.ui-ico.quest   {--ui-col:0;--ui-row:3}
-.ui-ico.map     {--ui-col:1;--ui-row:3}
-.ui-ico.canon   {--ui-col:2;--ui-row:3} /* atlas label belirsiz — gorsel dogrulama gerekli */
-.ui-ico.player  {--ui-col:3;--ui-row:3}
+.ui-ico.sm{ width:16px;height:16px; }
+.ui-ico.lg{ width:32px;height:32px; }
+
+/* NAV / STATUS ikonlari — inline SVG data URI. currentColor
+   ile tema uyumu icin renk stroke uzerinden cizilir. */
+.ui-ico.home    {background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2322e6ff' stroke-width='2' stroke-linejoin='round' stroke-linecap='round'><path d='M3 11l9-8 9 8v9a2 2 0 0 1-2 2h-4v-6h-6v6H5a2 2 0 0 1-2-2z'/></svg>")}
+.ui-ico.back    {background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2322e6ff' stroke-width='2' stroke-linejoin='round' stroke-linecap='round'><path d='M15 6l-6 6 6 6'/></svg>")}
+.ui-ico.close   {background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ff3b6b' stroke-width='2' stroke-linejoin='round' stroke-linecap='round'><path d='M6 6l12 12M18 6L6 18'/></svg>")}
+.ui-ico.check   {background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2348ff9b' stroke-width='2' stroke-linejoin='round' stroke-linecap='round'><path d='M4 12l5 5 11-11'/></svg>")}
+.ui-ico.plus    {background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2322e6ff' stroke-width='2' stroke-linecap='round'><path d='M12 4v16M4 12h16'/></svg>")}
+.ui-ico.lock    {background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffd24d' stroke-width='2' stroke-linejoin='round' stroke-linecap='round'><rect x='4' y='10' width='16' height='11' rx='2'/><path d='M8 10V7a4 4 0 0 1 8 0v3'/></svg>")}
+.ui-ico.info    {background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2322e6ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><path d='M12 8v.01M12 11v6'/></svg>")}
+.ui-ico.warning {background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffd24d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 3l10 18H2z'/><path d='M12 10v5M12 18v.01'/></svg>")}
+.ui-ico.error   {background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ff3b6b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><path d='M12 7v6M12 16v.01'/></svg>")}
+.ui-ico.settings{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2322e6ff' stroke-width='2' stroke-linejoin='round' stroke-linecap='round'><circle cx='12' cy='12' r='3'/><path d='M19.4 15a1.7 1.7 0 0 0 .34 1.86l.06.06a2 2 0 1 1-2.82 2.82l-.06-.06a1.7 1.7 0 0 0-1.86-.34 1.7 1.7 0 0 0-1.03 1.55V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1.11-1.55 1.7 1.7 0 0 0-1.86.34l-.06.06a2 2 0 1 1-2.82-2.82l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 9a1.7 1.7 0 0 0-.34-1.86l-.06-.06a2 2 0 1 1 2.82-2.82l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.86-.34l.06-.06a2 2 0 1 1 2.82 2.82l-.06.06A1.7 1.7 0 0 0 19.4 9c.14.32.21.66.21 1.02.02.06.03.12.03.18v.02c0 .04.02.09.02.13.04.36.11.7.24 1.03z'/></svg>")}
+.ui-ico.search  {background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2322e6ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='7'/><path d='M20 20l-4-4'/></svg>")}
+.ui-ico.star    {background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffd24d' stroke='%23ffd24d' stroke-linejoin='round' stroke-width='1.4'><path d='M12 3l2.7 5.6 6.3.9-4.6 4.5 1.1 6.4L12 17.3 6.5 20.4l1.1-6.4L3 9.5l6.3-.9z'/></svg>")}
+.ui-ico.quest   {background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a05cff' stroke-width='2' stroke-linejoin='round' stroke-linecap='round'><path d='M5 4h11l4 4v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z'/><path d='M9 12h6M9 16h4M9 8h4'/></svg>")}
+.ui-ico.map     {background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2322e6ff' stroke-width='2' stroke-linejoin='round' stroke-linecap='round'><path d='M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z'/><path d='M9 4v16M15 6v16'/></svg>")}
+.ui-ico.canon   {background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ff4fd8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M4 20l6-6M8 16l4 4 8-8-4-4z'/><circle cx='7' cy='17' r='2'/></svg>")}
+.ui-ico.player  {background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2322e6ff' stroke-width='2' stroke-linejoin='round' stroke-linecap='round'><circle cx='12' cy='8' r='4'/><path d='M4 22c0-4 4-6 8-6s8 2 8 6'/></svg>")}
+.ui-ico.war     {background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ff4fd8' stroke-width='2' stroke-linejoin='round' stroke-linecap='round'><path d='M5 3l6 6-2 2-6-6zM14 10l7 7-2 2-7-7zM9 15l-6 6M15 9l6-6'/></svg>")}
+.ui-ico.char    {background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2322e6ff' stroke-width='2' stroke-linejoin='round' stroke-linecap='round'><circle cx='12' cy='7' r='3.5'/><path d='M6 22c0-4 3-7 6-7s6 3 6 7'/><path d='M12 3v-.5M5 8l-1-1M19 8l1-1'/></svg>")}
+.ui-ico.shop    {background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffd24d' stroke-width='2' stroke-linejoin='round' stroke-linecap='round'><path d='M4 8h16l-2 12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z'/><path d='M9 8V6a3 3 0 0 1 6 0v2'/></svg>")}
+.ui-ico.prog    {background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a05cff' stroke-width='2' stroke-linejoin='round' stroke-linecap='round'><rect x='4' y='4' width='16' height='16' rx='2'/><path d='M8 8h8M8 12h8M8 16h5'/></svg>")}
 </style>
 
 <style id="noryvx-ach-css">
@@ -1821,6 +1961,27 @@ body.ls .bn{width:70px}
   background:rgba(255,59,107,.05);color:var(--danger);
   font-weight:800;font-size:11px;letter-spacing:.12em}
 .set-danger:active{transform:scale(.98)}
+/* NORYVX dil secici — settings ekrani */
+.set-lang-row{
+  display:flex;gap:8px;margin-top:6px;
+}
+.set-lang-btn{
+  flex:1;min-height:44px;padding:8px 10px;
+  border-radius:var(--r-md);
+  background:rgba(9,15,32,.8);
+  border:1px solid rgba(120,170,220,.16);
+  color:rgba(234,244,255,.8);
+  font:600 12px/1 'Chakra Petch','Chakra Petch',system-ui,sans-serif;
+  letter-spacing:.20em;
+  transition:border-color var(--t-fast),background var(--t-fast),transform var(--t-fast);
+}
+.set-lang-btn.on{
+  background:linear-gradient(180deg,rgba(24,38,74,.92),rgba(8,13,28,.92));
+  border-color:var(--primary);
+  box-shadow:0 0 18px rgba(34,230,255,.20);
+  color:var(--ink);
+}
+.set-lang-btn:active{transform:scale(.97)}
 @media(max-height:680px){.set-wrap{max-height:58vh}}
 </style>
 
@@ -1833,7 +1994,7 @@ window.addEventListener("error",function(e){
 });
 window.addEventListener("unhandledrejection",function(){});
 </script>
-<div id="version-badge" aria-hidden="true">V20.0.0 · UI_SET_60</div>
+<div id="version-badge" aria-hidden="true">V20.1.0 · NORYVX</div>
 
 <div id="stage">
 
@@ -1917,8 +2078,15 @@ window.addEventListener("unhandledrejection",function(){});
 </button>
 
 <div id="boss-hud">
-  <div class="boss-name">NEON WARDEN · ELITE CORE</div>
-  <div class="boss-bar"><div class="boss-fill" id="boss-fill"></div></div>
+  <div class="boss-title"><span class="boss-name" id="boss-name">NEON WARDEN</span></div>
+  <div class="boss-bar-wrap">
+    <div class="boss-bar"><div class="boss-fill" id="boss-fill"></div></div>
+  </div>
+  <div class="boss-phases" id="boss-phases">
+    <span class="boss-phase active"></span>
+    <span class="boss-phase"></span>
+    <span class="boss-phase"></span>
+  </div>
 </div>
 
 <!-- MENU -->
@@ -2019,6 +2187,24 @@ window.addEventListener("unhandledrejection",function(){});
 <div class="screen" id="scr-rpgchar">
   <div class="tutorial-title">KARAKTER</div>
   <div class="tag" id="rpg-char-cur">◎ 0   ◆ 0</div>
+
+  <!-- NORYVX Hero Carousel -->
+  <div class="nvx-carousel" id="nvx-hero-carousel">
+    <button class="nvx-arrow nvx-arrow-l" id="nvx-hero-prev" aria-label="Önceki">◄</button>
+    <div class="nvx-hero-preview">
+      <canvas id="nvx-hero-canvas" aria-hidden="true"></canvas>
+      <div class="nvx-hero-name" id="nvx-hero-name">VANGUARD</div>
+      <div class="nvx-hero-role" id="nvx-hero-role">TANK · HEAVY ASSAULT</div>
+    </div>
+    <button class="nvx-arrow nvx-arrow-r" id="nvx-hero-next" aria-label="Sonraki">►</button>
+  </div>
+  <div class="nvx-stats" id="nvx-hero-stats">
+    <div class="nvx-stat"><span class="nvx-stat-k">ATK</span><span class="nvx-stat-bar"><i id="nvx-stat-atk"></i></span></div>
+    <div class="nvx-stat"><span class="nvx-stat-k">DEF</span><span class="nvx-stat-bar"><i id="nvx-stat-def"></i></span></div>
+    <div class="nvx-stat"><span class="nvx-stat-k">SPD</span><span class="nvx-stat-bar"><i id="nvx-stat-spd"></i></span></div>
+  </div>
+  <button class="btn" id="b-hero-select">SEÇ</button>
+
   <div class="rpg-wrap" id="rpg-char-body"></div>
   <button class="btn ghost" id="b-rpgchar-inv">ENVANTER</button>
   <button class="btn ghost" id="b-rpgchar-back">Geri</button>
@@ -2373,11 +2559,11 @@ window.addEventListener("unhandledrejection",function(){});
     Skor · 0
   </div>
 
-  <button class="btn" id="b-resume">
+  <button class="btn" id="b-resume" data-i18n="resume">
     Devam Et
   </button>
 
-  <button class="btn ghost" id="b-quit">
+  <button class="btn ghost" id="b-quit" data-i18n="menu">
     Ana Menü
   </button>
 
@@ -2464,11 +2650,19 @@ window.addEventListener("unhandledrejection",function(){});
     </div>
 
     <div class="set-section">
+      <div class="set-section-label">Dil / Language</div>
+      <div class="set-lang-row">
+        <button class="set-lang-btn" data-lang="tr" id="st-lang-tr">TÜRKÇE</button>
+        <button class="set-lang-btn" data-lang="en" id="st-lang-en">ENGLISH</button>
+      </div>
+    </div>
+
+    <div class="set-section">
       <div class="set-section-label">Uygulama Bilgisi</div>
       <div class="set-info-card">
         <div class="set-info-row">
           <span class="set-info-k">SÜRÜM</span>
-          <span class="set-info-v">V20.0.0 · UI_SET_60</span>
+          <span class="set-info-v">V20.1.0 · NORYVX</span>
         </div>
         <div class="set-info-row">
           <span class="set-info-k">KAYIT BOYUTU</span>
@@ -2750,6 +2944,7 @@ const BALANCE={
     },
     build:{
       rareFromLevel:4, epicFromLevel:8, legendaryFromLevel:15,
+      mythicFromLevel:25,
       ownedWeaponWeight:1.35, newWeaponWeight:0.72, passiveWeight:0.85, synergyWeight:1.25
     },
     elite:{
@@ -2902,6 +3097,65 @@ const STATE={
   OVER:"OVER"
 };
 
+/* =========================================================
+   I18N — NORYVX DESIGN SYSTEM
+   Minimal translation layer. Turkish stays default (existing UX).
+   Language selector wires to Save.data.lang.
+   Use I18N.t("key") anywhere a string is dynamic.
+   For static Turkish HTML strings we leave them intact; they can be
+   swapped by JS at runtime via [data-i18n] attribute if present.
+========================================================= */
+const I18N={
+  lang:"tr",
+  strings:{
+    tr:{
+      play:"OYNA", pause:"DURAKLAT", resume:"DEVAM", restart:"TEKRAR OYNA",
+      menu:"ANA MENÜ", back:"GERİ", gameover:"OYUN BİTTİ",
+      settings:"AYARLAR", language:"DİL", sound:"SES", vibration:"TİTREŞİM",
+      score:"SKOR", best:"EN İYİ", time:"SÜRE", combo:"MAX COMBO",
+      energy:"ENERJİ", wave:"DALGA", level:"SEVİYE",
+      selectHero:"SEÇ", vanguard:"VANGUARD", striker:"STRIKER", controller:"CONTROLLER",
+      tank:"TANK", dps:"DPS", tech:"TECH",
+      atk:"ATK", def:"DEF", spd:"SPD",
+      coins:"KREDİ", gems:"GEM",
+      character:"KARAKTER", inventory:"ENVANTER",
+      mastery:"USTALIK", techtree:"TEKNOLOJİ", shop:"MAĞAZA",
+      comingSoon:"YAKINDA",
+      bossIntro:"NEON WARDEN"
+    },
+    en:{
+      play:"PLAY", pause:"PAUSE", resume:"RESUME", restart:"PLAY AGAIN",
+      menu:"MAIN MENU", back:"BACK", gameover:"GAME OVER",
+      settings:"SETTINGS", language:"LANGUAGE", sound:"SOUND", vibration:"VIBRATION",
+      score:"SCORE", best:"BEST", time:"TIME", combo:"MAX COMBO",
+      energy:"ENERGY", wave:"WAVE", level:"LEVEL",
+      selectHero:"SELECT", vanguard:"VANGUARD", striker:"STRIKER", controller:"CONTROLLER",
+      tank:"TANK", dps:"DPS", tech:"TECH",
+      atk:"ATK", def:"DEF", spd:"SPD",
+      coins:"COINS", gems:"GEMS",
+      character:"CHARACTER", inventory:"INVENTORY",
+      mastery:"MASTERY", techtree:"TECH TREE", shop:"SHOP",
+      comingSoon:"COMING SOON",
+      bossIntro:"NEON WARDEN"
+    }
+  },
+  t(k){
+    const s=this.strings[this.lang]||this.strings.tr;
+    return s[k]!==undefined?s[k]:(this.strings.tr[k]!==undefined?this.strings.tr[k]:k);
+  },
+  set(lang){
+    if(!this.strings[lang])return;
+    this.lang=lang;
+    try{ if(typeof Save!=="undefined" && Save.data){ Save.data.lang=lang; Save.save&&Save.save(); } }catch(e){}
+    /* Update any element with [data-i18n] */
+    document.querySelectorAll("[data-i18n]").forEach(el=>{
+      const k=el.getAttribute("data-i18n");
+      if(k)el.textContent=this.t(k);
+    });
+  }
+};
+try{ window.I18N=I18N; }catch(e){}
+
 const TAU=Math.PI*2;
 
 const rand=(a,b)=>a+Math.random()*(b-a);
@@ -2972,6 +3226,14 @@ const DEFAULTS={
   bossKills:0,
   profileXP:0,
   cores:0,
+  /* NORYVX design system — dual currency + language.
+     coins (◎) : soft, gained through gameplay (score reward)
+     gems (◆P) : premium / rare
+     lang        : "tr" or "en" (default Turkish to preserve UX) */
+  coins:0,
+  gems:0,
+  lang:"tr",
+  selectedHero:"vanguard",
   upgrades:{speed:0,magnet:0,shield:0,score:0},
   selectedSkin:"cyan",
   ownedSkins:{cyan:true},
@@ -3114,6 +3376,13 @@ const Save={
 Save.load();
 /* BATCH B/2 — buradaki 6 elle duzeltme migrateSave() icine tasindi.
    Davranis ayni; artik tek yerde ve idempotent. */
+
+/* NORYVX I18N wiring — Save.data.lang'i uygulamaya al */
+try{
+  if(Save.data && Save.data.lang && I18N.strings[Save.data.lang]){
+    I18N.lang=Save.data.lang;
+  }
+}catch(e){}
 
 
 /* =========================================================
@@ -4312,6 +4581,51 @@ function spawnBoss(){
   emit(e.x,e.y,42,"#ff3b6b",230,4.2,.95);
   popText(W/2,H*.22,"NEON WARDEN · BOSS "+bossTier,"#ff3b6b",22);
   vibrate([35,45,35]);
+  /* NORYVX boss intro overlay — canvas full-body art centred for 2s */
+  try{ showBossIntro("boss","NEON WARDEN · TIER "+bossTier); }catch(_){}
+}
+
+/* NORYVX BOSS INTRO OVERLAY.
+   Shows rrEnemyFull for 2 seconds, then fades. Non-blocking. */
+function showBossIntro(type,label){
+  let host=document.getElementById("nvx-boss-intro");
+  if(!host){
+    host=document.createElement("div");
+    host.id="nvx-boss-intro";
+    host.innerHTML=
+      '<canvas id="nvx-boss-canvas" aria-hidden="true"></canvas>'+
+      '<div class="nvx-boss-label" id="nvx-boss-label"></div>';
+    document.body.appendChild(host);
+  }
+  const cv=document.getElementById("nvx-boss-canvas");
+  const lbl=document.getElementById("nvx-boss-label");
+  if(lbl)lbl.textContent=label||"BOSS";
+  host.classList.remove("out");
+  host.classList.add("in");
+  const t0=performance.now();
+  let raf=0;
+  const draw=()=>{
+    const now=performance.now();
+    const dt=(now-t0)/1000;
+    if(!cv)return;
+    const dpr=Math.min(2,window.devicePixelRatio||1);
+    const w=Math.round(cv.clientWidth*dpr);
+    const h=Math.round(cv.clientHeight*dpr);
+    if(cv.width!==w)cv.width=w;
+    if(cv.height!==h)cv.height=h;
+    const c=cv.getContext("2d");
+    c.clearRect(0,0,w,h);
+    const scale=Math.min(w/300,h/500);
+    if(typeof rrEnemyFull==="function")rrEnemyFull(c,type||"boss",w/2,h*0.9,scale,dt);
+    if(dt<2.0){
+      raf=requestAnimationFrame(draw);
+    } else {
+      host.classList.remove("in");
+      host.classList.add("out");
+      setTimeout(()=>{ host.classList.remove("out"); },500);
+    }
+  };
+  raf=requestAnimationFrame(draw);
 }
 
 function spawnEnemy(level){
@@ -5453,6 +5767,11 @@ function fireProjectile(key){
   p.r=st.radius; p.life=1.8; p.damage=st.damage;
   p.type=key; p.color=w.color; p.pierce=st.pierce; p.chain=st.chain;
   emit(player.x,player.y,3,w.color,80,1.6,.18);
+  /* NORYVX ATTACK state — muzzle bloom timer for drawPlayer. */
+  player.lastFireAt=performance.now();
+  player.lastFireDx=dx/d;
+  player.lastFireDy=dy/d;
+  player.lastFireColor=w.color;
 }
 
 function updateWeapons(dt){
@@ -6384,6 +6703,8 @@ const Game={
     this.flash=.6;
 
     player.shake=1;
+    /* NORYVX HIT state — displacement timer for drawPlayer. */
+    player.hitAt=performance.now();
 
     emit(
       player.x,
@@ -7101,6 +7422,27 @@ function drawPlayer(){
 
   if(blink)return;
 
+  /* NORYVX combat state kapsayicisi.
+     - DESTROYED: game over durumunda solar (opacity 0.34).
+     - HIT: son hasar aninda 220ms sallanma ofseti.
+     - ATTACK: son ates aninda 140ms muzzle bloom.
+     - MOVE: trail zaten mevcut; ekstra thruster akiligi eklenir. */
+  const _now=performance.now();
+  const _hitDt=_now-(player.hitAt||0);
+  const _fireDt=_now-(player.lastFireAt||0);
+  const _destroyed=Game.state===STATE.OVER;
+  const _stateAlpha=_destroyed?0.34:1;
+
+  ctx.save();
+  if(_stateAlpha<1) ctx.globalAlpha=_stateAlpha;
+  if(_hitDt<220){
+    const k=(1-_hitDt/220);
+    ctx.translate(
+      (Math.random()-0.5)*3.2*k,
+      (Math.random()-0.5)*3.2*k
+    );
+  }
+
   const arch=
     window.NORYVX_P3 &&
     typeof window.NORYVX_P3.archetype==="function"
@@ -7196,6 +7538,42 @@ function drawPlayer(){
 
   ctx.restore();
 
+  /* NORYVX ATTACK — muzzle bloom (world-space). */
+  if(_fireDt<140 && !_destroyed){
+    const k=1-_fireDt/140;
+    const mx=player.x+(player.lastFireDx||0)*18;
+    const my=player.y+(player.lastFireDy||0)*18;
+    ctx.save();
+    ctx.globalCompositeOperation="lighter";
+    ctx.globalAlpha=0.85*k;
+    ctx.fillStyle=player.lastFireColor||skinInner;
+    ctx.shadowColor=player.lastFireColor||skin.glow;
+    ctx.shadowBlur=18;
+    ctx.beginPath();
+    ctx.arc(mx,my,4+6*k,0,TAU);
+    ctx.fill();
+    ctx.globalAlpha=0.35*k;
+    ctx.beginPath();
+    ctx.arc(mx,my,10+8*k,0,TAU);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  /* NORYVX MOVE — thruster akitisi (trail hiz esiginde). */
+  if(P.moving && !_destroyed){
+    ctx.save();
+    ctx.globalCompositeOperation="lighter";
+    ctx.globalAlpha=0.42+0.18*Math.sin(t*18);
+    ctx.fillStyle=skinOuter;
+    ctx.shadowColor=skin.glow;
+    ctx.shadowBlur=14;
+    ctx.beginPath();
+    ctx.arc(player.x,player.y+16,3.2,0,TAU);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  ctx.restore();
 }
 
 
@@ -7463,6 +7841,485 @@ function rrController(P){
 
   ctx.restore();
 }
+
+
+/* =========================================================
+   NORYVX HERO FULL-BODY RENDERER (canvas port)
+   Port of NORYVX Hero.dc.html — 280x460 authoring box.
+   Draws head, visor, crown, shoulders, chest reactor, arms,
+   legs, feet. Class-specific accessories per key.
+   Called by renderMenuHero + character-select preview.
+
+   All draws happen against the CURRENT ctx (global) after
+   translate(cx,cy) so the caller can position it anywhere.
+========================================================= */
+
+/* Class specs — subset of the Hero.dc.html SPEC table.
+   Colours per instruction: Vanguard #22e6ff, Striker #ff4fd8,
+   Controller #a05cff. */
+const HERO_FULL_SPEC={
+  vanguard:{
+    accent:"#22e6ff",
+    accent2:"#3b7bff",
+    glow:"rgba(34,230,255,0.20)"
+  },
+  striker:{
+    accent:"#ff4fd8",
+    accent2:"#22e6ff",
+    glow:"rgba(255,79,216,0.20)"
+  },
+  controller:{
+    accent:"#a05cff",
+    accent2:"#22e6ff",
+    glow:"rgba(160,92,255,0.20)"
+  }
+};
+
+/* rrHeroFull(ctx,heroKey,cx,cy,scale,time)
+   Draws a full-body 280x460 mech centred at (cx,cy).
+   scale is a uniform scale factor (1 = 280x460 authoring size).
+   time is a seconds value used for pulses/floats. */
+function rrHeroFull(cxCtx,heroKey,cx,cy,scale,time){
+  const key=(heroKey==="striker"||heroKey==="controller")?heroKey:"vanguard";
+  const spec=HERO_FULL_SPEC[key];
+  const t=+time||0;
+
+  /* NORYVX motion: reactor breathing 2.6s, subtle float 3.6s */
+  const breathe=1+0.06*Math.sin(t*2.4);
+  const floatOff=4*Math.sin(t*1.74);
+  const cySafe=cy+floatOff*scale;
+
+  cxCtx.save();
+  cxCtx.translate(cx,cySafe);
+  cxCtx.scale(scale,scale);
+  /* Centre the 280x460 authoring box on the origin using bottom
+     anchor so feet planted on cy. */
+  cxCtx.translate(-140,-420);
+
+  /* --- floor glow --- */
+  const gg=cxCtx.createRadialGradient(140,184,4,140,184,170);
+  gg.addColorStop(0,spec.glow);
+  gg.addColorStop(1,"rgba(0,0,0,0)");
+  cxCtx.fillStyle=gg;
+  cxCtx.beginPath();
+  cxCtx.arc(140,184,170,0,TAU);
+  cxCtx.fill();
+
+  /* --- footprint ring under feet --- */
+  cxCtx.save();
+  cxCtx.globalAlpha=.55+0.1*Math.sin(t*2);
+  cxCtx.strokeStyle=spec.accent;
+  cxCtx.lineWidth=2;
+  cxCtx.shadowColor=spec.accent;
+  cxCtx.shadowBlur=16;
+  cxCtx.beginPath();
+  cxCtx.ellipse(140,456,107,20,0,0,TAU);
+  cxCtx.stroke();
+  cxCtx.restore();
+
+  /* Helpers */
+  const gradV=(x,y,w,h,c1,c2)=>{
+    const g=cxCtx.createLinearGradient(x,y,x+w*0.4,y+h);
+    g.addColorStop(0,c1); g.addColorStop(1,c2); return g;
+  };
+  const rectRad=(x,y,w,h,r,fill)=>{
+    cxCtx.fillStyle=fill;
+    cxCtx.beginPath();
+    cxCtx.roundRect(x,y,w,h,r);
+    cxCtx.fill();
+  };
+  const poly=(pts,fill)=>{
+    cxCtx.fillStyle=fill;
+    cxCtx.beginPath();
+    for(let i=0;i<pts.length;i+=2){
+      if(i===0)cxCtx.moveTo(pts[i],pts[i+1]);
+      else cxCtx.lineTo(pts[i],pts[i+1]);
+    }
+    cxCtx.closePath();
+    cxCtx.fill();
+  };
+
+  /* --- LEGS (thighs) --- */
+  rectRad(70,234,52,86,10,gradV(70,234,52,86,"#1b1f28","#080a0f"));
+  rectRad(158,234,52,86,10,gradV(210,234,-52,86,"#1b1f28","#080a0f"));
+  rectRad(74,234,44,70,8,gradV(74,234,44,70,"#e4ebf4","#4e586b"));
+  rectRad(162,234,44,70,8,gradV(206,234,-44,70,"#e4ebf4","#4e586b"));
+
+  /* Knees */
+  cxCtx.fillStyle="#dbe3ee";
+  cxCtx.beginPath(); cxCtx.arc(96,329,19,0,TAU); cxCtx.fill();
+  cxCtx.fillStyle="#4a5464";
+  cxCtx.beginPath(); cxCtx.arc(96,329,12,0,TAU); cxCtx.fill();
+  cxCtx.fillStyle="#dbe3ee";
+  cxCtx.beginPath(); cxCtx.arc(184,329,19,0,TAU); cxCtx.fill();
+  cxCtx.fillStyle="#4a5464";
+  cxCtx.beginPath(); cxCtx.arc(184,329,12,0,TAU); cxCtx.fill();
+
+  /* Shins */
+  rectRad(74,338,44,88,6,gradV(74,338,44,88,"#1b1f28","#080a0f"));
+  rectRad(162,338,44,88,6,gradV(206,338,-44,88,"#1b1f28","#080a0f"));
+  rectRad(78,338,34,74,5,gradV(78,338,34,74,"#e4ebf4","#465064"));
+  rectRad(168,338,34,74,5,gradV(202,338,-34,74,"#e4ebf4","#465064"));
+
+  /* Shin vents (accent) */
+  cxCtx.save();
+  cxCtx.shadowColor=spec.accent; cxCtx.shadowBlur=12;
+  cxCtx.fillStyle=spec.accent;
+  cxCtx.fillRect(94,354,5,32);
+  cxCtx.fillRect(181,354,5,32);
+  cxCtx.restore();
+
+  /* Feet */
+  rectRad(68,424,58,26,4,gradV(68,424,58,26,"#cdd7e4","#1d232e"));
+  rectRad(154,424,58,26,4,gradV(212,424,-58,26,"#cdd7e4","#1d232e"));
+
+  /* --- WAIST / PELVIS --- */
+  rectRad(92,202,96,34,10,gradV(92,202,96,34,"#1b1f28","#080a0f"));
+  /* Hip plates */
+  poly([66,206,96,209,90,236,72,231],gradV(66,206,30,30,"#e2e9f3","#3c4657"));
+  poly([214,206,184,209,190,236,208,231],gradV(214,206,-30,30,"#e2e9f3","#3c4657"));
+  /* Waist lamp */
+  cxCtx.save();
+  cxCtx.shadowColor=spec.accent; cxCtx.shadowBlur=12;
+  cxCtx.fillStyle=spec.accent;
+  cxCtx.fillRect(123,210,34,4);
+  cxCtx.restore();
+
+  /* --- ABS --- */
+  rectRad(99,160,82,44,6,gradV(99,160,82,44,"#191d26","#070910"));
+  rectRad(107,168,66,6,3,gradV(107,168,66,6,"#aab6c8","#3a4353"));
+  rectRad(111,182,58,6,3,gradV(111,182,58,6,"#98a4b6","#333c4a"));
+
+  /* --- ARMS --- */
+  rectRad(20,82,36,68,10,gradV(20,82,36,68,"#1b1f28","#080a0f"));
+  rectRad(224,82,36,68,10,gradV(260,82,-36,68,"#1b1f28","#080a0f"));
+  rectRad(24,82,28,56,7,gradV(24,82,28,56,"#dde5f0","#434d60"));
+  rectRad(228,82,28,56,7,gradV(256,82,-28,56,"#dde5f0","#434d60"));
+
+  /* Elbows */
+  cxCtx.fillStyle="#d5deea";
+  cxCtx.beginPath(); cxCtx.arc(37,161,15,0,TAU); cxCtx.fill();
+  cxCtx.fillStyle="#454f60";
+  cxCtx.beginPath(); cxCtx.arc(37,161,10,0,TAU); cxCtx.fill();
+  cxCtx.fillStyle="#d5deea";
+  cxCtx.beginPath(); cxCtx.arc(243,161,15,0,TAU); cxCtx.fill();
+  cxCtx.fillStyle="#454f60";
+  cxCtx.beginPath(); cxCtx.arc(243,161,10,0,TAU); cxCtx.fill();
+
+  /* Forearms */
+  rectRad(16,166,42,78,7,gradV(16,166,42,78,"#e6edf6","#3f4959"));
+  rectRad(222,166,42,78,7,gradV(264,166,-42,78,"#e6edf6","#3f4959"));
+
+  /* Forearm accent bands */
+  cxCtx.save();
+  cxCtx.shadowColor=spec.accent; cxCtx.shadowBlur=14;
+  cxCtx.fillStyle=spec.accent;
+  cxCtx.fillRect(23,186,28,5);
+  cxCtx.fillRect(229,186,28,5);
+  cxCtx.restore();
+
+  /* --- CHEST --- */
+  poly([50,68,110,68,140,68,170,68,230,68,247,124,207,168,73,168,33,124],
+    gradV(50,68,197,100,"#f1f5fa","#2a323f"));
+
+  /* Chest inner (dark) */
+  poly([73,74,207,74,232,120,140,168,48,120],
+    gradV(73,74,159,94,"#161a23","#06080d"));
+
+  /* Chest accent overlay */
+  cxCtx.save();
+  cxCtx.globalAlpha=.22;
+  poly([50,68,230,68,247,124,207,168,73,168,33,124],
+    gradV(50,68,197,100,spec.accent,"rgba(0,0,0,0)"));
+  cxCtx.restore();
+
+  /* Collars */
+  poly([64,68,110,74,102,146,50,120],gradV(50,68,60,80,"#ffffff","#48525f"));
+  poly([216,68,170,74,178,146,230,120],gradV(230,68,-60,80,"#ffffff","#48525f"));
+
+  /* Intake accents */
+  cxCtx.save();
+  cxCtx.shadowColor=spec.accent; cxCtx.shadowBlur=12;
+  cxCtx.fillStyle=spec.accent;
+  cxCtx.globalAlpha=.85;
+  cxCtx.fillRect(88,126,18,4);
+  cxCtx.fillRect(174,126,18,4);
+  cxCtx.restore();
+
+  /* --- REACTOR (center chest, breathing) --- */
+  const rCx=140, rCy=114;
+  /* frame */
+  cxCtx.save();
+  cxCtx.fillStyle=gradV(rCx-25,rCy-25,50,50,"#ffffff","#2c3542");
+  cxCtx.beginPath(); cxCtx.arc(rCx,rCy,25,0,TAU); cxCtx.fill();
+  cxCtx.fillStyle="#0a0d14";
+  cxCtx.beginPath(); cxCtx.arc(rCx,rCy,18,0,TAU); cxCtx.fill();
+  cxCtx.strokeStyle=spec.accent;
+  cxCtx.globalAlpha=.6;
+  cxCtx.lineWidth=1;
+  cxCtx.beginPath(); cxCtx.arc(rCx,rCy,13,0,TAU); cxCtx.stroke();
+  cxCtx.restore();
+
+  /* Core (breathing) */
+  cxCtx.save();
+  cxCtx.shadowColor=spec.accent;
+  cxCtx.shadowBlur=44;
+  const coreR=13*breathe;
+  const rgrad=cxCtx.createRadialGradient(rCx,rCy,1,rCx,rCy,coreR);
+  rgrad.addColorStop(0,"#ffffff");
+  rgrad.addColorStop(.5,spec.accent);
+  rgrad.addColorStop(1,"rgba(0,0,0,0)");
+  cxCtx.fillStyle=rgrad;
+  cxCtx.beginPath(); cxCtx.arc(rCx,rCy,coreR,0,TAU); cxCtx.fill();
+  cxCtx.restore();
+
+  /* --- SHOULDERS --- */
+  poly([26,58,68,54,100,72,92,118,48,124],gradV(26,58,80,70,"#ffffff","#2f3742"));
+  poly([254,58,212,54,180,72,188,118,232,124],gradV(254,58,-80,70,"#ffffff","#2f3742"));
+  /* Shoulder trim */
+  poly([38,58,70,54,94,74,86,110,52,102],gradV(38,58,60,60,"#dfe6f0","#4c5666"));
+  poly([242,58,210,54,186,74,194,110,228,102],gradV(242,58,-60,60,"#dfe6f0","#4c5666"));
+  /* Shoulder lamps */
+  cxCtx.save();
+  cxCtx.shadowColor=spec.accent; cxCtx.shadowBlur=16;
+  cxCtx.fillStyle=spec.accent;
+  cxCtx.fillRect(48,82,26,5);
+  cxCtx.fillRect(206,82,26,5);
+  cxCtx.restore();
+
+  /* --- NECK --- */
+  rectRad(128,54,24,14,3,gradV(128,54,24,14,"#2c3441","#0a0d13"));
+
+  /* --- HEAD / HELMET --- */
+  poly([110,0,170,0,196,24,182,44,140,56,98,44,84,24],
+    gradV(84,0,112,60,"#ffffff","#252c37"));
+
+  /* Face (dark visor recess) */
+  poly([120,16,160,16,155,46,125,46],
+    gradV(120,16,40,30,"#13171f","#05070b"));
+
+  /* Visor (accent glow) */
+  cxCtx.save();
+  cxCtx.shadowColor=spec.accent;
+  cxCtx.shadowBlur=20;
+  cxCtx.fillStyle=spec.accent;
+  cxCtx.beginPath();
+  cxCtx.moveTo(121,24); cxCtx.lineTo(159,24);
+  cxCtx.lineTo(155,32); cxCtx.lineTo(125,32);
+  cxCtx.closePath();
+  cxCtx.fill();
+  cxCtx.restore();
+
+  /* Crown */
+  poly([129,0,151,0,155,9,125,9],gradV(129,0,26,9,"#ffffff","#8e9aad"));
+
+  /* Ears */
+  cxCtx.fillStyle="#dbe3ee";
+  cxCtx.fillRect(98,18,9,24);
+  cxCtx.fillRect(173,18,9,24);
+
+  /* Jaw guards */
+  poly([104,34,120,42,116,52,102,50],"#e9eff7");
+  poly([176,34,160,42,164,52,178,50],"#e9eff7");
+
+  /* --- CLASS-SPECIFIC ACCESSORY --- */
+  if(key==="vanguard"){
+    /* Shoulder cannon */
+    rectRad(214,38,34,26,4,gradV(214,38,34,26,"#c8d2e0","#12161e"));
+    rectRad(220,8,13,34,3,gradV(220,8,13,34,"#e4ebf4","#161b24"));
+    rectRad(230,14,11,28,3,gradV(230,14,11,28,"#c3ceda","#12161e"));
+    cxCtx.save();
+    cxCtx.shadowColor=spec.accent; cxCtx.shadowBlur=16;
+    cxCtx.fillStyle=spec.accent;
+    cxCtx.fillRect(220,8,11,5);
+    cxCtx.restore();
+    /* Left gauntlet */
+    rectRad(14,224,46,36,6,gradV(14,224,46,36,"#dde5f0","#2c3440"));
+    cxCtx.save();
+    cxCtx.shadowColor=spec.accent; cxCtx.shadowBlur=16;
+    cxCtx.fillStyle=spec.accent;
+    cxCtx.fillRect(20,236,32,6);
+    cxCtx.restore();
+  } else if(key==="striker"){
+    /* Head spike */
+    cxCtx.save();
+    cxCtx.shadowColor=spec.accent; cxCtx.shadowBlur=18;
+    cxCtx.fillStyle=spec.accent;
+    cxCtx.beginPath();
+    cxCtx.moveTo(140,-10); cxCtx.lineTo(147,20); cxCtx.lineTo(133,20);
+    cxCtx.closePath(); cxCtx.fill();
+    cxCtx.restore();
+    /* Left blade */
+    cxCtx.save();
+    cxCtx.shadowColor=spec.accent; cxCtx.shadowBlur=28;
+    cxCtx.fillStyle=spec.accent;
+    cxCtx.globalAlpha=.9;
+    cxCtx.beginPath();
+    cxCtx.moveTo(22,158); cxCtx.lineTo(40,166);
+    cxCtx.lineTo(30,270); cxCtx.lineTo(14,246);
+    cxCtx.closePath(); cxCtx.fill();
+    cxCtx.restore();
+    /* Right gun */
+    rectRad(232,164,14,58,5,gradV(232,164,14,58,"#d5deea","#141922"));
+    cxCtx.save();
+    cxCtx.shadowColor=spec.accent2; cxCtx.shadowBlur=14;
+    cxCtx.fillStyle=spec.accent2;
+    cxCtx.fillRect(233,164,12,5);
+    cxCtx.restore();
+  } else {
+    /* Controller — floating drones */
+    const droneY=t*22;
+    const dY1=118+Math.sin(t*1.72)*8;
+    const dY2=186+Math.sin(t*1.42+1)*8;
+    const dY3=92+Math.sin(t*1.24+.5)*8;
+    cxCtx.save();
+    cxCtx.shadowColor=spec.accent; cxCtx.shadowBlur=24;
+    cxCtx.fillStyle=spec.accent;
+    cxCtx.beginPath(); cxCtx.arc(15,dY1,15,0,TAU); cxCtx.fill();
+    cxCtx.beginPath(); cxCtx.arc(263,dY2,12,0,TAU); cxCtx.fill();
+    cxCtx.shadowColor=spec.accent2;
+    cxCtx.fillStyle=spec.accent2;
+    cxCtx.beginPath(); cxCtx.arc(255,dY3,9,0,TAU); cxCtx.fill();
+    /* Emitters */
+    cxCtx.beginPath(); cxCtx.arc(37,220,11,0,TAU); cxCtx.fill();
+    cxCtx.beginPath(); cxCtx.arc(243,220,11,0,TAU); cxCtx.fill();
+    cxCtx.restore();
+  }
+
+  cxCtx.restore();
+}
+
+
+/* =========================================================
+   NORYVX ENEMY FULL-BODY RENDERER
+   Simplified port for boss-intro overlay.
+   type: 'light' | 'assault' | 'heavy' | 'ranged' | 'elite' | 'boss'
+========================================================= */
+function rrEnemyFull(cxCtx,type,cx,cy,scale,time){
+  const t=+time||0;
+  const kind=type||"boss";
+  const palette={
+    light   :{acc:"#ff6a3d",body:"#1a1214"},
+    assault :{acc:"#ff8a1f",body:"#1a1414"},
+    heavy   :{acc:"#ff3b6b",body:"#1a0a16"},
+    ranged  :{acc:"#b45cff",body:"#150a1c"},
+    elite   :{acc:"#ff3ce0",body:"#180a1c"},
+    boss    :{acc:"#ff3b6b",body:"#180a1c"}
+  }[kind]||{acc:"#ff3b6b",body:"#180a1c"};
+
+  const breathe=1+0.06*Math.sin(t*2.4);
+  const floatOff=4*Math.sin(t*1.74);
+  const cySafe=cy+floatOff*scale;
+
+  cxCtx.save();
+  cxCtx.translate(cx,cySafe);
+  cxCtx.scale(scale,scale);
+  cxCtx.translate(-140,-420);
+
+  /* Menacing floor glow (danger red) */
+  const gg=cxCtx.createRadialGradient(140,184,4,140,184,190);
+  gg.addColorStop(0,"rgba(255,59,107,0.28)");
+  gg.addColorStop(1,"rgba(0,0,0,0)");
+  cxCtx.fillStyle=gg;
+  cxCtx.beginPath(); cxCtx.arc(140,184,190,0,TAU); cxCtx.fill();
+
+  /* Threat ring */
+  cxCtx.save();
+  cxCtx.globalAlpha=.55+0.15*Math.sin(t*2.6);
+  cxCtx.strokeStyle=palette.acc;
+  cxCtx.lineWidth=2;
+  cxCtx.shadowColor=palette.acc; cxCtx.shadowBlur=18;
+  cxCtx.beginPath();
+  cxCtx.ellipse(140,456,120,22,0,0,TAU);
+  cxCtx.stroke();
+  cxCtx.restore();
+
+  /* Legs */
+  cxCtx.fillStyle=palette.body;
+  cxCtx.beginPath();
+  cxCtx.roundRect(64,240,52,180,10);
+  cxCtx.fill();
+  cxCtx.beginPath();
+  cxCtx.roundRect(164,240,52,180,10);
+  cxCtx.fill();
+
+  /* Torso (angular) */
+  cxCtx.fillStyle=palette.body;
+  cxCtx.beginPath();
+  cxCtx.moveTo(60,80);
+  cxCtx.lineTo(220,80);
+  cxCtx.lineTo(240,140);
+  cxCtx.lineTo(220,240);
+  cxCtx.lineTo(60,240);
+  cxCtx.lineTo(40,140);
+  cxCtx.closePath();
+  cxCtx.fill();
+
+  /* Chest core (danger) */
+  cxCtx.save();
+  cxCtx.shadowColor=palette.acc;
+  cxCtx.shadowBlur=32;
+  const coreR=18*breathe;
+  const rg=cxCtx.createRadialGradient(140,140,1,140,140,coreR);
+  rg.addColorStop(0,"#ffffff");
+  rg.addColorStop(.4,palette.acc);
+  rg.addColorStop(1,"rgba(0,0,0,0)");
+  cxCtx.fillStyle=rg;
+  cxCtx.beginPath();
+  cxCtx.arc(140,140,coreR,0,TAU);
+  cxCtx.fill();
+  cxCtx.restore();
+
+  /* Shoulders (spikes) */
+  cxCtx.fillStyle=palette.body;
+  cxCtx.beginPath();
+  cxCtx.moveTo(20,60); cxCtx.lineTo(80,80); cxCtx.lineTo(60,120);
+  cxCtx.closePath(); cxCtx.fill();
+  cxCtx.beginPath();
+  cxCtx.moveTo(260,60); cxCtx.lineTo(200,80); cxCtx.lineTo(220,120);
+  cxCtx.closePath(); cxCtx.fill();
+
+  /* Arms */
+  cxCtx.fillStyle=palette.body;
+  cxCtx.beginPath();
+  cxCtx.roundRect(20,90,44,160,10);
+  cxCtx.fill();
+  cxCtx.beginPath();
+  cxCtx.roundRect(216,90,44,160,10);
+  cxCtx.fill();
+
+  /* Head — angular */
+  cxCtx.fillStyle=palette.body;
+  cxCtx.beginPath();
+  cxCtx.moveTo(100,0); cxCtx.lineTo(180,0);
+  cxCtx.lineTo(200,40); cxCtx.lineTo(180,72);
+  cxCtx.lineTo(100,72); cxCtx.lineTo(80,40);
+  cxCtx.closePath();
+  cxCtx.fill();
+
+  /* Visor (glowing) */
+  cxCtx.save();
+  cxCtx.shadowColor=palette.acc;
+  cxCtx.shadowBlur=22;
+  cxCtx.fillStyle=palette.acc;
+  cxCtx.beginPath();
+  cxCtx.moveTo(108,30); cxCtx.lineTo(172,30);
+  cxCtx.lineTo(164,44); cxCtx.lineTo(116,44);
+  cxCtx.closePath();
+  cxCtx.fill();
+  cxCtx.restore();
+
+  /* Accent lines on legs */
+  cxCtx.save();
+  cxCtx.shadowColor=palette.acc; cxCtx.shadowBlur=10;
+  cxCtx.fillStyle=palette.acc;
+  cxCtx.fillRect(84,300,4,60);
+  cxCtx.fillRect(196,300,4,60);
+  cxCtx.restore();
+
+  cxCtx.restore();
+}
+
 
 /* =========================================================
    DRAW ENEMIES
@@ -8294,43 +9151,16 @@ function renderMenuHero(dt){
   }
   c.restore();
 
-  /* Robot — combat ile ayni cizici. ctx gecici olarak
-     hero context'ine yonlendirilir ve hemen geri alinir. */
-  const scale=Math.min(w,h)/(150*1);
-  const skin=currentSkin();
-
-  const P={
-    outer:skin.outer,
-    inner:skin.inner,
-    glow:skin.glow,
-    acc:key==="striker"?"#ff4fd8":key==="controller"?"#b56cff":"#9edfff",
-    t:HERO.t,
-    pulse:1+Math.sin(HERO.t*2.6)*.045,
-    moving:false
-  };
+  /* NORYVX FULL-BODY HERO — 280x460 authoring box.
+     ctx gecici olarak hero context'ine yonlendirilir; rrHeroFull
+     kendi ic save/restore'unu yapar. */
+  const scale=Math.min(w/300,h/500);
 
   const prev=ctx;
   ctx=c;
   try{
-    ctx.save();
-    ctx.translate(w/2,h*.56);
-    ctx.scale(scale*2.05,scale*2.05);
-    ctx.rotate(Math.sin(HERO.t*.55)*.035);
-    RR.shadow(16,.42);
-    ctx.save();
-    ctx.globalAlpha=.20+.07*Math.sin(HERO.t*2.2);
-    ctx.strokeStyle=P.outer;
-    ctx.shadowColor=P.glow;
-    ctx.shadowBlur=20;
-    ctx.lineWidth=1.4;
-    ctx.beginPath();
-    ctx.arc(0,0,23*P.pulse,0,TAU);
-    ctx.stroke();
-    ctx.restore();
-    if(key==="striker")           rrStriker(P);
-    else if(key==="controller")   rrController(P);
-    else                          rrVanguard(P);
-    ctx.restore();
+    /* Full-body mech, centred, feet planted */
+    rrHeroFull(c,key,w/2,h*0.94,scale,HERO.t);
   }finally{
     ctx=prev;
   }
@@ -8653,8 +9483,47 @@ function updateBossHUD(){
   enemies.forEach(e=>{if(e.alive&&e.boss)boss=e;});
   const on=!!boss && Game.state===STATE.PLAYING;
   HUD.cls(hud,"boss:on","on",on);
-  if(boss)HUD.style(fill,"boss:w","width",
-    (Math.max(0,boss.hp/boss.maxHp)*100).toFixed(1)+"%");
+  if(boss){
+    const pct=Math.max(0,boss.hp/boss.maxHp)*100;
+    HUD.style(fill,"boss:w","width",pct.toFixed(1)+"%");
+    /* NORYVX phase dots — 3 phases based on HP thresholds */
+    try{
+      const dots=document.querySelectorAll("#boss-phases .boss-phase");
+      let currentPhase=1;
+      if(pct<=33)currentPhase=3;
+      else if(pct<=66)currentPhase=2;
+      if(HUD._last.bossPhase!==currentPhase){
+        HUD._last.bossPhase=currentPhase;
+        dots.forEach((d,i)=>{
+          const pi=i+1;
+          d.classList.toggle("active",pi===currentPhase);
+          d.classList.toggle("done",pi<currentPhase);
+        });
+      }
+      /* Boss name — sync from boss.name if set, else default */
+      const nm=document.getElementById("boss-name");
+      if(nm){
+        const label=boss.name||("NEON WARDEN · TIER "+(boss.bossTier||1));
+        if(HUD._last.bossName!==label){
+          HUD._last.bossName=label;
+          nm.textContent=label;
+        }
+      }
+      /* Danger gradient — shifts toward red/purple as HP drops */
+      const gradIdx=currentPhase;
+      if(HUD._last.bossGrad!==gradIdx){
+        HUD._last.bossGrad=gradIdx;
+        fill.style.background=
+          gradIdx===3?"linear-gradient(90deg,#ff3b6b,#ff4fd8)":
+          gradIdx===2?"linear-gradient(90deg,#ff3b6b,#ff9a30)":
+                       "linear-gradient(90deg,#ff6b3b,#ffd24d)";
+      }
+    }catch(e){}
+  } else if(HUD._last.bossName){
+    HUD._last.bossName=null;
+    HUD._last.bossPhase=null;
+    HUD._last.bossGrad=null;
+  }
 }
 
 function updatePowerHUD(){
@@ -9019,10 +9888,13 @@ const RUN_CHOICES={
    (asagidaki cooldown satirina bakiniz). Rarity artik silah kimligini
    belirginlestiren bir katman, DPS'in ana kaynagi degil. */
 const P2_RARITY={
-  COMMON:{mult:1.00,label:"COMMON"},
-  RARE:{mult:1.06,label:"RARE"},
-  EPIC:{mult:1.12,label:"EPIC"},
-  LEGENDARY:{mult:1.20,label:"LEGENDARY"}
+  COMMON:{mult:1.00,label:"COMMON",color:"#9fb3cc"},
+  RARE:{mult:1.06,label:"RARE",color:"#22e6ff"},
+  EPIC:{mult:1.12,label:"EPIC",color:"#a05cff"},
+  LEGENDARY:{mult:1.20,label:"LEGENDARY",color:"#ffd24d"},
+  /* NORYVX rewrite — MYTHIC rarity for late-game (BALANCE.phase1.build.mythicFromLevel).
+     Highest tier drop; bigger radius, extra pierce, striker accent glow. */
+  MYTHIC:{mult:1.35,label:"MYTHIC",color:"#ff4fd8",radiusBonus:0.15,pierceBonus:2}
 };
 
 const P2_PASSIVE_MAX={speed:4,magnet:4,score:3,shield:2};
@@ -9042,6 +9914,7 @@ function p2ResetBuild(){
 
 function p2RarityFor(key){
   const level=weaponLevel(key);
+  if(level>=7)return "MYTHIC";
   if(level>=5)return "LEGENDARY";
   if(level>=4)return "EPIC";
   if(level>=2)return "RARE";
@@ -9053,7 +9926,7 @@ function p2RefreshRarity(key){
   if(RUN_CHOICES[key]?.kind==="weapon"){
     const computed=p2RarityFor(key);
     const old=Game.build.rarity[key]||"COMMON";
-    const rank={COMMON:0,RARE:1,EPIC:2,LEGENDARY:3};
+    const rank={COMMON:0,RARE:1,EPIC:2,LEGENDARY:3,MYTHIC:4};
     if(rank[computed]>rank[old])Game.build.rarity[key]=computed;
     Game.build.evolutions[key]=weaponLevel(key)>=5;
   }
@@ -9071,7 +9944,7 @@ function p2Synergies(){
 function p2BuildPower(){
   const w=Game.weapons||{};
   const b=Game.build||p2DefaultBuild();
-  const rarityPower={COMMON:0,RARE:18,EPIC:40,LEGENDARY:75};
+  const rarityPower={COMMON:0,RARE:18,EPIC:40,LEGENDARY:75,MYTHIC:120};
   let power=0;
   for(const k of Object.keys(WEAPONS)){
     const lv=w[k]||0;
@@ -9126,6 +9999,7 @@ function p2WeaponStatModifiers(key,st){
   if(rarity.label==="RARE")st.radius+=.25;
   if(rarity.label==="EPIC"){st.radius+=.5;st.pierce+=1;}
   if(rarity.label==="LEGENDARY"){st.radius+=1;st.pierce+=1;st.chain+=1;}
+  if(rarity.label==="MYTHIC"){st.radius+=1.5;st.pierce+=2;st.chain+=1;st.damage*=1.06;}
   if(Game.build.evolutions[key]){
     if(key==="pulse"){st.damage*=1.08;st.speed*=1.10;st.pierce+=1;}
     if(key==="plasma"){st.damage*=1.12;st.pierce+=1;}
@@ -9259,7 +10133,11 @@ function cardRarity(key){
   const lv=Game.level;
   const c=RUN_CHOICES[key];
   const b=BALANCE.phase1.build;
+  /* NORYVX rewrite — MYTHIC gating at BALANCE.phase1.build.mythicFromLevel.
+     Fully mastered weapons (lv>=7) also promote to MYTHIC. */
+  if(c && c.kind==="weapon" && weaponLevel(key)>=7) return "MYTHIC";
   if(c && c.kind==="weapon" && weaponLevel(key)>=4) return "LEGENDARY";
+  if(b.mythicFromLevel && lv>=b.mythicFromLevel) return "MYTHIC";
   if(lv>=b.legendaryFromLevel) return "LEGENDARY";
   if(lv>=b.epicFromLevel) return "EPIC";
   if(lv>=b.rareFromLevel) return "RARE";
@@ -9473,6 +10351,16 @@ function quitGame(){
 
 function showOver(record){
 
+  /* NORYVX dual currency — coins on game over */
+  try{
+    const coinsEarned=Math.max(1,Math.floor(Game.score/12));
+    Save.data.coins=(Save.data.coins||0)+coinsEarned;
+    /* Bonus gem for high scores / boss kills */
+    if(Game.bossDefeated){ Save.data.gems=(Save.data.gems||0)+1; }
+    Save.data._lastCoins=coinsEarned;
+    if(Save.save)Save.save();
+  }catch(e){}
+
   $("record-slot").innerHTML=
     record
       ?'<div class="record">Yeni Rekor</div>'
@@ -9499,6 +10387,13 @@ function showOver(record){
     const rewardText=`<div style="margin-top:10px;color:#22e6ff;font-size:12px;font-weight:800;letter-spacing:.12em">+${Game.lastReward.xp} XP · +${Game.lastReward.cores} ÇEKİRDEK${bonus?` <span style="color:#ffe34d">(+${bonus} koşu ödülü)</span>`:""}</div>`;
     rewardLine.innerHTML += rewardText;
   }
+  /* NORYVX coins earned */
+  try{
+    const c=Save.data._lastCoins||0;
+    if(c>0){
+      rewardLine.innerHTML += `<div style="margin-top:6px;color:#ffd24d;font-size:11px;font-weight:800;letter-spacing:.14em">+${c} ◎ KREDİ${Game.bossDefeated?" · +1 ◆ GEM":""}</div>`;
+    }
+  }catch(e){}
 
   setTimeout(
     ()=>{
@@ -10963,7 +11858,124 @@ function openDetail(u){
 function hideAllScreens(){
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));
 }
-function openChar(){hideAllScreens();$$("scr-rpgchar").classList.add("on");renderChar();}
+
+/* NORYVX HERO CAROUSEL — scr-rpgchar top preview.
+   Uses rrHeroFull() (canvas full-body renderer) and simple stats.
+   Persists selection via Save.data.selectedHero. */
+const NVX_HEROES=[
+  {key:"vanguard",  name:"VANGUARD",  role:"TANK · HEAVY ASSAULT",   atk:60,def:90,spd:40},
+  {key:"striker",   name:"STRIKER",   role:"DPS · FAST ASSAULT",     atk:92,def:50,spd:85},
+  {key:"controller",name:"CONTROLLER",role:"TECH · TACTICAL",        atk:70,def:60,spd:65}
+];
+let nvxHeroIdx=0;
+let nvxHeroT0=performance.now();
+let nvxHeroRafId=0;
+
+function nvxHeroCurrent(){ return NVX_HEROES[nvxHeroIdx]; }
+
+function nvxHeroSyncFromSave(){
+  try{
+    const sel=Save.data.selectedHero||"vanguard";
+    const idx=NVX_HEROES.findIndex(h=>h.key===sel);
+    if(idx>=0)nvxHeroIdx=idx;
+  }catch(e){}
+}
+
+function nvxHeroPaint(){
+  const cv=document.getElementById("nvx-hero-canvas");
+  if(!cv)return;
+  const rect=cv.getBoundingClientRect();
+  if(!rect.width||!rect.height)return;
+  const dpr=Math.min(2,window.devicePixelRatio||1);
+  const w=Math.round(rect.width*dpr);
+  const h=Math.round(rect.height*dpr);
+  if(cv.width!==w)cv.width=w;
+  if(cv.height!==h)cv.height=h;
+  const cxCtx=cv.getContext("2d");
+  if(!cxCtx)return;
+  const t=(performance.now()-nvxHeroT0)/1000;
+  cxCtx.clearRect(0,0,w,h);
+  const hero=nvxHeroCurrent();
+  const scale=Math.min(w/300,h/500);
+  if(typeof rrHeroFull==="function"){
+    rrHeroFull(cxCtx,hero.key,w/2,h*0.94,scale,t);
+  }
+}
+
+function nvxHeroUpdateStats(){
+  const hero=nvxHeroCurrent();
+  const n=document.getElementById("nvx-hero-name");
+  const r=document.getElementById("nvx-hero-role");
+  const atk=document.getElementById("nvx-stat-atk");
+  const def=document.getElementById("nvx-stat-def");
+  const spd=document.getElementById("nvx-stat-spd");
+  if(n)n.textContent=hero.name;
+  if(r)r.textContent=hero.role;
+  if(atk)atk.style.width=hero.atk+"%";
+  if(def)def.style.width=hero.def+"%";
+  if(spd)spd.style.width=hero.spd+"%";
+  /* Accent per class */
+  const acc=hero.key==="striker"?"#ff4fd8":hero.key==="controller"?"#a05cff":"#22e6ff";
+  document.querySelectorAll(".nvx-stat-bar i").forEach(el=>{
+    el.style.background="linear-gradient(90deg,"+acc+",#7cc0ff)";
+    el.style.boxShadow="0 0 8px "+acc+"66";
+  });
+}
+
+function nvxHeroTick(){
+  const scr=document.getElementById("scr-rpgchar");
+  if(scr && scr.classList.contains("on")){
+    nvxHeroPaint();
+    nvxHeroRafId=requestAnimationFrame(nvxHeroTick);
+  } else {
+    nvxHeroRafId=0;
+  }
+}
+
+function nvxHeroStart(){
+  nvxHeroT0=performance.now();
+  if(!nvxHeroRafId){ nvxHeroRafId=requestAnimationFrame(nvxHeroTick); }
+  nvxHeroUpdateStats();
+  nvxHeroPaint();
+}
+
+function nvxHeroCycle(dir){
+  nvxHeroIdx=(nvxHeroIdx+dir+NVX_HEROES.length)%NVX_HEROES.length;
+  nvxHeroUpdateStats();
+  nvxHeroPaint();
+}
+
+function nvxHeroSelect(){
+  const hero=nvxHeroCurrent();
+  try{
+    Save.data.selectedHero=hero.key;
+    if(Save.save)Save.save();
+    /* Notify existing archetype system if present */
+    if(window.NORYVX_P3 && typeof window.NORYVX_P3.setArchetype==="function"){
+      window.NORYVX_P3.setArchetype(hero.key);
+    }
+  }catch(e){}
+  const btn=document.getElementById("b-hero-select");
+  if(btn){
+    const original=btn.textContent;
+    btn.textContent="✓ SEÇİLDİ";
+    setTimeout(()=>{ btn.textContent=(typeof I18N!=="undefined"?I18N.t("selectHero"):"SEÇ"); },900);
+  }
+}
+
+document.addEventListener("click",function(e){
+  if(!e.target)return;
+  if(e.target.id==="nvx-hero-prev"){nvxHeroCycle(-1);}
+  else if(e.target.id==="nvx-hero-next"){nvxHeroCycle(1);}
+  else if(e.target.id==="b-hero-select"){nvxHeroSelect();}
+});
+
+function openChar(){
+  hideAllScreens();
+  $$("scr-rpgchar").classList.add("on");
+  renderChar();
+  try{ nvxHeroSyncFromSave(); nvxHeroStart(); }catch(e){}
+}
 function openInv(){hideAllScreens();$$("scr-rpginv").classList.add("on");renderInv();
   const b=$$("rpg-detail");if(b)b.classList.remove("on");}
 function backToMenu(){hideAllScreens();$$("scr-menu").classList.add("on");}
@@ -14487,6 +15499,13 @@ function topbar(){
     const R=window.RPG,P=window.PROG;
     if(R){$("tb-cr").textContent=fmt(R.state.credits);
           $("tb-sh").textContent=fmt(R.state.shards);}
+    else{
+      /* NORYVX fallback — Save.data coins/gems shown when RPG absent */
+      const c=Save&&Save.data&&Save.data.coins||0;
+      const g=Save&&Save.data&&Save.data.gems||0;
+      const trc=$("tb-cr"); if(trc)trc.textContent=fmt(c);
+      const trs=$("tb-sh"); if(trs)trs.textContent=fmt(g);
+    }
     if(P){$("tb-ne").textContent=fmt(P.state.neon);}
   }catch(e){}
   try{
@@ -14621,8 +15640,25 @@ function renderSettings(){
     if(runs)runs.textContent=fmtN(+(d.gamesPlayed||0));
     const best=$("st-best-score");
     if(best)best.textContent=fmtN(+(d.bestScore||0));
+    /* NORYVX dil secici — aktif dile gore isaretle */
+    const langCur=(typeof I18N!=="undefined"&&I18N.lang)?I18N.lang:(d.lang||"tr");
+    ["tr","en"].forEach(function(lc){
+      const b=$("st-lang-"+lc);
+      if(b)b.classList.toggle("on",langCur===lc);
+    });
   }catch(e){}
 }
+
+/* NORYVX dil secici — click handler'lari */
+try{
+  document.querySelectorAll(".set-lang-btn[data-lang]").forEach(function(btn){
+    btn.addEventListener("click",function(){
+      const lc=btn.getAttribute("data-lang");
+      if(typeof I18N!=="undefined"){ I18N.set(lc); }
+      renderSettings();
+    });
+  });
+}catch(e){}
 
 const stSound=$("st-sound");
 const stVibe=$("st-vibe");
