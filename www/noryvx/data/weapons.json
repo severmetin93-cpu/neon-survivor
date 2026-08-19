@@ -1,0 +1,140 @@
+{
+  "weapons": [
+    {
+      "id": "pulse",
+      "name": "PULSE",
+      "accent": "#22e6ff",
+      "accent2": "#3b7bff",
+      "glow": "rgba(34, 230, 255, 0.45)",
+      "level": 5,
+      "state": "EVOLVED",
+      "mastery": 92,
+      "xp": "18400/20000",
+      "damage": 142,
+      "fireRate": 6.4,
+      "range": 420,
+      "tiers": [
+        {
+          "level": 1,
+          "name": "FOCUSED ARRAY",
+          "description": "Tighter beam convergence",
+          "state": "MAXED"
+        },
+        {
+          "level": 3,
+          "name": "SPLIT CHANNEL",
+          "description": "Second pulse channel online",
+          "state": "MAXED"
+        },
+        {
+          "level": 5,
+          "name": "PULSE SINGULARITY",
+          "description": "Pulses collapse into a piercing lance",
+          "state": "EVOLVED"
+        }
+      ]
+    },
+    {
+      "id": "plasma",
+      "name": "PLASMA",
+      "accent": "#ff6b3b",
+      "accent2": "#ff3b6b",
+      "glow": "rgba(255, 107, 59, 0.45)",
+      "level": 4,
+      "state": "UPGRADE READY",
+      "mastery": 68,
+      "xp": "10900/16000",
+      "damage": 268,
+      "fireRate": 2.1,
+      "burn": 4.0,
+      "tiers": [
+        {
+          "level": 1,
+          "name": "THERMAL SHELL",
+          "description": "Impact burn on hit",
+          "state": "MAXED"
+        },
+        {
+          "level": 3,
+          "name": "MELT CORE",
+          "description": "Burn spreads to nearby hostiles",
+          "state": "UNLOCKED"
+        },
+        {
+          "level": 5,
+          "name": "PLASMA STORM",
+          "description": "Bolts leave a burning field for 6s",
+          "state": "LOCKED"
+        }
+      ]
+    },
+    {
+      "id": "arc",
+      "name": "ARC",
+      "accent": "#a05cff",
+      "accent2": "#22e6ff",
+      "glow": "rgba(160, 92, 255, 0.45)",
+      "level": 3,
+      "state": "IN PROGRESS",
+      "mastery": 41,
+      "xp": "4900/12000",
+      "damage": 96,
+      "chain": 4,
+      "stun": 0.6,
+      "tiers": [
+        {
+          "level": 1,
+          "name": "CONDUCTOR",
+          "description": "Chain range +30%",
+          "state": "MAXED"
+        },
+        {
+          "level": 3,
+          "name": "OVERCHARGE",
+          "description": "Chains apply a brief stun",
+          "state": "UNLOCKED"
+        },
+        {
+          "level": 5,
+          "name": "ARC LATTICE",
+          "description": "Lattice links all marked threats",
+          "state": "LOCKED"
+        }
+      ]
+    },
+    {
+      "id": "nova",
+      "name": "NOVA",
+      "accent": "#ffd24d",
+      "accent2": "#ff6b3b",
+      "glow": "rgba(255, 210, 77, 0.45)",
+      "level": 2,
+      "state": "EARLY MASTERY",
+      "mastery": 22,
+      "xp": "2100/9500",
+      "damage": 520,
+      "radius": 260,
+      "charge": 5.0,
+      "tiers": [
+        {
+          "level": 1,
+          "name": "CORE CHARGE",
+          "description": "Charge time -15%",
+          "state": "MAXED"
+        },
+        {
+          "level": 3,
+          "name": "TWIN BLOOM",
+          "description": "Second smaller detonation",
+          "state": "LOCKED"
+        },
+        {
+          "level": 5,
+          "name": "NOVA COLLAPSE",
+          "description": "Core pulls hostiles in before detonation",
+          "state": "LOCKED"
+        }
+      ]
+    }
+  ]
+}

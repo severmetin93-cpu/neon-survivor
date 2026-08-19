@@ -1,0 +1,66 @@
+{
+  "hostiles": [
+    {
+      "id": "light",
+      "name": "LIGHT",
+      "class": "SWARM",
+      "size": 34,
+      "threat": "LOW",
+      "color": "#ff3b6b",
+      "glow": "rgba(255, 59, 107, 0.45)",
+      "description": "Single-eye dart drone. Two legs, no armor — dies in one pass."
+    },
+    {
+      "id": "assault",
+      "name": "ASSAULT",
+      "class": "LINE",
+      "size": 44,
+      "threat": "MEDIUM",
+      "color": "#ff3b6b",
+      "glow": "rgba(255, 59, 107, 0.45)",
+      "description": "Quad-leg walker, twin forward claws, wide sensor bar."
+    },
+    {
+      "id": "heavy",
+      "name": "HEAVY",
+      "class": "BREACHER",
+      "size": 52,
+      "threat": "HIGH",
+      "color": "#ff6b3b",
+      "glow": "rgba(255, 107, 59, 0.45)",
+      "description": "Frontal shield plate wider than the hull. Orange core, slow."
+    },
+    {
+      "id": "ranged",
+      "name": "RANGED",
+      "class": "STANDOFF",
+      "size": 44,
+      "threat": "MEDIUM-HIGH",
+      "color": "#ff8c3b",
+      "glow": "rgba(255, 140, 59, 0.45)",
+      "description": "Body sits back behind a cannon twice its length — telegraphs range."
+    },
+    {
+      "id": "elite",
+      "name": "ELITE",
+      "class": "RARE",
+      "size": 52,
+      "threat": "EXTREME",
+      "color": "#ffd24d",
+      "glow": "rgba(255, 210, 77, 0.45)",
+      "description": "Assault chassis + gold crown prongs and a containment ring."
+    },
+    {
+      "id": "boss",
+      "name": "NEON WARDEN",
+      "class": "BOSS",
+      "size": 76,
+      "threat": "CRITICAL",
+      "color": "#ff3b6b",
+      "glow": "rgba(255, 59, 107, 0.45)",
+      "description": "Twin reactors flanking a caged main core, horn prongs, widest hull in the game.",
+      "phases": 3,
+      "healthPerPhase": 120000
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "heroes": [
+    {
+      "id": "vanguard",
+      "name": "VANGUARD",
+      "role": "HEAVY ASSAULT · TANK",
+      "code": "VG-04",
+      "core": "MK III",
+      "accent": "#22e6ff",
+      "glow": "rgba(34, 230, 255, 0.16)",
+      "level": 14,
+      "description": "Absorb sector pressure, hold the breach line, vent reactor heat as area damage.",
+      "stats": [
+        { "name": "ARMOR", "value": 86, "color": "#22e6ff" },
+        { "name": "HULL", "value": 92, "color": "#22e6ff" },
+        { "name": "DMG", "value": 54, "color": "#22e6ff" },
+        { "name": "SPD", "value": 38, "color": "#22e6ff" }
+      ]
+    },
+    {
+      "id": "striker",
+      "name": "STRIKER",
+      "role": "FAST ASSAULT · DPS",
+      "code": "ST-11",
+      "core": "MK II",
+      "accent": "#ff4fd8",
+      "glow": "rgba(255, 79, 216, 0.15)",
+      "level": 11,
+      "description": "Close distance, chain eliminations, convert combo pressure into overdrive windows.",
+      "stats": [
+        { "name": "ARMOR", "value": 44, "color": "#ff4fd8" },
+        { "name": "HULL", "value": 52, "color": "#ff4fd8" },
+        { "name": "DMG", "value": 94, "color": "#ff4fd8" },
+        { "name": "SPD", "value": 88, "color": "#ff4fd8" }
+      ]
+    },
+    {
+      "id": "controller",
+      "name": "CONTROLLER",
+      "role": "TACTICAL CONTROL · TECH",
+      "code": "CT-07",
+      "core": "MK II",
+      "accent": "#a05cff",
+      "glow": "rgba(160, 92, 255, 0.17)",
+      "level": 9,
+      "description": "Deploy control modules, slow hostile waves, mark threats for the whole network.",
+      "stats": [
+        { "name": "ARMOR", "value": 56, "color": "#a05cff" },
+        { "name": "HULL", "value": 60, "color": "#a05cff" },
+        { "name": "DMG", "value": 62, "color": "#a05cff" },
+        { "name": "CTRL", "value": 96, "color": "#a05cff" }
+      ]
+    }
+  ]
+}

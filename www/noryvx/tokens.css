@@ -1,0 +1,75 @@
+/* NORYVX Design Tokens - v20.1.0 */
+
+:root {
+  /* Color Palette */
+  --primary: #22e6ff;      /* Cyan - Hero primary */
+  --secondary: #a05cff;    /* Violet - Hero secondary */
+  --accent: #ff4fd8;       /* Magenta - Striker */
+  --elite: #ffd24d;        /* Gold - Elite units */
+  --danger: #ff3b6b;       /* Red - Boss/danger */
+  --warning: #ff6b3b;      /* Orange - Heavy units */
+  --success: #48ff9b;      /* Green - Positive */
+  --neutral: #eaf4ff;      /* Light text */
+  
+  /* Backgrounds */
+  --bg-dark: #04060f;
+  --bg-darker: #03050d;
+  --bg-card: rgba(9, 15, 32, 0.78);
+  --bg-surface: rgba(12, 20, 42, 0.86);
+  
+  /* Borders */
+  --border-thin: rgba(120, 170, 220, 0.12);
+  --border-light: rgba(34, 230, 255, 0.18);
+  --border-strong: rgba(34, 230, 255, 0.32);
+  
+  /* Typography */
+  --font-display: 'Chakra Petch', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  
+  /* Spacing */
+  --gap-xs: 4px;
+  --gap-sm: 8px;
+  --gap-md: 12px;
+  --gap-lg: 16px;
+  --gap-xl: 24px;
+  
+  /* Border Radius */
+  --r-xs: 6px;
+  --r-sm: 12px;
+  --r-md: 16px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  
+  /* Shadows */
+  --shadow-sm: 0 0 12px rgba(34, 230, 255, 0.12);
+  --shadow-md: 0 0 24px rgba(34, 230, 255, 0.24);
+  --shadow-lg: 0 0 40px rgba(34, 230, 255, 0.32);
+  --shadow-danger: 0 0 30px rgba(255, 59, 107, 0.28);
+  
+  /* Z-index Scale */
+  --z-base: 0;
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-fixed: 30;
+  --z-modal: 100;
+}
+
+/* Dark mode (default) */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: var(--neutral);
+  }
+}
+
+/* Light mode support */
+@media (prefers-color-scheme: light) {
+  :root {
+    --primary: #1a9dd9;
+    --secondary: #7a3cff;
+    --accent: #d83ba8;
+    --neutral: #1a1a2e;
+    --bg-dark: #ffffff;
+    --bg-darker: #f5f7fa;
+    --ink: #1a1a2e;
+  }
+}

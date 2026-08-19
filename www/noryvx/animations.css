@@ -1,0 +1,116 @@
+/* NORYVX Animations */
+
+@keyframes nvxFade {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.9; }
+}
+
+@keyframes nvxPulse {
+  0%, 100% { 
+    opacity: 0.55;
+    transform: scale(0.98);
+  }
+  50% { 
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes nvxGlow {
+  0%, 100% {
+    box-shadow: 0 0 12px rgba(34, 230, 255, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 24px rgba(34, 230, 255, 0.8);
+  }
+}
+
+@keyframes nvxFloat {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.25;
+  }
+  50% {
+    transform: translateY(-12px);
+    opacity: 0.75;
+  }
+}
+
+@keyframes nvxSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes nvxSlideDown {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+@keyframes nvxSweep {
+  from { transform: translateY(-140%); }
+  to { transform: translateY(460%); }
+}
+
+@keyframes nvxRadar {
+  0% {
+    opacity: 0.45;
+    transform: scale(0.28);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+@keyframes nvxRing {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.85; }
+}
+
+@keyframes nvxCore {
+  0%, 100% {
+    opacity: 0.8;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+}
+
+@keyframes nvxBar {
+  from { width: 0; }
+}
+
+/* Quick animations for interactions */
+.nvx-fade-in {
+  animation: nvxSlideUp 0.3s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+}
+
+.nvx-fade-out {
+  animation: nvxSlideDown 0.3s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+}
+
+.nvx-pulse {
+  animation: nvxPulse 1.1s ease-in-out infinite;
+}
+
+.nvx-glow {
+  animation: nvxGlow 1.8s ease-in-out infinite;
+}
+
+.nvx-float {
+  animation: nvxFloat 6s ease-in-out infinite;
+}
