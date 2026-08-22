@@ -10470,6 +10470,9 @@ function showOver(record){
     Save.data.coins=(Save.data.coins||0)+coinsEarned;
     /* KREDİ aynı zamanda ÇEKİRDEK olarak da eklenir — tek para birimi mantığı */
     Save.data.cores=(Save.data.cores||0)+coinsEarned;
+    /* Kazanılan çekirdekler RPG kredisi ve PROG neon'una da yansıtılır */
+    try{var _rr=window.RPG;if(_rr&&_rr.state){_rr.state.credits=(_rr.state.credits||0)+coinsEarned*8;if(_rr.persist)_rr.persist();}}catch(e){}
+    try{var _pp=window.PROG;if(_pp&&_pp.state){_pp.state.neon=(_pp.state.neon||0)+Math.max(1,Math.floor(coinsEarned/2));if(_pp.persist)_pp.persist();}}catch(e){}
     /* Bonus gem for high scores / boss kills */
     if(Game.bossDefeated){ Save.data.gems=(Save.data.gems||0)+1; }
     Save.data._lastCoins=coinsEarned;
@@ -18719,6 +18722,12 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bind);else bind();
 })();
 </script>
+<div id="noryvx-logo-screen" style="position:fixed;inset:0;z-index:2147483600;background:#02050d;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Chakra Petch','Arial Narrow',Arial,sans-serif;transition:opacity .6s">
+  <div style="font:900 clamp(38px,13vw,64px)/1 'Chakra Petch';letter-spacing:.1em;color:#22e6ff;text-shadow:0 0 60px rgba(34,230,255,.7),0 0 18px rgba(34,230,255,.4)">NEON</div>
+  <div style="font:900 clamp(38px,13vw,64px)/1 'Chakra Petch';letter-spacing:.1em;color:#22e6ff;text-shadow:0 0 60px rgba(34,230,255,.7),0 0 18px rgba(34,230,255,.4)">SURVIVOR</div>
+  <div style="margin-top:30px;width:160px;height:3px;background:rgba(34,230,255,.12);border-radius:3px;overflow:hidden"><div id="nls-bar" style="height:100%;width:0;background:#22e6ff;transition:width 1.5s linear"></div></div>
+  <div style="margin-top:14px;font:700 8px 'IBM Plex Mono';letter-spacing:.22em;color:rgba(34,230,255,.38)">YÜKLENIYOR</div>
+</div>
 <div id="noryvx-onboarding" aria-hidden="true">
   <div class="nob-stars"></div><div class="nob-grid"></div><div class="nob-scan"></div>
   <section class="nob-panel nob-intro-panel">
@@ -18811,7 +18820,23 @@ function boot(){
  var t=0,last=performance.now();function tick(now){t+=now-last;last=now;progress.style.width=Math.min(100,t/5500*100)+"%";if(t<5500)requestAnimationFrame(tick);else setTimeout(function(){show(prompt)},450)}requestAnimationFrame(tick);
 }
 q("#nob-yes").addEventListener("click",startTutorial);q("#nob-no").addEventListener("click",menu);q("#nob-return").addEventListener("click",menu);
-window.addEventListener("load",function(){setTimeout(boot,300)});
+window.addEventListener("load",function(){
+ var logo=document.getElementById("noryvx-logo-screen");
+ var bar=document.getElementById("nls-bar");
+ /* yükleme çubuğunu başlat */
+ if(bar)setTimeout(function(){bar.style.width="100%"},80);
+ /* 1.9s logo göster, sonra müziği başlat ve yönlendir */
+ setTimeout(function(){
+  try{if(window.NEONAUDIO&&window.NEONAUDIO.boot)window.NEONAUDIO.boot();}catch(e){}
+  if(logo)logo.style.opacity="0";
+  setTimeout(function(){
+   if(logo)logo.style.display="none";
+   var seen=false;
+   try{seen=!!localStorage.getItem("noryvx_tutorial_seen");}catch(e){}
+   if(seen){menu();}else{boot();}
+  },680);
+ },1900);
+});
 })();
 </script>
 
@@ -18893,7 +18918,7 @@ const ctl={
   originX:0,originY:0,lastX:0,lastY:0,
   pendingDX:0,pendingDY:0,raf:0,
   deadZone:0.7,
-  gain:1.0
+  gain:0.87
 };
 
 let _ctlRect=null,_ctlRectTs=0;
