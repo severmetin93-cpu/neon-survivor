@@ -3446,7 +3446,7 @@ const Progression={
 
   addReward(score,energy,time){
     const xp=Math.max(10,Math.floor(score/25)+Math.floor(time*2));
-    const cores=Math.max(1,Math.floor(energy/3)+Math.floor(time/20));
+    const cores=Math.max(3,Math.floor(energy/2)+Math.floor(time/12));
     const oldLevel=this.level();
     Save.data.profileXP+=xp;
     Save.data.cores+=cores;
@@ -3479,7 +3479,7 @@ function updateProgressUI(){
   if(pl)pl.textContent=level;
   const ul=$('upgrade-level');
   if(ul)ul.textContent=level;
-  const currency='◆ '+Save.data.cores+' ÇEKİRDEK';
+  const currency='◆ '+(Save.data.cores||0)+' ÇEKİRDEK';
   const pc=$('profile-currency');
   if(pc)pc.textContent=currency;
   const uc=$('upgrade-currency');
@@ -10468,6 +10468,8 @@ function showOver(record){
   try{
     const coinsEarned=Math.max(1,Math.floor(Game.score/12));
     Save.data.coins=(Save.data.coins||0)+coinsEarned;
+    /* KREDİ aynı zamanda ÇEKİRDEK olarak da eklenir — tek para birimi mantığı */
+    Save.data.cores=(Save.data.cores||0)+coinsEarned;
     /* Bonus gem for high scores / boss kills */
     if(Game.bossDefeated){ Save.data.gems=(Save.data.gems||0)+1; }
     Save.data._lastCoins=coinsEarned;
@@ -10504,7 +10506,7 @@ function showOver(record){
   try{
     const c=Save.data._lastCoins||0;
     if(c>0){
-      rewardLine.innerHTML += `<div style="margin-top:6px;color:#ffd24d;font-size:11px;font-weight:800;letter-spacing:.14em">+${c} ◎ KREDİ${Game.bossDefeated?" · +1 ◆ GEM":""}</div>`;
+      rewardLine.innerHTML += `<div style="margin-top:6px;color:#ffd24d;font-size:11px;font-weight:800;letter-spacing:.14em">+${c} ÇEKİRDEK (skor bonusu)${Game.bossDefeated?" · +1 ◆ GEM":""}</div>`;
     }
   }catch(e){}
 
@@ -18894,8 +18896,11 @@ const ctl={
   gain:1.0
 };
 
+let _ctlRect=null,_ctlRectTs=0;
 function point(clientX,clientY){
-  const r=canvas.getBoundingClientRect();
+  const now=performance.now();
+  if(!_ctlRect||now-_ctlRectTs>120){_ctlRect=canvas.getBoundingClientRect();_ctlRectTs=now;}
+  const r=_ctlRect;
   return {
     x:(clientX-r.left)*(canvas.width/r.width),
     y:(clientY-r.top)*(canvas.height/r.height)
@@ -18946,7 +18951,7 @@ function begin(clientX,clientY,id){
 function move(clientX,clientY,id,e){
   if(!ctl.active || ctl.id!==id)return;
   e.preventDefault();e.stopImmediatePropagation();
-  queueDelta(...[point(clientX,clientY).x,point(clientX,clientY).y]);
+  const _p=point(clientX,clientY);queueDelta(_p.x,_p.y);
 }
 
 function end(id,e){
