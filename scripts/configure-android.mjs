@@ -70,9 +70,31 @@ edit(MANIFEST, src => {
   return src;  
 });  
   
-/* =====================================================================  
-   3 — Uygulama adi  
-   ===================================================================== */  
+/* =====================================================================
+   2b — AdMob APPLICATION_ID meta-data
+   cap sync bu meta-data'yi otomatik enjekte etmiyor.
+   Google Mobile Ads SDK bu tag olmadan aninda crash yapiyor.
+   App ID capacitor.config.json -> plugins.AdMob.appIdAndroid'dan okunur.
+   Idempotent: zaten varsa dokunmaz.
+   ===================================================================== */
+edit(MANIFEST, src => {
+  if (src.includes("com.google.android.gms.ads.APPLICATION_ID")) return src;
+  const cfg = JSON.parse(fs.readFileSync(CAP_CFG, "utf8"));
+  const admobId = cfg?.plugins?.AdMob?.appIdAndroid;
+  if (!admobId) { log("AdMob appIdAndroid tanimli degil, APPLICATION_ID atlaniyor"); return src; }
+  const before = src;
+  src = src.replace(
+    /(<application\b[^>]*>)/,
+    `$1\n        <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="${admobId}"/>`
+  );
+  if (src === before) fail("AndroidManifest icinde <application> etiketi bulunamadi (APPLICATION_ID icin).");
+  log("AdMob APPLICATION_ID eklendi");
+  return src;
+});
+
+/* =====================================================================
+   3 — Uygulama adi
+   ===================================================================== */
 edit(`${RES}/values/strings.xml`, src => {  
   const set = (s, key, val) =>  
     s.replace(new RegExp(`(<string name="${key}">)[^<]*(</string>)`), `$1${val}$2`);  
