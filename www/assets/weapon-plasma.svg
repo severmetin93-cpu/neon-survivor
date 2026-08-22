@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<defs>
+ <linearGradient id="m" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f7fbff"/><stop offset=".25" stop-color="#a06b6d"/><stop offset=".62" stop-color="#321a2a"/><stop offset="1" stop-color="#0d1020"/></linearGradient>
+ <radialGradient id="c"><stop stop-color="#fff"/><stop offset=".35" stop-color="#ff9a4b"/><stop offset="1" stop-color="#ff3e67"/></radialGradient>
+ <filter id="g"><feGaussianBlur stdDeviation="14"/></filter>
+</defs>
+<circle cx="256" cy="256" r="190" fill="#ff4d6d" opacity=".13" filter="url(#g)"/>
+<path d="M256 62 391 136 438 256 391 376 256 450 121 376 74 256 121 136Z" fill="#151323" stroke="#7b3b59" stroke-width="12"/>
+<path d="M256 93 358 149 392 256 358 363 256 419 154 363 120 256 154 149Z" fill="url(#m)" stroke="#b26b72" stroke-width="5"/>
+<path d="M256 122 327 161 350 256 327 351 256 390 185 351 162 256 185 161Z" fill="#251527" stroke="#5b304d" stroke-width="8"/>
+<circle cx="256" cy="256" r="82" fill="#35182c" stroke="#ff4f86" stroke-width="9"/>
+<circle cx="256" cy="256" r="58" fill="url(#c)"/>
+<circle cx="256" cy="256" r="25" fill="#fff"/>
+<path d="M95 250h58M359 250h58M250 95v58M250 359v58" stroke="#ff9b4e" stroke-width="12" stroke-linecap="round"/>
+</svg>

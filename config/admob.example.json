@@ -1,0 +1,11 @@
+{
+  "mode": "test",
+  "android": {
+    "appId": "ca-app-pub-3940256099942544~3347511713",
+    "rewardedAdUnitId": "ca-app-pub-3940256099942544/5224354917"
+  },
+  "ios": {
+    "appId": "ca-app-pub-3940256099942544~1458002511",
+    "rewardedAdUnitId": "ca-app-pub-3940256099942544/1712485313"
+  }
+}

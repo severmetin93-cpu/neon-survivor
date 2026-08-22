@@ -1,0 +1,122 @@
+name: Build APK — NORYVX V20.0.0
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+concurrency:
+  group: noryvx-release-apk-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  JAVA_VERSION: '21'
+  NODE_VERSION: '22'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Java ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v5
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install npm dependencies
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      # ------------------------------------------------------------------
+      # android/ repo'ya dahil edilmez (bkz. .gitignore) — platform burada
+      # ilk kez olusturulur. "cap sync" mevcut olmayan bir platformu
+      # ekleyemez, bu yuzden once "cap add" kontrol edilir.
+      # ------------------------------------------------------------------
+      - name: Capacitor Android platformunu ekle ve senkronize et
+        run: |
+          set -euo pipefail
+          if [ ! -d android ]; then
+            echo "android/ klasoru yok -> cap add android"
+            npx --yes cap add android
+          fi
+          npx --yes cap sync android
+
+      - name: Decode keystore
+        run: |
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > "$RUNNER_TEMP/ns-release.jks"
+
+      # ------------------------------------------------------------------
+      # Imzalama env degiskenleri BURADA da gerekli: configure-android.mjs
+      # KEYSTORE_PATH/KEYSTORE_PASSWORD/KEY_ALIAS varsa build.gradle'a
+      # signingConfigs.release ekliyor. Ayni env, asagidaki gradle build
+      # adimiyla birebir ayni olmali.
+      # ------------------------------------------------------------------
+      - name: Configure Android project (icons, manifest, MainActivity, signing)
+        env:
+          KEYSTORE_PATH: ${{ runner.temp }}/ns-release.jks
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        run: node scripts/configure-android.mjs
+
+      - name: Set execute permission on gradlew
+        run: chmod +x android/gradlew
+
+      - name: Build signed release APK
+        working-directory: android
+        env:
+          KEYSTORE_PATH: ${{ runner.temp }}/ns-release.jks
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+        run: ./gradlew assembleRelease --no-daemon
+
+      - name: Locate and verify APK
+        run: |
+          APK=$(find android/app/build/outputs/apk/release -name "*.apk" | head -1)
+          test -n "$APK" || { echo "::error::APK uretilmedi"; exit 1; }
+          echo "APK_PATH=$APK" >> $GITHUB_ENV
+          SIZE=$(du -sh "$APK" | cut -f1)
+          echo "APK: $APK — $SIZE"
+          $JAVA_HOME/bin/jarsigner -verify -verbose -certs "$APK" 2>&1 | grep -E "jar verified|FAILED|signer"
+
+      - name: Shred keystore from runner
+        if: always()
+        run: shred -u "$RUNNER_TEMP/ns-release.jks" 2>/dev/null || rm -f "$RUNNER_TEMP/ns-release.jks"
+
+      - name: Upload signed APK artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: neon-survivor-v20.0.0-signed
+          path: ${{ env.APK_PATH }}
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Build summary
+        if: success()
+        run: |
+          SIZE=$(du -sh "${{ env.APK_PATH }}" | cut -f1)
+          echo "### ✅ NORYVX V20.0.0 Signed APK" >> $GITHUB_STEP_SUMMARY
+          echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|---|---|" >> $GITHUB_STEP_SUMMARY
+          echo "| versionCode | 20 |" >> $GITHUB_STEP_SUMMARY
+          echo "| versionName | 20.0.0 |" >> $GITHUB_STEP_SUMMARY
+          echo "| keyAlias | ${{ secrets.KEY_ALIAS }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| APK size | $SIZE |" >> $GITHUB_STEP_SUMMARY
+          echo "| Keystore type | PKCS12 |" >> $GITHUB_STEP_SUMMARY
