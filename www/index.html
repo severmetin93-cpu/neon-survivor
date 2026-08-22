@@ -3484,8 +3484,6 @@ function updateProgressUI(){
   if(pc)pc.textContent=currency;
   const uc=$('upgrade-currency');
   if(uc)uc.textContent=currency;
-  const dc=$('dev-currency-display');
-  if(dc)dc.textContent=currency;
   const mc=$('mastery-currency-display');
   if(mc)mc.textContent=currency;
   const buttons={speed:'u-speed',magnet:'u-magnet',shield:'u-shield',score:'u-score'};
@@ -11150,6 +11148,9 @@ function p3Render(){
   const a=p3Archetype(),need=p3Need(P3S.level);
   const l=document.getElementById("p3-level"),x=document.getElementById("p3-xp"),f=document.getElementById("p3-xp-fill");
   if(!l)return;
+  /* DEVELOPMENT screen header shows SP — the currency this screen actually spends */
+  const devHdr=document.getElementById("dev-currency-display");
+  if(devHdr)devHdr.textContent=(P3S.skillPoints||0)+" SP";
   l.textContent="Lv."+P3S.level;
   x.textContent=P3S.xp+" / "+need+" XP";
   f.style.width=Math.min(100,P3S.xp/need*100)+"%";
@@ -18581,7 +18582,8 @@ button, .btn, .p2-tab, .p3-btn{
   nav('b-mastery',()=>{open('scr-mastery');if(window.renderMastery)renderMastery();try{if(typeof updateProgressUI==="function")updateProgressUI();}catch(e){}});
   nav('b-tech',()=>{open('scr-tech');if(window.renderTech)renderTech();});
   nav('b-settings',()=>open('scr-settings'));
-  nav('b-rpgchar-back',()=>open('scr-menu'));nav('b-phase3-back',()=>open('scr-menu'));nav('b-mastery-back',()=>open('scr-menu'));nav('b-tech-back',()=>open('scr-menu'));nav('b-settings-back',()=>open('scr-menu'));
+  const backToMenu=()=>{open('scr-menu');try{if(typeof updateProgressUI==="function")updateProgressUI();}catch(e){}};
+  nav('b-rpgchar-back',backToMenu);nav('b-phase3-back',backToMenu);nav('b-mastery-back',backToMenu);nav('b-tech-back',backToMenu);nav('b-settings-back',()=>open('scr-menu'));
   nav('p3-open-weapons',()=>{open('scr-mastery');if(window.renderMastery)renderMastery();try{if(typeof updateProgressUI==="function")updateProgressUI();}catch(e){}});
   nav('p3-open-skills',()=>{open('scr-tech');if(window.renderTech)renderTech();});
   nav('b-tech-mast',()=>{open('scr-tech');if(window.renderTech)renderTech();});
