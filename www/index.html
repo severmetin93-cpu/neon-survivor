@@ -18577,12 +18577,12 @@ button, .btn, .p2-tab, .p3-btn{
   function open(id){hide();const e=$(id);if(e)e.classList.add('on');}
   function nav(id,fn){const e=$(id);if(!e||e.dataset.refBound)return;e.dataset.refBound='1';e.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();fn&&fn();},{capture:true});e.addEventListener('touchend',e=>{e.preventDefault();e.stopPropagation();fn&&fn();},{capture:true,passive:false});}
   nav('b-rpgchar',()=>{open('scr-rpgchar');if(window.nvxHeroSyncFromSave)nvxHeroSyncFromSave();if(window.nvxHeroPaint)nvxHeroPaint();});
-  nav('b-phase3',()=>{open('scr-phase3');if(window.p3Render)p3Render();});
-  nav('b-mastery',()=>{open('scr-mastery');if(window.renderMastery)renderMastery();});
+  nav('b-phase3',()=>{open('scr-phase3');if(window.p3Render)p3Render();try{if(typeof updateProgressUI==="function")updateProgressUI();}catch(e){}});
+  nav('b-mastery',()=>{open('scr-mastery');if(window.renderMastery)renderMastery();try{if(typeof updateProgressUI==="function")updateProgressUI();}catch(e){}});
   nav('b-tech',()=>{open('scr-tech');if(window.renderTech)renderTech();});
   nav('b-settings',()=>open('scr-settings'));
   nav('b-rpgchar-back',()=>open('scr-menu'));nav('b-phase3-back',()=>open('scr-menu'));nav('b-mastery-back',()=>open('scr-menu'));nav('b-tech-back',()=>open('scr-menu'));nav('b-settings-back',()=>open('scr-menu'));
-  nav('p3-open-weapons',()=>{open('scr-mastery');if(window.renderMastery)renderMastery();});
+  nav('p3-open-weapons',()=>{open('scr-mastery');if(window.renderMastery)renderMastery();try{if(typeof updateProgressUI==="function")updateProgressUI();}catch(e){}});
   nav('p3-open-skills',()=>{open('scr-tech');if(window.renderTech)renderTech();});
   nav('b-tech-mast',()=>{open('scr-tech');if(window.renderTech)renderTech();});
   nav('b-hero-select',()=>{try{if(window.nvxHeroSelect)nvxHeroSelect();const k=window.nvxHeroCurrent?nvxHeroCurrent().key:'vanguard';if(window.NORYVX_P3&&window.NORYVX_P3.state)window.NORYVX_P3.state.archetype=k;if(window.NORYVX_P3&&window.NORYVX_P3.save)window.NORYVX_P3.save()}catch(e){} open('scr-menu');if(window.renderMenuHero)window.renderMenuHero(0);});
