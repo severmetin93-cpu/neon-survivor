@@ -6850,6 +6850,8 @@ const Game={
 ========================================================= */
 
 function update(dt){
+  /* Bekleyen dokunma deltalarını RAF gecikmesi olmadan bu kareye uygula */
+  try{if(window._nvxConsume)window._nvxConsume();}catch(e){}
 
   if(Game.state===STATE.COUNTDOWN){
     Game.countdown-=dt;
@@ -9762,6 +9764,8 @@ function loop(now){
 
   requestAnimationFrame(loop);
 
+  if(document.hidden){last=0;return;}
+
   if(!last)
     last=now;
 
@@ -10477,6 +10481,8 @@ function showOver(record){
     if(Game.bossDefeated){ Save.data.gems=(Save.data.gems||0)+1; }
     Save.data._lastCoins=coinsEarned;
     if(Save.save)Save.save();
+    /* Upgrade/profil UI'ını hemen güncelle — oyun sonu ekranında da güncel görünsün */
+    try{if(typeof updateProgressUI==="function")updateProgressUI();}catch(e){}
   }catch(e){}
 
   $("record-slot").innerHTML=
@@ -18917,8 +18923,8 @@ const ctl={
   active:false,id:null,
   originX:0,originY:0,lastX:0,lastY:0,
   pendingDX:0,pendingDY:0,raf:0,
-  deadZone:0.7,
-  gain:0.87
+  deadZone:2.0,
+  gain:1.0
 };
 
 let _ctlRect=null,_ctlRectTs=0;
@@ -18926,14 +18932,16 @@ function point(clientX,clientY){
   const now=performance.now();
   if(!_ctlRect||now-_ctlRectTs>120){_ctlRect=canvas.getBoundingClientRect();_ctlRectTs=now;}
   const r=_ctlRect;
+  /* CSS piksel koordinatları döndür — oyun ctx.setTransform(DPR,…) kullanır
+     bu yüzden canvas.width/r.width (=DPR) ile ÇARPMAK HATALI: 2× fazla hassasiyet yaratır */
   return {
-    x:(clientX-r.left)*(canvas.width/r.width),
-    y:(clientY-r.top)*(canvas.height/r.height)
+    x:(clientX-r.left),
+    y:(clientY-r.top)
   };
 }
 
 function consume(){
-  ctl.raf=0;
+  /* RAF tabanlı zamanlama kaldırıldı — update() başında çağrılır (0-frame gecikme) */
   if(!ctl.active)return;
   const dx=ctl.pendingDX,dy=ctl.pendingDY;
   ctl.pendingDX=ctl.pendingDY=0;
@@ -18955,12 +18963,14 @@ function consume(){
 
   if(typeof hideHint==="function" && mag>3) hideHint();
 }
+/* update() içinden çağrılabilmesi için global olarak kaydet */
+window._nvxConsume=consume;
 
 function queueDelta(x,y){
   ctl.pendingDX += x-ctl.lastX;
   ctl.pendingDY += y-ctl.lastY;
   ctl.lastX=x;ctl.lastY=y;
-  if(!ctl.raf)ctl.raf=requestAnimationFrame(consume);
+  /* RAF zamanlaması kaldırıldı — update() başında consume() çağrılır */
 }
 
 function begin(clientX,clientY,id){
