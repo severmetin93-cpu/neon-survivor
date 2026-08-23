@@ -2192,6 +2192,23 @@ body.ls .bn{width:70px}
 #noryvx-dev-upgrade-deck .uc-level{position:absolute;bottom:10px;right:10px;color:rgba(236,246,255,.40);font:700 8px/1 "IBM Plex Mono",monospace}
 #noryvx-dev-detail{position:fixed;inset:0;z-index:9999;display:none;align-items:flex-end;justify-content:center;background:rgba(0,4,12,.68);backdrop-filter:blur(5px)}
 #noryvx-dev-detail.on{display:flex}
+/* DEV screen — profile card */
+.dev-profile-card{width:min(390px,90vw);margin:10px auto;padding:14px 16px;border-radius:16px;background:linear-gradient(145deg,rgba(17,29,53,.94),rgba(6,12,26,.98));border:1px solid rgba(34,230,255,.16)}
+.dev-pc-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.dev-pc-hero{font:800 13px/1 "Chakra Petch",sans-serif;letter-spacing:.1em;color:#eaf4ff}
+.dev-pc-rank{font:600 9px/1 "IBM Plex Mono",monospace;letter-spacing:.18em;color:rgba(234,244,255,.45);margin-top:4px}
+.dev-pc-lv{font:900 26px/1 "Chakra Petch",sans-serif;color:#22e6ff;text-shadow:0 0 18px rgba(34,230,255,.35)}
+.dev-xp-track{height:5px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden;margin-bottom:5px}
+.dev-xp-track i{display:block;height:100%;background:linear-gradient(90deg,#22e6ff,#a05cff);transition:width .4s;border-radius:99px;box-shadow:0 0 8px rgba(34,230,255,.4)}
+.dev-xp-row{display:flex;justify-content:space-between;font:600 9px/1 "IBM Plex Mono",monospace;letter-spacing:.1em;color:rgba(234,244,255,.40)}
+.dev-section-hd{width:min(390px,90vw);margin:12px auto 6px;font:800 9px/1 "Chakra Petch",sans-serif;letter-spacing:.2em;color:rgba(234,244,255,.40);display:flex;justify-content:space-between;padding:0 2px}
+/* DEV nav cards */
+.dev-nav-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:min(390px,90vw);margin:10px auto 16px}
+.dev-nav-card{display:flex;align-items:center;gap:10px;padding:13px;border-radius:14px;background:rgba(34,230,255,.04);border:1px solid rgba(34,230,255,.12);color:var(--ink);text-align:left;cursor:pointer;touch-action:manipulation}
+.dev-nav-card:active{transform:scale(.97);background:rgba(34,230,255,.08)}
+.dev-nav-ico{font-size:22px;color:#22e6ff;line-height:1;min-width:26px;text-align:center}
+.dev-nav-card b{display:block;font:800 10px/1 "Chakra Petch",sans-serif;letter-spacing:.14em}
+.dev-nav-card small{display:block;font:600 9px/1 "IBM Plex Mono",monospace;color:rgba(234,244,255,.40);margin-top:3px}
 #noryvx-dev-detail .panel{width:min(560px,100%);padding:20px 18px 22px;border:1px solid rgba(48,222,255,.28);border-bottom:0;border-radius:22px 22px 0 0;background:linear-gradient(180deg,#0b1730,#050a17);box-shadow:0 -18px 55px rgba(0,0,0,.45)}
 #noryvx-dev-detail .detail-kicker{color:#40e6ff;font:600 9px/1 "IBM Plex Mono",monospace;letter-spacing:.18em}
 #noryvx-dev-detail h3{margin:7px 0;color:#f1f7ff;font:800 22px/1.1 "Chakra Petch",sans-serif;letter-spacing:.08em}
@@ -2538,33 +2555,38 @@ window.addEventListener("unhandledrejection",function(){});
 <button class="btn ghost" id="b-skins-back">Geri</button>
 </div>
 <div class="screen nvx-ref-screen" id="scr-phase3">
-<div class="nvx-screen-head"><button id="b-phase3-back">‹</button><span>DEVELOPMENT</span><b id="dev-currency-display">◆ 0</b></div>
-<div class="nvx-dev-head"><div><small id="dev-arch-label">VANGUARD · COMBAT POWER</small><strong id="dev-combat-power">120</strong></div><em id="dev-rank">RECRUIT I</em></div>
-<div class="nvx-progress"><i id="dev-xp-fill" style="width:0%"></i></div>
-<div class="nvx-dev-xp"><span id="dev-level-xp">LEVEL 1 · 0 / 100 XP</span> <span id="dev-rank-reward">+1 SP ON LEVEL UP</span></div>
-<div class="nvx-dev-cards">
-<button id="p3-open-weapons"><small>WEAPON MASTERY</small><strong id="dev-mastery-count">0 <i>/ 20</i></strong><em></em></button>
-<button id="p3-open-skills"><small>SKILL NODES</small><strong id="dev-skill-count">0 <i>/ 18</i></strong><em></em></button>
-</div>
-<div class="nvx-section-label">PERMANENT ABILITIES <span id="dev-ability-count">0 / 4</span></div>
-<div class="nvx-abilities">
-<button disabled><i class="cyan"></i><div><b>REACTOR CAPACITY</b><small>Unlocks at Level 3 · +18% core energy pool</small></div><em>LOCKED · LV 3</em></button>
-<button disabled><i class="cyan square"></i><div><b>SIEGE PLATING</b><small>Unlocks at Level 5 · +12% armor, +8% breach resist</small></div><em>LOCKED · LV 5</em></button>
-<button disabled><i class="purple"></i><div><b>THREAT UPLINK</b><small>Unlocks at Level 8 · marked threats grant +6% damage</small></div><em>LOCKED · LV 8</em></button>
-<button disabled><i class="pink"></i><div><b>OVERDRIVE VENT</b><small>Unlocks at Level 12 · overdrive lasts +1.4s</small></div><em>LOCKED · LV 12</em></button>
+<div class="nvx-screen-head"><button id="b-phase3-back">‹</button><span>DEVELOPMENT</span><b id="dev-currency-display">0 SP</b></div>
+
+<div class="dev-profile-card">
+ <div class="dev-pc-row">
+  <div><div class="dev-pc-hero" id="dev-arch-label">VANGUARD</div><div class="dev-pc-rank" id="dev-rank">RECRUIT I</div></div>
+  <div class="dev-pc-lv" id="dev-combat-power">LV 1</div>
+ </div>
+ <div class="dev-xp-track"><i id="dev-xp-fill" style="width:0%"></i></div>
+ <div class="dev-xp-row"><span id="dev-level-xp">0 / 100 XP</span><span>+1 SP / LEVEL UP</span></div>
 </div>
 
+<div class="dev-section-hd">KALICI GELİŞTİRMELER <span id="dev-ability-count">0 / 4</span></div>
 <div id="noryvx-dev-upgrade-deck">
- <div class="deck-head"><div><div class="deck-kicker">DEVELOPMENT MATRIX · PERMANENT GROWTH</div><div class="deck-title">UPGRADE PROTOCOL</div></div><div class="dev-points"><small>SKILL POINTS</small><span id="noryvx-dev-points">0</span></div></div>
+ <div class="deck-head"><div></div><div class="dev-points"><small>SKILL PTS</small><span id="noryvx-dev-points">0</span></div></div>
  <div class="upgrade-grid">
-  <div class="upgrade-card locked" data-dev-skill="survivor"><div class="uc-state">REACH LV 2</div><div class="uc-icon">◆</div><div class="uc-name">SURVIVOR</div><div class="uc-desc">Maximum hull +3% per level</div><div class="uc-bar"><i></i></div><div class="uc-level">LV 0 / 5</div></div>
-  <div class="upgrade-card locked" data-dev-skill="focus"><div class="uc-state">REACH LV 2</div><div class="uc-icon">◇</div><div class="uc-name">FOCUS</div><div class="uc-desc">Cooldown -1% per level</div><div class="uc-bar"><i></i></div><div class="uc-level">LV 0 / 5</div></div>
-  <div class="upgrade-card locked" data-dev-skill="magnetism"><div class="uc-state">REACH LV 2</div><div class="uc-icon">✦</div><div class="uc-name">MAGNETISM</div><div class="uc-desc">Pickup field +4% per level</div><div class="uc-bar"><i></i></div><div class="uc-level">LV 0 / 5</div></div>
-  <div class="upgrade-card locked" data-dev-skill="pulse_mastery"><div class="uc-state">REACH LV 2</div><div class="uc-icon">◆</div><div class="uc-name">PULSE MASTERY</div><div class="uc-desc">Pulse damage +2% per level</div><div class="uc-bar"><i></i></div><div class="uc-level">LV 0 / 5</div></div>
+  <div class="upgrade-card locked" data-dev-skill="survivor"><div class="uc-state">REACH LV 2</div><div class="uc-icon">◆</div><div class="uc-name">SURVIVOR</div><div class="uc-desc">Hull +3% per rank</div><div class="uc-bar"><i></i></div><div class="uc-level">LV 0 / 5</div></div>
+  <div class="upgrade-card locked" data-dev-skill="focus"><div class="uc-state">REACH LV 2</div><div class="uc-icon">◇</div><div class="uc-name">FOCUS</div><div class="uc-desc">Cooldown -1% per rank</div><div class="uc-bar"><i></i></div><div class="uc-level">LV 0 / 5</div></div>
+  <div class="upgrade-card locked" data-dev-skill="magnetism"><div class="uc-state">REACH LV 2</div><div class="uc-icon">✦</div><div class="uc-name">MAGNETISM</div><div class="uc-desc">Pickup +4% per rank</div><div class="uc-bar"><i></i></div><div class="uc-level">LV 0 / 5</div></div>
+  <div class="upgrade-card locked" data-dev-skill="pulse_mastery"><div class="uc-state">REACH LV 2</div><div class="uc-icon">⚡</div><div class="uc-name">PULSE MASTERY</div><div class="uc-desc">Pulse dmg +2% per rank</div><div class="uc-bar"><i></i></div><div class="uc-level">LV 0 / 5</div></div>
  </div>
 </div>
+
+<div class="dev-nav-grid">
+ <button class="dev-nav-card" id="p3-open-weapons"><span class="dev-nav-ico">⚡</span><div><b>WEAPONS</b><small id="dev-mastery-count">0 <i>/ 20</i></small></div></button>
+ <button class="dev-nav-card" id="p3-open-skills"><span class="dev-nav-ico">◈</span><div><b>SKILLS</b><small id="dev-skill-count">0 <i>/ 18</i></small></div></button>
+</div>
+
 <div id="noryvx-dev-detail" aria-hidden="true"><div class="panel"><div class="detail-kicker">DEVELOPMENT NODE</div><h3 id="noryvx-dev-detail-title">SURVIVOR</h3><div class="detail-copy" id="noryvx-dev-detail-copy"></div><div class="detail-stats"><div class="detail-stat"><b id="noryvx-dev-level">LV 0 / 5</b><span>CURRENT</span></div><div class="detail-stat"><b id="noryvx-dev-next">+3%</b><span>NEXT EFFECT</span></div><div class="detail-stat"><b id="noryvx-dev-cost">LEVEL 2</b><span>REQUIREMENT</span></div></div><div class="detail-actions"><button class="secondary" id="noryvx-dev-close">CLOSE</button><button id="noryvx-dev-spend">LOCKED · LV 2</button></div></div></div>
-<div id="p3-levelone"></div><div id="p3-xp" style="display:none"></div><div id="p3-xp-fill" style="display:none"></div><div id="p3-archetype" style="display:none"></div><div id="p3-desc" style="display:none"></div><div id="p3-points" style="display:none"></div><div id="p3-skill-points" style="display:none"></div><div id="p3-mastery-total" style="display:none"></div><div id="p3-skill-list" style="display:none"></div><div id="p3-mastery-list" style="display:none"></div><button id="p3-reset-run" style="display:none"></button>
+
+<div style="display:none">
+ <span id="p3-level"></span><div id="p3-levelone"></div><div id="p3-xp"></div><div id="p3-xp-fill"></div><div id="p3-archetype"></div><div id="p3-desc"></div><div id="p3-points"></div><div id="p3-skill-points"></div><div id="p3-mastery-total"></div><div id="p3-skill-list"></div><div id="p3-mastery-list"></div><button id="p3-reset-run"></button><span id="p3-active-name"></span>
+</div>
 </div>
 <div class="screen" id="scr-levelup" style="position:absolute;inset:0;z-index:20;padding:52px 20px 24px;display:flex;flex-direction:column;background:radial-gradient(80% 40% at 50% 18%,rgba(34,230,255,.13),transparent 66%),rgba(3,6,16,.88);backdrop-filter:blur(16px)">
 <div style="flex:none;margin-top:32px;text-align:center;animation:nvxRise .3s cubic-bezier(.2,.8,.3,1)">
@@ -11150,13 +11172,12 @@ if(typeof CHAR!=="undefined"){
 function p3Render(){
   const a=p3Archetype(),need=p3Need(P3S.level);
   const l=document.getElementById("p3-level"),x=document.getElementById("p3-xp"),f=document.getElementById("p3-xp-fill");
-  if(!l)return;
-  /* DEVELOPMENT screen header shows SP — the currency this screen actually spends */
+  /* NO early return — proceed even if legacy p3-level element is absent */
   const devHdr=document.getElementById("dev-currency-display");
   if(devHdr)devHdr.textContent=(P3S.skillPoints||0)+" SP";
-  l.textContent="Lv."+P3S.level;
-  x.textContent=P3S.xp+" / "+need+" XP";
-  f.style.width=Math.min(100,P3S.xp/need*100)+"%";
+  if(l)l.textContent="Lv."+P3S.level;
+  if(x)x.textContent=P3S.xp+" / "+need+" XP";
+  if(f)f.style.width=Math.min(100,P3S.xp/need*100)+"%";
   document.getElementById("p3-archetype").textContent=a.name;
   document.getElementById("p3-desc").textContent=a.desc;
   document.getElementById("p3-points").textContent=P3S.skillPoints+" SP";
@@ -11198,14 +11219,14 @@ function p3Render(){
   const devMastery=document.getElementById("dev-mastery-count");
   const devSkills=document.getElementById("dev-skill-count");
   const devAbilities=document.getElementById("dev-ability-count");
-  if(devLevel)devLevel.textContent=`LEVEL ${P3S.level} · ${P3S.xp} / ${need} XP`;
+  if(devLevel)devLevel.textContent=`${P3S.xp} / ${need} XP`;
   if(devFill)devFill.style.width=Math.min(100,(P3S.xp/Math.max(1,need))*100)+"%";
-  if(devArch)devArch.textContent=`${a.name} · COMBAT POWER`;
+  if(devArch)devArch.textContent=a.name;
   if(devRank){
     const rankNames=["RECRUIT I","RECRUIT II","RECRUIT III","VETERAN I","VETERAN II","VETERAN III"];
     devRank.textContent=rankNames[Math.min(rankNames.length-1,Math.floor((P3S.level-1)/3))]||"RECRUIT I";
   }
-  if(devCombat)devCombat.textContent=String(Math.max(120,Math.round(120 + p3TotalMastery()*12 + P3S.level*8)));
+  if(devCombat)devCombat.textContent="LV "+P3S.level;
   if(devMastery){
     const total=Object.keys(P3.skills).filter(k=>P3.skills[k].type==="weapon").reduce((n,k)=>n+p3SkillRank(k),0);
     devMastery.innerHTML=`${total} <i>/ 20</i>`;
