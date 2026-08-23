@@ -1350,6 +1350,128 @@ button:disabled{opacity:.38 !important;filter:saturate(.35);pointer-events:none}
 .pg-ms-f i{font-style:normal;font-size:9.5px;letter-spacing:.16em;color:var(--ink-3)}
 .pg-ms-f .p3-btn{font-size:10.5px;padding:6px 12px}
 
+/* =============================================
+   MISSIONS V3 — ULTRA PREMIUM
+   ============================================= */
+#scr-missions{display:flex;flex-direction:column;background:#04060f;overflow:hidden}
+.ms3-hdr{position:relative;flex-shrink:0;overflow:hidden}
+.ms3-hdr-bg{position:absolute;inset:0;pointer-events:none;background:linear-gradient(155deg,rgba(34,230,255,.15) 0%,rgba(160,92,255,.1) 48%,rgba(255,79,216,.07) 100%)}
+.ms3-hdr-bg::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 22px,rgba(34,230,255,.04) 22px,rgba(34,230,255,.04) 23px)}
+.ms3-hdr-bg::after{content:'';position:absolute;top:-70px;left:50%;transform:translateX(-50%);width:300px;height:130px;background:radial-gradient(ellipse,rgba(34,230,255,.2) 0%,transparent 70%);pointer-events:none}
+.ms3-hdr-top{display:flex;align-items:center;gap:12px;padding:15px 16px 10px;position:relative;z-index:1}
+.ms3-back{width:40px;height:40px;border-radius:12px;border:1px solid rgba(34,230,255,.3);background:rgba(34,230,255,.07);color:#22e6ff;font-size:22px;cursor:pointer;display:grid;place-items:center;flex-shrink:0;box-shadow:0 0 20px rgba(34,230,255,.12),inset 0 1px 0 rgba(255,255,255,.05)}
+.ms3-hdr-mid{flex:1;min-width:0}
+.ms3-lbl{display:block;font:600 7.5px 'IBM Plex Mono';letter-spacing:.28em;color:rgba(34,230,255,.55);margin-bottom:2px}
+.ms3-ttl{display:block;font:900 22px 'Chakra Petch';letter-spacing:.22em;color:#eaf4ff;text-shadow:0 0 28px rgba(34,230,255,.35),0 0 70px rgba(34,230,255,.1)}
+.ms3-hdr-ctr{display:flex;align-items:baseline;gap:3px;flex-shrink:0}
+.ms3-ctr-big{font:900 22px 'IBM Plex Mono';color:#22e6ff;line-height:1;text-shadow:0 0 18px rgba(34,230,255,.55)}
+.ms3-ctr-sep{font:700 14px 'IBM Plex Mono';color:rgba(34,230,255,.3);margin:0 1px}
+.ms3-ctr-dim{font-size:14px;color:rgba(234,244,255,.25);text-shadow:none}
+.ms3-ctr-tag{display:none}
+.ms3-cur-row{display:flex;position:relative;z-index:1;border-top:1px solid rgba(34,230,255,.1);border-bottom:1px solid rgba(34,230,255,.07);background:rgba(4,6,15,.55)}
+.ms3-ci{flex:1;display:flex;flex-direction:column;align-items:center;padding:9px 4px;gap:1px;border-right:1px solid rgba(34,230,255,.07)}
+.ms3-ci:last-child{border-right:none}
+.ms3-ci i{font-style:normal;font-size:15px;line-height:1}
+.ms3-ci b{font:800 13px 'IBM Plex Mono';line-height:1.1}
+.ms3-ci small{font:600 6.5px 'IBM Plex Mono';letter-spacing:.15em;opacity:.45}
+.ci-cr i,.ci-cr b{color:#ffd24d}
+.ci-sh i,.ci-sh b{color:#22e6ff}
+.ci-ne i,.ci-ne b{color:#a05cff}
+.ms3-mbar-wrap{display:flex;align-items:center;gap:9px;padding:8px 16px 12px;position:relative;z-index:1}
+.ms3-mbar-lbl{font:600 7px 'IBM Plex Mono';letter-spacing:.2em;color:rgba(234,244,255,.28);flex-shrink:0}
+.ms3-mbar{flex:1;height:4px;border-radius:999px;background:rgba(9,20,50,.9);overflow:hidden}
+.ms3-mbar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#22e6ff,#a05cff,#ff4fd8);box-shadow:0 0 10px rgba(34,230,255,.45);transition:width .9s cubic-bezier(.4,0,.2,1)}
+.ms3-mbar-pct{font:800 9px 'IBM Plex Mono';color:#22e6ff;flex-shrink:0;min-width:26px;text-align:right}
+.ms3-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:7px 12px 8px;flex-shrink:0}
+.ms3-tab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 4px 6px;border-radius:10px;border:1px solid rgba(120,170,220,.12);background:rgba(9,15,32,.75);color:rgba(234,244,255,.32);cursor:pointer;transition:all .2s}
+.ms3-ti{font-size:16px;line-height:1}
+.ms3-tab b{font:700 7.5px 'IBM Plex Mono';letter-spacing:.14em}
+.ms3-tab[data-tab="all"].on{border-color:#22e6ff;background:rgba(34,230,255,.09);color:#22e6ff;box-shadow:0 0 14px rgba(34,230,255,.13)}
+.ms3-tab[data-tab="combat"].on{border-color:#ff4fd8;background:rgba(255,79,216,.08);color:#ff4fd8;box-shadow:0 0 14px rgba(255,79,216,.13)}
+.ms3-tab[data-tab="progress"].on{border-color:#22e6ff;background:rgba(34,230,255,.08);color:#22e6ff;box-shadow:0 0 14px rgba(34,230,255,.13)}
+.ms3-tab[data-tab="mastery"].on{border-color:#a05cff;background:rgba(160,92,255,.08);color:#a05cff;box-shadow:0 0 14px rgba(160,92,255,.13)}
+.ms3-list{flex:1;overflow-y:auto;padding:4px 12px 36px;display:flex;flex-direction:column;gap:9px}
+.ms3-card{border-radius:16px;border:1px solid rgba(120,170,220,.14);background:linear-gradient(155deg,rgba(10,16,34,.97),rgba(6,10,22,.97));position:relative;overflow:hidden;transition:border-color .25s,box-shadow .25s}
+.ms3-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.ms3-card.cat-combat::before{background:linear-gradient(180deg,#a05cff,#ff4fd8)}
+.ms3-card.cat-progress::before{background:linear-gradient(180deg,#22e6ff,#4499ff)}
+.ms3-card.cat-mastery::before{background:linear-gradient(180deg,#ffd24d,#a05cff)}
+.ms3-card::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(135deg,rgba(255,255,255,.03) 0%,transparent 55%)}
+.ms3-card.ms3-ready{border-color:rgba(255,210,77,.4);box-shadow:0 0 24px rgba(255,210,77,.07)}
+.ms3-card.ms3-claimed{opacity:.28}
+.ms3-inner{padding:13px 14px 12px 17px}
+.ms3-ctop{display:flex;align-items:flex-start;gap:11px;margin-bottom:10px}
+.ms3-ico{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;font-size:20px;flex-shrink:0}
+.ms3-ico.cat-combat{background:rgba(255,79,216,.12);border:1px solid rgba(255,79,216,.32);box-shadow:0 0 18px rgba(255,79,216,.14)}
+.ms3-ico.cat-progress{background:rgba(34,230,255,.09);border:1px solid rgba(34,230,255,.28);box-shadow:0 0 18px rgba(34,230,255,.11)}
+.ms3-ico.cat-mastery{background:rgba(160,92,255,.12);border:1px solid rgba(160,92,255,.32);box-shadow:0 0 18px rgba(160,92,255,.14)}
+.ms3-meta{flex:1;min-width:0}
+.ms3-mname{font:800 12px 'Chakra Petch';letter-spacing:.09em;color:#eaf4ff;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ms3-mdesc{font:500 9px 'IBM Plex Mono';color:rgba(234,244,255,.4);letter-spacing:.04em}
+.ms3-stat{flex-shrink:0;padding:4px 9px;border-radius:7px;font:700 8px 'IBM Plex Mono';letter-spacing:.11em;margin-top:1px;white-space:nowrap}
+.ms3-stat.ss-done{background:rgba(72,255,155,.1);color:#48ff9b;border:1px solid rgba(72,255,155,.22)}
+.ms3-stat.ss-ready{background:rgba(255,210,77,.1);color:#ffd24d;border:1px solid rgba(255,210,77,.25);animation:ms3pulse 1.8s ease-in-out infinite}
+.ms3-stat.ss-prog{background:rgba(120,150,200,.07);color:rgba(234,244,255,.28);border:1px solid rgba(120,150,200,.1)}
+@keyframes ms3pulse{0%,100%{box-shadow:0 0 0 rgba(255,210,77,0)}50%{box-shadow:0 0 10px rgba(255,210,77,.28)}}
+.ms3-prow{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.ms3-pbar{flex:1;height:5px;border-radius:999px;background:rgba(5,10,28,.95);overflow:hidden}
+.ms3-pbar i{display:block;height:100%;border-radius:999px;transition:width .7s cubic-bezier(.4,0,.2,1)}
+.ms3-pbar.cat-combat i{background:linear-gradient(90deg,#a05cff,#ff4fd8);box-shadow:0 0 8px rgba(255,79,216,.5)}
+.ms3-pbar.cat-progress i{background:linear-gradient(90deg,#22e6ff,#4499ff);box-shadow:0 0 8px rgba(34,230,255,.5)}
+.ms3-pbar.cat-mastery i{background:linear-gradient(90deg,#ffd24d,#a05cff);box-shadow:0 0 8px rgba(160,92,255,.5)}
+.ms3-ppct{font:700 8.5px 'IBM Plex Mono';color:rgba(234,244,255,.3);flex-shrink:0;min-width:26px;text-align:right}
+.ms3-foot{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ms3-rews{display:flex;gap:5px;flex-wrap:wrap}
+.ms3-rew{display:flex;align-items:center;gap:3px;padding:4px 9px;border-radius:7px;font:700 9.5px 'IBM Plex Mono';letter-spacing:.05em}
+.ms3-rew.rc{background:rgba(255,210,77,.1);color:#ffd24d;border:1px solid rgba(255,210,77,.2)}
+.ms3-rew.rs{background:rgba(34,230,255,.08);color:#22e6ff;border:1px solid rgba(34,230,255,.18)}
+.ms3-rew.rn{background:rgba(160,92,255,.1);color:#a05cff;border:1px solid rgba(160,92,255,.2)}
+.ms3-claim{height:34px;padding:0 16px;border-radius:10px;border:none;background:linear-gradient(135deg,#ffd24d 0%,#ff9f1a 100%);color:#1a0800;font:800 9px 'IBM Plex Mono';letter-spacing:.18em;cursor:pointer;white-space:nowrap;flex-shrink:0;box-shadow:0 4px 18px rgba(255,200,50,.3),inset 0 1px 0 rgba(255,255,255,.2);transition:transform .1s,box-shadow .1s}
+.ms3-claim:active{transform:scale(.95);box-shadow:0 2px 8px rgba(255,200,50,.2)}
+.ms3-done-txt{font:600 8.5px 'IBM Plex Mono';letter-spacing:.18em;color:rgba(72,255,155,.55)}
+.ms3-prog-txt{font:600 8.5px 'IBM Plex Mono';letter-spacing:.1em;color:rgba(234,244,255,.28)}
+
+/* === MISSIONS V2 === */
+.ms2-screen{display:flex;flex-direction:column;height:100%;background:var(--bg);overflow:hidden}
+.ms2-hdr{display:flex;align-items:center;gap:12px;padding:16px 18px 12px;border-bottom:1px solid rgba(34,230,255,.1);flex-shrink:0}
+.ms2-back{width:36px;height:36px;border-radius:10px;border:1px solid rgba(34,230,255,.25);background:rgba(34,230,255,.06);color:#22e6ff;font-size:20px;cursor:pointer;display:grid;place-items:center;flex-shrink:0}
+.ms2-title-block{flex:1;min-width:0}
+.ms2-title{display:block;font:800 15px 'Chakra Petch';letter-spacing:.2em;color:#eaf4ff}
+.ms2-sub{display:block;font:600 9px 'IBM Plex Mono';letter-spacing:.12em;color:#22e6ff;margin-top:2px}
+.ms2-cur{font:700 9px 'IBM Plex Mono';letter-spacing:.08em;color:rgba(234,244,255,.55);text-align:right;flex-shrink:0;white-space:nowrap}
+.ms2-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:10px 14px;flex-shrink:0}
+.ms2-tab{height:32px;border-radius:8px;border:1px solid rgba(120,170,220,.15);background:rgba(9,15,32,.8);color:rgba(234,244,255,.45);font:700 9px 'IBM Plex Mono';letter-spacing:.12em;cursor:pointer;transition:all .2s}
+.ms2-tab.on{border-color:#22e6ff;background:rgba(34,230,255,.1);color:#22e6ff;box-shadow:0 0 12px rgba(34,230,255,.12)}
+.ms2-list{flex:1;overflow-y:auto;padding:4px 14px 28px;display:flex;flex-direction:column;gap:8px}
+.ms2-card{border-radius:14px;border:1px solid rgba(120,170,220,.14);background:rgba(9,15,32,.85);padding:13px 14px;transition:border-color .2s}
+.ms2-card.ms2-ready{border-color:rgba(72,255,155,.4);background:rgba(9,18,32,.97)}
+.ms2-card.ms2-claimed{opacity:.38}
+.ms2-card-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.ms2-icon{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;font-size:17px;flex-shrink:0}
+.ms2-icon.cat-combat{background:rgba(255,79,216,.1);border:1px solid rgba(255,79,216,.3)}
+.ms2-icon.cat-progress{background:rgba(34,230,255,.08);border:1px solid rgba(34,230,255,.25)}
+.ms2-icon.cat-mastery{background:rgba(160,92,255,.1);border:1px solid rgba(160,92,255,.3)}
+.ms2-info{flex:1;min-width:0}
+.ms2-name{font:700 11.5px 'Chakra Petch';letter-spacing:.08em;color:#eaf4ff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ms2-desc{font:500 9px 'IBM Plex Mono';color:rgba(234,244,255,.45);margin-top:2px;letter-spacing:.05em}
+.ms2-badge{font:700 8px 'IBM Plex Mono';letter-spacing:.1em;padding:4px 8px;border-radius:5px;flex-shrink:0}
+.ms2-badge.b-done{background:rgba(72,255,155,.12);color:#48ff9b;border:1px solid rgba(72,255,155,.28)}
+.ms2-badge.b-ready{background:rgba(255,210,77,.12);color:#ffd24d;border:1px solid rgba(255,210,77,.3)}
+.ms2-badge.b-prog{background:rgba(34,230,255,.07);color:rgba(34,230,255,.55);border:1px solid rgba(34,230,255,.14)}
+.ms2-bar{height:4px;border-radius:999px;background:rgba(9,20,50,.9);overflow:hidden;margin-bottom:9px}
+.ms2-bar i{display:block;height:100%;border-radius:999px;transition:width .5s}
+.ms2-bar.cat-combat i{background:linear-gradient(90deg,#a05cff,#ff4fd8)}
+.ms2-bar.cat-progress i{background:linear-gradient(90deg,#22e6ff,#4499ff)}
+.ms2-bar.cat-mastery i{background:linear-gradient(90deg,#a05cff,#ffd24d)}
+.ms2-footer{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ms2-rewards{font:700 10px 'IBM Plex Mono';letter-spacing:.07em;display:flex;gap:8px}
+.ms2-rewards .r-cr{color:#ffd24d}
+.ms2-rewards .r-sh{color:#22e6ff}
+.ms2-rewards .r-ne{color:#a05cff}
+.ms2-claim-btn{height:30px;padding:0 14px;border-radius:8px;border:none;background:linear-gradient(135deg,#22e6ff,#4499ff);color:#020d1f;font:800 9px 'IBM Plex Mono';letter-spacing:.14em;cursor:pointer;white-space:nowrap}
+.ms2-done-label{font:600 9px 'IBM Plex Mono';letter-spacing:.16em;color:rgba(72,255,155,.65)}
+.ms2-prog-label{font:600 9px 'IBM Plex Mono';letter-spacing:.1em;color:rgba(234,244,255,.35)}
+
 /* --- MAGAZA --- */
 .pg-shop{text-align:left;padding:10px 12px;border-radius:var(--r-md);
   border:1px solid var(--line);background:linear-gradient(180deg,var(--s2),var(--s1));
@@ -2521,10 +2643,39 @@ window.addEventListener("unhandledrejection",function(){});
 <button class="btn ghost" id="b-sectors-back">Geri</button>
 </div>
 <div class="screen" id="scr-missions">
-<div class="tutorial-title">GÖREVLER</div>
-<div class="tag" id="pg-mission-cur">◎ 0   ◆ 0   ✦ 0</div>
-<div class="pg-list" id="pg-mission-list"></div>
-<button class="btn ghost" id="b-missions-back">Geri</button>
+<div class="ms3-hdr">
+  <div class="ms3-hdr-bg"></div>
+  <div class="ms3-hdr-top">
+    <button class="ms3-back" id="b-missions-back">‹</button>
+    <div class="ms3-hdr-mid">
+      <span class="ms3-lbl">NORYVX PROTOCOL</span>
+      <span class="ms3-ttl">GÖREVLER</span>
+    </div>
+    <div class="ms3-hdr-ctr">
+      <span class="ms3-ctr-big" id="ms3-done-count">0</span>
+      <span class="ms3-ctr-sep">/</span>
+      <span class="ms3-ctr-big ms3-ctr-dim" id="ms3-total-count">25</span>
+      <span class="ms3-ctr-tag">TAMAM</span>
+    </div>
+  </div>
+  <div class="ms3-cur-row" id="pg-mission-cur">
+    <span class="ms3-ci ci-cr"><i>◎</i><b>0</b><small>KREDİ</small></span>
+    <span class="ms3-ci ci-sh"><i>◆</i><b>0</b><small>SHARD</small></span>
+    <span class="ms3-ci ci-ne"><i>✦</i><b>0</b><small>NEON</small></span>
+  </div>
+  <div class="ms3-mbar-wrap">
+    <span class="ms3-mbar-lbl">GENEL İLERLEME</span>
+    <div class="ms3-mbar"><i id="ms3-mbar-fill" style="width:0%"></i></div>
+    <span class="ms3-mbar-pct" id="ms3-mbar-pct">0%</span>
+  </div>
+</div>
+<div class="ms3-tabs" id="ms3-tabs">
+  <button class="ms3-tab on" data-tab="all"><span class="ms3-ti">⬡</span><b>TÜM</b></button>
+  <button class="ms3-tab" data-tab="combat"><span class="ms3-ti">⚔</span><b>SAVAŞ</b></button>
+  <button class="ms3-tab" data-tab="progress"><span class="ms3-ti">≋</span><b>İLERLEME</b></button>
+  <button class="ms3-tab" data-tab="mastery"><span class="ms3-ti">⚙</span><b>USTALIK</b></button>
+</div>
+<div class="ms3-list" id="pg-mission-list"></div>
 </div>
 <div class="screen" id="scr-shop">
 <div class="tutorial-title">MAĞAZA</div>
@@ -12557,17 +12708,34 @@ const SMAP={};SECTORS.forEach(s=>SMAP[s.id]=s);
 
 /* ---------- GOREVLER ---------- */
 const MISSIONS=[
-  {id:"k100" ,n:"100 düşman yok et"          ,t:"kills"    ,g:100 ,cr:900  ,sh:4 ,ne:0},
-  {id:"k1000",n:"1.000 düşman yok et"        ,t:"kills"    ,g:1000,cr:4200 ,sh:20,ne:25},
-  {id:"e20"  ,n:"20 elit düşman yok et"      ,t:"elites"   ,g:20  ,cr:2400 ,sh:14,ne:10},
-  {id:"b1"   ,n:"İlk boss'u yen"             ,t:"bosses"   ,g:1   ,cr:1800 ,sh:10,ne:15},
-  {id:"b5"   ,n:"5 boss yen"                 ,t:"bosses"   ,g:5   ,cr:6500 ,sh:34,ne:40},
-  {id:"w10"  ,n:"Dalga 10'a ulaş"            ,t:"bestWave" ,g:10  ,cr:1500 ,sh:8 ,ne:10},
-  {id:"w20"  ,n:"Dalga 20'ye ulaş"           ,t:"bestWave" ,g:20  ,cr:5200 ,sh:26,ne:30},
-  {id:"enh10",n:"10 başarılı geliştirme yap" ,t:"enhance"  ,g:10  ,cr:2000 ,sh:16,ne:12},
-  {id:"leg1" ,n:"Bir efsanevi parça bul"     ,t:"legendary",g:1   ,cr:3000 ,sh:18,ne:20},
-  {id:"sec3" ,n:"3. sektörü aç"              ,t:"sectors"  ,g:3   ,cr:4500 ,sh:24,ne:30},
-  {id:"pw5k" ,n:"5.000 güce ulaş"            ,t:"power"    ,g:5000,cr:7000 ,sh:40,ne:50}
+  /* SAVAŞ */
+  {id:"k50"  ,n:"İlk Katliamı Başlat"       ,desc:"50 düşman yok et"           ,ic:"⚔",cat:"combat"  ,t:"kills"    ,g:50   ,cr:500  ,sh:2 ,ne:0 },
+  {id:"k100" ,n:"Acımasız Avcı"             ,desc:"100 düşman yok et"          ,ic:"⚔",cat:"combat"  ,t:"kills"    ,g:100  ,cr:900  ,sh:4 ,ne:0 },
+  {id:"k500" ,n:"Katliam Makinesi"          ,desc:"500 düşman yok et"          ,ic:"⚔",cat:"combat"  ,t:"kills"    ,g:500  ,cr:2500 ,sh:12,ne:15},
+  {id:"k1000",n:"Ölüm Tanrısı"             ,desc:"1.000 düşman yok et"        ,ic:"⚔",cat:"combat"  ,t:"kills"    ,g:1000 ,cr:4200 ,sh:20,ne:25},
+  {id:"k5000",n:"Neon Katliamcı"           ,desc:"5.000 düşman yok et"        ,ic:"⚔",cat:"combat"  ,t:"kills"    ,g:5000 ,cr:15000,sh:60,ne:75},
+  {id:"e5"   ,n:"Elit Avcı"               ,desc:"5 elit düşman yok et"        ,ic:"◈",cat:"combat"  ,t:"elites"   ,g:5    ,cr:1200 ,sh:7 ,ne:5 },
+  {id:"e20"  ,n:"Elit Katil"              ,desc:"20 elit düşman yok et"       ,ic:"◈",cat:"combat"  ,t:"elites"   ,g:20   ,cr:2400 ,sh:14,ne:10},
+  {id:"e50"  ,n:"Elit Fatihi"             ,desc:"50 elit düşman yok et"       ,ic:"◈",cat:"combat"  ,t:"elites"   ,g:50   ,cr:5500 ,sh:28,ne:30},
+  {id:"b1"   ,n:"Boss Katili"             ,desc:"İlk boss'u yen"              ,ic:"◉",cat:"combat"  ,t:"bosses"   ,g:1    ,cr:1800 ,sh:10,ne:15},
+  {id:"b5"   ,n:"Boss Avcısı"             ,desc:"5 boss yen"                  ,ic:"◉",cat:"combat"  ,t:"bosses"   ,g:5    ,cr:6500 ,sh:34,ne:40},
+  {id:"b10"  ,n:"Boss Terörü"             ,desc:"10 boss yen"                 ,ic:"◉",cat:"combat"  ,t:"bosses"   ,g:10   ,cr:12000,sh:55,ne:70},
+  /* İLERLEME */
+  {id:"w5"   ,n:"Dalga Sörfçüsü"          ,desc:"Dalga 5'e ulaş"              ,ic:"≋",cat:"progress",t:"bestWave" ,g:5    ,cr:800  ,sh:5 ,ne:5 },
+  {id:"w10"  ,n:"Dalga Fatihi"            ,desc:"Dalga 10'a ulaş"             ,ic:"≋",cat:"progress",t:"bestWave" ,g:10   ,cr:1500 ,sh:8 ,ne:10},
+  {id:"w20"  ,n:"Dalga Efendisi"          ,desc:"Dalga 20'ye ulaş"            ,ic:"≋",cat:"progress",t:"bestWave" ,g:20   ,cr:5200 ,sh:26,ne:30},
+  {id:"w35"  ,n:"Fırtına Lordu"           ,desc:"Dalga 35'e ulaş"             ,ic:"≋",cat:"progress",t:"bestWave" ,g:35   ,cr:9500 ,sh:42,ne:50},
+  {id:"sec2" ,n:"Kaşif"                   ,desc:"2. sektörü aç"               ,ic:"⬡",cat:"progress",t:"sectors"  ,g:2    ,cr:2000 ,sh:10,ne:10},
+  {id:"sec3" ,n:"Sektör Fatihi"           ,desc:"3. sektörü aç"               ,ic:"⬡",cat:"progress",t:"sectors"  ,g:3    ,cr:4500 ,sh:24,ne:30},
+  {id:"pw1k" ,n:"Güç Uyanışı"            ,desc:"1.000 güce ulaş"             ,ic:"⚡",cat:"progress",t:"power"    ,g:1000 ,cr:1200 ,sh:6 ,ne:8 },
+  {id:"pw5k" ,n:"Güç Patlaması"          ,desc:"5.000 güce ulaş"             ,ic:"⚡",cat:"progress",t:"power"    ,g:5000 ,cr:7000 ,sh:40,ne:50},
+  {id:"pw15k",n:"Neon Tanrısı"           ,desc:"15.000 güce ulaş"            ,ic:"⚡",cat:"progress",t:"power"    ,g:15000,cr:18000,sh:80,ne:100},
+  /* USTALIK */
+  {id:"enh5" ,n:"Geliştirici"            ,desc:"5 başarılı geliştirme yap"   ,ic:"⚙",cat:"mastery" ,t:"enhance"  ,g:5    ,cr:1000 ,sh:8 ,ne:6 },
+  {id:"enh10",n:"Usta Teknisyen"         ,desc:"10 başarılı geliştirme yap"  ,ic:"⚙",cat:"mastery" ,t:"enhance"  ,g:10   ,cr:2000 ,sh:16,ne:12},
+  {id:"enh25",n:"Forge Ustası"           ,desc:"25 başarılı geliştirme yap"  ,ic:"⚙",cat:"mastery" ,t:"enhance"  ,g:25   ,cr:5000 ,sh:32,ne:28},
+  {id:"leg1" ,n:"Efsane Arayışı"        ,desc:"Bir efsanevi parça bul"      ,ic:"✦",cat:"mastery" ,t:"legendary",g:1    ,cr:3000 ,sh:18,ne:20},
+  {id:"leg3" ,n:"Efsane Koleksiyoncusu" ,desc:"3 efsanevi parça bul"        ,ic:"✦",cat:"mastery" ,t:"legendary",g:3    ,cr:7500 ,sh:38,ne:45},
 ];
 
 /* ---------- MAGAZA ---------- */
@@ -12837,18 +13005,90 @@ function renderSectors(){
   }));
 }
 
+let _ms3TabsBound=false;
 function renderMissions(){
-  const g=$$("pg-mission-list");if(!g)return;
-  setCur("pg-mission-cur");
-  g.innerHTML=MISSIONS.map(m=>{
-    const p=progressOf(m),done=p>=m.g,cl=!!P.claimed[m.id];
-    return '<div class="pg-ms'+(cl?" done":done?" ready":"")+'">'+
-      '<div class="pg-ms-h"><b>'+m.n+'</b><span>'+Math.min(p,m.g)+' / '+m.g+'</span></div>'+
-      bar(Math.min(p,m.g),m.g)+
-      '<div class="pg-ms-f"><span>◎'+fmt(m.cr)+(m.sh?'  ◆'+m.sh:'')+(m.ne?'  ✦'+m.ne:'')+'</span>'+
-      (cl?'<i>ALINDI</i>':done?'<button class="p3-btn" data-claim="'+m.id+'">ÖDÜLÜ AL</button>':'<i>DEVAM</i>')+
-      '</div></div>';
+  const g=document.getElementById("pg-mission-list");if(!g)return;
+
+  /* currency — rich HTML */
+  const cur=document.getElementById("pg-mission-cur");
+  if(cur){
+    cur.innerHTML=
+      '<span class="ms3-ci ci-cr"><i>◎</i><b>'+fmt(RPG.state.credits)+'</b><small>KREDİ</small></span>'
+      +'<span class="ms3-ci ci-sh"><i>◆</i><b>'+fmt(RPG.state.shards)+'</b><small>SHARD</small></span>'
+      +'<span class="ms3-ci ci-ne"><i>✦</i><b>'+fmt(P.neon)+'</b><small>NEON</small></span>';
+  }
+
+  /* header stats & master bar */
+  const total=MISSIONS.length;
+  const completed=MISSIONS.filter(m=>!!P.claimed[m.id]).length;
+  const elDone=document.getElementById("ms3-done-count");
+  const elTotal=document.getElementById("ms3-total-count");
+  const elFill=document.getElementById("ms3-mbar-fill");
+  const elPct=document.getElementById("ms3-mbar-pct");
+  if(elDone)elDone.textContent=completed;
+  if(elTotal)elTotal.textContent=total;
+  const masterPct=total?Math.round(completed/total*100):0;
+  if(elFill)elFill.style.width=masterPct+"%";
+  if(elPct)elPct.textContent=masterPct+"%";
+
+  /* bind tabs once */
+  if(!_ms3TabsBound){
+    const tabsEl=document.getElementById("ms3-tabs");
+    if(tabsEl){
+      tabsEl.addEventListener("click",function(e){
+        const btn=e.target.closest(".ms3-tab");if(!btn)return;
+        tabsEl.querySelectorAll(".ms3-tab").forEach(t=>t.classList.remove("on"));
+        btn.classList.add("on");
+        renderMissions();
+      });
+      _ms3TabsBound=true;
+    }
+  }
+
+  /* filter by active tab */
+  const activeTab=(document.getElementById("ms3-tabs")?.querySelector(".ms3-tab.on")?.dataset.tab)||"all";
+  const list=activeTab==="all"?MISSIONS:MISSIONS.filter(m=>m.cat===activeTab);
+
+  g.innerHTML=list.map(m=>{
+    const p=progressOf(m),isDone=p>=m.g,isClaimed=!!P.claimed[m.id];
+    const pct=Math.min(100,p/m.g*100).toFixed(1);
+    const cat=m.cat||"combat";
+    const statBadge=isClaimed
+      ?'<span class="ms3-stat ss-done">✓ ALINDI</span>'
+      :isDone
+        ?'<span class="ms3-stat ss-ready">★ HAZIR</span>'
+        :'<span class="ms3-stat ss-prog">'+Math.min(p,m.g)+'/'+m.g+'</span>';
+    const footerRight=isClaimed
+      ?'<span class="ms3-done-txt">TAMAMLANDI</span>'
+      :isDone
+        ?'<button class="ms3-claim" data-claim="'+m.id+'">ÖDÜLÜ AL</button>'
+        :'<span class="ms3-prog-txt">'+Math.min(p,m.g)+' / '+m.g+'</span>';
+    const rewards=
+      '<span class="ms3-rew rc">◎ '+fmt(m.cr)+'</span>'
+      +(m.sh?'<span class="ms3-rew rs">◆ '+m.sh+'</span>':'')
+      +(m.ne?'<span class="ms3-rew rn">✦ '+m.ne+'</span>':'');
+    return '<div class="ms3-card cat-'+cat+(isClaimed?" ms3-claimed":isDone?" ms3-ready")+'">'
+      +'<div class="ms3-inner">'
+        +'<div class="ms3-ctop">'
+          +'<div class="ms3-ico cat-'+cat+'">'+(m.ic||"◆")+'</div>'
+          +'<div class="ms3-meta">'
+            +'<div class="ms3-mname">'+m.n+'</div>'
+            +'<div class="ms3-mdesc">'+(m.desc||"")+'</div>'
+          +'</div>'
+          +statBadge
+        +'</div>'
+        +'<div class="ms3-prow">'
+          +'<div class="ms3-pbar cat-'+cat+'"><i style="width:'+pct+'%"></i></div>'
+          +'<span class="ms3-ppct">'+Math.round(+pct)+'%</span>'
+        +'</div>'
+        +'<div class="ms3-foot">'
+          +'<div class="ms3-rews">'+rewards+'</div>'
+          +footerRight
+        +'</div>'
+      +'</div>'
+    +'</div>';
   }).join("");
+
   g.querySelectorAll("[data-claim]").forEach(b=>b.addEventListener("click",()=>{
     if(claim(b.dataset.claim)){try{Audio_.power();}catch(e){}renderMissions();}
   }));
