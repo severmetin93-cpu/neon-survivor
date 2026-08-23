@@ -14755,6 +14755,7 @@ canvas.addEventListener("mousemove",e=>{if(JOY.on)move(e.clientX,e.clientY);},{p
 canvas.addEventListener("mouseup",up,{passive:true});
 
 function drawJoy(dt){
+  return; /* natural touch — no visual overlay */
   if(!JOY.on)JOY.fade=Math.max(0,JOY.fade-dt*3.2);
   if(JOY.fade<=0.01)return;
   const a=JOY.fade;
@@ -18935,7 +18936,7 @@ const ctl={
   active:false,id:null,
   originX:0,originY:0,lastX:0,lastY:0,
   pendingDX:0,pendingDY:0,raf:0,
-  deadZone:2.0,
+  deadZone:1.5,
   gain:1.0
 };
 
@@ -18954,46 +18955,47 @@ function point(clientX,clientY){
 
 function consume(){
   if(!ctl.active)return;
+  const dx=ctl.pendingDX,dy=ctl.pendingDY;
+  ctl.pendingDX=ctl.pendingDY=0;
   if(Game.state!==STATE.PLAYING)return;
 
-  /* Floating joystick — velocity scales with distance from origin (Brawl Stars style).
-     Far finger = fast; near finger = slow; release = stop. */
-  const dx=ctl.lastX-ctl.originX;
-  const dy=ctl.lastY-ctl.originY;
-  const dist=Math.hypot(dx,dy);
+  const mag=Math.hypot(dx,dy);
+  if(mag<=ctl.deadZone)return;
 
-  ctl.pendingDX=ctl.pendingDY=0;
+  /* Mirror inputMove() speed formula: meta upgrades + run-card stacks + overdrive.
+     The old ctl system omitted this, making the character feel slow after upgrades. */
+  const metaSpd=Math.min(
+    BALANCE.fixes.metaSpeedCap,
+    (Save.data.upgrades.speed||0)*BALANCE.fixes.metaSpeedPerLevel
+  );
+  const stacks=(Game.runUpgrades&&Game.runUpgrades.speed)||0;
+  const softCap=BALANCE.player.runUpgrade.speedStackSoftCap;
+  const runSpd=Math.min(stacks,softCap)*BALANCE.player.runUpgrade.speedPerStack
+    +Math.max(0,stacks-softCap)*BALANCE.player.runUpgrade.postCapSpeed;
+  const boost=(1+runSpd+metaSpd)*((Game.powers&&Game.powers.overdrive>0)?1.35:1);
 
-  if(dist<ctl.deadZone)return;
+  let mx=dx*boost*ctl.gain;
+  let my=dy*boost*ctl.gain;
 
-  const RADIUS=80;   /* effective joystick radius, CSS px */
-  const MAX_SPD=10;  /* pixels/frame at full deflection (60fps ≈ 600px/s) */
+  /* Hard cap: prevents teleport on GC/lag spikes */
+  const CAP=28;
+  if(mx>CAP)mx=CAP; else if(mx<-CAP)mx=-CAP;
+  if(my>CAP)my=CAP; else if(my<-CAP)my=-CAP;
 
-  const ratio=Math.min(dist/RADIUS,1);
-  const nx=dx/dist,ny=dy/dist;
-
-  const speedLv=(typeof Save!=="undefined"&&Save.data&&Save.data.upgrades)
-    ?(Save.data.upgrades.speed||0):0;
-  const speedBoost=1+speedLv*0.12;
-
-  const spd=MAX_SPD*ratio*speedBoost*ctl.gain;
-  const mx=nx*spd,my=ny*spd;
   const r=player.r||BALANCE.player.radius||16;
-
   player.x=clamp(player.x+mx,r,W-r);
   player.y=clamp(player.y+my,r,H-r);
-
   player._lastMoveDX=mx;
   player._lastMoveDY=my;
 
-  if(typeof hideHint==="function"&&dist>5)hideHint();
+  if(typeof hideHint==="function"&&mag>2)hideHint();
 }
 window._nvxConsume=consume;
 
 function queueDelta(x,y){
-  /* Joystick mode: just track current finger position, no delta accumulation */
+  ctl.pendingDX+=x-ctl.lastX;
+  ctl.pendingDY+=y-ctl.lastY;
   ctl.lastX=x;ctl.lastY=y;
-  ctl.pendingDX=ctl.pendingDY=0;
 }
 
 function begin(clientX,clientY,id){
