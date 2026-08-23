@@ -2208,58 +2208,131 @@ body.ls .bn{width:70px}
 </head>
 <body>&l
 <style id="noryvx-development-epic-style">
-#noryvx-dev-upgrade-deck{margin:18px 14px 30px;padding:16px 14px 18px;border:1px solid rgba(74,220,255,.22);border-radius:18px;background:radial-gradient(90% 140% at 8% 0%,rgba(34,230,255,.11),transparent 55%),radial-gradient(90% 140% at 95% 100%,rgba(171,72,255,.11),transparent 55%),linear-gradient(180deg,rgba(9,18,38,.96),rgba(4,9,20,.98));box-shadow:0 0 28px rgba(0,210,255,.07),inset 0 1px 0 rgba(255,255,255,.035)}
-#noryvx-dev-upgrade-deck .deck-head{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-bottom:13px}
-#noryvx-dev-upgrade-deck .deck-kicker{color:#49e8ff;font:600 9px/1.2 "IBM Plex Mono",monospace;letter-spacing:.18em}
-#noryvx-dev-upgrade-deck .deck-title{margin-top:5px;color:#eef7ff;font:800 18px/1.05 "Chakra Petch",sans-serif;letter-spacing:.12em}
-#noryvx-dev-upgrade-deck .dev-points{min-width:78px;text-align:center;padding:8px 9px;border:1px solid rgba(255,211,64,.30);border-radius:12px;background:rgba(255,210,58,.07);color:#ffd84a;font:800 12px/1 "IBM Plex Mono",monospace}
-#noryvx-dev-upgrade-deck .dev-points small{display:block;color:rgba(255,255,255,.44);font-size:7px;letter-spacing:.14em;margin-bottom:5px}
-#noryvx-dev-upgrade-deck .upgrade-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-#noryvx-dev-upgrade-deck .upgrade-card{min-height:122px;padding:13px;border-radius:15px;border:1px solid rgba(115,170,220,.14);background:linear-gradient(145deg,rgba(17,29,53,.94),rgba(6,12,26,.98));position:relative;overflow:hidden;cursor:pointer;touch-action:manipulation}
-#noryvx-dev-upgrade-deck .upgrade-card.available{border-color:rgba(37,224,255,.40);box-shadow:0 0 18px rgba(37,224,255,.08)}
-#noryvx-dev-upgrade-deck .upgrade-card.maxed{border-color:rgba(255,213,71,.30)}
-#noryvx-dev-upgrade-deck .upgrade-card.locked{opacity:.54;cursor:default}
-#noryvx-dev-upgrade-deck .uc-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;border:1px solid rgba(38,224,255,.24);background:rgba(38,224,255,.07);color:#39e7ff;font-size:16px;margin-bottom:9px}
-#noryvx-dev-upgrade-deck .upgrade-card.maxed .uc-icon{color:#ffd84a;border-color:rgba(255,216,74,.28)}
-#noryvx-dev-upgrade-deck .uc-name{color:#eaf4ff;font:800 11px/1.15 "Chakra Petch",sans-serif;letter-spacing:.07em}
-#noryvx-dev-upgrade-deck .uc-desc{margin-top:5px;color:rgba(230,242,255,.48);font:400 8.5px/1.35 "IBM Plex Mono",monospace}
-#noryvx-dev-upgrade-deck .uc-state{position:absolute;right:10px;top:12px;color:#3ce8ff;font:800 7.5px/1 "IBM Plex Mono",monospace;letter-spacing:.08em}
-#noryvx-dev-upgrade-deck .locked .uc-state{color:rgba(255,255,255,.28)}
-#noryvx-dev-upgrade-deck .maxed .uc-state{color:#ffd84a}
-#noryvx-dev-upgrade-deck .uc-bar{height:3px;margin-top:9px;border-radius:5px;background:rgba(255,255,255,.07);overflow:hidden}
-#noryvx-dev-upgrade-deck .uc-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#22e6ff,#a35cff);box-shadow:0 0 8px rgba(60,225,255,.45)}
-#noryvx-dev-upgrade-deck .uc-level{position:absolute;bottom:10px;right:10px;color:rgba(236,246,255,.40);font:700 8px/1 "IBM Plex Mono",monospace}
-#noryvx-dev-detail{position:fixed;inset:0;z-index:9999;display:none;align-items:flex-end;justify-content:center;background:rgba(0,4,12,.68);backdrop-filter:blur(5px)}
-#noryvx-dev-detail.on{display:flex}
-/* DEV screen — profile card */
-.dev-profile-card{width:min(390px,90vw);margin:10px auto;padding:14px 16px;border-radius:16px;background:linear-gradient(145deg,rgba(17,29,53,.94),rgba(6,12,26,.98));border:1px solid rgba(34,230,255,.16)}
-.dev-pc-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
-.dev-pc-hero{font:800 13px/1 "Chakra Petch",sans-serif;letter-spacing:.1em;color:#eaf4ff}
-.dev-pc-rank{font:600 9px/1 "IBM Plex Mono",monospace;letter-spacing:.18em;color:rgba(234,244,255,.45);margin-top:4px}
-.dev-pc-lv{font:900 26px/1 "Chakra Petch",sans-serif;color:#22e6ff;text-shadow:0 0 18px rgba(34,230,255,.35)}
-.dev-xp-track{height:5px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden;margin-bottom:5px}
-.dev-xp-track i{display:block;height:100%;background:linear-gradient(90deg,#22e6ff,#a05cff);transition:width .4s;border-radius:99px;box-shadow:0 0 8px rgba(34,230,255,.4)}
-.dev-xp-row{display:flex;justify-content:space-between;font:600 9px/1 "IBM Plex Mono",monospace;letter-spacing:.1em;color:rgba(234,244,255,.40)}
-.dev-section-hd{width:min(390px,90vw);margin:12px auto 6px;font:800 9px/1 "Chakra Petch",sans-serif;letter-spacing:.2em;color:rgba(234,244,255,.40);display:flex;justify-content:space-between;padding:0 2px}
-/* DEV nav cards */
-.dev-nav-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:min(390px,90vw);margin:10px auto 16px}
-.dev-nav-card{display:flex;align-items:center;gap:10px;padding:13px;border-radius:14px;background:rgba(34,230,255,.04);border:1px solid rgba(34,230,255,.12);color:var(--ink);text-align:left;cursor:pointer;touch-action:manipulation}
-.dev-nav-card:active{transform:scale(.97);background:rgba(34,230,255,.08)}
-.dev-nav-ico{font-size:22px;color:#22e6ff;line-height:1;min-width:26px;text-align:center}
-.dev-nav-card b{display:block;font:800 10px/1 "Chakra Petch",sans-serif;letter-spacing:.14em}
-.dev-nav-card small{display:block;font:600 9px/1 "IBM Plex Mono",monospace;color:rgba(234,244,255,.40);margin-top:3px}
-#noryvx-dev-detail .panel{width:min(560px,100%);padding:20px 18px 22px;border:1px solid rgba(48,222,255,.28);border-bottom:0;border-radius:22px 22px 0 0;background:linear-gradient(180deg,#0b1730,#050a17);box-shadow:0 -18px 55px rgba(0,0,0,.45)}
-#noryvx-dev-detail .detail-kicker{color:#40e6ff;font:600 9px/1 "IBM Plex Mono",monospace;letter-spacing:.18em}
-#noryvx-dev-detail h3{margin:7px 0;color:#f1f7ff;font:800 22px/1.1 "Chakra Petch",sans-serif;letter-spacing:.08em}
-#noryvx-dev-detail .detail-copy{color:rgba(231,243,255,.58);font:400 10px/1.5 "IBM Plex Mono",monospace}
-#noryvx-dev-detail .detail-stats{display:flex;gap:9px;margin:14px 0}
-#noryvx-dev-detail .detail-stat{flex:1;padding:10px;border-radius:12px;background:rgba(255,255,255,.035);border:1px solid rgba(115,170,220,.13)}
-#noryvx-dev-detail .detail-stat b{display:block;color:#eef7ff;font:800 14px/1.1 "Chakra Petch",sans-serif}
-#noryvx-dev-detail .detail-stat span{display:block;margin-top:4px;color:rgba(231,243,255,.40);font:400 7px/1 "IBM Plex Mono",monospace}
-#noryvx-dev-detail .detail-actions{display:flex;gap:9px}
-#noryvx-dev-detail button{flex:1;min-height:46px;border-radius:13px;border:1px solid rgba(49,225,255,.30);background:linear-gradient(100deg,#1fdff5,#7b56ff);color:#03101d;font:800 10px/1 "Chakra Petch",sans-serif;letter-spacing:.10em}
-#noryvx-dev-detail button.secondary{background:rgba(255,255,255,.035);color:#b9c8d9;border-color:rgba(255,255,255,.10)}
-@media(min-width:600px){#noryvx-dev-upgrade-deck{margin-left:24px;margin-right:24px}}
+/* ===== NORYVX DEVELOPMENT SCREEN — PREMIUM REDESIGN ===== */
+
+/* Screen layout: flex column so bottom nav stays pinned */
+#scr-phase3{padding:0!important;overflow-x:hidden!important;overflow-y:hidden!important;}
+
+/* Scrollable content area */
+.dev-content{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;padding:0 0 14px;min-height:0;}
+
+/* ===== HEADER ===== */
+.dev-hdr{flex:none;padding:10px 14px 10px;background:rgba(3,9,20,.97);border-bottom:1px solid rgba(34,230,255,.08);z-index:5;}
+.dev-hdr-badge{font:600 8px/1 "IBM Plex Mono",monospace;letter-spacing:.22em;color:rgba(34,230,255,.5);margin-bottom:7px;}
+.dev-hdr-row{display:flex;align-items:center;gap:10px;}
+.dev-hdr-back{width:40px;height:40px;min-width:40px;border-radius:12px;border:1px solid rgba(120,170,220,.18);background:rgba(12,20,42,.85);color:#eaf4ff;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;}
+.dev-hdr-titles{flex:1;min-width:0;}
+.dev-hdr-title{font:800 14px/1 "Chakra Petch",sans-serif;letter-spacing:.18em;color:#eaf4ff;}
+.dev-hdr-subtitle{font:500 7px/1 "IBM Plex Mono",monospace;letter-spacing:.12em;color:rgba(34,230,255,.45);margin-top:4px;}
+.dev-hdr-sp{font:700 10px/1 "IBM Plex Mono",monospace;color:#22e6ff;padding:6px 10px;border:1px solid rgba(34,230,255,.22);border-radius:10px;background:rgba(34,230,255,.05);white-space:nowrap;}
+
+/* ===== PROFILE CARD ===== */
+.dev-profile-card{margin:14px 14px 0;padding:16px;border-radius:18px;background:linear-gradient(145deg,rgba(12,22,46,.98),rgba(4,9,20,.99));border:1px solid rgba(34,230,255,.2);box-shadow:0 0 28px rgba(34,230,255,.05),inset 0 1px 0 rgba(255,255,255,.035);position:relative;overflow:hidden;}
+.dev-profile-card::before{content:'';position:absolute;top:-30px;right:-20px;width:140px;height:140px;background:radial-gradient(circle,rgba(34,230,255,.06),transparent 70%);pointer-events:none;}
+.dev-pc-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+.dev-pc-hero{font:800 14px/1 "Chakra Petch",sans-serif;letter-spacing:.1em;color:#eaf4ff;}
+.dev-pc-rank{font:600 9px/1 "IBM Plex Mono",monospace;letter-spacing:.2em;color:rgba(34,230,255,.5);margin-top:5px;}
+.dev-pc-lv-wrap{text-align:right;}
+.dev-pc-lv{font:900 42px/1 "Chakra Petch",sans-serif;color:#22e6ff;text-shadow:0 0 22px rgba(34,230,255,.5),0 0 44px rgba(34,230,255,.2);letter-spacing:.02em;}
+.dev-xp-track{height:6px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden;margin-bottom:6px;}
+.dev-xp-track i{display:block;height:100%;background:linear-gradient(90deg,#22e6ff,#a05cff);transition:width .4s;border-radius:99px;box-shadow:0 0 10px rgba(34,230,255,.5);}
+.dev-xp-row{display:flex;justify-content:space-between;font:600 8.5px/1 "IBM Plex Mono",monospace;letter-spacing:.1em;color:rgba(234,244,255,.45);}
+.dev-xp-bonus{color:rgba(34,230,255,.7)!important;}
+
+/* ===== SECTION HEADER ===== */
+.dev-section-hd{margin:16px 14px 8px;font:800 9px/1 "Chakra Petch",sans-serif;letter-spacing:.22em;color:rgba(234,244,255,.45);display:flex;justify-content:space-between;align-items:center;}
+.dev-section-hd span{color:rgba(34,230,255,.65);font:700 9px/1 "IBM Plex Mono",monospace;letter-spacing:.1em;}
+
+/* ===== UPGRADE DECK ===== */
+#noryvx-dev-upgrade-deck{margin:0 14px;padding:12px 12px 14px;border:1px solid rgba(74,220,255,.18);border-radius:18px;background:radial-gradient(90% 140% at 8% 0%,rgba(34,230,255,.09),transparent 55%),radial-gradient(90% 140% at 95% 100%,rgba(171,72,255,.09),transparent 55%),linear-gradient(180deg,rgba(9,18,38,.96),rgba(4,9,20,.98));box-shadow:0 0 28px rgba(0,210,255,.05),inset 0 1px 0 rgba(255,255,255,.03);}
+#noryvx-dev-upgrade-deck .deck-head{display:flex;align-items:flex-end;justify-content:flex-end;margin-bottom:12px;}
+#noryvx-dev-upgrade-deck .dev-points{min-width:76px;text-align:center;padding:7px 9px;border:1px solid rgba(255,211,64,.28);border-radius:11px;background:rgba(255,210,58,.07);color:#ffd84a;font:800 16px/1 "IBM Plex Mono",monospace;}
+#noryvx-dev-upgrade-deck .dev-points small{display:block;color:rgba(255,255,255,.4);font:600 7px/1 "IBM Plex Mono",monospace;letter-spacing:.14em;margin-bottom:5px;}
+#noryvx-dev-upgrade-deck .upgrade-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+/* Card base */
+#noryvx-dev-upgrade-deck .upgrade-card{min-height:128px;padding:12px 11px 32px;border-radius:14px;border:1px solid rgba(115,170,220,.14);background:linear-gradient(145deg,rgba(14,24,48,.96),rgba(5,10,22,.99));position:relative;overflow:hidden;cursor:pointer;touch-action:manipulation;transition:border-color .2s;box-sizing:border-box;}
+
+/* Color identities per card */
+#noryvx-dev-upgrade-deck .upgrade-card[data-dev-skill="survivor"]{--card-c:#22e6ff;--card-rgb:34,230,255;}
+#noryvx-dev-upgrade-deck .upgrade-card[data-dev-skill="focus"]{--card-c:#4499ff;--card-rgb:68,153,255;}
+#noryvx-dev-upgrade-deck .upgrade-card[data-dev-skill="magnetism"]{--card-c:#a35cff;--card-rgb:163,92,255;}
+#noryvx-dev-upgrade-deck .upgrade-card[data-dev-skill="pulse_mastery"]{--card-c:#ffd84a;--card-rgb:255,216,74;}
+
+/* Card states */
+#noryvx-dev-upgrade-deck .upgrade-card.available{border-color:rgba(var(--card-rgb,34,230,255),.38);box-shadow:0 0 14px rgba(var(--card-rgb,34,230,255),.07);}
+#noryvx-dev-upgrade-deck .upgrade-card.maxed{border-color:rgba(255,213,71,.32);}
+#noryvx-dev-upgrade-deck .upgrade-card.locked{cursor:pointer;}
+#noryvx-dev-upgrade-deck .upgrade-card.locked::after{content:'';position:absolute;inset:0;background:rgba(3,7,18,.38);border-radius:13px;pointer-events:none;}
+
+/* Lock icon */
+.uc-lock-ico{display:none;position:absolute;right:9px;top:20px;font-size:9px;z-index:1;}
+.locked .uc-lock-ico{display:block;}
+
+/* Card icon */
+#noryvx-dev-upgrade-deck .uc-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(var(--card-rgb,34,230,255),.28);background:rgba(var(--card-rgb,34,230,255),.07);color:var(--card-c,#39e7ff);font-size:14px;margin-bottom:8px;}
+#noryvx-dev-upgrade-deck .upgrade-card.maxed .uc-icon{color:#ffd84a;border-color:rgba(255,216,74,.28);background:rgba(255,216,74,.07);}
+
+/* Card name */
+#noryvx-dev-upgrade-deck .uc-name{color:#eaf4ff;font:800 10px/1.15 "Chakra Petch",sans-serif;letter-spacing:.07em;}
+
+/* Card description */
+#noryvx-dev-upgrade-deck .uc-desc{margin-top:4px;color:rgba(220,238,255,.62);font:400 8px/1.4 "IBM Plex Mono",monospace;}
+
+/* Card state badge */
+#noryvx-dev-upgrade-deck .uc-state{position:absolute;right:9px;top:10px;color:var(--card-c,#3ce8ff);font:700 7px/1 "IBM Plex Mono",monospace;letter-spacing:.06em;}
+#noryvx-dev-upgrade-deck .locked .uc-state{color:rgba(210,230,255,.55);}
+#noryvx-dev-upgrade-deck .maxed .uc-state{color:#ffd84a;}
+
+/* Progress bar */
+#noryvx-dev-upgrade-deck .uc-bar{position:absolute;bottom:22px;left:11px;right:11px;height:3px;border-radius:99px;background:rgba(255,255,255,.06);overflow:hidden;}
+#noryvx-dev-upgrade-deck .uc-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--card-c,#22e6ff),rgba(var(--card-rgb,34,230,255),.55));box-shadow:0 0 6px rgba(var(--card-rgb,34,230,255),.4);transition:width .4s;}
+
+/* Card level */
+#noryvx-dev-upgrade-deck .uc-level{position:absolute;bottom:10px;right:10px;color:rgba(230,244,255,.45);font:700 7.5px/1 "IBM Plex Mono",monospace;}
+
+/* ===== DETAIL MODAL ===== */
+#noryvx-dev-detail{position:fixed;inset:0;z-index:9999;display:none;align-items:flex-end;justify-content:center;background:rgba(0,4,12,.72);backdrop-filter:blur(6px);}
+#noryvx-dev-detail.on{display:flex;}
+#noryvx-dev-detail .panel{width:min(560px,100%);padding:22px 18px 24px;border:1px solid rgba(48,222,255,.28);border-bottom:0;border-radius:22px 22px 0 0;background:linear-gradient(180deg,#0b1730,#050a17);box-shadow:0 -20px 60px rgba(0,0,0,.5);}
+#noryvx-dev-detail .detail-kicker{color:#40e6ff;font:600 9px/1 "IBM Plex Mono",monospace;letter-spacing:.18em;}
+#noryvx-dev-detail h3{margin:7px 0;color:#f1f7ff;font:800 22px/1.1 "Chakra Petch",sans-serif;letter-spacing:.08em;}
+#noryvx-dev-detail .detail-copy{color:rgba(231,243,255,.6);font:400 10px/1.55 "IBM Plex Mono",monospace;}
+#noryvx-dev-detail .detail-stats{display:flex;gap:9px;margin:14px 0;}
+#noryvx-dev-detail .detail-stat{flex:1;padding:10px;border-radius:12px;background:rgba(255,255,255,.035);border:1px solid rgba(115,170,220,.13);}
+#noryvx-dev-detail .detail-stat b{display:block;color:#eef7ff;font:800 14px/1.1 "Chakra Petch",sans-serif;}
+#noryvx-dev-detail .detail-stat span{display:block;margin-top:4px;color:rgba(231,243,255,.4);font:400 7px/1 "IBM Plex Mono",monospace;}
+#noryvx-dev-detail .detail-actions{display:flex;gap:9px;}
+#noryvx-dev-detail button{flex:1;min-height:46px;border-radius:13px;border:1px solid rgba(49,225,255,.3);background:linear-gradient(100deg,#1fdff5,#7b56ff);color:#03101d;font:800 10px/1 "Chakra Petch",sans-serif;letter-spacing:.1em;cursor:pointer;}
+#noryvx-dev-detail button.secondary{background:rgba(255,255,255,.035);color:#b9c8d9;border-color:rgba(255,255,255,.1);}
+
+/* ===== WEAPONS / SKILLS NAV ===== */
+.dev-nav-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 14px 0;}
+.dev-nav-card{display:flex;align-items:center;gap:12px;padding:16px 12px;border-radius:16px;background:linear-gradient(145deg,rgba(14,24,48,.95),rgba(5,10,22,.98));border:1px solid rgba(34,230,255,.14);color:#eaf4ff;text-align:left;cursor:pointer;touch-action:manipulation;transition:transform .12s,border-color .12s;box-sizing:border-box;}
+.dev-nav-card:active{transform:scale(.97);border-color:rgba(34,230,255,.28);}
+.dev-nav-ico{font-size:22px;color:#22e6ff;line-height:1;min-width:26px;text-align:center;}
+.dev-nav-card b{display:block;font:800 11px/1 "Chakra Petch",sans-serif;letter-spacing:.14em;}
+.dev-nav-card small{display:block;font:600 9px/1 "IBM Plex Mono",monospace;color:rgba(234,244,255,.45);margin-top:4px;}
+.dev-nav-arrow{margin-left:auto;color:rgba(34,230,255,.4);font:700 16px/1 monospace;}
+
+/* ===== INFO PANEL ===== */
+.dev-info-panel{margin:14px 14px 0;padding:12px 14px;border-radius:14px;background:rgba(34,82,255,.06);border:1px solid rgba(60,140,255,.14);}
+.dev-info-title{font:700 8.5px/1 "IBM Plex Mono",monospace;letter-spacing:.16em;color:rgba(120,180,255,.8);margin-bottom:7px;display:flex;align-items:center;gap:6px;}
+.dev-info-icon{font-size:11px;}
+.dev-info-text{font:400 9px/1.6 "IBM Plex Mono",monospace;color:rgba(190,215,255,.55);letter-spacing:.04em;}
+
+/* ===== BOTTOM NAV ===== */
+.dev-bottom-nav{flex:none;display:grid;grid-template-columns:repeat(5,1fr);background:rgba(3,7,18,.97);border-top:1px solid rgba(34,230,255,.1);padding:8px 2px calc(8px + env(safe-area-inset-bottom,0px));}
+.dev-btn-nav{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:6px 2px;border:none;background:transparent;color:rgba(160,190,230,.38);font:600 5.5px/1 "IBM Plex Mono",monospace;letter-spacing:.06em;cursor:pointer;touch-action:manipulation;position:relative;}
+.dev-btn-nav.dev-nav-active{color:#22e6ff;}
+.dev-btn-nav.dev-nav-active::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:28px;height:2px;background:#22e6ff;border-radius:0 0 3px 3px;box-shadow:0 0 8px rgba(34,230,255,.65);}
+.dev-btn-nav-ico{font-size:15px;line-height:1;display:block;margin-bottom:1px;}
+.dev-nav-active .dev-btn-nav-ico{filter:drop-shadow(0 0 4px rgba(34,230,255,.7));}
+
+/* Responsive */
+@media(min-width:600px){
+  #noryvx-dev-upgrade-deck,.dev-profile-card,.dev-nav-grid,.dev-info-panel,.dev-section-hd{margin-left:24px;margin-right:24px;}
+}
 </style>
 
 <style id="noryvx-hero-text-cleanup">
@@ -2615,35 +2688,85 @@ window.addEventListener("unhandledrejection",function(){});
 <button class="btn ghost" id="b-skins-back">Geri</button>
 </div>
 <div class="screen nvx-ref-screen" id="scr-phase3">
-<div class="nvx-screen-head"><button id="b-phase3-back">‹</button><span>DEVELOPMENT</span><b id="dev-currency-display">0 SP</b></div>
 
-<div class="dev-profile-card">
- <div class="dev-pc-row">
-  <div><div class="dev-pc-hero" id="dev-arch-label">VANGUARD</div><div class="dev-pc-rank" id="dev-rank">RECRUIT I</div></div>
-  <div class="dev-pc-lv" id="dev-combat-power">LV 1</div>
+<!-- HEADER -->
+<div class="dev-hdr">
+ <div class="dev-hdr-badge">V20.0.0 · PHASE 3</div>
+ <div class="dev-hdr-row">
+  <button class="dev-hdr-back" id="b-phase3-back">‹</button>
+  <div class="dev-hdr-titles">
+   <div class="dev-hdr-title">DEVELOPMENT</div>
+   <div class="dev-hdr-subtitle">KARAKTER GELİŞTİRME MERKEZİ</div>
+  </div>
+  <div class="dev-hdr-sp" id="dev-currency-display">◈ 0 SP</div>
  </div>
- <div class="dev-xp-track"><i id="dev-xp-fill" style="width:0%"></i></div>
- <div class="dev-xp-row"><span id="dev-level-xp">0 / 100 XP</span><span>+1 SP / LEVEL UP</span></div>
 </div>
 
-<div class="dev-section-hd">KALICI GELİŞTİRMELER <span id="dev-ability-count">0 / 4</span></div>
+<!-- SCROLLABLE CONTENT -->
+<div class="dev-content">
+
+<!-- PROFILE CARD -->
+<div class="dev-profile-card">
+ <div class="dev-pc-row">
+  <div>
+   <div class="dev-pc-hero" id="dev-arch-label">CONTROLLER</div>
+   <div class="dev-pc-rank" id="dev-rank">RECRUIT I</div>
+  </div>
+  <div class="dev-pc-lv-wrap">
+   <div class="dev-pc-lv" id="dev-combat-power">LV 1</div>
+  </div>
+ </div>
+ <div class="dev-xp-track"><i id="dev-xp-fill" style="width:0%"></i></div>
+ <div class="dev-xp-row"><span id="dev-level-xp">0 / 100 XP</span><span class="dev-xp-bonus">+1 SP / LEVEL UP</span></div>
+</div>
+
+<!-- PERMANENT UPGRADES -->
+<div class="dev-section-hd">◇ KALICI GELİŞTİRMELER <span id="dev-ability-count">0 / 4</span></div>
 <div id="noryvx-dev-upgrade-deck">
  <div class="deck-head"><div></div><div class="dev-points"><small>SKILL PTS</small><span id="noryvx-dev-points">0</span></div></div>
  <div class="upgrade-grid">
-  <div class="upgrade-card locked" data-dev-skill="survivor"><div class="uc-state">REACH LV 2</div><div class="uc-icon">◆</div><div class="uc-name">SURVIVOR</div><div class="uc-desc">Hull +3% per rank</div><div class="uc-bar"><i></i></div><div class="uc-level">LV 0 / 5</div></div>
-  <div class="upgrade-card locked" data-dev-skill="focus"><div class="uc-state">REACH LV 2</div><div class="uc-icon">◇</div><div class="uc-name">FOCUS</div><div class="uc-desc">Cooldown -1% per rank</div><div class="uc-bar"><i></i></div><div class="uc-level">LV 0 / 5</div></div>
-  <div class="upgrade-card locked" data-dev-skill="magnetism"><div class="uc-state">REACH LV 2</div><div class="uc-icon">✦</div><div class="uc-name">MAGNETISM</div><div class="uc-desc">Pickup +4% per rank</div><div class="uc-bar"><i></i></div><div class="uc-level">LV 0 / 5</div></div>
-  <div class="upgrade-card locked" data-dev-skill="pulse_mastery"><div class="uc-state">REACH LV 2</div><div class="uc-icon">⚡</div><div class="uc-name">PULSE MASTERY</div><div class="uc-desc">Pulse dmg +2% per rank</div><div class="uc-bar"><i></i></div><div class="uc-level">LV 0 / 5</div></div>
+  <div class="upgrade-card locked" data-dev-skill="survivor"><div class="uc-state">REACH LV 2</div><span class="uc-lock-ico">🔒</span><div class="uc-icon">◆</div><div class="uc-name">SURVIVOR</div><div class="uc-desc">Hull +3% per rank</div><div class="uc-bar"><i></i></div><div class="uc-level">LV 0 / 5</div></div>
+  <div class="upgrade-card locked" data-dev-skill="focus"><div class="uc-state">REACH LV 2</div><span class="uc-lock-ico">🔒</span><div class="uc-icon">◇</div><div class="uc-name">FOCUS</div><div class="uc-desc">Cooldown -1% per rank</div><div class="uc-bar"><i></i></div><div class="uc-level">LV 0 / 5</div></div>
+  <div class="upgrade-card locked" data-dev-skill="magnetism"><div class="uc-state">REACH LV 2</div><span class="uc-lock-ico">🔒</span><div class="uc-icon">✦</div><div class="uc-name">MAGNETISM</div><div class="uc-desc">Pickup +4% per rank</div><div class="uc-bar"><i></i></div><div class="uc-level">LV 0 / 5</div></div>
+  <div class="upgrade-card locked" data-dev-skill="pulse_mastery"><div class="uc-state">REACH LV 2</div><span class="uc-lock-ico">🔒</span><div class="uc-icon">⚡</div><div class="uc-name">PULSE MASTERY</div><div class="uc-desc">Pulse dmg +2% per rank</div><div class="uc-bar"><i></i></div><div class="uc-level">LV 0 / 5</div></div>
  </div>
 </div>
 
+<!-- WEAPONS / SKILLS NAV -->
 <div class="dev-nav-grid">
- <button class="dev-nav-card" id="p3-open-weapons"><span class="dev-nav-ico">⚡</span><div><b>WEAPONS</b><small id="dev-mastery-count">0 <i>/ 20</i></small></div></button>
- <button class="dev-nav-card" id="p3-open-skills"><span class="dev-nav-ico">◈</span><div><b>SKILLS</b><small id="dev-skill-count">0 <i>/ 10</i></small></div></button>
+ <button class="dev-nav-card" id="p3-open-weapons">
+  <span class="dev-nav-ico">⚡</span>
+  <div><b>WEAPONS</b><small id="dev-mastery-count">0 <i>/ 20</i></small></div>
+  <span class="dev-nav-arrow">›</span>
+ </button>
+ <button class="dev-nav-card" id="p3-open-skills">
+  <span class="dev-nav-ico">◈</span>
+  <div><b>SKILLS</b><small id="dev-skill-count">0 <i>/ 18</i></small></div>
+  <span class="dev-nav-arrow">›</span>
+ </button>
 </div>
 
+<!-- INFO PANEL -->
+<div class="dev-info-panel">
+ <div class="dev-info-title"><span class="dev-info-icon">ⓘ</span> BİLGİ</div>
+ <div class="dev-info-text">Seviye atladıkça SP kazanırsın.<br>SP ile kalıcı geliştirmeleri aç ve güçlen!</div>
+</div>
+
+</div><!-- /.dev-content -->
+
+<!-- BOTTOM NAV -->
+<nav class="dev-bottom-nav">
+ <button class="dev-btn-nav" id="dev-nav-play"><span class="dev-btn-nav-ico">▶</span><span>PLAY</span></button>
+ <button class="dev-btn-nav" id="dev-nav-arsenal"><span class="dev-btn-nav-ico">⚡</span><span>ARSENAL</span></button>
+ <button class="dev-btn-nav dev-nav-active" id="dev-nav-develop"><span class="dev-btn-nav-ico">◈</span><span>DEVELOPMENT</span></button>
+ <button class="dev-btn-nav" id="dev-nav-missions"><span class="dev-btn-nav-ico">◎</span><span>MISSIONS</span></button>
+ <button class="dev-btn-nav" id="dev-nav-profile"><span class="dev-btn-nav-ico">◆</span><span>PROFILE</span></button>
+</nav>
+
+<!-- DETAIL MODAL -->
 <div id="noryvx-dev-detail" aria-hidden="true"><div class="panel"><div class="detail-kicker">DEVELOPMENT NODE</div><h3 id="noryvx-dev-detail-title">SURVIVOR</h3><div class="detail-copy" id="noryvx-dev-detail-copy"></div><div class="detail-stats"><div class="detail-stat"><b id="noryvx-dev-level">LV 0 / 5</b><span>CURRENT</span></div><div class="detail-stat"><b id="noryvx-dev-next">+3%</b><span>NEXT EFFECT</span></div><div class="detail-stat"><b id="noryvx-dev-cost">LEVEL 2</b><span>REQUIREMENT</span></div></div><div class="detail-actions"><button class="secondary" id="noryvx-dev-close">CLOSE</button><button id="noryvx-dev-spend">LOCKED · LV 2</button></div></div></div>
 
+<!-- LEGACY HIDDEN ELEMENTS (do not remove) -->
 <div style="display:none">
  <span id="p3-level"></span><div id="p3-levelone"></div><div id="p3-xp"></div><div id="p3-xp-fill"></div><div id="p3-archetype"></div><div id="p3-desc"></div><div id="p3-points"></div><div id="p3-skill-points"></div><div id="p3-mastery-total"></div><div id="p3-skill-list"></div><div id="p3-mastery-list"></div><button id="p3-reset-run"></button><span id="p3-active-name"></span>
 </div>
@@ -11281,7 +11404,7 @@ function p3Render(){
   const l=document.getElementById("p3-level"),x=document.getElementById("p3-xp"),f=document.getElementById("p3-xp-fill");
   /* NO early return — proceed even if legacy p3-level element is absent */
   const devHdr=document.getElementById("dev-currency-display");
-  if(devHdr)devHdr.textContent=(P3S.skillPoints||0)+" SP";
+  if(devHdr)devHdr.textContent="◈ "+(P3S.skillPoints||0)+" SP";
   if(l)l.textContent="Lv."+P3S.level;
   if(x)x.textContent=P3S.xp+" / "+need+" XP";
   if(f)f.style.width=Math.min(100,P3S.xp/need*100)+"%";
@@ -19608,6 +19731,35 @@ document.addEventListener("click",function(e){
 function refresh(){render()}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",render,{once:true});else render();
 window.NORYVX_DEVELOPMENT_UI={refresh:render};
+})();
+</script>
+
+<script id="noryvx-dev-bottom-nav">
+(function(){
+"use strict";
+function devNavTo(scrId,afterFn){
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('on');});
+  var t=document.getElementById(scrId);
+  if(t)t.classList.add('on');
+  try{if(afterFn)afterFn();}catch(e){}
+  try{if(typeof updateProgressUI==="function")updateProgressUI();}catch(e){}
+}
+function bindDevNav(btnId,scrId,afterFn){
+  var el=document.getElementById(btnId);
+  if(!el||el.dataset.devNavBound)return;
+  el.dataset.devNavBound='1';
+  function go(e){e.preventDefault();e.stopPropagation();devNavTo(scrId,afterFn);}
+  el.addEventListener('click',go,{capture:true});
+  el.addEventListener('touchend',go,{capture:true,passive:false});
+}
+bindDevNav('dev-nav-play','scr-menu',null);
+bindDevNav('dev-nav-arsenal','scr-mastery',function(){if(window.renderMastery)window.renderMastery();});
+bindDevNav('dev-nav-develop','scr-phase3',function(){if(window.p3Render)window.p3Render();if(window.NORYVX_DEVELOPMENT_UI)window.NORYVX_DEVELOPMENT_UI.refresh();});
+bindDevNav('dev-nav-missions','scr-missions',function(){try{if(typeof renderMissions==='function')renderMissions();}catch(e){}});
+bindDevNav('dev-nav-profile','scr-rpgchar',function(){
+  if(window.nvxHeroSyncFromSave)window.nvxHeroSyncFromSave();
+  if(window.nvxHeroPaint)window.nvxHeroPaint();
+});
 })();
 </script>
 
