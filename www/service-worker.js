@@ -18,7 +18,7 @@
    Score display: live score shown in wave HUD during combat.
    Touch handlers: hero-select upgraded to tap() system, back button uses tap().
    Cache adi guncellendi (aksi halde eski asset'ler ilkanimlandiktan sonra calisir). */
-const CACHE = "neon-survivor-v25-0-0";
+const CACHE = "neon-survivor-v25-1-0";
 
 const ASSETS = [
   "./",

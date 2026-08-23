@@ -2639,7 +2639,7 @@ window.addEventListener("unhandledrejection",function(){});
 
 <div class="dev-nav-grid">
  <button class="dev-nav-card" id="p3-open-weapons"><span class="dev-nav-ico">⚡</span><div><b>WEAPONS</b><small id="dev-mastery-count">0 <i>/ 20</i></small></div></button>
- <button class="dev-nav-card" id="p3-open-skills"><span class="dev-nav-ico">◈</span><div><b>SKILLS</b><small id="dev-skill-count">0 <i>/ 18</i></small></div></button>
+ <button class="dev-nav-card" id="p3-open-skills"><span class="dev-nav-ico">◈</span><div><b>SKILLS</b><small id="dev-skill-count">0 <i>/ 10</i></small></div></button>
 </div>
 
 <div id="noryvx-dev-detail" aria-hidden="true"><div class="panel"><div class="detail-kicker">DEVELOPMENT NODE</div><h3 id="noryvx-dev-detail-title">SURVIVOR</h3><div class="detail-copy" id="noryvx-dev-detail-copy"></div><div class="detail-stats"><div class="detail-stat"><b id="noryvx-dev-level">LV 0 / 5</b><span>CURRENT</span></div><div class="detail-stat"><b id="noryvx-dev-next">+3%</b><span>NEXT EFFECT</span></div><div class="detail-stat"><b id="noryvx-dev-cost">LEVEL 2</b><span>REQUIREMENT</span></div></div><div class="detail-actions"><button class="secondary" id="noryvx-dev-close">CLOSE</button><button id="noryvx-dev-spend">LOCKED · LV 2</button></div></div></div>
@@ -10648,6 +10648,12 @@ function showOver(record){
       rewardLine.innerHTML += `<div style="margin-top:6px;color:#ffd24d;font-size:11px;font-weight:800;letter-spacing:.14em">+${c} ÇEKİRDEK (skor bonusu)${Game.bossDefeated?" · +1 ◆ GEM":""}</div>`;
     }
   }catch(e){}
+  /* P3 development XP + Skill Matrix SP */
+  try{
+    const p3xp=window._lastRunP3XP||0;
+    const lvup=window._lastRunP3LevelUp?` · <span style="color:#48ff9b">LV ${window._lastRunP3Level||1} ↑ +1 SP</span>`:"";
+    rewardLine.innerHTML += `<div style="margin-top:6px;color:#a05cff;font-size:11px;font-weight:800;letter-spacing:.14em">+${p3xp} XP${lvup} · +1 SP (MATRIX)</div>`;
+  }catch(e){}
 
   setTimeout(
     ()=>{
@@ -11333,8 +11339,12 @@ function p3Render(){
     devMastery.innerHTML=`${total} <i>/ 20</i>`;
   }
   if(devSkills){
-    const total=Object.keys(P3.skills).reduce((n,k)=>n+p3SkillRank(k),0);
-    devSkills.innerHTML=`${total} <i>/ 18</i>`;
+    try{
+      const _sm=JSON.parse(localStorage.getItem("noryvx_skills_safe")||"null")||{ranks:{}};
+      const _smIds=["tp1","tp2","tp3","tv1","tv2","tv3","te1","te2","tq1","tq2"];
+      const _smUnlocked=_smIds.filter(id=>(_sm.ranks[id]||0)>=1).length;
+      devSkills.innerHTML=`${_smUnlocked} <i>/ 10</i>`;
+    }catch(_){devSkills.innerHTML=`0 <i>/ 10</i>`;}
   }
   if(devAbilities){
     const unlocked=[3,5,8,12].filter(l=>P3S.level>=l).length;
@@ -11451,8 +11461,13 @@ if(typeof Game!=="undefined"&&typeof Game.over==="function"){
     /* PHASE 3C — mastery, XP'den ONCE islenir: oldOver() calistiginda
        Telemetry hala o kosunun hasar dagilimini tutuyor olmali. */
     p3AwardMastery();
-    p3AddXP(Math.max(10,Math.floor(time*1.5+score/100)));
+    const _p3xp=Math.max(10,Math.floor(time*1.5+score/100));
+    const _lvBefore=P3S.level;
+    p3AddXP(_p3xp);
     p3Save();
+    window._lastRunP3XP=_p3xp;
+    window._lastRunP3LevelUp=P3S.level>_lvBefore;
+    window._lastRunP3Level=P3S.level;
     return oldOver();
   };
 }
