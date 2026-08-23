@@ -2334,7 +2334,7 @@ window.addEventListener("unhandledrejection",function(){});
 <div style="display:none"><button id="b-how"></button><button id="b-upgrades"></button><button id="b-sectors"></button><button id="b-build"></button><button id="b-missions"></button><button id="b-ach"></button><button id="b-save"></button><button id="b-shop"></button><button id="b-cosm"></button><button id="b-kill"></button><button id="b-skins"></button><button id="b-battlepass"></button><button id="b-leaderboard"></button><button id="b-language-open"></button><button id="t-sound"></button><button id="t-vibe"></button></div>
 </div>
 <div class="screen nvx-ref-screen" id="scr-rpgchar">
-<div class="nvx-screen-head"><button id="b-rpgchar-back">‹</button><span>HERO SELECT</span><b>◆ 128</b></div>
+<div class="nvx-screen-head"><button id="b-rpgchar-back">‹</button><span>HERO SELECT</span><b id="hero-select-cores">◆ 0</b></div>
 <div class="nvx-hero-code">UNIT VG-04<br/>CORE MK III</div>
 <div class="nvx-select-stage"><div class="nvx-hero-aura"></div><div class="nvx-hero-real" id="nvx-hero-real"></div><div id="noryvx-unified-hero-select"><img alt="" aria-hidden="true" id="noryvx-unified-hero-select-img"/></div><canvas aria-hidden="true" id="nvx-hero-canvas" style="display:none"></canvas><div class="nvx-hero-floor"></div></div>
 <div class="nvx-hero-info"><div><h2 id="nvx-hero-name">VANGUARD</h2><p id="nvx-hero-role">HEAVY ASSAULT · TANK</p></div><div class="nvx-level">LEVEL<strong>14</strong></div></div>
@@ -2342,6 +2342,7 @@ window.addEventListener("unhandledrejection",function(){});
 <p class="nvx-hero-desc" id="nvx-hero-desc">Absorb sector pressure, hold the breach line, vent reactor heat as area damage.</p>
 <div class="nvx-hero-tabs"><button class="p3-char-card" data-p3-arch="vanguard"><i></i>VANGUARD</button><button class="p3-char-card" data-p3-arch="striker"><i></i>STRIKER</button><button class="p3-char-card" data-p3-arch="controller"><i></i>CONTROLLER</button></div>
 <button class="nvx-primary" id="b-hero-select">DEPLOY</button>
+<button class="nvx-secondary" id="b-open-upgrades">META GELİŞTİRME ◆</button>
 <button class="nvx-arrow left" id="nvx-hero-prev">‹</button><button class="nvx-arrow right" id="nvx-hero-next">›</button>
 <div style="display:none"><button id="b-rpgchar-inv"></button><div id="rpg-char-body"></div><span id="rpg-char-cur"></span></div>
 </div>
@@ -3487,6 +3488,8 @@ function updateProgressUI(){
   if(uc)uc.textContent=currency;
   const mc=$('mastery-currency-display');
   if(mc)mc.textContent=currency;
+  const tbs=$('tb-sh');if(tbs)tbs.textContent=(Save.data.cores||0);
+  const hsc=$('hero-select-cores');if(hsc)hsc.textContent='◆ '+(Save.data.cores||0);
   const buttons={speed:'u-speed',magnet:'u-magnet',shield:'u-shield',score:'u-score'};
   for(const k in buttons){
     const b=$(buttons[k]);
@@ -10475,8 +10478,6 @@ function showOver(record){
   try{
     const coinsEarned=Math.max(1,Math.floor(Game.score/12));
     Save.data.coins=(Save.data.coins||0)+coinsEarned;
-    /* KREDİ aynı zamanda ÇEKİRDEK olarak da eklenir — tek para birimi mantığı */
-    Save.data.cores=(Save.data.cores||0)+coinsEarned;
     /* Kazanılan çekirdekler RPG kredisi ve PROG neon'una da yansıtılır */
     try{var _rr=window.RPG;if(_rr&&_rr.state){_rr.state.credits=(_rr.state.credits||0)+coinsEarned*8;if(_rr.persist)_rr.persist();}}catch(e){}
     try{var _pp=window.PROG;if(_pp&&_pp.state){_pp.state.neon=(_pp.state.neon||0)+Math.max(1,Math.floor(coinsEarned/2));if(_pp.persist)_pp.persist();}}catch(e){}
@@ -15689,15 +15690,14 @@ function topbar(){
   }catch(e){}
   try{
     const R=window.RPG,P=window.PROG;
-    if(R){$("tb-cr").textContent=fmt(R.state.credits);
-          $("tb-sh").textContent=fmt(R.state.shards);}
+    if(R){$("tb-cr").textContent=fmt(R.state.credits);}
     else{
-      /* NORYVX fallback — Save.data coins/gems shown when RPG absent */
+      /* NORYVX fallback — Save.data coins shown when RPG absent */
       const c=Save&&Save.data&&Save.data.coins||0;
-      const g=Save&&Save.data&&Save.data.gems||0;
       const trc=$("tb-cr"); if(trc)trc.textContent=fmt(c);
-      const trs=$("tb-sh"); if(trs)trs.textContent=fmt(g);
     }
+    /* ◆ ALWAYS shows Save.data.cores — single source of truth */
+    {const _c=(Save&&Save.data&&Save.data.cores)||0;const _ts=$("tb-sh");if(_ts)_ts.textContent=fmt(_c);}
     if(P){$("tb-ne").textContent=fmt(P.state.neon);}
   }catch(e){}
   try{
@@ -18578,7 +18578,9 @@ button, .btn, .p2-tab, .p3-btn{
   function hide(){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));}
   function open(id){hide();const e=$(id);if(e)e.classList.add('on');}
   function nav(id,fn){const e=$(id);if(!e||e.dataset.refBound)return;e.dataset.refBound='1';e.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();fn&&fn();},{capture:true});e.addEventListener('touchend',e=>{e.preventDefault();e.stopPropagation();fn&&fn();},{capture:true,passive:false});}
-  nav('b-rpgchar',()=>{open('scr-rpgchar');if(window.nvxHeroSyncFromSave)nvxHeroSyncFromSave();if(window.nvxHeroPaint)nvxHeroPaint();});
+  nav('b-rpgchar',()=>{open('scr-rpgchar');if(window.nvxHeroSyncFromSave)nvxHeroSyncFromSave();if(window.nvxHeroPaint)nvxHeroPaint();try{if(typeof updateProgressUI==="function")updateProgressUI();}catch(e){}});
+  nav('b-open-upgrades',()=>{open('scr-upgrades');try{if(typeof updateProgressUI==="function")updateProgressUI();}catch(e){}});
+  nav('b-upgrades-back',()=>{open('scr-menu');try{if(typeof updateProgressUI==="function")updateProgressUI();}catch(e){}});
   nav('b-phase3',()=>{open('scr-phase3');if(window.p3Render)p3Render();try{if(typeof updateProgressUI==="function")updateProgressUI();}catch(e){}});
   nav('b-mastery',()=>{open('scr-mastery');if(window.renderMastery)renderMastery();try{if(typeof updateProgressUI==="function")updateProgressUI();}catch(e){}});
   nav('b-tech',()=>{open('scr-tech');if(window.renderTech)renderTech();});
