@@ -16,3 +16,6 @@ config/admob.json
 .DS_Store
 .idea/
 *.swp
+
+# Design reference files (tasarım referansları, üretim kodu değil)
+design-references/

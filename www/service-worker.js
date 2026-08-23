@@ -10,15 +10,15 @@
    cache adi degismezse yeni atlas cihaza HIC ULASMAZ; dosyanin en
    ustundeki notun tarif ettigi hata tam olarak budur. Ad bu yuzden
    surumle birlikte yukseltildi. Temizleme mantigi degismedi. */
-/* NORYVX V20.2.0 — Phase 3-5 design + touch + overdrive fixes.
-   Phase 3: Chakra Petch/IBM Plex Mono fonts, logo underline, PLAY button redesign,
-            floating hero particles, bottom nav IBM Plex Mono labels.
-   Phase 4: Joystick indicator removed, dead zone + sqrt acceleration curve,
-            diagonal normalization, MAG_MAX cap for jump artefact prevention.
-   Phase 5: Overdrive sensitivity fix — overdriveMultiplier applied to velocity
-            only, not input delta, so control precision is unchanged.
-   Cache adi guncellendi (aksi halde eski asset'ler ilkanminlarak calisir). */
-const CACHE = "neon-survivor-v24-hero-stats-v3";
+/* NORYVX V20.3.0 — Full combat HUD redesign.
+   Boss HUD redesigned as full card (name, phase label, threat, segmented bar).
+   Weapon pills: 48x38px per design spec.
+   Power pills: horizontal flex layout with name+time.
+   Hull bar: player HP displayed during gameplay.
+   Score display: live score shown in wave HUD during combat.
+   Touch handlers: hero-select upgraded to tap() system, back button uses tap().
+   Cache adi guncellendi (aksi halde eski asset'ler ilkanimlandiktan sonra calisir). */
+const CACHE = "neon-survivor-v25-0-0";
 
 const ASSETS = [
   "./",

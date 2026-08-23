@@ -357,7 +357,7 @@ button,
   position:absolute;
   right:10px;
   left:auto;
-  top:calc(var(--safe-t) + 86px);
+  top:calc(var(--safe-t) + 280px);
   transform:none;
   z-index:7;
   display:flex;
@@ -368,10 +368,11 @@ button,
 }
 
 .power-pill{
-  min-width:60px;
-  padding:4px 7px;
+  min-width:70px;
+  height:34px;
+  padding:0 9px;
   border-radius:10px;
-  background:rgba(4,6,15,.7);
+  background:rgba(5,10,24,.6);
   border:1px solid rgba(34,230,255,.22);
   text-align:center;
   font-size:8px;
@@ -379,10 +380,13 @@ button,
   letter-spacing:.08em;
   text-transform:uppercase;
   display:none;
+  align-items:center;
+  justify-content:center;
+  backdrop-filter:blur(6px);
 }
 
 .power-pill.on{
-  display:block;
+  display:flex;
 }
 
 #p-shield{
@@ -411,7 +415,7 @@ button,
   position:absolute;
   left:10px;
   right:auto;
-  top:calc(var(--safe-t) + 118px);
+  top:calc(var(--safe-t) + 196px);
   transform:none;
   z-index:7;
   display:flex;
@@ -420,12 +424,12 @@ button,
   pointer-events:none;
 }
 .weapon-pill{
-  width:43px;
-  min-width:43px;
-  height:35px;
+  width:48px;
+  min-width:48px;
+  height:38px;
   padding:3px 2px;
   border-radius:10px;
-  background:rgba(4,6,15,.68);
+  background:rgba(5,10,24,.68);
   border:1px solid rgba(160,92,255,.28);
   text-align:center;
   font-size:8px;
@@ -435,12 +439,16 @@ button,
   display:none;
   color:var(--ink);
   box-shadow:0 0 10px rgba(34,230,255,.04);
-  backdrop-filter:blur(5px);
+  backdrop-filter:blur(6px);
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
 }
-.weapon-pill.on{display:block}
+.weapon-pill.on{display:flex}
 #build-hud{
   margin-top:2px;
-  width:43px;
+  width:48px;
   min-height:0;
   font-size:7px;
   line-height:1.15;
@@ -464,58 +472,63 @@ button,
 .weapon-pill .weapon-cool{display:none}
 #boss-hud{
   position:absolute;
-  top:calc(var(--safe-t) + 70px);
-  left:50%;
-  transform:translateX(-50%);
-  width:min(320px,72vw);
+  top:calc(var(--safe-t) + 56px);
+  left:16px;
+  right:16px;
   z-index:8;
   display:none;
   pointer-events:none;
-  text-align:center;
+  padding:12px 14px 10px;
+  border-radius:16px;
+  background:linear-gradient(180deg,rgba(34,10,26,.92),rgba(6,8,20,.92));
+  border:1px solid rgba(255,59,107,.36);
+  box-shadow:0 0 40px rgba(255,59,107,.14),inset 0 0 28px rgba(255,59,107,.04);
+  text-align:left;
 }
 #boss-hud.on{display:block}
 .boss-name{
-  font-size:9px;
-  font-weight:900;
-  letter-spacing:.24em;
-  color:var(--danger);
-  text-shadow:0 0 12px rgba(255,59,107,.55);
-  margin-bottom:5px;
+  font:700 14px/1 'Chakra Petch',sans-serif;
+  letter-spacing:.16em;
+  color:#ffe4ea;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
 .boss-bar{
-  height:7px;
-  border-radius:99px;
+  height:10px;
+  border-radius:6px;
   overflow:hidden;
-  background:rgba(234,244,255,.09);
+  background:rgba(4,8,18,.8);
   border:1px solid rgba(255,59,107,.28);
-  box-shadow:0 0 14px rgba(255,59,107,.12);
+  padding:2px;
 }
 .boss-fill{
   height:100%;
+  border-radius:4px;
   width:100%;
   background:linear-gradient(90deg,#ff3b6b,#ff6b3b);
-  box-shadow:0 0 12px rgba(255,59,107,.65);
+  box-shadow:0 0 12px rgba(255,59,107,.55);
   transition:width .12s linear;
 }
-/* NORYVX boss HUD — phases + danger gradient */
-.boss-title{margin-bottom:4px}
-.boss-bar-wrap{position:relative}
+/* NORYVX boss HUD card */
+.boss-title{margin-bottom:0}
+.boss-bar-wrap{position:relative;margin-top:10px}
 .boss-phases{
   display:flex;justify-content:center;gap:6px;
-  margin-top:5px;
+  margin-top:6px;
 }
 .boss-phase{
-  width:12px;height:5px;border-radius:3px;
-  background:rgba(255,255,255,.16);
+  flex:1;height:3px;border-radius:99px;
+  background:rgba(255,59,107,.16);
   transition:background var(--t-fast),box-shadow var(--t-fast);
 }
 .boss-phase.active{
-  background:linear-gradient(90deg,#ff3b6b,#ff6b3b);
-  box-shadow:0 0 8px rgba(255,59,107,.6);
+  background:linear-gradient(90deg,#ff3b6b,#ff9a30);
+  box-shadow:0 0 8px rgba(255,59,107,.5);
 }
 .boss-phase.done{
-  background:rgba(255,210,77,.5);
-  box-shadow:0 0 6px rgba(255,210,77,.35);
+  background:rgba(255,210,77,.45);
+  box-shadow:0 0 5px rgba(255,210,77,.3);
 }
 
 /* NORYVX boss intro overlay — full-body art fade */
@@ -590,18 +603,21 @@ button,
   align-self:center;
 }
 @media(max-height:680px){
-  #weapon-hud{top:calc(var(--safe-t) + 104px);gap:3px}
-  .weapon-pill{height:31px;width:40px;min-width:40px}
+  #weapon-hud{top:calc(var(--safe-t) + 160px);gap:3px}
+  .weapon-pill{height:34px;width:44px;min-width:44px}
 }
 
 .power-name{
-  display:block;
+  display:inline;
+  font:600 7.5px/1 'IBM Plex Mono',monospace;
+  letter-spacing:.08em;
 }
 
 .power-time{
-  display:block;
-  margin-top:2px;
-  font-size:11px;
+  display:inline;
+  margin-left:5px;
+  font:600 9px/1 'IBM Plex Mono',monospace;
+  color:rgba(234,244,255,.8);
 }
 
 /* POWER-UP TUTORIAL MINI */
@@ -757,7 +773,7 @@ button,
 <style id="noryvx-phase4a-css">
 #run-wave-hud{
   position:fixed;
-  top:calc(var(--safe-t) + 72px);
+  top:calc(var(--safe-t) + 14px);
   right:14px;
   left:auto;
   transform:none;
@@ -774,6 +790,17 @@ button,
   transition:opacity .2s ease;
 }
 #run-wave-hud.on{opacity:1}
+#run-wave-hud .wave-score{
+  display:block;
+  font-size:18px;
+  font-weight:700;
+  color:#eaf4ff;
+  font-family:'IBM Plex Mono',monospace;
+  letter-spacing:.06em;
+  line-height:1;
+  margin-bottom:4px;
+  text-align:right;
+}
 #run-wave-hud .wave-label,
 #run-wave-hud .wave-value,
 #run-wave-hud .wave-pressure{
@@ -1737,7 +1764,7 @@ body.ls #power-hud{top:calc(var(--safe-t) + 10px);right:auto;
   left:calc(var(--safe-l) + 62px)}
 body.ls #weapon-hud{top:auto;bottom:calc(var(--safe-b) + 10px);
   left:calc(var(--safe-l) + 16px)}
-body.ls #boss-hud{top:calc(var(--safe-t) + 10px);left:50%;width:min(420px,44vw)}
+body.ls #boss-hud{top:calc(var(--safe-t) + 10px);left:50%;right:auto;width:min(420px,44vw);transform:none}
 body.ls #build-hud{top:auto;bottom:calc(var(--safe-b) + 10px);
   left:auto;right:calc(var(--safe-r) + 16px)}
 body.ls #version-badge{top:auto;bottom:4px;left:10px}
@@ -1789,6 +1816,18 @@ body.ls #b-dash{width:72px;height:72px;
 @media (orientation:landscape) and (max-height:430px){
   #b-dash{width:58px;height:58px}
 }
+/* HULL BAR — bottom left during gameplay */
+#hull-hud{
+  position:absolute;
+  left:calc(var(--safe-l) + 16px);
+  right:calc(var(--safe-r) + 100px);
+  bottom:calc(var(--safe-b) + 18px);
+  z-index:7;
+  display:none;
+  pointer-events:none;
+}
+#hull-hud.on{display:block}
+body.ls #hull-hud{bottom:calc(var(--safe-b) + 22px)}
 </style>
 <style id="noryvx-nav-css">
 /* =========================================================
@@ -2287,6 +2326,7 @@ window.addEventListener("unhandledrejection",function(){});
 </div>
 <div aria-hidden="true" id="build-hud"></div>
 <div aria-hidden="true" id="run-wave-hud">
+<span class="wave-score" id="run-score">0</span>
 <span class="wave-label">DALGA</span>
 <span class="wave-value" id="run-wave-value">1</span>
 <span class="wave-pressure" id="run-wave-pressure">BASKI %0</span>
@@ -2317,16 +2357,36 @@ window.addEventListener("unhandledrejection",function(){});
 <span class="dash-i">↯</span><span class="dash-cd"></span>
 </button>
 <div id="boss-hud">
-<div class="boss-title"><span class="boss-name" id="boss-name">NEON WARDEN</span></div>
-<div class="boss-bar-wrap">
-<div class="boss-bar"><div class="boss-fill" id="boss-fill"></div></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+    <div style="display:flex;align-items:center;gap:8px;min-width:0">
+      <i style="flex:none;width:9px;height:9px;background:#ff3b6b;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);box-shadow:0 0 12px #ff3b6b;animation:nvxPulse 1.4s ease-in-out infinite"></i>
+      <span class="boss-name" id="boss-name">NEON WARDEN</span>
+    </div>
+    <span style="flex:none;padding:4px 8px;border-radius:5px;font:600 7.5px/1 'IBM Plex Mono',monospace;letter-spacing:.1em;background:rgba(255,59,107,.12);border:1px solid rgba(255,59,107,.32);color:#ff8fa6;white-space:nowrap">ELITE CORE</span>
+  </div>
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-top:7px;font:500 7.5px/1 'IBM Plex Mono',monospace;letter-spacing:.12em;color:rgba(255,180,196,.52)">
+    <span id="boss-phase-label">PHASE 1 / 3</span><span>THREAT · EXTREME</span>
+  </div>
+  <div class="boss-bar-wrap">
+    <div class="boss-bar"><div class="boss-fill" id="boss-fill"></div></div>
+  </div>
+  <div class="boss-phases" id="boss-phases">
+    <span class="boss-phase active"></span>
+    <span class="boss-phase"></span>
+    <span class="boss-phase"></span>
+  </div>
 </div>
-<div class="boss-phases" id="boss-phases">
-<span class="boss-phase active"></span>
-<span class="boss-phase"></span>
-<span class="boss-phase"></span>
+
+<!-- HULL BAR — player HP during combat -->
+<div id="hull-hud">
+  <div style="display:flex;justify-content:space-between;font:500 7.5px/1 'IBM Plex Mono',monospace;letter-spacing:.14em;color:rgba(234,244,255,.42)">
+    <span>HULL</span><span id="hull-val">—</span>
+  </div>
+  <div style="margin-top:6px;height:10px;border-radius:5px;background:rgba(4,8,18,.66);border:1px solid rgba(34,230,255,.16);padding:2px">
+    <div id="hull-fill" style="height:100%;width:100%;border-radius:3px;background:linear-gradient(90deg,#22e6ff,#3b7bff);box-shadow:0 0 14px rgba(34,230,255,.45);transition:width .1s linear"></div>
+  </div>
 </div>
-</div>
+
 <!-- MENU -->
 <div class="screen on nvx-ref-screen" id="scr-menu">
 <div class="nvx-city"></div>
@@ -6656,6 +6716,7 @@ const Game={
     updateWeaponHUD();
     updateBossHUD();
     updateWaveHUD();
+    updateHullHUD();
 
   },
 
@@ -7126,6 +7187,7 @@ function update(dt){
     updateWeaponHUD();
     updateWaveHUD();
     updateBossHUD();
+    updateHullHUD();
 
   }
 
@@ -9584,6 +9646,35 @@ function drawHUD(){
    POWER HUD
 ========================================================= */
 
+function updateHullHUD(){
+  const hud=document.getElementById("hull-hud");
+  const fill=document.getElementById("hull-fill");
+  const val=document.getElementById("hull-val");
+  if(!hud)return;
+  const active=Game.state===STATE.PLAYING||Game.state===STATE.LEVELUP;
+  hud.classList.toggle("on",active);
+  if(!active||!fill||!val)return;
+  try{
+    const maxHp=Math.max(1,player.hpMax||BALANCE.player.baseHp||3);
+    const curHp=Math.max(0,player.hp||0);
+    const pct=Math.round((curHp/maxHp)*100);
+    const w=pct+"%";
+    if(fill.dataset.lastW!==w){
+      fill.dataset.lastW=w;
+      fill.style.width=w;
+      fill.style.background=pct<=30
+        ?"linear-gradient(90deg,#ff3b6b,#ff6b3b)"
+        :pct<=60
+          ?"linear-gradient(90deg,#ffd24d,#22e6ff)"
+          :"linear-gradient(90deg,#22e6ff,#3b7bff)";
+      fill.style.boxShadow=pct<=30
+        ?"0 0 14px rgba(255,59,107,.6)"
+        :"0 0 14px rgba(34,230,255,.45)";
+    }
+    const txt=Math.ceil(curHp)+" / "+Math.ceil(maxHp);
+    if(val.textContent!==txt)val.textContent=txt;
+  }catch(e){}
+}
 
 function updateWaveHUD(){
   const hud=document.getElementById("run-wave-hud");
@@ -9603,6 +9694,14 @@ function updateWaveHUD(){
 
   value.textContent=String(wave);
   pressure.textContent="BASKI %"+pressurePct;
+
+  /* Update score display */
+  const scoreEl=document.getElementById("run-score");
+  if(scoreEl){
+    const s=Math.round(Game.score||0);
+    const st=s>=1000?(s>=10000?Math.round(s/1000)+"K":Math.round(s/100)/10+"K"):String(s);
+    if(scoreEl.textContent!==st)scoreEl.textContent=st;
+  }
 }
 
 function updateBossHUD(){
@@ -9629,6 +9728,8 @@ function updateBossHUD(){
           d.classList.toggle("active",pi===currentPhase);
           d.classList.toggle("done",pi<currentPhase);
         });
+        const pl=document.getElementById("boss-phase-label");
+        if(pl)pl.textContent="PHASE "+currentPhase+" / 3";
       }
       /* Boss name — sync from boss.name if set, else default */
       const nm=document.getElementById("boss-name");
@@ -12159,6 +12260,12 @@ document.addEventListener("click",function(e){
   else if(e.target.id==="nvx-hero-next"){nvxHeroCycle(1);}
   else if(e.target.id==="b-hero-select"){nvxHeroSelect();}
 });
+document.addEventListener("touchend",function(e){
+  if(!e.target)return;
+  if(e.target.id==="nvx-hero-prev"){e.preventDefault();nvxHeroCycle(-1);}
+  else if(e.target.id==="nvx-hero-next"){e.preventDefault();nvxHeroCycle(1);}
+  else if(e.target.id==="b-hero-select"){e.preventDefault();nvxHeroSelect();}
+},{passive:false});
 
 function openChar(){
   hideAllScreens();
@@ -15910,7 +16017,7 @@ if(resetBtn){
   });
 }
 
-if(backBtn)backBtn.addEventListener("click",goMenu);
+if(backBtn)tap(backBtn,goMenu);
 
 /* b-settings: delegation covers dynamically-created button; tap() covers static NORYVX button */
 document.addEventListener("click",function(e){
