@@ -6781,7 +6781,7 @@ const Game={
     this.runElites=0;
     this.runBossKills=0;
     this._pendingLevelUps=0;
-    this._hasRevived=false;
+    this._reviveCount=0;
 
     this.runUpgrades={speed:0,magnet:0,score:0};
 
@@ -10784,11 +10784,12 @@ function showOver(record){
   try{
     const rb=$("b-revive");
     if(rb){
-      const canRevive=!Game._hasRevived && window.NORYVXAdService &&
+      const canRevive=(Game._reviveCount||0)<2 && window.NORYVXAdService &&
                       window.NORYVXAdService.isRewardedAvailable();
       rb.style.display=canRevive?"block":"none";
       rb.disabled=false;
-      rb.textContent="▶ WATCH AD · REVIVE";
+      const usedRevives=Game._reviveCount||0;
+      rb.textContent=usedRevives===0?"▶ WATCH AD · REVIVE":"▶ WATCH AD · REVIVE ×2";
     }
   }catch(e){}
 
@@ -10944,7 +10945,7 @@ tap(
 /* REVIVE — watch ad and continue current run */
 function revivePlayer(){
   if(Game.state!==STATE.OVER)return;
-  if(Game._hasRevived)return;
+  if((Game._reviveCount||0)>=2)return;
   const rb=$("b-revive");
   if(rb){rb.disabled=true;rb.textContent="LOADING AD…";}
   NORYVXAdRewards.revive();
@@ -10954,7 +10955,7 @@ window.addEventListener("noryvx-reward",function(ev){
   const t=ev&&ev.detail&&ev.detail.type;
   if(t==="revive"){
     if(Game.state!==STATE.OVER)return;
-    Game._hasRevived=true;
+    Game._reviveCount=(Game._reviveCount||0)+1;
     /* Clear all enemies to give player breathing room */
     enemies.clear();
     /* Restore half HP */
@@ -19864,6 +19865,7 @@ window.NORYVX_DEVELOPMENT_UI={refresh:render};
 <script id="noryvx-dev-bottom-nav">
 (function(){
 "use strict";
+/* Normal nav: hide all screens, show target */
 function devNavTo(scrId,afterFn){
   document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('on');});
   var t=document.getElementById(scrId);
@@ -19871,22 +19873,50 @@ function devNavTo(scrId,afterFn){
   try{if(afterFn)afterFn();}catch(e){}
   try{if(typeof updateProgressUI==="function")updateProgressUI();}catch(e){}
 }
-function bindDevNav(btnId,scrId,afterFn){
+/* Overlay nav: target slides on top of scr-phase3 so bottom nav stays visible */
+function devNavOverlay(scrId,afterFn){
+  var base=document.getElementById('scr-phase3');
+  var t=document.getElementById(scrId);
+  if(!t)return;
+  if(base&&!base.classList.contains('on'))base.classList.add('on');
+  t.style.zIndex='200';
+  t.classList.add('on');
+  var backBtn=t.querySelector('[id$="-back"]');
+  if(backBtn&&!backBtn._devOvBound){
+    backBtn._devOvBound=true;
+    backBtn.addEventListener('click',function closeOverlay(e){
+      e.stopImmediatePropagation();
+      t.classList.remove('on');
+      t.style.zIndex='';
+      backBtn._devOvBound=false;
+      backBtn.removeEventListener('click',closeOverlay,true);
+      try{if(window.p3Render)p3Render();}catch(_){}
+      try{if(window.NORYVX_DEVELOPMENT_UI)NORYVX_DEVELOPMENT_UI.refresh();}catch(_){}
+    },true);
+  }
+  try{if(afterFn)afterFn();}catch(e){}
+  try{if(typeof updateProgressUI==="function")updateProgressUI();}catch(e){}
+}
+function bindDevNav(btnId,scrId,afterFn,overlay){
   var el=document.getElementById(btnId);
   if(!el||el.dataset.devNavBound)return;
   el.dataset.devNavBound='1';
-  function go(e){e.preventDefault();e.stopPropagation();devNavTo(scrId,afterFn);}
+  function go(e){
+    e.preventDefault();e.stopPropagation();
+    if(overlay)devNavOverlay(scrId,afterFn);
+    else devNavTo(scrId,afterFn);
+  }
   el.addEventListener('click',go,{capture:true});
   el.addEventListener('touchend',go,{capture:true,passive:false});
 }
-bindDevNav('dev-nav-play','scr-menu',null);
-bindDevNav('dev-nav-arsenal','scr-mastery',function(){if(window.renderMastery)window.renderMastery();});
-bindDevNav('dev-nav-develop','scr-phase3',function(){if(window.p3Render)window.p3Render();if(window.NORYVX_DEVELOPMENT_UI)window.NORYVX_DEVELOPMENT_UI.refresh();});
-bindDevNav('dev-nav-missions','scr-missions',function(){try{if(typeof renderMissions==='function')renderMissions();}catch(e){}});
+bindDevNav('dev-nav-play','scr-menu',null,false);
+bindDevNav('dev-nav-arsenal','scr-mastery',function(){if(window.renderMastery)window.renderMastery();},false);
+bindDevNav('dev-nav-develop','scr-phase3',function(){if(window.p3Render)window.p3Render();if(window.NORYVX_DEVELOPMENT_UI)window.NORYVX_DEVELOPMENT_UI.refresh();},false);
+bindDevNav('dev-nav-missions','scr-missions',function(){try{if(typeof renderMissions==='function')renderMissions();}catch(e){}},true);
 bindDevNav('dev-nav-profile','scr-rpgchar',function(){
   if(window.nvxHeroSyncFromSave)window.nvxHeroSyncFromSave();
   if(window.nvxHeroPaint)window.nvxHeroPaint();
-});
+},false);
 })();
 </script>
 
