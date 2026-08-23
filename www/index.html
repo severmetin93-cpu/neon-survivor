@@ -12,7 +12,7 @@
 <meta content="Neon Survivor" name="application-name"/>
 <meta content="Neon Survivor" name="apple-mobile-web-app-title"/>
 <link href="assets/icons/icon.svg" rel="icon" type="image/svg+xml"/>
-<title>NORYVX V20.1.0</title>
+<title>NORYVX V20.3.1</title>
 <link href="manifest.json" rel="manifest"/>
 <!-- Phase 3: NORYVX design typography — Chakra Petch + IBM Plex Mono -->
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -817,7 +817,7 @@ button,
 #run-wave-hud .wave-value::after{content:"  •  "}</style>
 <style id="noryvx-design-system">
 /* =========================================================
-   NORYVX DESIGN SYSTEM · V20.0.0 · UI_SET_60 INTEGRATED
+   NORYVX DESIGN SYSTEM · V20.3.1 · UI_SET_60 INTEGRATED
    Bu blok SADECE gorsel katmandir. Mevcut CSS'in uzerine
    biner; hicbir id, class adi, DOM yapisi veya JS secicisi
    degistirilmemistir. HUD konumlari ve dokunma alanlari
@@ -2364,7 +2364,7 @@ window.addEventListener("error",function(e){
 });
 window.addEventListener("unhandledrejection",function(){});
 </script>
-<div aria-hidden="true" id="version-badge">V20.1.0 · NORYVX</div>
+<div aria-hidden="true" id="version-badge">V20.3.1 · NORYVX</div>
 <div id="stage">
 <canvas aria-label="Neon Survivor oyun alanı" id="game" role="application"></canvas>
 <div class="hide" id="hint">
@@ -2691,7 +2691,7 @@ window.addEventListener("unhandledrejection",function(){});
 
 <!-- HEADER -->
 <div class="dev-hdr">
- <div class="dev-hdr-badge">V20.0.0 · PHASE 3</div>
+ <div class="dev-hdr-badge">V20.3.1 · PHASE 3</div>
  <div class="dev-hdr-row">
   <button class="dev-hdr-back" id="b-phase3-back">‹</button>
   <div class="dev-hdr-titles">
@@ -2816,12 +2816,13 @@ window.addEventListener("unhandledrejection",function(){});
 </div>
 <div id="o-sector" style="flex:none;margin-top:8px;text-align:center;font:500 9px/1 'IBM Plex Mono',monospace;color:rgba(234,244,255,.4);letter-spacing:.12em"></div>
 <div style="flex:1"></div>
-<button class="btn" id="b-again" style="flex:none;width:100%;height:68px;border:0;border-radius:17px;cursor:pointer;background:linear-gradient(135deg,#2ff0ff,#22a8ff 55%,#7a5cff);box-shadow:0 12px 32px rgba(34,230,255,.26);color:#03121c;font:700 19px/1 'Chakra Petch',sans-serif;letter-spacing:.26em;text-indent:.26em">RETRY</button>
+<button class="btn" id="b-revive" style="flex:none;width:100%;height:60px;border:0;border-radius:17px;cursor:pointer;background:linear-gradient(135deg,#48ff9b,#22e6a0 55%,#00c97a);box-shadow:0 10px 28px rgba(72,255,155,.28);color:#021a0e;font:700 14px/1 'Chakra Petch',sans-serif;letter-spacing:.2em;text-indent:.2em;display:none">▶ WATCH AD · REVIVE</button>
+<button class="btn" id="b-again" style="flex:none;margin-top:8px;width:100%;height:68px;border:0;border-radius:17px;cursor:pointer;background:linear-gradient(135deg,#2ff0ff,#22a8ff 55%,#7a5cff);box-shadow:0 12px 32px rgba(34,230,255,.26);color:#03121c;font:700 19px/1 'Chakra Petch',sans-serif;letter-spacing:.26em;text-indent:.26em">RETRY</button>
 <button class="btn ghost" id="b-menu" style="flex:none;margin-top:8px;width:100%;height:56px;cursor:pointer;border-radius:15px;background:rgba(9,15,32,.8);border:1px solid rgba(120,170,220,.16);color:rgba(234,244,255,.8);font:600 12px/1 'Chakra Petch',sans-serif;letter-spacing:.2em">COMMAND CENTER</button>
 </div>
 <!-- AYARLAR · Phase 14 -->
 <div class="screen nvx-ref-screen" id="scr-settings">
-<div class="nvx-screen-head"><button id="b-settings-back">‹</button><span>SYSTEM</span><b>V20.0.0</b></div>
+<div class="nvx-screen-head"><button id="b-settings-back">‹</button><span>SYSTEM</span><b>V20.3.1</b></div>
 
 <div class="noryvx-system-core">
   <div class="system-reactor"><i></i><b>SYS</b></div>
@@ -2859,7 +2860,7 @@ window.addEventListener("unhandledrejection",function(){});
   <button id="b-how"><span data-i18n="tutorial">TUTORIAL</span><small data-i18n="tutorialDesc">Interactive first-deployment briefing</small><b>›</b></button>
   <button id="b-settings-reset"><span data-i18n="resetProgress">RESET PROGRESS</span><small data-i18n="resetDesc">Erase local progression data</small><b>↻</b></button>
 </div>
-<div class="noryvx-system-footer" data-i18n="systemFooter">NORYVX SYSTEM · V20.0.0 · SECTOR 01</div>
+<div class="noryvx-system-footer" data-i18n="systemFooter">NORYVX SYSTEM · V20.3.1 · SECTOR 01</div>
 </div>
 <div class="screen" id="scr-how" style="position:absolute;inset:0;background:#04060f">
 <div id="noryvx-tutorial">
@@ -3328,7 +3329,7 @@ const I18N={
       ultraNote:"ULTRA daha fazla efekt kullanır ve eski cihazlarda performansı düşürebilir.",
       language:"DİL", dataSupport:"VERİ & DESTEK", howToPlay:"NASIL OYNANIR",
       howDesc:"Kontroller, savaş ve gelişim", resetProgress:"İLERLEMEYİ SIFIRLA",
-      resetDesc:"Yerel ilerleme verilerini sil", systemFooter:"NORYVX SİSTEM · V20.0.0 · SEKTÖR 01", tutorial:"TUTORIAL",
+      resetDesc:"Yerel ilerleme verilerini sil", systemFooter:"NORYVX SİSTEM · V20.3.1 · SEKTÖR 01", tutorial:"TUTORIAL",
       tutorialDesc:"İlk görev için interaktif eğitim", saveData:"KAYIT VERİSİ",
       saveDesc:"Yedekle, geri yükle ve yerel ilerleme"
     },
@@ -3353,7 +3354,7 @@ const I18N={
       ultraNote:"ULTRA uses higher effects and may reduce performance on older devices.",
       language:"LANGUAGE", dataSupport:"DATA & SUPPORT", howToPlay:"HOW TO PLAY",
       howDesc:"Controls, combat and progression", resetProgress:"RESET PROGRESS",
-      resetDesc:"Erase local progression data", systemFooter:"NORYVX SYSTEM · V20.0.0 · SECTOR 01", tutorial:"TUTORIAL",
+      resetDesc:"Erase local progression data", systemFooter:"NORYVX SYSTEM · V20.3.1 · SECTOR 01", tutorial:"TUTORIAL",
       tutorialDesc:"Interactive first-deployment briefing", saveData:"SAVE DATA",
       saveDesc:"Backup, restore and local progress"
     }
@@ -6780,6 +6781,7 @@ const Game={
     this.runElites=0;
     this.runBossKills=0;
     this._pendingLevelUps=0;
+    this._hasRevived=false;
 
     this.runUpgrades={speed:0,magnet:0,score:0};
 
@@ -10778,6 +10780,18 @@ function showOver(record){
     rewardLine.innerHTML += `<div style="margin-top:6px;color:#a05cff;font-size:11px;font-weight:800;letter-spacing:.14em">+${p3xp} XP${lvup} · +1 SP (MATRIX)</div>`;
   }catch(e){}
 
+  /* Show revive button only if not already revived this run and ads available */
+  try{
+    const rb=$("b-revive");
+    if(rb){
+      const canRevive=!Game._hasRevived && window.NORYVXAdService &&
+                      window.NORYVXAdService.isRewardedAvailable();
+      rb.style.display=canRevive?"block":"none";
+      rb.disabled=false;
+      rb.textContent="▶ WATCH AD · REVIVE";
+    }
+  }catch(e){}
+
   setTimeout(
     ()=>{
       if(
@@ -10925,6 +10939,47 @@ tap(
 tap(
   $("b-menu"),
   toMenu
+);
+
+/* REVIVE — watch ad and continue current run */
+function revivePlayer(){
+  if(Game.state!==STATE.OVER)return;
+  if(Game._hasRevived)return;
+  const rb=$("b-revive");
+  if(rb){rb.disabled=true;rb.textContent="LOADING AD…";}
+  NORYVXAdRewards.revive();
+}
+
+window.addEventListener("noryvx-reward",function(ev){
+  const t=ev&&ev.detail&&ev.detail.type;
+  if(t==="revive"){
+    if(Game.state!==STATE.OVER)return;
+    Game._hasRevived=true;
+    /* Clear all enemies to give player breathing room */
+    enemies.clear();
+    /* Restore half HP */
+    player.hp=Math.max(1,Math.ceil((player.hpMax||3)/2));
+    /* Resume */
+    Game.state=STATE.PLAYING;
+    hide(scrOver);
+    showPauseButton();
+    try{popText(W/2,H*0.35,"CANLANDIRMA · HAYATTA KAL!","#48ff9b",14);}catch(e){}
+  }
+  if(t==="double_run_reward"){
+    /* Double the last earned coins */
+    try{
+      const bonus=Save.data._lastCoins||0;
+      if(bonus>0){
+        Save.data.coins=(Save.data.coins||0)+bonus;
+        if(Save.save)Save.save();
+      }
+    }catch(e){}
+  }
+});
+
+tap(
+  $("b-revive"),
+  revivePlayer
 );
 
 tap(
@@ -19634,6 +19689,78 @@ if(window.NORYVX_AD_CONFIG){
     showRewarded:function(){ return NORYVXNativeAdsBridge.requestRewarded.apply(NORYVXNativeAdsBridge,arguments); },
     showInterstitial:function(){ return NORYVXNativeAdsBridge.requestInterstitial.apply(NORYVXNativeAdsBridge,arguments); }
   };
+}
+})();
+</script>
+<script id="noryvx-capacitor-admob-v2">
+(function(){
+"use strict";
+
+/* Google AdMob test ad unit IDs — replace with production IDs in release builds */
+var REWARDED_ID="ca-app-pub-3940256099942544/5224354917";
+var INTERSTITIAL_ID="ca-app-pub-3940256099942544/1033173712";
+
+var _admobReady=false;
+
+function getAdMob(){
+  try{
+    if(window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.AdMob)
+      return window.Capacitor.Plugins.AdMob;
+  }catch(e){}
+  return null;
+}
+
+async function initCapacitorAdMob(){
+  var AdMob=getAdMob();
+  if(!AdMob)return;
+  try{
+    await AdMob.initialize({
+      requestTrackingAuthorization:false,
+      initializeForTesting:!!(window.NORYVX_AD_CONFIG&&window.NORYVX_AD_CONFIG.development)
+    });
+    _admobReady=true;
+
+    /* Override NORYVXNativeAds with Capacitor AdMob implementation */
+    window.NORYVXNativeAds={
+      showRewarded:async function(){
+        var adm=getAdMob();
+        if(!adm||!_admobReady)return false;
+        try{
+          await adm.prepareRewardVideoAd({adId:REWARDED_ID,isTesting:!!(window.NORYVX_AD_CONFIG&&window.NORYVX_AD_CONFIG.development)});
+          var result=await adm.showRewardVideoAd();
+          return !!(result&&result.type);
+        }catch(err){return false;}
+      },
+      showInterstitial:async function(){
+        var adm=getAdMob();
+        if(!adm||!_admobReady)return false;
+        try{
+          await adm.prepareInterstitial({adId:INTERSTITIAL_ID,isTesting:!!(window.NORYVX_AD_CONFIG&&window.NORYVX_AD_CONFIG.development)});
+          await adm.showInterstitial();
+          return true;
+        }catch(err){return false;}
+      }
+    };
+
+    /* Wire up native AdMob events to the game's reward callbacks */
+    try{
+      AdMob.addListener("onRewardedVideoAdLoaded",function(){});
+      AdMob.addListener("onRewardedVideoAdFailedToLoad",function(ev){
+        try{window.NORYVXAdFailed&&NORYVXAdFailed("cap_"+Date.now());}catch(e){}
+      });
+    }catch(e){}
+
+    window.dispatchEvent(new CustomEvent("noryvx-admob-ready",{detail:{provider:"capacitor"}}));
+  }catch(e){
+    /* Capacitor AdMob init failed — development fallback stays active */
+  }
+}
+
+/* Initialize after DOM is ready */
+if(document.readyState==="complete"){
+  initCapacitorAdMob();
+}else{
+  window.addEventListener("load",initCapacitorAdMob);
 }
 })();
 </script>
