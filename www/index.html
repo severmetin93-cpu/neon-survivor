@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-
+<!-- MISSION_DEBUG_BUILD_2026-08-24-002 -->
 <html lang="tr">
 <head>
 <meta charset="utf-8"/>
@@ -696,6 +696,7 @@ button,
   letter-spacing:.18em;
   color:rgba(234,244,255,.28);
   text-transform:uppercase;
+  display:none!important;
 }
 </style>
 <style id="noryvx-phase2-css">
@@ -1351,14 +1352,47 @@ button:disabled{opacity:.38 !important;filter:saturate(.35);pointer-events:none}
 .pg-ms-f .p3-btn{font-size:10.5px;padding:6px 12px}
 
 /* =============================================
-   MISSIONS V3 — ULTRA PREMIUM
+   MISSIONS V3 — ULTRA PREMIUM (standalone overlay)
    ============================================= */
-#scr-missions{display:flex;flex-direction:column;background:#04060f;overflow:hidden}
+#scr-missions{
+  /* Uses .screen{display:flex} base — do NOT override display so
+     the .screen.on visibility system works.
+     CRITICAL: NO pointer-events:auto here — let .screen pointer-events:none
+     apply when hidden, otherwise this z-index:9999 element eats ALL taps. */
+  flex-direction:column!important;
+  position:fixed!important;
+  inset:0!important;
+  z-index:9999!important;
+  background:
+    radial-gradient(120% 60% at 50% 0%,rgba(34,230,255,.08),transparent 60%),
+    radial-gradient(100% 70% at 100% 100%,rgba(160,92,255,.07),transparent 65%),
+    radial-gradient(90% 60% at 0% 100%,rgba(255,79,216,.05),transparent 60%),
+    #04060f!important;
+  overflow:hidden!important;
+  align-items:stretch!important;
+  justify-content:flex-start!important;
+  padding:0!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  transform:none!important;
+  height:100%!important;
+  width:100%!important;
+  box-sizing:border-box!important;
+}
+#scr-missions.on{
+  opacity:1!important;
+  visibility:visible!important;
+  pointer-events:auto!important;
+  touch-action:auto!important;
+  transform:none!important;
+}
+/* Suppress the .screen.on::before scan-line since ms3 has its own header FX */
+#scr-missions.on::before{display:none!important;}
 .ms3-hdr{position:relative;flex-shrink:0;overflow:hidden}
 .ms3-hdr-bg{position:absolute;inset:0;pointer-events:none;background:linear-gradient(155deg,rgba(34,230,255,.15) 0%,rgba(160,92,255,.1) 48%,rgba(255,79,216,.07) 100%)}
 .ms3-hdr-bg::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 22px,rgba(34,230,255,.04) 22px,rgba(34,230,255,.04) 23px)}
 .ms3-hdr-bg::after{content:'';position:absolute;top:-70px;left:50%;transform:translateX(-50%);width:300px;height:130px;background:radial-gradient(ellipse,rgba(34,230,255,.2) 0%,transparent 70%);pointer-events:none}
-.ms3-hdr-top{display:flex;align-items:center;gap:12px;padding:15px 16px 10px;position:relative;z-index:1}
+.ms3-hdr-top{display:flex;align-items:center;gap:12px;padding:calc(var(--safe-t,0px) + 15px) 16px 10px;position:relative;z-index:1}
 .ms3-back{width:40px;height:40px;border-radius:12px;border:1px solid rgba(34,230,255,.3);background:rgba(34,230,255,.07);color:#22e6ff;font-size:22px;cursor:pointer;display:grid;place-items:center;flex-shrink:0;box-shadow:0 0 20px rgba(34,230,255,.12),inset 0 1px 0 rgba(255,255,255,.05)}
 .ms3-hdr-mid{flex:1;min-width:0}
 .ms3-lbl{display:block;font:600 7.5px 'IBM Plex Mono';letter-spacing:.28em;color:rgba(34,230,255,.55);margin-bottom:2px}
@@ -1383,14 +1417,14 @@ button:disabled{opacity:.38 !important;filter:saturate(.35);pointer-events:none}
 .ms3-mbar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#22e6ff,#a05cff,#ff4fd8);box-shadow:0 0 10px rgba(34,230,255,.45);transition:width .9s cubic-bezier(.4,0,.2,1)}
 .ms3-mbar-pct{font:800 9px 'IBM Plex Mono';color:#22e6ff;flex-shrink:0;min-width:26px;text-align:right}
 .ms3-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:7px 12px 8px;flex-shrink:0}
-.ms3-tab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 4px 6px;border-radius:10px;border:1px solid rgba(120,170,220,.12);background:rgba(9,15,32,.75);color:rgba(234,244,255,.32);cursor:pointer;transition:all .2s}
+.ms3-tab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 4px 6px;border-radius:10px;border:1px solid rgba(120,170,220,.12);background:rgba(9,15,32,.75);color:rgba(234,244,255,.32);cursor:pointer;transition:all .2s;pointer-events:auto!important;touch-action:manipulation!important;-webkit-tap-highlight-color:transparent;position:relative;z-index:2}
 .ms3-ti{font-size:16px;line-height:1}
 .ms3-tab b{font:700 7.5px 'IBM Plex Mono';letter-spacing:.14em}
-.ms3-tab[data-tab="all"].on{border-color:#22e6ff;background:rgba(34,230,255,.09);color:#22e6ff;box-shadow:0 0 14px rgba(34,230,255,.13)}
+.ms3-tab[data-tab="combat"].on{border-color:#22e6ff;background:rgba(34,230,255,.09);color:#22e6ff;box-shadow:0 0 14px rgba(34,230,255,.13)}
 .ms3-tab[data-tab="combat"].on{border-color:#ff4fd8;background:rgba(255,79,216,.08);color:#ff4fd8;box-shadow:0 0 14px rgba(255,79,216,.13)}
 .ms3-tab[data-tab="progress"].on{border-color:#22e6ff;background:rgba(34,230,255,.08);color:#22e6ff;box-shadow:0 0 14px rgba(34,230,255,.13)}
 .ms3-tab[data-tab="mastery"].on{border-color:#a05cff;background:rgba(160,92,255,.08);color:#a05cff;box-shadow:0 0 14px rgba(160,92,255,.13)}
-.ms3-list{flex:1;overflow-y:auto;padding:4px 12px 36px;display:flex;flex-direction:column;gap:9px}
+.ms3-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:4px 12px 36px;display:flex;flex-direction:column;gap:9px;touch-action:pan-y;pointer-events:auto;min-height:0}
 .ms3-card{border-radius:16px;border:1px solid rgba(120,170,220,.14);background:linear-gradient(155deg,rgba(10,16,34,.97),rgba(6,10,22,.97));position:relative;overflow:hidden;transition:border-color .25s,box-shadow .25s}
 .ms3-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
 .ms3-card.cat-combat::before{background:linear-gradient(180deg,#a05cff,#ff4fd8)}
@@ -1426,7 +1460,7 @@ button:disabled{opacity:.38 !important;filter:saturate(.35);pointer-events:none}
 .ms3-rew.rc{background:rgba(255,210,77,.1);color:#ffd24d;border:1px solid rgba(255,210,77,.2)}
 .ms3-rew.rs{background:rgba(34,230,255,.08);color:#22e6ff;border:1px solid rgba(34,230,255,.18)}
 .ms3-rew.rn{background:rgba(160,92,255,.1);color:#a05cff;border:1px solid rgba(160,92,255,.2)}
-.ms3-claim{height:34px;padding:0 16px;border-radius:10px;border:none;background:linear-gradient(135deg,#ffd24d 0%,#ff9f1a 100%);color:#1a0800;font:800 9px 'IBM Plex Mono';letter-spacing:.18em;cursor:pointer;white-space:nowrap;flex-shrink:0;box-shadow:0 4px 18px rgba(255,200,50,.3),inset 0 1px 0 rgba(255,255,255,.2);transition:transform .1s,box-shadow .1s}
+.ms3-claim{height:34px;padding:0 16px;border-radius:10px;border:none;background:linear-gradient(135deg,#ffd24d 0%,#ff9f1a 100%);color:#1a0800;font:800 9px 'IBM Plex Mono';letter-spacing:.18em;cursor:pointer;white-space:nowrap;flex-shrink:0;box-shadow:0 4px 18px rgba(255,200,50,.3),inset 0 1px 0 rgba(255,255,255,.2);transition:transform .1s,box-shadow .1s;touch-action:manipulation;pointer-events:auto;-webkit-tap-highlight-color:transparent}
 .ms3-claim:active{transform:scale(.95);box-shadow:0 2px 8px rgba(255,200,50,.2)}
 .ms3-done-txt{font:600 8.5px 'IBM Plex Mono';letter-spacing:.18em;color:rgba(72,255,155,.55)}
 .ms3-prog-txt{font:600 8.5px 'IBM Plex Mono';letter-spacing:.1em;color:rgba(234,244,255,.28)}
@@ -2486,7 +2520,7 @@ window.addEventListener("error",function(e){
 });
 window.addEventListener("unhandledrejection",function(){});
 </script>
-<div aria-hidden="true" id="version-badge">V20.3.1 · NORYVX</div>
+<div aria-hidden="true" id="version-badge" style="display:none">V20.3.1 · NORYVX</div>
 <div id="stage">
 <canvas aria-label="Neon Survivor oyun alanı" id="game" role="application"></canvas>
 <div class="hide" id="hint">
@@ -2670,8 +2704,7 @@ window.addEventListener("unhandledrejection",function(){});
   </div>
 </div>
 <div class="ms3-tabs" id="ms3-tabs">
-  <button class="ms3-tab on" data-tab="all"><span class="ms3-ti">⬡</span><b>TÜM</b></button>
-  <button class="ms3-tab" data-tab="combat"><span class="ms3-ti">⚔</span><b>SAVAŞ</b></button>
+  <button class="ms3-tab on" data-tab="combat"><span class="ms3-ti">⚔</span><b>SAVAŞ</b></button>
   <button class="ms3-tab" data-tab="progress"><span class="ms3-ti">≋</span><b>İLERLEME</b></button>
   <button class="ms3-tab" data-tab="mastery"><span class="ms3-ti">⚙</span><b>USTALIK</b></button>
 </div>
@@ -2842,7 +2875,6 @@ window.addEventListener("unhandledrejection",function(){});
 
 <!-- HEADER -->
 <div class="dev-hdr">
- <div class="dev-hdr-badge">V20.3.1 · PHASE 3</div>
  <div class="dev-hdr-row">
   <button class="dev-hdr-back" id="b-phase3-back">‹</button>
   <div class="dev-hdr-titles">
@@ -3042,6 +3074,7 @@ window.addEventListener("unhandledrejection",function(){});
 </div>
 </div>
 <script>
+window.MISSION_DEBUG_BUILD = "2026-08-24-002";
 "use strict";
 
 /* =========================================================
@@ -3638,7 +3671,7 @@ function cloneDefaults(){
   const out={};
   for(const k in DEFAULTS){
     const v=DEFAULTS[k];
-    out[k]=(v&&typeof v==="object")?{...v}:v;
+    out[k]=(v&&typeof v==="object")?Object.assign({},v):v;
   }
   return out;
 }
@@ -3791,7 +3824,7 @@ const Progression={
 
   maxLevel(type){
     /* PHASE 0.5 · P0-1 */
-    return BALANCE.player.metaUpgrade.maxLevels[type] ?? Infinity;
+    var _ml=BALANCE.player.metaUpgrade.maxLevels[type];return (_ml!==null&&_ml!==undefined)?_ml:Infinity;
   },
 
   cost(type){
@@ -4376,7 +4409,7 @@ const WEAPONS={
   novaWeapon:{name:"NOVA",color:"#ff6b3b",cooldown:5.8,speed:0,damage:1.656,radius:0,pierce:99,levels:5}
 };
 
-function weaponLevel(key){ return Game.weapons?.[key]||0; }
+function weaponLevel(key){ return (Game.weapons&&Game.weapons[key])||0; }
 
 function buildSynergies(){
   const w=Game.weapons||{};
@@ -5655,7 +5688,7 @@ function activatePower(type){
 
           damageEnemy(
             e,
-            (e.hp??1),
+            (e.hp!=null?e.hp:1),
             POWER_INFO.nova.color,
             "novaPower"
           );
@@ -6053,11 +6086,11 @@ function damageEnemy(e,amount,color,src){
   if(!e.alive)return;
 
   Telemetry.onDamageDealt(
-    Math.min(amount,(e.hp??1)),
+    Math.min(amount,(e.hp!=null?e.hp:1)),
     src||"other"
   );
 
-  e.hp=Math.max(0,(e.hp??1)-amount);
+  e.hp=Math.max(0,(e.hp!=null?e.hp:1)-amount);
   e.hitFlash=.18;
 
   emit(e.x,e.y,e.boss?8:e.elite?6:5,color,120,e.boss?2.8:2.2,.25);
@@ -6363,7 +6396,7 @@ const PowerModel={
 
   /* update() + updateCombatDirector() spawn formullerinin aynasi. */
   spawnRate(level,time){
-    const t=time??Game.time;
+    const t=(time!=null?time:Game.time);
     const stage=Math.min(BALANCE.spawn.stageMax,Math.floor(t/BALANCE.spawn.stageSec));
     const pressure=1+stage*BALANCE.spawn.pressurePerStage;
 
@@ -6882,7 +6915,7 @@ const Game={
     const thresholds=BALANCE.runProgression.levelThresholds;
     while(this.level<thresholds.length && this.runXP>=thresholds[this.level]){
       this.level++;
-      this.nextRunXP=thresholds[this.level] ?? Infinity;
+      var _nx=thresholds[this.level];this.nextRunXP=(_nx!=null?_nx:Infinity);
       this._pendingLevelUps=(this._pendingLevelUps||0)+1;
     }
     if((this._pendingLevelUps||0)>0){
@@ -10445,7 +10478,7 @@ function p2RarityFor(key){
 
 function p2RefreshRarity(key){
   if(!Game.build)Game.build=p2DefaultBuild();
-  if(RUN_CHOICES[key]?.kind==="weapon"){
+  if(RUN_CHOICES[key]&&RUN_CHOICES[key].kind==="weapon"){
     const computed=p2RarityFor(key);
     const old=Game.build.rarity[key]||"COMMON";
     const rank={COMMON:0,RARE:1,EPIC:2,LEGENDARY:3,MYTHIC:4};
@@ -10470,11 +10503,11 @@ function p2BuildPower(){
   let power=0;
   for(const k of Object.keys(WEAPONS)){
     const lv=w[k]||0;
-    power+=lv*22+(rarityPower[b.rarity?.[k]||"COMMON"]||0);
-    if(b.evolutions?.[k])power+=55;
+    power+=lv*22+(rarityPower[(b.rarity&&b.rarity[k])||"COMMON"]||0);
+    if(b.evolutions&&b.evolutions[k])power+=55;
   }
   for(const k of Object.keys(P2_PASSIVE_MAX)){
-    power+=(b.passives?.[k]||0)*12;
+    power+=((b.passives&&b.passives[k])||0)*12;
   }
   const syn=p2Synergies();
   power+=syn.overcharge?40:0;
@@ -10556,8 +10589,8 @@ function p2RenderBuild(){
   const pp=$("p2-passives-panel");
   if(wp){
     wp.innerHTML=Object.keys(WEAPONS).map(k=>{
-      const lv=weaponLevel(k),r=(Game.build?.rarity?.[k]||"COMMON");
-      const evolved=Game.build?.evolutions?.[k];
+      const lv=weaponLevel(k),r=((Game.build&&Game.build.rarity&&Game.build.rarity[k])||"COMMON");
+      const evolved=Game.build&&Game.build.evolutions&&Game.build.evolutions[k];
       const s=weaponStat(k,Math.max(1,lv||1));
       return `<div class="p2-item">
         <div class="p2-row"><b>${WEAPONS[k].name}</b><span class="p2-badge ${r.toLowerCase()}">${r}</span></div>
@@ -10567,7 +10600,7 @@ function p2RenderBuild(){
   }
   if(pp){
     pp.innerHTML=Object.keys(P2_PASSIVE_MAX).map(k=>{
-      const lv=Game.build?.passives?.[k]||0;
+      const lv=(Game.build&&Game.build.passives&&Game.build.passives[k])||0;
       return `<div class="p2-item"><div class="p2-row"><b>${RUN_CHOICES[k].title}</b><span>${lv}/${P2_PASSIVE_MAX[k]}</span></div><div class="p2-muted">${RUN_CHOICES[k].desc}</div></div>`;
     }).join("");
     if(active.length)pp.innerHTML+=`<div class="p2-item"><b>AKTİF SYNERGY</b><div style="margin-top:5px">${active.map(x=>`<span class="p2-syn">${x.toUpperCase()}</span>`).join("")}</div></div>`;
@@ -10759,7 +10792,7 @@ function openLevelUp(){
 
 function chooseRunPerk(type){
   if(Game.state!==STATE.LEVELUP)return;
-  if(RUN_CHOICES[type]?.kind==="weapon"){
+  if(RUN_CHOICES[type]&&RUN_CHOICES[type].kind==="weapon"){
     const before=Game.weapons[type];
     Game.weapons[type]++;
     const after=Game.weapons[type];
@@ -11325,11 +11358,11 @@ resetPlayer();
 /* PHASE 0.5 · 14 — tum versiyon gostergeleri BALANCE.version'dan gelir. */
 document.title="NORYVX V"+BALANCE.version;
 const versionBadge=document.getElementById("version-badge");
-if(versionBadge)versionBadge.textContent="V"+BALANCE.version+" · PHASE 3";
+if(versionBadge)versionBadge.textContent="V"+BALANCE.version;
 /* Karakter ekranindaki surum etiketi de ayni tek kaynaktan gelir;
    elle yazilan metin iki kez bayatladi (V16.3.1, sonra V16.3.2). */
 const p3Tag=document.getElementById("p3-version-tag");
-if(p3Tag)p3Tag.textContent="V"+BALANCE.version+" · PHASE 3";
+if(p3Tag)p3Tag.textContent="V"+BALANCE.version;
 
 toMenu();
 updateWeaponHUD();
@@ -11535,11 +11568,11 @@ function p3AddXP(n){
   }
   p3Save();p3Render();
 }
-function p3SkillRank(id){return Math.max(0,Math.min(P3.skills[id]?.max||0,P3S.skills[id]||0));}
+function p3SkillRank(id){return Math.max(0,Math.min((P3.skills[id]&&P3.skills[id].max)||0,P3S.skills[id]||0));}
 
 /* PHASE 3C — kumulatif hasardan mastery rutbesi. */
 function p3MasteryRank(key){
-  const xp=Math.max(0,P3S.masteryXP?.[key]||0);
+  const xp=Math.max(0,(P3S.masteryXP&&P3S.masteryXP[key])||0);
   let r=0;
   for(const t of P3.masteryThresholds){ if(xp>=t)r++; else break; }
   return Math.min(5,r);
@@ -11652,7 +11685,7 @@ function p3Render(){
   const ml=document.getElementById("p3-mastery-list");
   ml.innerHTML=["pulse","plasma","arc","novaWeapon"].map(k=>{
     const v=p3MasteryRank(k);
-    const mxp=Math.max(0,P3S.masteryXP?.[k]||0);
+    const mxp=Math.max(0,(P3S.masteryXP&&P3S.masteryXP[k])||0);
     const nx=P3.masteryThresholds[v];
     const pv=v>0?P3.masteryThresholds[v-1]:0;
     const pct=nx?Math.min(100,Math.max(0,(mxp-pv)/(nx-pv)*100)):100;
@@ -12462,7 +12495,7 @@ function openDetail(u){
   if(!it||!box)return;
   const d=DEFMAP[it.d], r=RARITY[it.r], st=itemStats(it), c=enhCost(it);
   const maxed=it.p>=r.maxPlus;
-  const nextIt={...it,p:Math.min(r.maxPlus,it.p+1)};
+  var _ni={};for(var _k in it){if(Object.prototype.hasOwnProperty.call(it,_k))_ni[_k]=it[_k];}_ni.p=Math.min(r.maxPlus,it.p+1);var nextIt=_ni;
   const ns=itemStats(nextIt);
   box.style.setProperty("--rc",r.color);
   box.innerHTML=
@@ -12685,14 +12718,14 @@ window.RPG={
        DONDURULMEZ; eksik yapilandirma acikca gosterilir.
 ========================================================= */
 (function(){
-"use strict";
-
+/* FIX-002: ES5-safe rewrite. Removed padStart, for..of, shorthand props, Array.find.
+   Wrapped entire body in try-catch to expose crash in window._PROG_ERROR. */
 if(!window.RPG){return;}
-const RPG=window.RPG;
-const KEY="noryvx_prog_v1";
+var RPG=window.RPG;
+var KEY="noryvx_prog_v1";
 
 /* ---------- SEKTORLER ---------- */
-const SECTORS=[
+var SECTORS=[
   {id:1,n:"NEON ŞEHRİ"       ,d:"Başlangıç bölgesi. Devriye droidleri.",
    hp:1.00,cred:1.00,lootLv:1 ,rar:0   ,pool:[62,14,10, 9, 5],req:null},
   {id:2,n:"ENDÜSTRİ BÖLGESİ" ,d:"Ağır zırhlı üretim birimleri.",
@@ -12704,10 +12737,11 @@ const SECTORS=[
   {id:5,n:"VOID SEKTÖRÜ"     ,d:"Bozulmuş teknoloji. En yüksek risk.",
    hp:3.60,cred:4.20,lootLv:55,rar:1.80,pool:[20,20,18,20,22],req:{s:4,w:20}}
 ];
-const SMAP={};SECTORS.forEach(s=>SMAP[s.id]=s);
+var SMAP={};
+SECTORS.forEach(function(s){SMAP[s.id]=s;});
 
 /* ---------- GOREVLER ---------- */
-const MISSIONS=[
+var MISSIONS=[
   /* SAVAŞ */
   {id:"k50"  ,n:"İlk Katliamı Başlat"       ,desc:"50 düşman yok et"           ,ic:"⚔",cat:"combat"  ,t:"kills"    ,g:50   ,cr:500  ,sh:2 ,ne:0 },
   {id:"k100" ,n:"Acımasız Avcı"             ,desc:"100 düşman yok et"          ,ic:"⚔",cat:"combat"  ,t:"kills"    ,g:100  ,cr:900  ,sh:4 ,ne:0 },
@@ -12739,7 +12773,7 @@ const MISSIONS=[
 ];
 
 /* ---------- MAGAZA ---------- */
-const SHOP=[
+var SHOP=[
   {id:"comp" ,n:"KOMPONENT PAKETİ",d:"+25 shard"          ,cr:2200,ne:0 ,kind:"shards",amt:25},
   {id:"comp2",n:"BÜYÜK KOMPONENT" ,d:"+70 shard"          ,cr:5600,ne:0 ,kind:"shards",amt:70},
   /* min: GARANTILI taban nadirlik. Etiketteki vaat gercekten tutulur. */
@@ -12750,7 +12784,7 @@ const SHOP=[
 ];
 
 /* ---------- DURUM ---------- */
-const P={
+var P={
   sector:1,
   unlocked:{1:true},
   bestWave:{},
@@ -12760,19 +12794,32 @@ const P={
   freeAt:0
 };
 
+/* Set window.PROG early so even if later code crashes, PROG is accessible */
+window.PROG={
+  state:P,
+  SECTORS:SECTORS,MISSIONS:MISSIONS,SHOP:SHOP,
+  sector:function(){return SMAP[P.sector]||SECTORS[0];},
+  progressOf:null,claim:null,buy:null,claimFree:null,freeReady:null,
+  refreshUnlocks:null,persist:null,
+  renderSectors:null,renderMissions:null,renderShop:null
+};
+
+try{
+
 function load(){
   try{
-    const raw=localStorage.getItem(KEY);if(!raw)return;
-    const p=JSON.parse(raw);if(!p||typeof p!=="object")return;
+    var raw=localStorage.getItem(KEY);if(!raw)return;
+    var p=JSON.parse(raw);if(!p||typeof p!=="object")return;
     if(SMAP[+p.sector])P.sector=+p.sector;
     if(p.unlocked&&typeof p.unlocked==="object")
-      SECTORS.forEach(s=>{if(p.unlocked[s.id])P.unlocked[s.id]=true;});
+      SECTORS.forEach(function(s){if(p.unlocked[s.id])P.unlocked[s.id]=true;});
     if(p.bestWave&&typeof p.bestWave==="object")
-      SECTORS.forEach(s=>{const v=+p.bestWave[s.id];if(v>0)P.bestWave[s.id]=v;});
-    if(p.counters&&typeof p.counters==="object")
-      for(const k in P.counters){const v=+p.counters[k];if(v>0)P.counters[k]=v;}
+      SECTORS.forEach(function(s){var v=+p.bestWave[s.id];if(v>0)P.bestWave[s.id]=v;});
+    if(p.counters&&typeof p.counters==="object"){
+      var ck;for(ck in P.counters){var cv=+p.counters[ck];if(cv>0)P.counters[ck]=cv;}
+    }
     if(p.claimed&&typeof p.claimed==="object")
-      MISSIONS.forEach(m=>{if(p.claimed[m.id])P.claimed[m.id]=true;});
+      MISSIONS.forEach(function(m){if(p.claimed[m.id])P.claimed[m.id]=true;});
     P.neon=Math.max(0,+p.neon||0);
     P.freeAt=Math.max(0,+p.freeAt||0);
   }catch(e){}
@@ -12781,14 +12828,18 @@ function persist(){try{localStorage.setItem(KEY,JSON.stringify(P));}catch(e){}}
 load();
 
 function sector(){return SMAP[P.sector]||SECTORS[0];}
-function unlockedCount(){return SECTORS.filter(s=>P.unlocked[s.id]).length;}
+function unlockedCount(){
+  var n=0;
+  SECTORS.forEach(function(s){if(P.unlocked[s.id])n++;});
+  return n;
+}
 function reqMet(s){
   if(!s.req)return true;
   return (P.bestWave[s.req.s]||0)>=s.req.w;
 }
 function refreshUnlocks(){
-  let changed=false;
-  SECTORS.forEach(s=>{
+  var changed=false;
+  SECTORS.forEach(function(s){
     if(!P.unlocked[s.id]&&reqMet(s)){P.unlocked[s.id]=true;changed=true;}
   });
   if(changed)persist();
@@ -12801,47 +12852,48 @@ refreshUnlocks();
 ========================================================= */
 
 /* 1 · Sektor zorlugu -> dusman HP egrisi */
-if(typeof BALANCE==="object"&&BALANCE.enemy&&typeof BALANCE.enemy.hpCurve==="function"){
-  const _hp=BALANCE.enemy.hpCurve;
+if(typeof BALANCE==="object"&&BALANCE&&BALANCE.enemy&&typeof BALANCE.enemy.hpCurve==="function"){
+  var _hp=BALANCE.enemy.hpCurve;
   BALANCE.enemy.hpCurve=function(level){ return _hp(level)*sector().hp; };
 }
 
 /* 2 · Sektor dusman havuzu -> gercekten farkli dusman dagilimi */
 if(typeof chooseEnemyType==="function"){
-  const _ct=chooseEnemyType;
-  chooseEnemyType=function(level){
-    const s=sector();
+  var _ct=chooseEnemyType;
+  window.chooseEnemyType=function(level){
+    var s=sector();
     if(!s.pool)return _ct(level);
-    let unlocked=1;
+    var unlocked=1;
     if(level>=2)unlocked=2;
     if(level>=3)unlocked=3;
     if(level>=4)unlocked=4;
     if(level>=6)unlocked=5;
-    let total=0;
-    for(let i=0;i<unlocked;i++)total+=s.pool[i];
-    let r=Math.random()*total;
-    for(let i=0;i<unlocked;i++){ r-=s.pool[i]; if(r<=0)return i; }
+    var total=0;
+    var i;
+    for(i=0;i<unlocked;i++)total+=s.pool[i];
+    var r=Math.random()*total;
+    for(i=0;i<unlocked;i++){ r-=s.pool[i]; if(r<=0)return i; }
     return 0;
   };
 }
 
 /* 3 · Sektor -> loot seviyesi, nadirlik egilimi, kredi carpani
       RPG.rollLoot sarmalanir; sonuc gercek envantere yazilir. */
-const _roll=RPG.rollLoot;
+var _roll=RPG.rollLoot;
 RPG.rollLoot=function(e,lvl){
-  const s=sector();
-  const before=RPG.state.credits;
-  const it=_roll(e,Math.max(1,(lvl||1)+s.lootLv));
+  var s=sector();
+  var before=RPG.state.credits;
+  var it=_roll(e,Math.max(1,(lvl||1)+s.lootLv));
   /* sektor kredi carpani — farki ekleyerek uygula */
-  const gained=RPG.state.credits-before;
+  var gained=RPG.state.credits-before;
   if(gained>0&&s.cred!==1){
     RPG.state.credits+=Math.round(gained*(s.cred-1));
   }
   /* nadirlik egilimi: dusuk nadirlikte tekrar rol hakki */
   if(it&&s.rar>0){
-    const tier=RPG.RARITY[it.r].i;
+    var tier=RPG.RARITY[it.r].i;
     if(tier<=1&&Math.random()<Math.min(.7,s.rar*.34)){
-      const up=["RARE","EPIC","LEGENDARY","MYTHIC"][Math.min(3,tier+1)];
+      var up=["RARE","EPIC","LEGENDARY","MYTHIC"][Math.min(3,tier+1)];
       it.r=up;
     }
   }
@@ -12850,37 +12902,37 @@ RPG.rollLoot=function(e,lvl){
 };
 
 /* 4 · Gercek olay sayaclari */
-const _killed=window.RPG_onEnemyKilled;
+var _killed=window.RPG_onEnemyKilled;
 window.RPG_onEnemyKilled=function(e){
-  const invBefore=RPG.state.inv.length;
+  var invBefore=RPG.state.inv.length;
   if(_killed)_killed(e);
   P.counters.kills++;
   if(e.elite)P.counters.elites++;
   if(e.boss){P.counters.bosses++;P.neon+=8;}
   if(RPG.state.inv.length>invBefore){
-    const it=RPG.state.inv[RPG.state.inv.length-1];
+    var it=RPG.state.inv[RPG.state.inv.length-1];
     if(it&&RPG.RARITY[it.r].i>=3)P.counters.legendary++;
   }
   if(P.counters.kills%25===0)persist();
 };
 
 /* 5 · Gelistirme sayaci — gercek basarili yukseltme */
-const _enh=RPG.enhance;
+var _enh=RPG.enhance;
 RPG.enhance=function(u){
-  const r=_enh(u);
+  var r=_enh(u);
   if(r&&r.ok&&r.success){P.counters.enhance++;persist();}
   return r;
 };
 
 /* 6 · Kosu sonu -> sektorun en iyi dalgasi, kilit acilimi */
 if(typeof showOver==="function"){
-  const _so=showOver;
-  showOver=function(record){
+  var _so=showOver;
+  window.showOver=function(record){
     try{
-      const w=Math.max(1,(typeof Game!=="undefined"&&Game.wave)||1);
-      const id=P.sector;
-      if(w>(P.bestWave[id]||0)){P.bestWave[id]=w;}
-      const opened=refreshUnlocks();
+      var w=Math.max(1,(typeof Game!=="undefined"&&Game.wave)||1);
+      var sid=P.sector;
+      if(w>(P.bestWave[sid]||0)){P.bestWave[sid]=w;}
+      var opened=refreshUnlocks();
       persist();
       if(opened&&typeof popText==="function"){
         try{popText(W/2,H*.32,"YENİ SEKTÖR AÇILDI","#ffe34d",18);}catch(e){}
@@ -12901,16 +12953,20 @@ function progressOf(m){
     case "enhance"  :return P.counters.enhance;
     case "legendary":return P.counters.legendary;
     case "sectors"  :return unlockedCount();
-    case "bestWave" :return Math.max(0,...Object.values(P.bestWave),0);
+    case "bestWave" :return Math.max.apply(null,[0].concat(Object.keys(P.bestWave).map(function(k){return P.bestWave[k];})));
     case "power"    :return RPG.derived().power;
   }
   return 0;
 }
-function claim(id){
-  const m=MISSIONS.find(x=>x.id===id);
-  if(!m||P.claimed[id])return false;
+function _findById(arr,id){
+  for(var i=0;i<arr.length;i++){if(arr[i].id===id)return arr[i];}
+  return null;
+}
+function claim(mid){
+  var m=_findById(MISSIONS,mid);
+  if(!m||P.claimed[mid])return false;
   if(progressOf(m)<m.g)return false;
-  P.claimed[id]=true;
+  P.claimed[mid]=true;
   RPG.state.credits+=m.cr;
   RPG.state.shards +=m.sh;
   P.neon+=m.ne;
@@ -12921,8 +12977,8 @@ function claim(id){
 /* =========================================================
    MAGAZA — gercek harcama, gercek parca
 ========================================================= */
-function buy(id){
-  const o=SHOP.find(x=>x.id===id);
+function buy(bid){
+  var o=_findById(SHOP,bid);
   if(!o)return {ok:false,msg:"Ürün yok"};
   if(o.cr&&RPG.state.credits<o.cr)return {ok:false,msg:"Yetersiz kredi"};
   if(o.ne&&P.neon<o.ne)return {ok:false,msg:"Yetersiz NEON"};
@@ -12931,13 +12987,13 @@ function buy(id){
     return {ok:false,msg:"Envanter dolu ("+RPG.INV_CAP+") — parça sat"};
   RPG.state.credits-=o.cr||0;
   P.neon-=o.ne||0;
-  let msg;
+  var msg;
   if(o.kind==="shards"){
     RPG.state.shards+=o.amt;
     msg="+"+o.amt+" shard";
   }else{
-    const s=sector();
-    const it=RPG.grant(RPG.makeItem(rollTier(o.bonus,o.min),Math.max(1,s.lootLv+5)));
+    var bs=sector();
+    var it=RPG.grant(RPG.makeItem(rollTier(o.bonus,o.min),Math.max(1,bs.lootLv+5)));
     if(!it)return {ok:false,msg:"Envanter dolu"};
     if(RPG.RARITY[it.r].i>=3)P.counters.legendary++;
     msg=RPG.DEFMAP[it.d].n+" · "+RPG.RARITY[it.r].label;
@@ -12946,12 +13002,20 @@ function buy(id){
   return {ok:true,msg:msg};
 }
 function rollTier(bonus,min){
-  const floor=min?RPG.RARITY[min].i:0;
-  const pool=Object.keys(RPG.RARITY)
-    .filter(k=>RPG.RARITY[k].i>=floor)
-    .map(k=>({k,w:RPG.RARITY[k].weight*(1+RPG.RARITY[k].i*(bonus||0))}));
-  let sum=pool.reduce((a,b)=>a+b.w,0),r=Math.random()*sum;
-  for(const p of pool){r-=p.w;if(r<=0)return p.k;}
+  var floor=min?RPG.RARITY[min].i:0;
+  var rkeys=Object.keys(RPG.RARITY);
+  var pool=[];
+  var ki;
+  for(ki=0;ki<rkeys.length;ki++){
+    var k=rkeys[ki];
+    if(RPG.RARITY[k].i>=floor){
+      pool.push({k:k,w:RPG.RARITY[k].weight*(1+RPG.RARITY[k].i*(bonus||0))});
+    }
+  }
+  var sum=0,pi;
+  for(pi=0;pi<pool.length;pi++)sum+=pool[pi].w;
+  var r=Math.random()*sum;
+  for(pi=0;pi<pool.length;pi++){r-=pool[pi].w;if(r<=0)return pool[pi].k;}
   return pool.length?pool[0].k:"COMMON";
 }
 function freeReady(){return Date.now()>=P.freeAt;}
@@ -12967,27 +13031,27 @@ function claimFree(){
 /* =========================================================
    UI
 ========================================================= */
-const $$=id=>document.getElementById(id);
-const fmt=n=>n>=1000?(n/1000).toFixed(n>=10000?0:1)+"K":String(n);
-const bar=(v,g)=>'<div class="pg-bar"><i style="width:'+
-  Math.min(100,v/g*100).toFixed(1)+'%"></i></div>';
+function $$(id){return document.getElementById(id);}
+function fmt(n){return n>=1000?(n/1000).toFixed(n>=10000?0:1)+"K":String(n);}
+function padTwo(n){var s=String(n);return s.length<2?"0"+s:s;}
 
 function currencyLine(){
   return "◎ "+fmt(RPG.state.credits)+"   ◆ "+fmt(RPG.state.shards)+"   ✦ "+fmt(P.neon);
 }
-function setCur(id){const e=$$(id);if(e)e.textContent=currencyLine();}
+function setCur(id){var e=$$(id);if(e)e.textContent=currencyLine();}
 
 function renderSectors(){
-  const g=$$("pg-sector-list");if(!g)return;
+  var g=$$("pg-sector-list");if(!g)return;
   setCur("pg-sector-cur");
-  g.innerHTML=SECTORS.map(s=>{
-    const open=!!P.unlocked[s.id];
-    const sel=P.sector===s.id;
-    const bw=P.bestWave[s.id]||0;
-    const need=s.req?("SEKTÖR "+s.req.s+" · DALGA "+s.req.w):"";
-    const have=s.req?(P.bestWave[s.req.s]||0):0;
-    return '<button class="pg-sec'+(open?"":" lock")+(sel?" sel":"")+'" data-sec="'+s.id+'">'+
-      '<span class="pg-sec-id">'+String(s.id).padStart(2,"0")+'</span>'+
+  var html="";
+  SECTORS.forEach(function(s){
+    var open=!!P.unlocked[s.id];
+    var sel=P.sector===s.id;
+    var bw=P.bestWave[s.id]||0;
+    var need=s.req?("SEKTÖR "+s.req.s+" · DALGA "+s.req.w):"";
+    var have=s.req?(P.bestWave[s.req.s]||0):0;
+    html+='<button class="pg-sec'+(open?"":" lock")+(sel?" sel":"")+'" data-sec="'+s.id+'">'+
+      '<span class="pg-sec-id">'+padTwo(s.id)+'</span>'+
       '<span class="pg-sec-n">'+s.n+'</span>'+
       '<span class="pg-sec-d">'+s.d+'</span>'+
       '<span class="pg-sec-m">DÜŞMAN HP x'+s.hp.toFixed(2)+' · KREDİ x'+s.cred.toFixed(2)+
@@ -12996,21 +13060,29 @@ function renderSectors(){
         ? '<span class="pg-sec-b">EN İYİ DALGA '+bw+(sel?" · SEÇİLİ":"")+'</span>'
         : '<span class="pg-sec-b lockline">🔒 '+need+' ('+have+'/'+s.req.w+')</span>')+
     '</button>';
-  }).join("");
-  g.querySelectorAll("[data-sec]").forEach(b=>b.addEventListener("click",()=>{
-    const id=+b.dataset.sec;
-    if(!P.unlocked[id])return;
-    P.sector=id;persist();renderSectors();updateMenuTag();
-    try{Audio_.power();}catch(e){}
-  }));
+  });
+  g.innerHTML=html;
+  g.querySelectorAll("[data-sec]").forEach(function(b){
+    b.addEventListener("click",function(){
+      var id=+b.dataset.sec;
+      if(!P.unlocked[id])return;
+      P.sector=id;persist();renderSectors();updateMenuTag();
+      try{Audio_.power();}catch(e){}
+    });
+  });
 }
 
-let _ms3TabsBound=false;
+function ms3Tab(btn){
+  document.querySelectorAll("#ms3-tabs .ms3-tab").forEach(function(t){t.classList.remove("on");});
+  btn.classList.add("on");
+  renderMissions();
+}
+
 function renderMissions(){
-  const g=document.getElementById("pg-mission-list");if(!g)return;
+  var g=document.getElementById("pg-mission-list");if(!g)return;
 
   /* currency — rich HTML */
-  const cur=document.getElementById("pg-mission-cur");
+  var cur=document.getElementById("pg-mission-cur");
   if(cur){
     cur.innerHTML=
       '<span class="ms3-ci ci-cr"><i>◎</i><b>'+fmt(RPG.state.credits)+'</b><small>KREDİ</small></span>'
@@ -13019,55 +13091,46 @@ function renderMissions(){
   }
 
   /* header stats & master bar */
-  const total=MISSIONS.length;
-  const completed=MISSIONS.filter(m=>!!P.claimed[m.id]).length;
-  const elDone=document.getElementById("ms3-done-count");
-  const elTotal=document.getElementById("ms3-total-count");
-  const elFill=document.getElementById("ms3-mbar-fill");
-  const elPct=document.getElementById("ms3-mbar-pct");
+  var total=MISSIONS.length;
+  var completed=0;
+  MISSIONS.forEach(function(m){if(P.claimed[m.id])completed++;});
+  var elDone=document.getElementById("ms3-done-count");
+  var elTotal=document.getElementById("ms3-total-count");
+  var elFill=document.getElementById("ms3-mbar-fill");
+  var elPct=document.getElementById("ms3-mbar-pct");
   if(elDone)elDone.textContent=completed;
   if(elTotal)elTotal.textContent=total;
-  const masterPct=total?Math.round(completed/total*100):0;
+  var masterPct=total?Math.round(completed/total*100):0;
   if(elFill)elFill.style.width=masterPct+"%";
   if(elPct)elPct.textContent=masterPct+"%";
 
-  /* bind tabs once */
-  if(!_ms3TabsBound){
-    const tabsEl=document.getElementById("ms3-tabs");
-    if(tabsEl){
-      tabsEl.addEventListener("click",function(e){
-        const btn=e.target.closest(".ms3-tab");if(!btn)return;
-        tabsEl.querySelectorAll(".ms3-tab").forEach(t=>t.classList.remove("on"));
-        btn.classList.add("on");
-        renderMissions();
-      });
-      _ms3TabsBound=true;
-    }
-  }
-
   /* filter by active tab */
-  const activeTab=(document.getElementById("ms3-tabs")?.querySelector(".ms3-tab.on")?.dataset.tab)||"all";
-  const list=activeTab==="all"?MISSIONS:MISSIONS.filter(m=>m.cat===activeTab);
+  var _ms3TabsEl=document.getElementById("ms3-tabs");
+  var _ms3ActiveTabEl=_ms3TabsEl?_ms3TabsEl.querySelector(".ms3-tab.on"):null;
+  var activeTab=(_ms3ActiveTabEl&&_ms3ActiveTabEl.dataset&&_ms3ActiveTabEl.dataset.tab)||"all";
+  var list=[];
+  MISSIONS.forEach(function(m){if(activeTab==="all"||m.cat===activeTab)list.push(m);});
 
-  g.innerHTML=list.map(m=>{
-    const p=progressOf(m),isDone=p>=m.g,isClaimed=!!P.claimed[m.id];
-    const pct=Math.min(100,p/m.g*100).toFixed(1);
-    const cat=m.cat||"combat";
-    const statBadge=isClaimed
+  var html="";
+  list.forEach(function(m){
+    var p=progressOf(m),isDone=p>=m.g,isClaimed=!!P.claimed[m.id];
+    var pct=Math.min(100,p/m.g*100).toFixed(1);
+    var cat=m.cat||"combat";
+    var statBadge=isClaimed
       ?'<span class="ms3-stat ss-done">✓ ALINDI</span>'
       :isDone
         ?'<span class="ms3-stat ss-ready">★ HAZIR</span>'
         :'<span class="ms3-stat ss-prog">'+Math.min(p,m.g)+'/'+m.g+'</span>';
-    const footerRight=isClaimed
+    var footerRight=isClaimed
       ?'<span class="ms3-done-txt">TAMAMLANDI</span>'
       :isDone
         ?'<button class="ms3-claim" data-claim="'+m.id+'">ÖDÜLÜ AL</button>'
         :'<span class="ms3-prog-txt">'+Math.min(p,m.g)+' / '+m.g+'</span>';
-    const rewards=
+    var rewards=
       '<span class="ms3-rew rc">◎ '+fmt(m.cr)+'</span>'
       +(m.sh?'<span class="ms3-rew rs">◆ '+m.sh+'</span>':'')
       +(m.ne?'<span class="ms3-rew rn">✦ '+m.ne+'</span>':'');
-    return '<div class="ms3-card cat-'+cat+(isClaimed?" ms3-claimed":isDone?" ms3-ready")+'">'
+    html+='<div class="ms3-card cat-'+cat+(isClaimed?" ms3-claimed":isDone?" ms3-ready":"")+'">'
       +'<div class="ms3-inner">'
         +'<div class="ms3-ctop">'
           +'<div class="ms3-ico cat-'+cat+'">'+(m.ic||"◆")+'</div>'
@@ -13087,75 +13150,97 @@ function renderMissions(){
         +'</div>'
       +'</div>'
     +'</div>';
-  }).join("");
+  });
+  g.innerHTML=html;
 
-  g.querySelectorAll("[data-claim]").forEach(b=>b.addEventListener("click",()=>{
-    if(claim(b.dataset.claim)){try{Audio_.power();}catch(e){}renderMissions();}
-  }));
+  g.querySelectorAll("[data-claim]").forEach(function(b){
+    b.addEventListener("click",function(){
+      if(claim(b.dataset.claim)){try{Audio_.power();}catch(e){}renderMissions();}
+    });
+  });
 }
 
 function renderShop(){
-  const g=$$("pg-shop-list");if(!g)return;
+  var g=$$("pg-shop-list");if(!g)return;
   setCur("pg-shop-cur");
-  const free=freeReady();
-  const left=Math.max(0,P.freeAt-Date.now());
-  const hrs=Math.floor(left/3600000),mins=Math.floor(left%3600000/60000);
-  g.innerHTML=
+  var free=freeReady();
+  var left=Math.max(0,P.freeAt-Date.now());
+  var hrs=Math.floor(left/3600000),mins=Math.floor(left%3600000/60000);
+  var shopHtml=
     '<button class="pg-shop free'+(free?"":" off")+'" data-free="1">'+
       '<span class="pg-shop-n">GÜNLÜK ÜCRETSİZ</span>'+
       '<span class="pg-shop-d">+650 kredi · +5 shard</span>'+
       '<span class="pg-shop-p">'+(free?"AL":hrs+"s "+mins+"dk")+'</span>'+
-    '</button>'+
-    SHOP.map(o=>{
-      const afford=(!o.cr||RPG.state.credits>=o.cr)&&(!o.ne||P.neon>=o.ne);
-      return '<button class="pg-shop'+(afford?"":" off")+'" data-buy="'+o.id+'">'+
-        '<span class="pg-shop-n">'+o.n+'</span>'+
-        '<span class="pg-shop-d">'+o.d+'</span>'+
-        '<span class="pg-shop-p">'+(o.cr?'◎'+fmt(o.cr):'')+(o.ne?'✦'+o.ne:'')+'</span>'+
-      '</button>';
-    }).join("")+
+    '</button>';
+  SHOP.forEach(function(o){
+    var afford=(!o.cr||RPG.state.credits>=o.cr)&&(!o.ne||P.neon>=o.ne);
+    shopHtml+='<button class="pg-shop'+(afford?"":" off")+'" data-buy="'+o.id+'">'+
+      '<span class="pg-shop-n">'+o.n+'</span>'+
+      '<span class="pg-shop-d">'+o.d+'</span>'+
+      '<span class="pg-shop-p">'+(o.cr?'◎'+fmt(o.cr):'')+(o.ne?'✦'+o.ne:'')+'</span>'+
+    '</button>';
+  });
+  shopHtml+=
     '<div class="pg-iap">MAĞAZA KÖPRÜSÜ BAĞLI DEĞİL<br>'+
       'Google Play Billing / StoreKit yapılandırması bu ortamda yok. '+
       'Gerçek para ile satın alma <b>bilerek devre dışı</b>; sahte "satın alma başarılı" '+
       'sonucu döndürülmüyor. NEON şu an boss ve görev ödüllerinden kazanılır.</div>';
-  const msg=$$("pg-shop-msg");
-  g.querySelectorAll("[data-buy]").forEach(b=>b.addEventListener("click",()=>{
-    const r=buy(b.dataset.buy);
-    if(msg){msg.textContent=r.msg;msg.style.color=r.ok?"#48ff9b":"#ff6b8a";}
-    try{Audio_.power();}catch(e){}
-    renderShop();
-  }));
-  const fb=g.querySelector("[data-free]");
-  if(fb)fb.addEventListener("click",()=>{
-    const r=claimFree();
+  g.innerHTML=shopHtml;
+  var msg=$$("pg-shop-msg");
+  g.querySelectorAll("[data-buy]").forEach(function(b){
+    b.addEventListener("click",function(){
+      var r=buy(b.dataset.buy);
+      if(msg){msg.textContent=r.msg;msg.style.color=r.ok?"#48ff9b":"#ff6b8a";}
+      try{Audio_.power();}catch(e){}
+      renderShop();
+    });
+  });
+  var fb=g.querySelector("[data-free]");
+  if(fb)fb.addEventListener("click",function(){
+    var r=claimFree();
     if(msg){msg.textContent=r.msg;msg.style.color=r.ok?"#48ff9b":"#ff6b8a";}
     renderShop();
   });
 }
 
 function updateMenuTag(){
-  const t=$$("pg-menu-sector");
-  if(t)t.textContent="SEKTÖR "+String(P.sector).padStart(2,"0")+" · "+sector().n;
+  var t=$$("pg-menu-sector");
+  if(t)t.textContent="SEKTÖR "+padTwo(P.sector)+" · "+sector().n;
 }
 
-function hideAll(){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("on"));}
-function open(id,fn){hideAll();const e=$$(id);if(e)e.classList.add("on");if(fn)fn();}
-function back(){hideAll();const m=$$("scr-menu");if(m)m.classList.add("on");updateMenuTag();}
-function bind(id,fn){const e=$$(id);if(e)e.addEventListener("click",fn);}
+function hideAll(){document.querySelectorAll(".screen").forEach(function(s){s.classList.remove("on");});}
+function pgOpen(id,fn){hideAll();var e=$$(id);if(e)e.classList.add("on");if(fn)fn();}
+function back(){hideAll();var m=$$("scr-menu");if(m)m.classList.add("on");updateMenuTag();}
+function bind(id,fn){var e=$$(id);if(e)e.addEventListener("click",fn);}
 
-bind("b-sectors",()=>open("scr-sectors",renderSectors));
-bind("b-missions",()=>open("scr-missions",renderMissions));
-bind("b-shop",()=>open("scr-shop",renderShop));
+bind("b-sectors",function(){pgOpen("scr-sectors",renderSectors);});
+bind("b-missions",function(){pgOpen("scr-missions",renderMissions);});
+bind("b-shop",function(){pgOpen("scr-shop",renderShop);});
 bind("b-sectors-back",back);
 bind("b-missions-back",back);
 bind("b-shop-back",back);
 updateMenuTag();
 
-window.PROG={
-  state:P,SECTORS,MISSIONS,SHOP,
-  sector,progressOf,claim,buy,claimFree,freeReady,refreshUnlocks,persist,
-  renderSectors,renderMissions,renderShop
-};
+/* Update window.PROG with all real functions */
+window.PROG.sector=sector;
+window.PROG.progressOf=progressOf;
+window.PROG.claim=claim;
+window.PROG.buy=buy;
+window.PROG.claimFree=claimFree;
+window.PROG.freeReady=freeReady;
+window.PROG.refreshUnlocks=refreshUnlocks;
+window.PROG.persist=persist;
+window.PROG.renderSectors=renderSectors;
+window.PROG.renderMissions=renderMissions;
+window.PROG.renderShop=renderShop;
+
+/* Expose closure renderMissions globally so noryvx-missions-fix can delegate to it.
+   The closure version has direct access to MISSIONS, P, RPG — no window.PROG indirection. */
+window.renderMissions=renderMissions;
+
+}catch(e){
+  window._PROG_ERROR=String(e);
+}
 
 })();
 </script>
@@ -13557,7 +13642,7 @@ function renderMastery(){
   let selected=localStorage.getItem("noryvx_selected_weapon")||"pulse";
   if(!D[selected])selected="pulse";
   const d=D[selected];
-  const r=p3MasteryRank(selected), xp=Math.max(0,P3S.masteryXP?.[selected]||0);
+  const r=p3MasteryRank(selected), xp=Math.max(0,(P3S.masteryXP&&P3S.masteryXP[selected])||0);
   const TH=P3.masteryThresholds;
   const next=r<TH.length?TH[r]:null, prev=r>0?TH[r-1]:0;
   const pct=next?Math.min(100,Math.max(0,(xp-prev)/(next-prev)*100)):100;
@@ -14473,7 +14558,7 @@ const ACH=[
 ];
 
 function P(){try{return window.PROG.state.counters;}catch(e){return {};}}
-function bestWave(){try{return Math.max(0,...Object.values(window.PROG.state.bestWave),0);}catch(e){return 0;}}
+function bestWave(){try{var vals=Object.values(window.PROG.state.bestWave);return Math.max.apply(null,[0].concat(vals).concat([0]));}catch(e){return 0;}}
 function unlocked(){try{return Object.keys(window.PROG.state.unlocked).length;}catch(e){return 0;}}
 function power(){try{return window.RPG.derived().power;}catch(e){return 0;}}
 function invCount(){try{return window.RPG.state.inv.length;}catch(e){return 0;}}
@@ -14847,7 +14932,7 @@ window.NEONEVO={EVO_MAX,evOf,evName,canEvolve,evoCost,fodderFor,evolve,nextRarit
 (function tabs(){
   const bar=document.getElementById("menu-tabs");
   if(!bar)return;
-  const panes=[...document.querySelectorAll(".menu-sub[data-mpane]")];
+  const panes=Array.prototype.slice.call(document.querySelectorAll(".menu-sub[data-mpane]"));
   bar.querySelectorAll("[data-mtab]").forEach(t=>{
     t.addEventListener("click",()=>{
       bar.querySelectorAll("[data-mtab]").forEach(x=>x.classList.toggle("on",x===t));
@@ -15219,7 +15304,7 @@ function applyOrientation(){
 function split(scr){
   if(scr.dataset.lsSplit)return;
   if(scr.id==="scr-menu")return;              /* menü ayrı ele alınır */
-  const kids=[...scr.children];
+  const kids=Array.prototype.slice.call(scr.children);
   if(!kids.length)return;
 
   const head=document.createElement("div");
@@ -15247,7 +15332,7 @@ function splitMenu(){
   const right=document.createElement("div");
   right.className="menu-right";
 
-  [...scr.children].forEach(el=>{
+  Array.prototype.slice.call(scr.children).forEach(el=>{
     if(el.classList.contains("toggles")){scr.appendChild(el);return;}
     const toRight=el.classList.contains("hero-stage")||
                   el.classList.contains("progress-panel")||
@@ -16238,9 +16323,9 @@ const fmt=n=>n>=1e6?(n/1e6).toFixed(1)+"M":n>=1000?(n/1000).toFixed(n>=10000?0:1
 })();
 
 /* ---------- 2 · ALT NAVİGASYON ---------- */
-const tabs=[...document.querySelectorAll("#menu-tabs [data-mtab]")];
-const panes=[...document.querySelectorAll(".menu-sub[data-mpane]")];
-const navs=[...document.querySelectorAll("#bottomnav [data-nav]")];
+const tabs=Array.prototype.slice.call(document.querySelectorAll("#menu-tabs [data-mtab]"));
+const panes=Array.prototype.slice.call(document.querySelectorAll(".menu-sub[data-mpane]"));
+const navs=Array.prototype.slice.call(document.querySelectorAll("#bottomnav [data-nav]"));
 
 function go(key){
   panes.forEach(p=>p.classList.toggle("on",p.dataset.mpane===key));
@@ -20126,6 +20211,10 @@ window.NORYVX_DEVELOPMENT_UI={refresh:render};
 "use strict";
 /* Normal nav: hide all screens, show target */
 function devNavTo(scrId,afterFn){
+  /* Track previous screen for BACK (used by missions close) */
+  var prev=null;
+  document.querySelectorAll('.screen.on').forEach(function(s){if(s.id&&s.id!==scrId)prev=s.id;});
+  if(scrId==='scr-missions'&&prev)window._ms3PrevScrId=prev;
   document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('on');});
   var t=document.getElementById(scrId);
   if(t)t.classList.add('on');
@@ -20176,7 +20265,10 @@ function bindDevNav(btnId,scrId,afterFn,overlay){
 bindDevNav('dev-nav-play','scr-menu',null,false);
 bindDevNav('dev-nav-arsenal','scr-mastery',function(){if(window.renderMastery)window.renderMastery();},false);
 bindDevNav('dev-nav-develop','scr-phase3',function(){if(window.p3Render)window.p3Render();if(window.NORYVX_DEVELOPMENT_UI)window.NORYVX_DEVELOPMENT_UI.refresh();},false);
-bindDevNav('dev-nav-missions','scr-missions',function(){try{if(typeof renderMissions==='function')renderMissions();}catch(e){}},true);
+/* missions — devNavTo; render+tabs handled by MutationObserver in noryvx-missions-fix */
+bindDevNav('dev-nav-missions','scr-missions',function(){
+  try{if(typeof window.renderMissions==='function')window.renderMissions();}catch(_){}
+},false);
 bindDevNav('dev-nav-profile','scr-rpgchar',function(){
   if(window.nvxHeroSyncFromSave)window.nvxHeroSyncFromSave();
   if(window.nvxHeroPaint)window.nvxHeroPaint();
@@ -20438,5 +20530,302 @@ setInterval(function(){
   var scr=document.getElementById("scr-rpgchar");
   if(scr&&scr.classList.contains("on"))paint();
 },500);
+})();
+</script>
+
+<script id="noryvx-missions-fix">
+/* =========================================================
+   MISSIONS FIX v3 — single source of truth
+   - Standalone renderer (reads window.PROG, no closure dep)
+   - Single tab-binding system (guard: _nvxMsFix)
+   - Proper previous-screen tracking for BACK
+   - Does NOT double-bind dev-nav-missions if devNavBound set
+   ========================================================= */
+(function(){
+"use strict";
+
+/* ---------- previous-screen tracking ---------- */
+var _ms3PrevScrId='scr-phase3'; /* default fallback */
+
+/* ---------- renderer ---------- */
+function renderMissionsStandalone(closureErr){
+  var g=document.getElementById('pg-mission-list');
+  if(!g)return;
+
+  var prog=window.PROG;
+  if(!prog||!Array.isArray(prog.MISSIONS)){
+    var _diagRPG=typeof window.RPG;
+    var _diagPROG=typeof window.PROG;
+    var _diagMIS=prog?(Array.isArray(prog.MISSIONS)?'array['+prog.MISSIONS.length+']':typeof prog.MISSIONS):'N/A';
+    var _diagRM=typeof window.renderMissions;
+    var _diagBld=window.MISSION_DEBUG_BUILD||'?';
+    var _diagErr=closureErr?'\nERR:'+closureErr:'';
+    var _diagPE=window._PROG_ERROR?'\nPROG_ERR:'+window._PROG_ERROR:'';
+    g.innerHTML='<div style="padding:32px 16px;text-align:center;color:rgba(34,230,255,.5);font:700 10px \'IBM Plex Mono\';letter-spacing:.1em;white-space:pre-wrap;">'
+      +'BUILD:'+_diagBld+'\n'
+      +'RPG:'+_diagRPG+'\n'
+      +'PROG:'+_diagPROG+'\n'
+      +'MISSIONS:'+_diagMIS+'\n'
+      +'renderMissions:'+_diagRM
+      +_diagErr
+      +_diagPE
+      +'</div>';
+    return;
+  }
+
+  /* currency */
+  var cur=document.getElementById('pg-mission-cur');
+  if(cur){
+    var cr=0,sh=0,ne=0;
+    try{cr=window.RPG.state.credits||0;}catch(e){}
+    try{sh=window.RPG.state.shards||0;}catch(e){}
+    try{ne=(prog.state||{}).neon||0;}catch(e){}
+    cur.innerHTML=
+      '<span class="ms3-ci ci-cr"><i>◎</i><b>'+fmt(cr)+'</b><small>KREDİ</small></span>'+
+      '<span class="ms3-ci ci-sh"><i>◆</i><b>'+fmt(sh)+'</b><small>SHARD</small></span>'+
+      '<span class="ms3-ci ci-ne"><i>✦</i><b>'+ne+'</b><small>NEON</small></span>';
+  }
+
+  /* progress bar */
+  var MISSIONS=prog.MISSIONS;
+  var state=prog.state||{};
+  var claimed=state.claimed||{};
+  var total=MISSIONS.length;
+  var completed=MISSIONS.filter(function(m){return!!claimed[m.id];}).length;
+  var elDone=document.getElementById('ms3-done-count');
+  var elTotal=document.getElementById('ms3-total-count');
+  var elFill=document.getElementById('ms3-mbar-fill');
+  var elPct=document.getElementById('ms3-mbar-pct');
+  if(elDone)elDone.textContent=completed;
+  if(elTotal)elTotal.textContent=total;
+  var masterPct=total?Math.round(completed/total*100):0;
+  if(elFill)elFill.style.width=masterPct+'%';
+  if(elPct)elPct.textContent=masterPct+'%';
+
+  /* active tab */
+  var activeTab='all';
+  var tabEl=document.querySelector('#ms3-tabs .ms3-tab.on');
+  if(tabEl)activeTab=tabEl.dataset.tab||'all';
+
+  /* filter */
+  var list=activeTab==='all'?MISSIONS:MISSIONS.filter(function(m){return m.cat===activeTab;});
+
+  /* build HTML */
+  g.innerHTML=list.map(function(m){
+    var p=progressOf(m,state);
+    var isDone=p>=m.g,isClaimed=!!claimed[m.id];
+    var pct=Math.min(100,p/m.g*100).toFixed(1);
+    var cat=m.cat||'combat';
+    var statBadge=isClaimed
+      ?'<span class="ms3-stat ss-done">✓ ALINDI</span>'
+      :isDone
+        ?'<span class="ms3-stat ss-ready">★ HAZIR</span>'
+        :'<span class="ms3-stat ss-prog">'+Math.min(p,m.g)+'/'+m.g+'</span>';
+    var footerRight=isClaimed
+      ?'<span class="ms3-done-txt">TAMAMLANDI</span>'
+      :isDone
+        ?'<button class="ms3-claim" data-claim="'+m.id+'">ÖDÜLÜ AL</button>'
+        :'<span class="ms3-prog-txt">'+Math.min(p,m.g)+' / '+m.g+'</span>';
+    var rewards=
+      '<span class="ms3-rew rc">◎ '+fmt(m.cr)+'</span>'+
+      (m.sh?'<span class="ms3-rew rs">◆ '+m.sh+'</span>':'')+
+      (m.ne?'<span class="ms3-rew rn">✦ '+m.ne+'</span>':'');
+    return '<div class="ms3-card cat-'+cat+(isClaimed?' ms3-claimed':isDone?' ms3-ready':'')+'">'
+      +'<div class="ms3-inner">'
+        +'<div class="ms3-ctop">'
+          +'<div class="ms3-ico cat-'+cat+'">'+(m.ic||'◆')+'</div>'
+          +'<div class="ms3-meta">'
+            +'<div class="ms3-mname">'+m.n+'</div>'
+            +'<div class="ms3-mdesc">'+(m.desc||'')+'</div>'
+          +'</div>'
+          +statBadge
+        +'</div>'
+        +'<div class="ms3-prow">'
+          +'<div class="ms3-pbar cat-'+cat+'"><i style="width:'+pct+'%"></i></div>'
+          +'<span class="ms3-ppct">'+Math.round(+pct)+'%</span>'
+        +'</div>'
+        +'<div class="ms3-foot">'
+          +'<div class="ms3-rews">'+rewards+'</div>'
+          +footerRight
+        +'</div>'
+      +'</div>'
+    +'</div>';
+  }).join('');
+
+  /* claim buttons */
+  g.querySelectorAll('[data-claim]').forEach(function(b){
+    b.addEventListener('click',function(){
+      try{
+        if(prog.claim&&prog.claim(b.dataset.claim)){
+          try{Audio_.power();}catch(e){}
+          renderMissionsStandalone();
+        }
+      }catch(e){}
+    });
+  });
+}
+
+function progressOf(m,state){
+  var counters=state.counters||{};
+  try{
+    switch(m.t){
+      case 'kills'    :return counters.kills||0;
+      case 'elites'   :return counters.elites||0;
+      case 'bosses'   :return counters.bosses||0;
+      case 'enhance'  :return counters.enhance||0;
+      case 'legendary':return counters.legendary||0;
+      case 'sectors'  :return Object.keys(state.unlocked||{}).length;
+      case 'bestWave' :
+        var bw=state.bestWave||{};
+        var vals=Object.values(bw);
+        return vals.length?Math.max.apply(null,[0].concat(vals)):0;
+      case 'power'    :
+        try{return window.RPG.derived().power;}catch(e){return 0;}
+    }
+  }catch(e){}
+  return 0;
+}
+
+function fmt(n){return n>=1000?(n/1000).toFixed(n>=10000?0:1)+'K':String(n||0);}
+
+/* ---------- helper: call the best available render function ---------- */
+var _doRenderLastErr='';
+function doRender(){
+  /* Prefer the closure renderMissions (direct access to MISSIONS/P/RPG).
+     Fall back to standalone if closure not available. */
+  if(typeof window.renderMissions==='function'){
+    try{window.renderMissions();return;}catch(e){_doRenderLastErr=String(e);}
+  }
+  renderMissionsStandalone(_doRenderLastErr);
+}
+
+
+/* ---------- tab switching (single system) ---------- */
+function switchMs3Tab(tabEl){
+  if(!tabEl)return;
+  document.querySelectorAll('#ms3-tabs .ms3-tab').forEach(function(t){t.classList.remove('on');});
+  tabEl.classList.add('on');
+  doRender();
+}
+
+function bindTabs(){
+  document.querySelectorAll('#ms3-tabs .ms3-tab').forEach(function(tab){
+    if(tab._nvxMsFix)return;
+    tab._nvxMsFix=true;
+    tab.addEventListener('touchstart',function(e){
+      e.stopPropagation();
+      switchMs3Tab(this);
+    },{capture:true,passive:true});
+    tab.addEventListener('click',function(e){
+      e.stopPropagation();
+      switchMs3Tab(this);
+    },{capture:true});
+  });
+}
+
+/* ---------- open / close ---------- */
+function openMissions(fromScrId){
+  /* remember where we came from */
+  if(fromScrId){
+    _ms3PrevScrId=fromScrId;
+    window._ms3PrevScrId=fromScrId;
+  } else {
+    /* detect currently visible screen */
+    var vis=null;
+    document.querySelectorAll('.screen.on').forEach(function(s){
+      if(s.id&&s.id!=='scr-missions')vis=s.id;
+    });
+    if(vis){_ms3PrevScrId=vis;window._ms3PrevScrId=vis;}
+  }
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('on');});
+  var el=document.getElementById('scr-missions');
+  if(el)el.classList.add('on');
+  bindTabs();
+  doRender();
+  setTimeout(doRender,80);
+}
+
+function closeMissions(){
+  var el=document.getElementById('scr-missions');
+  if(el)el.classList.remove('on');
+  /* return to previous screen — check both local and global trackers */
+  var prevId=window._ms3PrevScrId||_ms3PrevScrId||'scr-phase3';
+  var prev=document.getElementById(prevId);
+  if(!prev){prevId='scr-phase3';prev=document.getElementById('scr-phase3');}
+  if(prev)prev.classList.add('on');
+  try{if(prevId==='scr-phase3'){
+    if(window.p3Render)window.p3Render();
+    if(window.NORYVX_DEVELOPMENT_UI)window.NORYVX_DEVELOPMENT_UI.refresh();
+  }}catch(e){}
+  try{if(typeof updateProgressUI==='function')updateProgressUI();}catch(e){}
+}
+
+/* ---------- back button (single binding) ---------- */
+function bindBackBtn(){
+  var bb=document.getElementById('b-missions-back');
+  if(!bb||bb._nvxMsBackFix)return;
+  bb._nvxMsBackFix=true;
+  function doBack(e){e.preventDefault();e.stopPropagation();closeMissions();}
+  bb.addEventListener('touchend',doBack,{capture:true,passive:false});
+  bb.addEventListener('click',doBack,{capture:true});
+}
+
+/* ---------- nav button ---------- */
+function wireNavBtn(){
+  var btn=document.getElementById('dev-nav-missions');
+  if(!btn)return;
+  /* If bindDevNav already bound this button, update its afterFn side-effect only.
+     We do NOT add another touchend/click to avoid double-open. */
+  if(btn.dataset.devNavBound){
+    /* devNavBound already handles navigation; our MutationObserver handles render+tabs */
+    return;
+  }
+  if(btn._nvxMsNavFix)return;
+  btn._nvxMsNavFix=true;
+  function go(e){e.preventDefault();e.stopPropagation();openMissions();}
+  btn.addEventListener('touchend',go,{capture:true,passive:false});
+  btn.addEventListener('click',go,{capture:true});
+}
+
+/* ---------- MutationObserver (render + bind on open) ---------- */
+var scrEl=document.getElementById('scr-missions');
+if(scrEl&&window.MutationObserver){
+  new MutationObserver(function(){
+    if(!scrEl.classList.contains('on'))return;
+    bindTabs();
+    doRender();
+    setTimeout(doRender,80);
+  }).observe(scrEl,{attributes:true,attributeFilter:['class']});
+}
+
+/* ---------- expose on window (single definitions) ---------- */
+/* NOTE: window.renderMissions is already set to the closure version by the PROG IIFE.
+   Do NOT override it here — the closure version has direct access to MISSIONS/P/RPG.
+   Only set it if somehow the PROG IIFE failed to set it (fallback to standalone). */
+if(typeof window.renderMissions!=='function') window.renderMissions=renderMissionsStandalone;
+window.openMissions=openMissions;
+window.closeMissions=closeMissions;
+window.ms3Tab=switchMs3Tab;
+window._nvxOpenMissions=openMissions;
+/* Do NOT override window.PROG.renderMissions — keep the closure version there. */
+
+/* ---------- init ---------- */
+function init(){bindTabs();bindBackBtn();wireNavBtn();}
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',init);
+}else{
+  init();
+}
+
+/* ---------- polling fallback ---------- */
+var _ms3Rendered=false;
+setInterval(function(){
+  var el=document.getElementById('scr-missions');
+  if(!el||!el.classList.contains('on')){_ms3Rendered=false;return;}
+  if(_ms3Rendered)return;
+  bindTabs();doRender();
+  _ms3Rendered=true;
+},250);
+
 })();
 </script>
