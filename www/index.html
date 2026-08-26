@@ -3056,11 +3056,11 @@ body.ls #scr-menu .nvx-mnav{margin-top:auto}
 
   <!-- Mission + Season row -->
   <div id="nvx2-msrow">
-    <div class="nvx2-ms-card">
+    <div class="nvx2-ms-card" id="ms7-hub-card" style="cursor:pointer" onclick="if(window.MS7)MS7.open()">
       <div class="nvx2-ms-tag">G&Uuml;NL&Uuml;K G&Ouml;REV</div>
-      <div class="nvx2-ms-name">D&uuml;&scaron;manlar&#305; Yok Et</div>
-      <div class="nvx2-ms-bar"><div class="nvx2-ms-fill" style="width:0%"></div></div>
-      <div class="nvx2-ms-rew">0 / 25 &nbsp; &#9670; 150</div>
+      <div class="nvx2-ms-name" id="ms7-hub-name">G&ouml;revleri G&ouml;r</div>
+      <div class="nvx2-ms-bar"><div class="nvx2-ms-fill" id="ms7-hub-fill" style="width:0%"></div></div>
+      <div class="nvx2-ms-rew" id="ms7-hub-rew">&#9672; G&Ouml;REVLER &amp; BA&#350;ARIMLAR</div>
     </div>
     <div class="nvx2-ms-card">
       <div class="nvx2-ms-tag" style="color:#ff4fd8">SEZON 1</div>
@@ -4386,7 +4386,7 @@ const KEY="neon_survivor_v3";
 /* BATCH B/2 — save sema surumu.
    Eski kayitlarda bu alan YOKTUR; onlar surum 1 sayilir.
    KEY degismedi: mevcut neon_survivor_v3 kayitlari aynen okunur. */
-const SCHEMA_VERSION=2;
+const SCHEMA_VERSION=3;
 
 const DEFAULTS={
   schemaVersion:SCHEMA_VERSION,
@@ -4495,6 +4495,9 @@ function migrateSave(raw){
   if(from<=1){
     /* cyan her zaman sahip olunur (V15.5.1 davranisi) */
   }
+
+  /* v2 -> v3: missions & achievements sistemi eklendi (noryvx_missions_v1).
+     O key kendi init'ini hallediyor; burada ek veri gocü gerekmez. */
 
   out.ownedSkins.cyan=true;
   if(!out.selectedSkin)out.selectedSkin=DEFAULTS.selectedSkin;
@@ -7976,6 +7979,31 @@ const Game={
     Save.data.bossKills += this.runBossKills;
 
     Save.save();
+
+    /* Phase 7 — Missions & Achievements progress */
+    try{
+      if(window.MissionsDB){
+        const _wep=localStorage.getItem("noryvx_selected_weapon")||"pulse";
+        const _tel=window.Telemetry||{};
+        MissionsDB.onRunEnd({
+          score     : Math.round(this.score),
+          time      : this.time,
+          kills     : _tel.kills||0,
+          elites    : this.runElites||0,
+          bosses    : this.runBossKills||0,
+          energy    : this.energy||0,
+          combo     : this.maxCombo||1,
+          wave      : this.wave||1,
+          weapon    : _wep,
+          legendary : Math.max(0,((window.P&&window.P.counters&&window.P.counters.legendary)||0)-(window._ms7LegendarySnap||0)),
+          enhance   : Math.max(0,((window.P&&window.P.counters&&window.P.counters.enhance)||0)-(window._ms7EnhanceSnap||0)),
+          nodeath   : !(player&&player.hp<=0),
+          coinsEarned : Math.max(1,Math.floor((Math.round(this.score))/12)),
+          gemsEarned  : (this.runBossKills>0?this.runBossKills:0),
+          neonEarned  : Math.max(1,Math.floor(Math.max(1,Math.floor((Math.round(this.score))/12))/2)),
+        });
+      }
+    }catch(_e){}
 
     emit(
       player.x,
@@ -21721,4 +21749,704 @@ window.nvxApplyLang=applyLangOnBoot;
   }
 })();
 
+</script>
+
+<!-- ================================================================
+     PHASE 7 — MISSIONS & ACHIEVEMENTS SYSTEM (noryvx_missions_v1)
+     DO NOT EDIT above this line.
+================================================================ -->
+<style id="ms7-styles">
+/* ---- Screen wrapper ---- */
+.ms7-screen{position:fixed!important;inset:0!important;background:#060c18!important;z-index:200!important;display:flex!important;flex-direction:column!important;overflow:hidden!important;font-family:'IBM Plex Mono',monospace!important;padding:0!important;align-items:stretch!important;justify-content:flex-start!important}
+.ms7-header{display:flex;align-items:center;padding:12px 16px;background:#0a1020;border-bottom:1px solid rgba(34,230,255,.18);flex-shrink:0}
+.ms7-back{background:none;border:none;color:#22e6ff;font-size:22px;padding:2px 10px 2px 2px;cursor:pointer;line-height:1}
+.ms7-title{color:#22e6ff;font-size:12px;font-weight:700;letter-spacing:.22em;flex:1;text-align:center}
+/* ---- Tabs ---- */
+.ms7-tabs{display:flex;background:#0a1020;border-bottom:1px solid rgba(34,230,255,.12);flex-shrink:0}
+.ms7-tab{flex:1;padding:10px 4px;background:none;border:none;color:#3a5a7a;font-size:11px;font-weight:700;letter-spacing:.14em;cursor:pointer;transition:color .2s;border-bottom:2px solid transparent}
+.ms7-tab.active{color:#22e6ff;border-bottom-color:#22e6ff}
+/* ---- Sub-tabs (daily/weekly) ---- */
+.ms7-subtabs{display:flex;padding:10px 14px 6px;gap:8px;flex-shrink:0}
+.ms7-stab{padding:5px 16px;background:rgba(8,18,40,.9);border:1px solid rgba(34,230,255,.14);border-radius:20px;color:#3a6a8a;font-size:10px;font-weight:700;letter-spacing:.12em;cursor:pointer}
+.ms7-stab.active{background:rgba(20,60,110,.9);border-color:#22e6ff;color:#22e6ff}
+/* ---- Countdown ---- */
+.ms7-countdown{text-align:center;color:#2a4a5a;font-size:10px;letter-spacing:.1em;padding:0 12px 8px;flex-shrink:0}
+/* ---- Scrollable panel ---- */
+.ms7-panel{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+.ms7-list{padding:8px 12px 20px;display:flex;flex-direction:column;gap:8px}
+/* ---- Mission item ---- */
+.ms7-item{background:rgba(10,18,36,.9);border:1px solid rgba(34,230,255,.12);border-radius:8px;padding:12px}
+.ms7-item-top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.ms7-item-icon{font-size:15px;width:22px;text-align:center;flex-shrink:0}
+.ms7-item-name{color:#b8d8f0;font-size:12px;font-weight:600;flex:1;line-height:1.3}
+.ms7-item-prog{color:#3a6a8a;font-size:10px;white-space:nowrap}
+.ms7-bar-wrap{height:3px;background:rgba(34,230,255,.1);border-radius:2px;margin-bottom:8px;overflow:hidden}
+.ms7-bar{height:3px;background:#22e6ff;border-radius:2px;transition:width .4s}
+.ms7-bar.done{background:#22fa7f}
+.ms7-item-footer{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ms7-reward{color:#ffd24d;font-size:10px;letter-spacing:.06em}
+.ms7-btn{padding:4px 14px;border-radius:10px;border:none;font-size:10px;font-weight:700;letter-spacing:.1em;cursor:pointer;white-space:nowrap}
+.ms7-btn.claim{background:#22e6ff;color:#03060f}
+.ms7-btn.done-btn{background:rgba(10,40,20,.8);color:#22fa7f;cursor:default;border:1px solid rgba(34,250,127,.2)}
+.ms7-btn.locked{background:rgba(10,20,36,.8);color:#2a4a5a;cursor:default}
+/* ---- Achievement category header ---- */
+.ms7-cat-hdr{color:#2a5a7a;font-size:9px;font-weight:700;letter-spacing:.22em;padding:10px 4px 4px;text-transform:uppercase}
+/* ---- Achievement item ---- */
+.ms7-ach{background:rgba(10,18,36,.9);border:1px solid rgba(34,230,255,.1);border-radius:8px;padding:10px 12px}
+.ms7-ach.unlocked{border-color:rgba(34,250,127,.3)}
+.ms7-ach.claimed{opacity:.65}
+.ms7-ach-top{display:flex;align-items:flex-start;gap:8px}
+.ms7-ach-ico{font-size:14px;width:20px;text-align:center;flex-shrink:0;margin-top:1px}
+.ms7-ach-body{flex:1;min-width:0}
+.ms7-ach-name{color:#b8d8f0;font-size:11px;font-weight:700;margin-bottom:2px}
+.ms7-ach-desc{color:#3a6a8a;font-size:10px;line-height:1.3}
+.ms7-ach-rew{color:#fa9030;font-size:9px;margin-top:3px;letter-spacing:.06em}
+.ms7-ach-btn{padding:3px 12px;border-radius:8px;border:none;font-size:9px;font-weight:700;cursor:pointer;white-space:nowrap;align-self:center;flex-shrink:0}
+.ms7-ach-btn.claim{background:#22fa7f;color:#03060f}
+.ms7-ach-btn.done-btn{background:rgba(10,40,20,.6);color:#22fa7f;cursor:default;border:1px solid rgba(34,250,127,.15);font-size:10px}
+.ms7-ach-btn.locked{background:rgba(10,20,36,.6);color:#2a4a5a;cursor:default}
+/* ---- Notification dot on hub card ---- */
+.ms7-hub-dot{display:inline-block;width:7px;height:7px;background:#ff4455;border-radius:50%;margin-left:6px;vertical-align:middle}
+</style>
+
+<!-- New screen HTML -->
+<div id="scr-ms7" class="screen ms7-screen">
+  <div class="ms7-header">
+    <button class="ms7-back" onclick="if(window.MS7)MS7.close()">‹</button>
+    <span class="ms7-title">GÖREVLER &amp; BAŞARIMLAR</span>
+  </div>
+  <div class="ms7-tabs">
+    <button class="ms7-tab active" id="ms7-tab-m" onclick="if(window.MS7)MS7.switchTab('missions')">GÖREVLER</button>
+    <button class="ms7-tab" id="ms7-tab-a" onclick="if(window.MS7)MS7.switchTab('achievements')">BAŞARIMLAR</button>
+  </div>
+  <!-- Missions panel -->
+  <div id="ms7-missions-panel" class="ms7-panel">
+    <div class="ms7-subtabs">
+      <button class="ms7-stab active" id="ms7-stab-d" onclick="if(window.MS7)MS7.switchSub('daily')">GÜNLÜK</button>
+      <button class="ms7-stab" id="ms7-stab-w" onclick="if(window.MS7)MS7.switchSub('weekly')">HAFTALIK</button>
+    </div>
+    <div class="ms7-countdown" id="ms7-countdown"></div>
+    <div class="ms7-list" id="ms7-mission-list"></div>
+  </div>
+  <!-- Achievements panel -->
+  <div id="ms7-ach-panel" class="ms7-panel" style="display:none">
+    <div class="ms7-list" id="ms7-ach-list"></div>
+  </div>
+</div>
+
+<script id="ms7-system">
+(function(){
+'use strict';
+
+/* ---- Constants ---- */
+const MS7_KEY = 'noryvx_missions_v1';
+
+/* ---- Seeded RNG ---- */
+function seededRng(seed){
+  var h=0;
+  for(var i=0;i<seed.length;i++) h=(Math.imul(31,h)+seed.charCodeAt(i))|0;
+  return function(){h^=h<<13;h^=h>>17;h^=h<<5;return(h>>>0)/4294967296;};
+}
+
+/* ---- Date helpers ---- */
+function todayUTC(){return new Date().toISOString().slice(0,10);}
+function isoWeek(){
+  var d=new Date();d.setHours(0,0,0,0);
+  d.setDate(d.getDate()+4-(d.getDay()||7));
+  var y=d.getFullYear();
+  var w=Math.ceil(((d-new Date(y,0,1))/86400000+1)/7);
+  return y+'-W'+String(w).padStart(2,'0');
+}
+function yesterdayUTC(){
+  var d=new Date();d.setDate(d.getDate()-1);return d.toISOString().slice(0,10);
+}
+function fmtMs(ms){
+  if(ms<0)ms=0;
+  var h=Math.floor(ms/3600000),m=Math.floor((ms%3600000)/60000),s=Math.floor((ms%60000)/1000);
+  return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+
+/* ---- Mission pools ---- */
+var DAILY_POOL=[
+  {id:'dm_kills',  icon:'⚔', label:'{N} düşman yok et',          type:'kills',    minG:30,   maxG:80,   w:3, rewardCoins:250, rewardNeon:0},
+  {id:'dm_survive',icon:'⏱', label:'{N} saniye hayatta kal',      type:'survive',  minG:60,   maxG:180,  w:3, rewardCoins:300, rewardNeon:0},
+  {id:'dm_elites', icon:'◈', label:'{N} elit düşman öldür',       type:'elites',   minG:2,    maxG:5,    w:3, rewardCoins:300, rewardNeon:5},
+  {id:'dm_boss',   icon:'◉', label:'Bir boss öldür',               type:'bosses',   minG:1,    maxG:1,    w:2, rewardCoins:500, rewardNeon:10},
+  {id:'dm_wave',   icon:'≋', label:'{N}. dalgaya ulaş',            type:'wave',     minG:8,    maxG:20,   w:3, rewardCoins:250, rewardNeon:0},
+  {id:'dm_score',  icon:'◎', label:'{N} skora ulaş (tek run)',      type:'score',    minG:3000, maxG:10000,w:3, rewardCoins:200, rewardNeon:5},
+  {id:'dm_energy', icon:'⚡', label:'{N} enerji topla',             type:'energy',   minG:50,   maxG:150,  w:3, rewardCoins:150, rewardNeon:0},
+  {id:'dm_combo',  icon:'×', label:'En az {N} kombo yap',          type:'combo',    minG:3,    maxG:8,    w:3, rewardCoins:300, rewardNeon:0},
+  {id:'dm_pulse',  icon:'⚡', label:'Pulse ile {N} düşman öldür',  type:'wpulse',   minG:20,   maxG:50,   w:2, rewardCoins:200, rewardNeon:0},
+  {id:'dm_plasma', icon:'⚡', label:'Plasma ile {N} düşman öldür', type:'wplasma',  minG:20,   maxG:50,   w:2, rewardCoins:200, rewardNeon:0},
+  {id:'dm_arc',    icon:'⚡', label:'Arc ile {N} düşman öldür',    type:'warc',     minG:20,   maxG:50,   w:2, rewardCoins:200, rewardNeon:0},
+  {id:'dm_nova',   icon:'⚡', label:'Nova ile {N} düşman öldür',   type:'wnova',    minG:20,   maxG:50,   w:2, rewardCoins:200, rewardNeon:0},
+  {id:'dm_nodeath',icon:'🛡', label:'Ölmeden {N} saniye hayatta kal',type:'nodeath',minG:90,   maxG:240,  w:2, rewardCoins:400, rewardNeon:10},
+  {id:'dm_enhance',icon:'⚙', label:'{N} güçlendirme yap',          type:'enhance',  minG:3,    maxG:8,    w:3, rewardCoins:250, rewardNeon:0},
+  {id:'dm_legend', icon:'✦', label:'Efsanevi silah bul',            type:'legendary',minG:1,   maxG:1,    w:1, rewardCoins:600, rewardNeon:15},
+];
+
+var WEEKLY_POOL=[
+  {id:'wm_kills',  icon:'⚔', label:'{N} toplam düşman yok et',       type:'kills',   minG:300, maxG:600,  rewardCoins:1500, rewardGems:1},
+  {id:'wm_survive',icon:'⏱', label:'Toplam {N} saniye hayatta kal',   type:'survive', minG:600, maxG:1800, rewardCoins:1200, rewardNeon:30},
+  {id:'wm_elites', icon:'◈', label:'{N} elit düşman öldür',           type:'elites',  minG:20,  maxG:40,   rewardCoins:1800, rewardGems:2},
+  {id:'wm_boss',   icon:'◉', label:'{N} boss öldür',                   type:'bosses',  minG:3,   maxG:7,    rewardCoins:2500, rewardGems:3},
+  {id:'wm_score',  icon:'◎', label:'Tek runda {N} skora ulaş',         type:'score',   minG:15000,maxG:30000,rewardCoins:2000,rewardGems:2},
+  {id:'wm_mastery',icon:'◈', label:'{N} mastery XP kazan',             type:'masteryxp',minG:5000,maxG:15000,rewardCoins:1500,rewardNeon:25},
+  {id:'wm_sector', icon:'⬡', label:'{N} sektörü tamamla',              type:'sectors', minG:2,   maxG:4,    rewardCoins:2000, rewardGems:3},
+  {id:'wm_nodeath',icon:'🛡', label:'Ölmeden {N} saniye hayatta kal',  type:'nodeath', minG:240, maxG:360,  rewardCoins:2500, rewardGems:2},
+];
+
+/* ---- Achievement definitions ---- */
+var ACHIEVEMENTS=[
+  /* COMBAT */
+  {id:'ach_k50',    name:'İlk Katliam',       desc:'50 düşman öldür',           cat:'combat',  icon:'⚔', reward:{type:'title',value:'Katil'},       check:function(t){return t.kills>=50;}},
+  {id:'ach_k500',   name:'Kıyım',             desc:'500 düşman öldür',          cat:'combat',  icon:'⚔', reward:{type:'title',value:'Kıyımcı'},     check:function(t){return t.kills>=500;}},
+  {id:'ach_k2500',  name:'Apocalypse',        desc:'2.500 düşman öldür',        cat:'combat',  icon:'⚔', reward:{type:'title',value:'Apocalypse'},   check:function(t){return t.kills>=2500;}},
+  {id:'ach_k10000', name:'Tanrı Katili',      desc:'10.000 düşman öldür',       cat:'combat',  icon:'⚔', reward:{type:'skin',value:'kirmizi_neon'},  check:function(t){return t.kills>=10000;}},
+  {id:'ach_e5',     name:'Elit Avcı',         desc:'5 elit öldür',              cat:'combat',  icon:'◈', reward:{type:'title',value:'Avcı'},         check:function(t){return t.elites>=5;}},
+  {id:'ach_e50',    name:'Elit Kasabı',       desc:'50 elit öldür',             cat:'combat',  icon:'◈', reward:{type:'title',value:'Kasap'},        check:function(t){return t.elites>=50;}},
+  {id:'ach_b1',     name:'İlk Boss',          desc:'İlk boss\'u yen',           cat:'combat',  icon:'◉', reward:{type:'title',value:'Boss Katili'},  check:function(t){return t.bosses>=1;}},
+  {id:'ach_b10',    name:'Boss Koleksiyoncusu',desc:'10 boss öldür',            cat:'combat',  icon:'◉', reward:{type:'skin',value:'mor_neon'},      check:function(t){return t.bosses>=10;}},
+  {id:'ach_b50',    name:'Korkusuz',          desc:'50 boss öldür',             cat:'combat',  icon:'◉', reward:{type:'title',value:'Korkusuz'},     check:function(t){return t.bosses>=50;}},
+  {id:'ach_combo10',name:'Seri Katil',        desc:'En az 10 kombo yap',        cat:'combat',  icon:'×', reward:{type:'title',value:'Seri'},         check:function(t){return t.highestCombo>=10;}},
+  {id:'ach_leg1',   name:'Efsane Silah',      desc:'İlk efsanevi silah bul',    cat:'combat',  icon:'✦', reward:{type:'title',value:'Efsane'},       check:function(t){return t.legendary>=1;}},
+  {id:'ach_leg10',  name:'Efsane Koleksiyoner',desc:'10 efsanevi silah bul',    cat:'combat',  icon:'✦', reward:{type:'skin',value:'altin_neon'},    check:function(t){return t.legendary>=10;}},
+  /* SURVIVAL */
+  {id:'ach_s60',    name:'İlk Dakika',        desc:'60 saniye hayatta kal',     cat:'survival',icon:'⏱', reward:{type:'title',value:'Dayanıklı'},    check:function(t){return t.longestSurvival>=60;}},
+  {id:'ach_s180',   name:'Üç Dakika',         desc:'180 saniye hayatta kal',    cat:'survival',icon:'⏱', reward:{type:'title',value:'Survivor'},     check:function(t){return t.longestSurvival>=180;}},
+  {id:'ach_s300',   name:'Beş Dakika',        desc:'300 saniye hayatta kal',    cat:'survival',icon:'⏱', reward:{type:'skin',value:'yesil_neon'},    check:function(t){return t.longestSurvival>=300;}},
+  {id:'ach_s600',   name:'Sonsuz',            desc:'600 saniye hayatta kal',    cat:'survival',icon:'⏱', reward:{type:'title',value:'Ölümsüz'},      check:function(t){return t.longestSurvival>=600;}},
+  {id:'ach_w10',    name:'Dalga 10',          desc:'Dalga 10\'a ulaş',          cat:'survival',icon:'≋', reward:{type:'title',value:'Dalgaçı'},      check:function(t){return t.bestWave>=10;}},
+  {id:'ach_w25',    name:'Dalga 25',          desc:'Dalga 25\'e ulaş',          cat:'survival',icon:'≋', reward:{type:'skin',value:'turuncu_neon'},  check:function(t){return t.bestWave>=25;}},
+  {id:'ach_sc10k',  name:'Yüksek Skor',       desc:'10.000 puan',               cat:'survival',icon:'◎', reward:{type:'title',value:'Skorcu'},       check:function(t){return t.bestScore>=10000;}},
+  {id:'ach_sc50k',  name:'Ultra Skor',        desc:'50.000 puan',               cat:'survival',icon:'◎', reward:{type:'skin',value:'gumus_neon'},    check:function(t){return t.bestScore>=50000;}},
+  /* PROGRESSION */
+  {id:'ach_lv10',   name:'Çaylak',            desc:'Seviye 10',                 cat:'progress',icon:'★', reward:{type:'title',value:'Çaylak'},       check:function(t){return t.p3Level>=10;}},
+  {id:'ach_lv25',   name:'Kahraman',          desc:'Seviye 25',                 cat:'progress',icon:'★', reward:{type:'title',value:'Kahraman'},     check:function(t){return t.p3Level>=25;}},
+  {id:'ach_lv50',   name:'Efsane',            desc:'Seviye 50 (max)',           cat:'progress',icon:'★', reward:{type:'skin',value:'platinum_neon'}, check:function(t){return t.p3Level>=50;}},
+  {id:'ach_sp10',   name:'Yetenekli',         desc:'10 SP harca',               cat:'progress',icon:'⬡', reward:{type:'title',value:'Yetenekli'},    check:function(t){return t.spSpent>=10;}},
+  {id:'ach_sk1',    name:'Uzman',             desc:'Bir skili maxla',           cat:'progress',icon:'⬡', reward:{type:'title',value:'Uzman'},        check:function(t){return t.skillMaxed>=1;}},
+  {id:'ach_skall',  name:'Tam Güç',           desc:'Tüm skiller max',           cat:'progress',icon:'⬡', reward:{type:'skin',value:'gokkusagi_neon'},check:function(t){return t.allSkillsMaxed;}},
+  {id:'ach_mr1',    name:'Usta Çırak',        desc:'İlk mastery rank 1',        cat:'progress',icon:'◈', reward:{type:'title',value:'Usta Çırak'},   check:function(t){return t.masteryRank1>=1;}},
+  {id:'ach_mr5',    name:'Büyük Usta',        desc:'Bir weapon rank 5',         cat:'progress',icon:'◈', reward:{type:'skin',value:'koyu_kirmizi'},  check:function(t){return t.masteryRank5>=1;}},
+  {id:'ach_sec1',   name:'Sektör Kaşifi',     desc:'İlk sektörü tamamla',       cat:'progress',icon:'⬡', reward:{type:'title',value:'Kaşif'},        check:function(t){return t.sectors>=1;}},
+  {id:'ach_sec5',   name:'Sektör Fatihi',     desc:'5 sektörü tamamla',         cat:'progress',icon:'⬡', reward:{type:'skin',value:'mavi_neon'},     check:function(t){return t.sectors>=5;}},
+  /* ECONOMY */
+  {id:'ach_c1k',    name:'İlk Birikim',       desc:'1.000 coin topla',          cat:'economy', icon:'◎', reward:{type:'title',value:'Birikimci'},    check:function(t){return t.totalCoins>=1000;}},
+  {id:'ach_c50k',   name:'Zengin',            desc:'50.000 coin topla',         cat:'economy', icon:'◎', reward:{type:'title',value:'Zengin'},       check:function(t){return t.totalCoins>=50000;}},
+  {id:'ach_mb1',    name:'Meta Yatırımcı',    desc:'İlk meta upgrade',          cat:'economy', icon:'⚙', reward:{type:'title',value:'Yatırımcı'},    check:function(t){return t.metaBought>=1;}},
+  {id:'ach_mball',  name:'Tam Set',           desc:'Tüm meta upgradeleri maxla',cat:'economy', icon:'⚙', reward:{type:'skin',value:'elmas_neon'},    check:function(t){return t.metaMaxed;}},
+  {id:'ach_core100',name:'Core Toplayıcı',    desc:'100 core topla',            cat:'economy', icon:'◆', reward:{type:'title',value:'Toplayıcı'},    check:function(t){return t.totalCores>=100;}},
+  {id:'ach_gem10',  name:'Gem Avcısı',        desc:'10 gem topla',              cat:'economy', icon:'◆', reward:{type:'title',value:'Değerli'},      check:function(t){return t.totalGems>=10;}},
+  {id:'ach_neon100',name:'NEON Ustası',       desc:'100 NEON topla',            cat:'economy', icon:'✦', reward:{type:'title',value:'NEON Ustası'},  check:function(t){return t.totalNeon>=100;}},
+  {id:'ach_enh10',  name:'Güçlendirici',      desc:'10 enhancement yap',        cat:'economy', icon:'⚙', reward:{type:'title',value:'Güçlendirici'}, check:function(t){return t.enhance>=10;}},
+  /* META */
+  {id:'ach_r10',    name:'İlk Adım',          desc:'10 run tamamla',            cat:'meta',    icon:'▷', reward:{type:'title',value:'Başlangıç'},    check:function(t){return t.gamesPlayed>=10;}},
+  {id:'ach_r100',   name:'Veteran',           desc:'100 run tamamla',           cat:'meta',    icon:'▷', reward:{type:'skin',value:'koyu_mavi'},     check:function(t){return t.gamesPlayed>=100;}},
+  {id:'ach_r500',   name:'Bağımlı',           desc:'500 run tamamla',           cat:'meta',    icon:'▷', reward:{type:'title',value:'Bağımlı'},      check:function(t){return t.gamesPlayed>=500;}},
+  {id:'ach_sk5',    name:'Koleksiyoner',      desc:'5 skin sahip ol',           cat:'meta',    icon:'◈', reward:{type:'title',value:'Koleksiyoner'}, check:function(t){return t.ownedSkins>=5;}},
+  {id:'ach_str7',   name:'Haftalık Oyuncu',   desc:'Art arda 7 gün günlük görev',cat:'meta',   icon:'✦', reward:{type:'skin',value:'pembe_neon'},    check:function(t){return t.streak>=7;}},
+  {id:'ach_wk10',   name:'Haftalık Kahraman', desc:'10 haftalık görev tamamla', cat:'meta',    icon:'✦', reward:{type:'title',value:'Haftalık Kahraman'},check:function(t){return t.weeklyCompleted>=10;}},
+  {id:'ach_all',    name:'Her Şeyi Gördüm',   desc:'Tüm başarımları tamamla',   cat:'meta',    icon:'★', reward:{type:'title',value:'NORYVX'},       check:function(t){return t.achClaimed>=44;}},
+];
+
+/* ---- Default DB ---- */
+function dbDefaults(){
+  return {
+    schemaVersion:1,
+    daily:{date:'',missions:[]},
+    weekly:{week:'',missions:[]},
+    achievementsUnlocked:[],
+    achievementsClaimed:[],
+    equippedTitle:'',
+    ownedTitles:[],
+    consecutiveDailyDays:0,
+    lastDailyCompleteDate:'',
+    weeklyCompleted:0,
+    totalCoinsEarned:0,
+    totalCoresEarned:0,
+    totalGemsEarned:0,
+    totalNeonEarned:0,
+  };
+}
+
+/* ---- Pick missions from pool ---- */
+function pickFromPool(pool, count, seed, extraRules){
+  var rng=seededRng(seed);
+  var weighted=[];
+  pool.forEach(function(t){var w=t.w||3;for(var i=0;i<w;i++)weighted.push(t);});
+  /* Fisher-Yates */
+  for(var i=weighted.length-1;i>0;i--){
+    var j=Math.floor(rng()*(i+1));
+    var tmp=weighted[i];weighted[i]=weighted[j];weighted[j]=tmp;
+  }
+  var picked=[],usedIds={},weaponUsed=false;
+  for(var k=0;k<weighted.length&&picked.length<count;k++){
+    var t=weighted[k];
+    if(usedIds[t.id])continue;
+    if(extraRules&&extraRules.oneWeapon&&/^w(pulse|plasma|arc|nova)$/.test(t.type)){
+      if(weaponUsed)continue;
+      weaponUsed=true;
+    }
+    usedIds[t.id]=true;
+    var goal=t.minG===t.maxG?t.minG:Math.floor(t.minG+rng()*(t.maxG-t.minG+1));
+    var label=t.label.replace('{N}',goal).replace('{T}',goal).replace('{S}',goal).replace('{E}',goal).replace('{C}',goal).replace('{X}',goal);
+    picked.push({templateId:t.id,label:label,goal:goal,progress:0,claimed:false});
+  }
+  return picked;
+}
+
+/* ---- MissionsDB ---- */
+var MissionsDB={
+  data:null,
+
+  load:function(){
+    try{
+      var raw=JSON.parse(localStorage.getItem(MS7_KEY)||'null');
+      if(raw&&typeof raw==='object'&&!Array.isArray(raw)){
+        var d=dbDefaults();
+        var keys=Object.keys(d);
+        for(var i=0;i<keys.length;i++){
+          var k=keys[i];
+          if(raw[k]!==undefined)d[k]=raw[k];
+        }
+        this.data=d;
+      }else{
+        this.data=dbDefaults();
+      }
+    }catch(e){this.data=dbDefaults();}
+  },
+
+  save:function(){
+    try{localStorage.setItem(MS7_KEY,JSON.stringify(this.data));}catch(e){}
+  },
+
+  checkReset:function(){
+    var d=this.data;
+    var today=todayUTC(),week=isoWeek();
+    if(d.daily.date!==today){
+      /* Streak: if last complete was yesterday, keep; else reset */
+      if(d.lastDailyCompleteDate && d.lastDailyCompleteDate!==yesterdayUTC()){
+        d.consecutiveDailyDays=0;
+      }
+      d.daily.date=today;
+      d.daily.missions=pickFromPool(DAILY_POOL,3,today,{oneWeapon:true});
+    }
+    if(d.weekly.week!==week){
+      d.weekly.week=week;
+      d.weekly.missions=pickFromPool(WEEKLY_POOL,3,week,{});
+    }
+    this.save();
+  },
+
+  getTotals:function(){
+    var sd=(typeof Save!=='undefined'&&Save.data)||{};
+    var p3={};
+    try{p3=JSON.parse(localStorage.getItem('noryvx_phase3_v1')||'{}');}catch(e){}
+    var pc={};
+    try{pc=(window.P&&window.P.counters)||{};}catch(e){}
+    var prog={};
+    try{prog=(window.PROG&&window.PROG.state)||{};}catch(e){}
+    var db=this.data;
+
+    /* P3 skills */
+    var skills=p3.skills||{};
+    var skillDefs={pulse_mastery:5,plasma_mastery:5,arc_mastery:5,nova_mastery:5,survivor:5,focus:5,magnetism:5};
+    var spSpent=0,skillMaxed=0,allSkillsMaxed=false;
+    var defKeys=Object.keys(skillDefs);
+    defKeys.forEach(function(k){spSpent+=(skills[k]||0);if((skills[k]||0)>=skillDefs[k])skillMaxed++;});
+    allSkillsMaxed=(skillMaxed>=defKeys.length);
+
+    /* Mastery ranks */
+    var masteryXP=p3.masteryXP||{};
+    var thresholds=[1500,5000,13000,30000,65000];
+    var masteryRank1=0,masteryRank5=0;
+    Object.values(masteryXP).forEach(function(xp){
+      var r=thresholds.filter(function(t){return xp>=t;}).length;
+      if(r>=1)masteryRank1++;
+      if(r>=5)masteryRank5++;
+    });
+
+    /* Meta upgrades */
+    var upg=sd.upgrades||{};
+    var metaMax={speed:5,magnet:5,shield:2,score:4};
+    var metaBought=0;var metaMaxed=true;
+    Object.keys(metaMax).forEach(function(k){if((upg[k]||0)>0)metaBought++;if((upg[k]||0)<metaMax[k])metaMaxed=false;});
+
+    /* Sectors */
+    var sectorsDone=0;
+    try{var ul=(window.PROG&&window.PROG.state&&window.PROG.state.unlocked)||[];sectorsDone=ul.length;}catch(e){}
+
+    /* Best wave (stored in P.bestWave as object) */
+    var bestWave=0;
+    try{var bw=window.P&&window.P.bestWave;if(bw)Object.values(bw).forEach(function(v){if(v>bestWave)bestWave=v;});}catch(e){}
+
+    return {
+      kills        : (pc.kills||0)+(sd.totalElites||0)+(sd.bossKills||0),
+      elites       : pc.elites||(sd.totalElites||0),
+      bosses       : pc.bosses||(sd.bossKills||0),
+      enhance      : pc.enhance||0,
+      legendary    : pc.legendary||0,
+      bestScore    : sd.bestScore||0,
+      gamesPlayed  : sd.gamesPlayed||0,
+      highestCombo : sd.highestCombo||1,
+      longestSurvival: sd.longestSurvival||0,
+      bestWave     : bestWave,
+      p3Level      : p3.level||1,
+      spSpent      : spSpent,
+      skillMaxed   : skillMaxed,
+      allSkillsMaxed: allSkillsMaxed,
+      masteryRank1 : masteryRank1,
+      masteryRank5 : masteryRank5,
+      sectors      : sectorsDone,
+      metaBought   : metaBought,
+      metaMaxed    : metaMaxed,
+      ownedSkins   : Object.values(sd.ownedSkins||{}).filter(Boolean).length,
+      totalCoins   : db.totalCoinsEarned||0,
+      totalCores   : db.totalCoresEarned||0,
+      totalGems    : db.totalGemsEarned||0,
+      totalNeon    : db.totalNeonEarned||0,
+      streak       : db.consecutiveDailyDays||0,
+      weeklyCompleted: db.weeklyCompleted||0,
+      achClaimed   : db.achievementsClaimed.length,
+    };
+  },
+
+  checkAchievements:function(){
+    var totals=this.getTotals();
+    var d=this.data;
+    ACHIEVEMENTS.forEach(function(a){
+      if(d.achievementsUnlocked.indexOf(a.id)>=0)return;
+      try{if(a.check(totals))d.achievementsUnlocked.push(a.id);}catch(e){}
+    });
+    this.save();
+  },
+
+  onRunEnd:function(stats){
+    var d=this.data;
+
+    /* Update earned totals */
+    d.totalCoinsEarned=(d.totalCoinsEarned||0)+(stats.coinsEarned||0);
+    d.totalCoresEarned=(d.totalCoresEarned||0)+(stats.coresEarned||0);
+    d.totalGemsEarned =(d.totalGemsEarned ||0)+(stats.gemsEarned ||0);
+    d.totalNeonEarned =(d.totalNeonEarned ||0)+(stats.neonEarned ||0);
+
+    /* Update mission progress */
+    var updateList=function(missions,pool){
+      missions.forEach(function(m){
+        if(m.claimed)return;
+        var tpl=null;
+        for(var i=0;i<pool.length;i++){if(pool[i].id===m.templateId){tpl=pool[i];break;}}
+        if(!tpl)return;
+        var t=tpl.type,add=0;
+        if(t==='kills')    add=stats.kills||0;
+        if(t==='elites')   add=stats.elites||0;
+        if(t==='bosses')   add=stats.bosses||0;
+        if(t==='survive')  add=stats.time||0;
+        if(t==='energy')   add=stats.energy||0;
+        if(t==='enhance')  add=stats.enhance||0;
+        if(t==='legendary')add=stats.legendary||0;
+        if(t==='masteryxp')add=stats.masteryXpGained||0;
+        if(t==='sectors')  add=stats.sectorsCompleted||0;
+        if(t==='combo'){if((stats.combo||1)>=(m.goal||3))add=1;}
+        if(t==='score'||t==='score1run'){if((stats.score||0)>=(m.goal||0))m.progress=m.goal;return;}
+        if(t==='wave'){m.progress=Math.max(m.progress||0,stats.wave||0);return;}
+        if(t==='nodeath'){if(stats.nodeath)add=stats.time||0;}
+        if(t==='wpulse'  &&stats.weapon==='pulse')  add=stats.kills||0;
+        if(t==='wplasma' &&stats.weapon==='plasma') add=stats.kills||0;
+        if(t==='warc'    &&stats.weapon==='arc')    add=stats.kills||0;
+        if(t==='wnova'   &&stats.weapon==='nova')   add=stats.kills||0;
+        m.progress=Math.min(m.goal,(m.progress||0)+add);
+      });
+    };
+    updateList(d.daily.missions, DAILY_POOL);
+    updateList(d.weekly.missions,WEEKLY_POOL);
+
+    this.checkAchievements();
+    this.save();
+    /* Refresh hub card */
+    try{MS7.updateHubCard();}catch(e){}
+  },
+
+  claimDaily:function(idx){
+    var d=this.data;
+    var m=d.daily.missions[idx];
+    if(!m||m.claimed||(m.progress||0)<m.goal)return{ok:false};
+    m.claimed=true;
+    /* Streak: check if all daily missions for today are now claimed */
+    var allDone=d.daily.missions.every(function(x){return x.claimed;});
+    if(allDone){
+      var today=todayUTC();
+      d.lastDailyCompleteDate===yesterdayUTC()
+        ?d.consecutiveDailyDays++
+        :d.consecutiveDailyDays=1;
+      d.lastDailyCompleteDate=today;
+    }
+    var tpl=null;
+    for(var i=0;i<DAILY_POOL.length;i++){if(DAILY_POOL[i].id===m.templateId){tpl=DAILY_POOL[i];break;}}
+    if(tpl){
+      try{if(typeof Save!=='undefined'&&Save.data){Save.data.coins=(Save.data.coins||0)+tpl.rewardCoins;Save.save();}}catch(e){}
+      try{if(tpl.rewardNeon&&window.P){window.P.neon=(window.P.neon||0)+tpl.rewardNeon;if(window.PROG&&window.PROG.persist)window.PROG.persist();}}catch(e){}
+    }
+    this.save();
+    return{ok:true};
+  },
+
+  claimWeekly:function(idx){
+    var d=this.data;
+    var m=d.weekly.missions[idx];
+    if(!m||m.claimed||(m.progress||0)<m.goal)return{ok:false};
+    m.claimed=true;
+    d.weeklyCompleted=(d.weeklyCompleted||0)+1;
+    var tpl=null;
+    for(var i=0;i<WEEKLY_POOL.length;i++){if(WEEKLY_POOL[i].id===m.templateId){tpl=WEEKLY_POOL[i];break;}}
+    if(tpl){
+      try{if(typeof Save!=='undefined'&&Save.data){
+        Save.data.coins=(Save.data.coins||0)+tpl.rewardCoins;
+        if(tpl.rewardGems)Save.data.gems=(Save.data.gems||0)+tpl.rewardGems;
+        Save.save();
+      }}catch(e){}
+      try{if(tpl.rewardNeon&&window.P){window.P.neon=(window.P.neon||0)+tpl.rewardNeon;if(window.PROG&&window.PROG.persist)window.PROG.persist();}}catch(e){}
+    }
+    this.save();
+    return{ok:true};
+  },
+
+  claimAchievement:function(id){
+    var d=this.data;
+    if(d.achievementsClaimed.indexOf(id)>=0)return{ok:false};
+    if(d.achievementsUnlocked.indexOf(id)<0)return{ok:false};
+    var ach=null;
+    for(var i=0;i<ACHIEVEMENTS.length;i++){if(ACHIEVEMENTS[i].id===id){ach=ACHIEVEMENTS[i];break;}}
+    if(!ach)return{ok:false};
+    d.achievementsClaimed.push(id);
+    if(ach.reward.type==='title'){
+      if(d.ownedTitles.indexOf(ach.reward.value)<0)d.ownedTitles.push(ach.reward.value);
+      if(!d.equippedTitle)d.equippedTitle=ach.reward.value;
+    }else if(ach.reward.type==='skin'){
+      try{if(typeof Save!=='undefined'&&Save.data){
+        if(!Save.data.ownedSkins)Save.data.ownedSkins={};
+        Save.data.ownedSkins[ach.reward.value]=true;
+        Save.save();
+      }}catch(e){}
+    }
+    this.save();
+    return{ok:true,reward:ach.reward};
+  },
+};
+
+/* ---- MS7 UI Controller ---- */
+window.MS7={
+  _tab:'missions',
+  _sub:'daily',
+  _cdInt:null,
+
+  open:function(){
+    MissionsDB.checkReset();
+    MissionsDB.checkAchievements();
+    var scr=document.getElementById('scr-ms7');
+    if(!scr)return;
+    /* Hide all screens, show ms7 */
+    document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('on');});
+    scr.classList.add('on');
+    this._tab='missions';
+    this._sub='daily';
+    this._syncTabs();
+    this.render();
+    this._startCd();
+  },
+
+  close:function(){
+    clearInterval(this._cdInt);
+    var scr=document.getElementById('scr-ms7');
+    if(scr)scr.classList.remove('on');
+    /* Return to menu */
+    var menu=document.getElementById('scr-menu');
+    if(menu)menu.classList.add('on');
+    this.updateHubCard();
+  },
+
+  switchTab:function(tab){
+    this._tab=tab;
+    this._syncTabs();
+    this.render();
+  },
+
+  switchSub:function(sub){
+    this._sub=sub;
+    document.getElementById('ms7-stab-d').classList.toggle('active',sub==='daily');
+    document.getElementById('ms7-stab-w').classList.toggle('active',sub==='weekly');
+    this.renderMissions();
+    this._updateCd();
+  },
+
+  _syncTabs:function(){
+    document.getElementById('ms7-tab-m').classList.toggle('active',this._tab==='missions');
+    document.getElementById('ms7-tab-a').classList.toggle('active',this._tab==='achievements');
+    var mp=document.getElementById('ms7-missions-panel');
+    var ap=document.getElementById('ms7-ach-panel');
+    if(mp)mp.style.display=this._tab==='missions'?'flex':'none';
+    if(ap)ap.style.display=this._tab==='achievements'?'flex':'none';
+  },
+
+  render:function(){
+    if(this._tab==='missions')this.renderMissions();
+    else this.renderAchievements();
+  },
+
+  renderMissions:function(){
+    var isD=this._sub==='daily';
+    var pool=isD?DAILY_POOL:WEEKLY_POOL;
+    var missions=isD?MissionsDB.data.daily.missions:MissionsDB.data.weekly.missions;
+    var list=document.getElementById('ms7-mission-list');
+    if(!list)return;
+    var html='';
+    missions.forEach(function(m,i){
+      var tpl=null;for(var k=0;k<pool.length;k++){if(pool[k].id===m.templateId){tpl=pool[k];break;}}
+      var icon=(tpl&&tpl.icon)||'◎';
+      var prog=m.progress||0,goal=m.goal||1;
+      var pct=Math.min(100,Math.round(prog/goal*100));
+      var done=prog>=goal;
+      /* Reward string */
+      var rew='';
+      if(tpl){
+        if(tpl.rewardCoins)rew+='◎ '+tpl.rewardCoins;
+        if(tpl.rewardNeon) rew+=(rew?' · ':'')+' ✦ '+tpl.rewardNeon;
+        if(tpl.rewardGems) rew+=(rew?' · ':'')+' ◆ '+tpl.rewardGems;
+      }
+      var btnCls=m.claimed?'done-btn':done?'claim':'locked';
+      var btnTxt=m.claimed?'Alındı':done?'AL':'—';
+      var claimCall=(!m.claimed&&done)?(isD?'MS7._clD('+i+')':'MS7._clW('+i+')'):'';
+      html+='<div class="ms7-item">';
+      html+='<div class="ms7-item-top"><span class="ms7-item-icon">'+icon+'</span>';
+      html+='<span class="ms7-item-name">'+m.label+'</span>';
+      html+='<span class="ms7-item-prog">'+prog+'/'+goal+'</span></div>';
+      html+='<div class="ms7-bar-wrap"><div class="ms7-bar'+(done?' done':'')+'" style="width:'+pct+'%"></div></div>';
+      html+='<div class="ms7-item-footer"><span class="ms7-reward">'+rew+'</span>';
+      html+='<button class="ms7-btn '+btnCls+'"'+(claimCall?' onclick="'+claimCall+'"':'')+'>'+btnTxt+'</button>';
+      html+='</div></div>';
+    });
+    if(!html)html='<div style="color:#2a5a7a;font-size:11px;text-align:center;padding:20px">Görev yükleniyor...</div>';
+    list.innerHTML=html;
+    this._updateCd();
+  },
+
+  renderAchievements:function(){
+    var d=MissionsDB.data;
+    var cats=[
+      {key:'combat',  name:'SAVAŞ'},
+      {key:'survival',name:'HAYATTAKALlMA'},
+      {key:'progress',name:'İLERLEME'},
+      {key:'economy', name:'EKONOMİ'},
+      {key:'meta',    name:'META'},
+    ];
+    var list=document.getElementById('ms7-ach-list');
+    if(!list)return;
+    var html='';
+    cats.forEach(function(cat){
+      html+='<div class="ms7-cat-hdr">'+cat.name+'</div>';
+      ACHIEVEMENTS.filter(function(a){return a.cat===cat.key;}).forEach(function(a){
+        var unlocked=d.achievementsUnlocked.indexOf(a.id)>=0;
+        var claimed =d.achievementsClaimed.indexOf(a.id)>=0;
+        var btnCls=claimed?'done-btn':unlocked?'claim':'locked';
+        var btnTxt=claimed?'✓':unlocked?'AL':'—';
+        var rewTxt=a.reward.type==='title'?'Unvan: "'+a.reward.value+'"':'Skin açılır: '+a.reward.value;
+        var claimCall=(!claimed&&unlocked)?'MS7._clA("'+a.id+'")':'';
+        html+='<div class="ms7-ach'+(unlocked?' unlocked':'')+(claimed?' claimed':'')+'">';
+        html+='<div class="ms7-ach-top"><span class="ms7-ach-ico">'+a.icon+'</span>';
+        html+='<div class="ms7-ach-body"><div class="ms7-ach-name">'+a.name+'</div>';
+        html+='<div class="ms7-ach-desc">'+a.desc+'</div>';
+        html+='<div class="ms7-ach-rew">'+rewTxt+'</div></div>';
+        html+='<button class="ms7-ach-btn '+btnCls+'"'+(claimCall?' onclick="'+claimCall+'"':'')+'>'+btnTxt+'</button>';
+        html+='</div></div>';
+      });
+    });
+    list.innerHTML=html;
+  },
+
+  _clD:function(i){var r=MissionsDB.claimDaily(i);if(r.ok){this.renderMissions();this.updateHubCard();}},
+  _clW:function(i){var r=MissionsDB.claimWeekly(i);if(r.ok)this.renderMissions();},
+  _clA:function(id){
+    var r=MissionsDB.claimAchievement(id);
+    if(r.ok){
+      this.renderAchievements();
+      if(r.reward.type==='skin'){
+        setTimeout(function(){alert('Skin açıldı: '+r.reward.value+'\nSkin seçim ekranından equip edebilirsin.');},50);
+      }else{
+        setTimeout(function(){alert('Unvan kazandın: "'+r.reward.value+'"');},50);
+      }
+    }
+  },
+
+  updateHubCard:function(){
+    try{
+      var d=MissionsDB.data;
+      var missions=d.daily.missions;
+      var total=missions.length,done=missions.filter(function(m){return m.progress>=m.goal;}).length;
+      var claimed=missions.filter(function(m){return m.claimed;}).length;
+      var nameEl=document.getElementById('ms7-hub-name');
+      var fillEl=document.getElementById('ms7-hub-fill');
+      var rewEl =document.getElementById('ms7-hub-rew');
+      if(nameEl)nameEl.textContent=(total?done+'/'+total+' Görev Tamamlandı':'Görevler');
+      if(fillEl&&total)fillEl.style.width=Math.round(claimed/total*100)+'%';
+      if(rewEl)rewEl.textContent=done>claimed?'◉ Claim edilecek ödül var!':'↻ GÖREVLER & BAŞARIMLAR';
+    }catch(e){}
+  },
+
+  _startCd:function(){
+    clearInterval(this._cdInt);
+    var self=this;
+    this._cdInt=setInterval(function(){self._updateCd();},1000);
+    this._updateCd();
+  },
+
+  _updateCd:function(){
+    var el=document.getElementById('ms7-countdown');
+    if(!el)return;
+    var now=new Date();
+    if(this._sub==='daily'){
+      var next=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1);
+      el.textContent='Yenileniyor: '+fmtMs(next-now);
+    }else{
+      var day=now.getDay()||7;
+      var next2=new Date(now.getFullYear(),now.getMonth(),now.getDate()+(8-day));
+      el.textContent='Yenileniyor: '+fmtMs(next2-now);
+    }
+  },
+};
+
+/* Expose globally */
+window.MissionsDB=MissionsDB;
+window.ACHIEVEMENTS=ACHIEVEMENTS;
+
+/* ---- Init on DOMContentLoaded or immediately if already loaded ---- */
+function ms7Init(){
+  MissionsDB.load();
+  MissionsDB.checkReset();
+  MissionsDB.checkAchievements();
+  MS7.updateHubCard();
+  /* Wire b-ach button to open MS7 */
+  try{var bAch=document.getElementById('b-ach');if(bAch)bAch.addEventListener('click',function(){MS7.open();});}catch(e){}
+  /* Wrap Game.start to snapshot P.counters before each run.
+     Per-run diff = counter_at_end - snapshot_at_start → used for enhance/legendary missions. */
+  try{
+    if(window.Game && typeof Game.start==='function' && !Game._ms7SnapWrapped){
+      var _ms7OrigStart=Game.start.bind(Game);
+      Game.start=function(){
+        _ms7OrigStart();
+        window._ms7EnhanceSnap  =(window.P&&window.P.counters?window.P.counters.enhance  :0)||0;
+        window._ms7LegendarySnap=(window.P&&window.P.counters?window.P.counters.legendary:0)||0;
+      };
+      Game._ms7SnapWrapped=true;
+    }
+  }catch(_e){}
+}
+
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',ms7Init);
+}else{
+  setTimeout(ms7Init,0);
+}
+
+})();
 </script>
