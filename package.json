@@ -6,7 +6,8 @@
   "scripts": {
     "cap:add": "cap add android",
     "cap:sync": "cap sync android",
-    "android:configure": "node scripts/configure-android.mjs"
+    "android:configure": "node scripts/configure-android.mjs",
+    "sync:version": "node scripts/sync-version.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^7.0.0",
