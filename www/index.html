@@ -52,7 +52,9 @@ html,body{
   position:fixed;
   inset:0;
   overflow:hidden;
+  background:#01050c;
 }
+#game-bg{display:none}
 
 #game{
   display:block;
@@ -2363,6 +2365,91 @@ body.ls .bn{width:70px}
 </style>
 </head>
 <body>
+<!-- ══════════════════════════════════════════════
+     NORYVX · CYBERPUNK BOOT INTRO
+══════════════════════════════════════════════ -->
+<div id="nvx-intro">
+  <canvas id="nvx-intro-canvas"></canvas>
+  <div class="nvi-grid"></div>
+  <div class="nvi-vignette"></div>
+  <div class="nvi-topbar">
+    <span class="nvi-sys">SYS<span class="nvi-blink">::</span>BOOT</span>
+    <span class="nvi-coords" id="nvi-coords">X:0000 Y:0000</span>
+    <span class="nvi-clock" id="nvi-clock">00:00:00</span>
+  </div>
+  <div class="nvi-center">
+    <div class="nvi-hex-ring"></div>
+    <div class="nvi-hex-ring nvi-hex-ring2"></div>
+    <div class="nvi-logo-wrap">
+      <div class="nvi-pre-label">[ COMBAT PROTOCOL ACTIVE ]</div>
+      <div class="nvi-logo" id="nvi-logo">NORYVX</div>
+      <div class="nvi-tagline">TACTICAL SURVIVOR · SECTOR 01</div>
+    </div>
+    <div class="nvi-scan-line"></div>
+  </div>
+  <div class="nvi-log" id="nvi-log">
+    <div class="nvi-log-line">▸ COMBAT AI . . . . . . . . . . . . . OK</div>
+    <div class="nvi-log-line">▸ SEKTÖR HARİTASI . . . . . . . . . OK</div>
+    <div class="nvi-log-line">▸ NEON AĞLARI . . . . . . . . . . . . OK</div>
+    <div class="nvi-log-line">▸ VANGUARD BİRİMİ . . . . . . . . . OK</div>
+    <div class="nvi-log-line nvi-log-warn">▸ TEHDİT SEVİYESİ: KRİTİK</div>
+  </div>
+  <div class="nvi-bottom">
+    <div class="nvi-status" id="nvi-status">BAŞLATILIYOR...</div>
+    <div class="nvi-bar-wrap">
+      <div class="nvi-bar-track">
+        <div class="nvi-bar-fill" id="nvi-bar-fill"></div>
+        <div class="nvi-bar-glitch"></div>
+      </div>
+      <span class="nvi-pct" id="nvi-pct">0%</span>
+    </div>
+    <div class="nvi-skip">[ ATLAMAK İÇİN DOKUN ]</div>
+  </div>
+  <div class="nvi-flash" id="nvi-flash"></div>
+</div>
+
+<style>
+#nvx-intro{position:fixed;inset:0;z-index:99999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:space-between;font-family:'IBM Plex Mono',monospace;color:#22e6ff;overflow:hidden;transition:opacity .7s ease;}
+#nvx-intro.nvi-out{opacity:0;pointer-events:none;}
+#nvx-intro canvas{position:absolute;inset:0;z-index:0;}
+.nvi-grid{position:absolute;inset:0;z-index:1;background-image:linear-gradient(rgba(34,230,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(34,230,255,.04) 1px,transparent 1px);background-size:40px 40px;animation:nviGridDrift 8s linear infinite;}
+@keyframes nviGridDrift{0%{background-position:0 0}100%{background-position:40px 40px}}
+.nvi-vignette{position:absolute;inset:0;z-index:2;background:radial-gradient(ellipse at 50% 50%,transparent 30%,rgba(0,0,0,.85) 100%);}
+.nvi-topbar{position:relative;z-index:10;width:100%;display:flex;justify-content:space-between;align-items:center;padding:14px 20px 0;font-size:9px;letter-spacing:.18em;color:rgba(34,230,255,.6);}
+.nvi-blink{animation:nviBlink .7s step-end infinite;}
+@keyframes nviBlink{0%,100%{opacity:1}50%{opacity:0}}
+.nvi-coords{font-size:8px;color:rgba(34,230,255,.4);}
+.nvi-clock{font-size:9px;color:rgba(34,230,255,.5);}
+.nvi-center{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;flex:1;justify-content:center;}
+.nvi-hex-ring{position:absolute;width:260px;height:260px;border-radius:50%;border:1px solid rgba(34,230,255,.12);animation:nviRingPulse 3s ease-in-out infinite;}
+.nvi-hex-ring2{width:200px;height:200px;border-color:rgba(160,92,255,.1);animation-duration:2.3s;animation-delay:-.8s;}
+@keyframes nviRingPulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.06);opacity:1}}
+.nvi-logo-wrap{text-align:center;animation:nviFadeUp .6s ease both;animation-delay:.4s;}
+@keyframes nviFadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.nvi-pre-label{font-size:7px;letter-spacing:.32em;color:rgba(34,230,255,.5);margin-bottom:10px;animation:nviBlink 3s step-end infinite;}
+.nvi-logo{font-family:'Chakra Petch',sans-serif;font-size:clamp(48px,14vw,72px);font-weight:900;letter-spacing:.3em;text-indent:.3em;color:#fff;text-shadow:0 0 20px rgba(34,230,255,1),0 0 50px rgba(34,230,255,.7),0 0 100px rgba(34,230,255,.35);animation:nviLogoGlitch 4s ease-in-out infinite;}
+@keyframes nviLogoGlitch{0%,88%,100%{text-shadow:0 0 20px rgba(34,230,255,1),0 0 50px rgba(34,230,255,.7),0 0 100px rgba(34,230,255,.35);transform:none}90%{transform:translateX(-3px);text-shadow:3px 0 12px rgba(255,40,100,.8),-3px 0 12px rgba(34,230,255,.9)}92%{transform:translateX(3px);text-shadow:-3px 0 12px rgba(255,40,100,.8),3px 0 12px rgba(34,230,255,.9)}94%{transform:translateX(-1px);clip-path:inset(30% 0 40% 0)}96%{transform:none;clip-path:none}}
+.nvi-tagline{font-size:9px;letter-spacing:.32em;color:rgba(34,230,255,.55);margin-top:10px;}
+.nvi-scan-line{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(34,230,255,.5),transparent);animation:nviSweep 2.2s linear infinite;opacity:.6;}
+@keyframes nviSweep{0%{top:30%;opacity:0}10%{opacity:.6}90%{opacity:.4}100%{top:70%;opacity:0}}
+.nvi-log{position:relative;z-index:10;width:100%;padding:0 24px;display:flex;flex-direction:column;gap:5px;}
+.nvi-log-line{font-size:8.5px;letter-spacing:.08em;color:rgba(34,230,255,.45);opacity:0;animation:nviLogIn .3s ease both;}
+.nvi-log-line:nth-child(1){animation-delay:.5s}.nvi-log-line:nth-child(2){animation-delay:.9s}.nvi-log-line:nth-child(3){animation-delay:1.3s}.nvi-log-line:nth-child(4){animation-delay:1.7s}.nvi-log-line:nth-child(5){animation-delay:2.1s}
+@keyframes nviLogIn{to{opacity:1}}
+.nvi-log-warn{color:rgba(255,80,80,.7)!important;}
+.nvi-bottom{position:relative;z-index:10;width:100%;padding:0 20px 20px;display:flex;flex-direction:column;gap:8px;}
+.nvi-status{font-size:9px;letter-spacing:.18em;color:rgba(34,230,255,.6);}
+.nvi-bar-wrap{display:flex;align-items:center;gap:10px;}
+.nvi-bar-track{flex:1;height:4px;background:rgba(34,230,255,.1);border-radius:2px;overflow:hidden;position:relative;}
+.nvi-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,#22e6ff,#a05cff);border-radius:2px;box-shadow:0 0 10px rgba(34,230,255,.7);transition:width .12s linear;position:relative;z-index:1;}
+.nvi-bar-glitch{position:absolute;inset:0;background:linear-gradient(90deg,transparent 60%,rgba(255,255,255,.25),transparent 80%);animation:nviBarShine 1.4s linear infinite;}
+@keyframes nviBarShine{0%{transform:translateX(-100%)}100%{transform:translateX(200%)}}
+.nvi-pct{font-size:9px;color:rgba(34,230,255,.7);min-width:32px;text-align:right;}
+.nvi-skip{font-size:7px;letter-spacing:.22em;color:rgba(34,230,255,.25);text-align:center;animation:nviBlink 2s step-end infinite;}
+.nvi-flash{position:absolute;inset:0;z-index:20;background:#fff;opacity:0;pointer-events:none;transition:opacity .1s;}
+.nvi-flash.on{opacity:.9;}
+</style>
+
 <style id="noryvx-development-epic-style">
 /* ===== NORYVX DEVELOPMENT SCREEN — PREMIUM REDESIGN ===== */
 
@@ -2522,6 +2609,7 @@ window.addEventListener("unhandledrejection",function(){});
 </script>
 <div aria-hidden="true" id="version-badge" style="display:none">V20.3.1 · NORYVX</div>
 <div id="stage">
+<div id="game-bg" aria-hidden="true"></div>
 <canvas aria-label="Neon Survivor oyun alanı" id="game" role="application"></canvas>
 <div class="hide" id="hint">
   Parmağını sürükle
@@ -2815,12 +2903,14 @@ body.ls #scr-menu .nvx-mnav{margin-top:auto}
 /* OYNA button */
 @keyframes nvx2NeonPulse {
   0%,100% {
-    box-shadow:0 0 20px rgba(34,230,255,0.55),0 0 40px rgba(34,230,255,0.25),0 4px 20px rgba(0,0,0,0.6),inset 0 0 20px rgba(34,230,255,0.08);
-    border-color:rgba(34,230,255,0.6);
+    box-shadow:0 0 18px rgba(34,230,255,0.7),0 0 36px rgba(34,230,255,0.35),0 0 60px rgba(80,60,255,0.2),0 4px 20px rgba(0,0,0,0.6),inset 0 0 22px rgba(34,230,255,0.12);
+    border-color:rgba(34,230,255,0.8);
+    text-shadow:0 0 12px rgba(34,230,255,0.9),0 0 24px rgba(34,230,255,0.5);
   }
   50% {
-    box-shadow:0 0 40px rgba(34,230,255,1.0),0 0 80px rgba(34,230,255,0.5),0 0 120px rgba(100,80,255,0.3),0 4px 20px rgba(0,0,0,0.6),inset 0 0 30px rgba(34,230,255,0.18);
-    border-color:rgba(34,230,255,1.0);
+    box-shadow:0 0 50px rgba(34,230,255,1.0),0 0 100px rgba(34,230,255,0.65),0 0 160px rgba(80,60,255,0.4),0 4px 20px rgba(0,0,0,0.6),inset 0 0 40px rgba(34,230,255,0.25);
+    border-color:#22e6ff;
+    text-shadow:0 0 20px rgba(255,255,255,1.0),0 0 40px rgba(34,230,255,0.9),0 0 60px rgba(34,230,255,0.5);
   }
 }
 @keyframes nvx2Shimmer {
@@ -2829,11 +2919,12 @@ body.ls #scr-menu .nvx-mnav{margin-top:auto}
 }
 .nvx2-play {
   flex-shrink:0;
-  align-self:stretch;
+  width:calc(100% - 32px);
   margin:6px 16px;
+  box-sizing:border-box;
   padding:15px 0 13px;
-  background:linear-gradient(135deg,#0a2a55 0%,#112266 40%,#221155 100%);
-  border:1.5px solid rgba(34,230,255,0.6);
+  background:linear-gradient(135deg,#001840 0%,#0033aa 45%,#220066 100%);
+  border:2px solid rgba(34,230,255,0.85);
   border-radius:10px; color:#fff;
   font-size:clamp(18px,5vw,26px); font-weight:900;
   letter-spacing:0.35em; text-transform:uppercase; cursor:pointer;
@@ -2866,6 +2957,7 @@ body.ls #scr-menu .nvx-mnav{margin-top:auto}
   letter-spacing:0.15em; text-align:center; cursor:pointer;
   text-transform:uppercase; transition:border-color 0.2s,background 0.2s;
   display:flex; flex-direction:column; align-items:center; gap:2px;
+  position:relative;
 }
 .nvx2-card-ico { font-size:16px; display:block; margin-bottom:2px; }
 .nvx2-card small { font-size:8px; font-weight:400; letter-spacing:0.08em; color:#4488aa; display:block; margin-top:1px; }
@@ -2915,7 +3007,7 @@ body.ls #scr-menu .nvx-mnav{margin-top:auto}
   <div id="nvx2-hud">
     <div><span class="nvx2-version">V20.3.1</span> <span class="nvx2-phase">· PHASE 3</span></div>
     <div style="letter-spacing:0.2em;color:#22e6ff;font-weight:700;">NORVYX</div>
-    <div><span id="profile-currency" style="color:#ffdd44;font-weight:700;font-size:11px;letter-spacing:0.05em;">&#9670;&nbsp;0</span><span id="profile-level" style="display:none">1</span></div>
+    <div style="display:flex;align-items:center;gap:8px;"><span style="font-size:9px;color:#4488aa;letter-spacing:0.1em;">LV&nbsp;<span id="profile-level" style="color:#22e6ff;font-weight:700;">1</span></span><span id="profile-currency" style="color:#ffdd44;font-weight:700;font-size:10px;letter-spacing:0.05em;">&#9670;&nbsp;0</span></div>
   </div>
 
   <!-- Logo -->
@@ -2939,7 +3031,20 @@ body.ls #scr-menu .nvx-mnav{margin-top:auto}
 
   <!-- OYNA button -->
   <button id="b-play" class="nvx2-play">
-    OYNA<small>SEKT&Ouml;RE G&#304;R&#304;&#350; YAP</small>
+    <span class="cpb-bg"></span>
+    <span class="cpb-scan"></span>
+    <span class="cpb-glow-l"></span>
+    <span class="cpb-glow-r"></span>
+    <span class="cpb-stripes"></span>
+    <span class="cpb-inner">
+      <span class="cpb-icon">▶</span>
+      <span class="cpb-label">OYNA</span>
+      <span class="cpb-sub">◈ SEKTÖR 01'E GİR ◈</span>
+    </span>
+    <span class="cpb-corner cpb-tl"></span>
+    <span class="cpb-corner cpb-tr"></span>
+    <span class="cpb-corner cpb-bl"></span>
+    <span class="cpb-corner cpb-br"></span>
   </button>
 
   <!-- Cards: HERO / DEVELOP / SYSTEM -->
@@ -3906,7 +4011,7 @@ const BALANCE={
     xpPerRareEnergy:1,
     xpPerElite:8,
     xpPerBoss:25,
-    levelThresholds:[0,20,45,75,110,150,195,245,300,360,425,495,570,650,735,825,920,1020,1125,1235,1350,1470,1595,1725,1860,2000,2145,2295,2450,2610,2775,2945,3120,3300,3485,3675,3870,4070,4275,4485,4700]
+    levelThresholds:[0,31,70,116,171,233,302,380,465,558,659,767,884,1008,1139,1279,1426,1581,1744,1914,2093,2279,2472,2674,2883,3100,3325,3557,3798,4046,4301,4565,4836,5115,5402,5696,5999,6309,6626,6952,7285]
   },
 
   /* PHASE 1.3-1.9 — tek merkezli progression/combat/economy modeli. */
@@ -4251,12 +4356,10 @@ const enemyCapForLevel=level=>{
   Level 10+ sayıyı artırmak yerine davranışsal baskıyı
   küçük adımlarla yükseltir. Böylece ekran gereksiz dolmaz.
 */
+/* Düşman hız çarpanı: level 1'de 1.0, her level %2 azalır, min 0.65 */
 const lateGamePressure=level=>{
-  const l=Math.max(1,level),p=BALANCE.phase1.enemy;
-  if(l<=5)return 1+(l-1)*p.speedEarly;
-  if(l<=10)return 1+4*p.speedEarly+(l-5)*p.speedMid;
-  if(l<=20)return 1+4*p.speedEarly+5*p.speedMid+(l-10)*p.speedLate;
-  return 1+4*p.speedEarly+5*p.speedMid+10*p.speedLate+(l-20)*p.speedMaster;
+  const l=Math.max(1,level);
+  return Math.max(0.65,1-(l-1)*0.020);
 };
 
 const lerp=(a,b,t)=>
@@ -4621,7 +4724,7 @@ const Audio_={
       this.master=
         this.ctx.createGain();
 
-      this.master.gain.value=.22;
+      this.master.gain.value=.48;
 
       this.master.connect(
         this.ctx.destination
@@ -4887,6 +4990,8 @@ function resize(){
   SAFE_TOP=safe.top;
   SAFE_LEFT=safe.left;
   HUD_LEFT=SAFE_LEFT+HUD_PAUSE_OFFSET+HUD_PAUSE_SIZE+HUD_GAP;
+
+  _bgBuildings=[];
 
 }
 
@@ -5348,28 +5453,9 @@ function inputMove(x,y){
      SONRA: seviye basina +%4, toplamda +%20 ile sinirli.
             Sinir, "kalici ham stat cok sinirli olsun" ilkesinin
             geregidir; run ici kartlar (%10/stack) etkilenmedi. */
-  const metaSpeed=
-    Math.min(
-      BALANCE.fixes.metaSpeedCap,
-      (Save.data.upgrades.speed||0)*BALANCE.fixes.metaSpeedPerLevel
-    );
-
-  const speedStacks=Game.runUpgrades.speed||0;
-  const fullSpeedStacks=Math.min(
-    BALANCE.player.runUpgrade.speedStackSoftCap,
-    speedStacks
-  );
-  const extraSpeedStacks=Math.max(
-    0,
-    speedStacks-BALANCE.player.runUpgrade.speedStackSoftCap
-  );
-  const runSpeedBonus=
-    fullSpeedStacks*BALANCE.player.runUpgrade.speedPerStack+
-    extraSpeedStacks*BALANCE.player.runUpgrade.postCapSpeed;
-
-  const baseBoost=1+runSpeedBonus+metaSpeed;
-  const boost=
-    baseBoost*(Game.powers.overdrive>0?1.35:1);
+  /* Player speed sabit — level/upgrade progression hareketi etkilemez.
+     Sadece overdrive power-up aktifken 1.35x (geçici, oyun içi güç). */
+  const boost=Game.powers.overdrive>0?1.35:1;
 
   player.x=
     clamp(
@@ -5466,6 +5552,12 @@ canvas.addEventListener(
     }
 
   },
+  {passive:true}
+);
+
+canvas.addEventListener(
+  "touchcancel",
+  ()=>{ inputUp(); },
   {passive:true}
 );
 
@@ -8171,222 +8263,115 @@ function update(dt){
 
 let bgTime=0;
 
+/* Procedural city silhouette seed — regenerated on resize */
+let _bgBuildings=[];
+function _bgGenBuildings(){
+  _bgBuildings=[];
+  const cols=Math.ceil(W/28)+2;
+  for(let i=0;i<cols;i++){
+    _bgBuildings.push({
+      x:i*28-14,
+      w:18+Math.sin(i*7.3)*6,
+      h:H*(.18+Math.abs(Math.sin(i*1.7))*.24),
+      wh:2+Math.floor(Math.abs(Math.sin(i*3.1))*3)
+    });
+  }
+}
+
 function drawBackground(dt){
-
   bgTime+=dt;
+  const t=bgTime;
+  const pal=SP();
+  const A=pal.A; // "r,g,b"
+  const B=pal.B;
 
-  /* =========================================================
-     V16.7.0 — RPG RENDERING FOUNDATION
-     Top-down 2.5D cyberpunk presentation:
-     - layered city silhouettes
-     - animated neon lanes
-     - atmospheric fog
-     - player-centered dynamic light
-     - vignette
-     No gameplay coordinates/collisions are changed.
-  ========================================================= */
-
-  ctx.fillStyle=SP().base;
+  /* 1 — Sky gradient */
+  const sky=ctx.createLinearGradient(0,0,0,H*.68);
+  sky.addColorStop(0, "rgba("+A+",0.04)");
+  sky.addColorStop(0.55,"rgba("+A+",0.01)");
+  sky.addColorStop(1,  "rgba("+B+",0.08)");
+  ctx.fillStyle=pal.base;
   ctx.fillRect(0,0,W,H);
-
-  /* Deep city atmosphere */
-  const sky=ctx.createLinearGradient(0,0,0,H);
-  sky.addColorStop(0,SP().sky[0]);
-  sky.addColorStop(.42,SP().sky[1]);
-  sky.addColorStop(1,SP().sky[2]);
   ctx.fillStyle=sky;
-  ctx.fillRect(0,0,W,H);
+  ctx.fillRect(0,0,W,H*.68);
 
-  /* Distant skyline, deliberately kept at the perimeter so the
-     playable center remains readable. */
-  const par=(bgTime*7)%90;
-  const buildings=[
-    [0, .17, 58, .28],[64,.09,44,.36],[112,.21,72,.24],
-    [W-72,.12,72,.34],[W-128,.20,48,.27],[W-190,.08,54,.38]
-  ];
-
-  buildings.forEach((b,i)=>{
-    const x=b[0]+((i%2)?par*.18:-par*.12);
-    const y=H*b[1];
-    const bw=b[2];
-    const bh=H*b[3];
-    ctx.fillStyle=i%2 ? SP().bld[0] : SP().bld[1];
-    ctx.fillRect(x,y,bw,bh);
-
-    ctx.strokeStyle=i%2
-      ? SPA(".11")
-      : SPB(".10");
-    ctx.lineWidth=1;
-    ctx.strokeRect(x+.5,y+.5,bw-1,bh-1);
-
-    for(let wy=y+10;wy<y+bh-8;wy+=14){
-      const phase=Math.floor(bgTime*1.7+i+wy);
-      if((phase%5)!==0){
-        ctx.fillStyle=(phase%3===0)
-          ? SPA(".16")
-          : SPB(".12");
-        ctx.fillRect(x+8,wy,Math.max(5,bw-16),2);
-      }
+  /* 2 — Distant city silhouette */
+  if(!_bgBuildings.length||_bgBuildings[0]&&_bgBuildings[0]._W!==W)
+    _bgGenBuildings();
+  const groundY=H*.62;
+  ctx.save();
+  ctx.globalAlpha=0.55;
+  for(let i=0;i<_bgBuildings.length;i++){
+    const b=_bgBuildings[i];
+    const bx=b.x, bh=b.h*(0.9+0.1*Math.sin(t*.18+i)), by=groundY-bh;
+    ctx.fillStyle="rgba("+A+",0.07)";
+    ctx.fillRect(bx,by,b.w,bh);
+    /* window lights */
+    ctx.fillStyle="rgba("+A+",0.28)";
+    for(let r=0;r<b.wh;r++){
+      const wy=by+6+r*10;
+      if(wy>groundY-4)continue;
+      ctx.fillRect(bx+3,wy,3,2);
+      if(b.w>14) ctx.fillRect(bx+b.w-7,wy,3,2);
     }
-  });
-
-  /* Neon district horizon glow */
-  const horizon=ctx.createRadialGradient(
-    W/2,H*.38,10,W/2,H*.38,Math.max(W,H)*.72
-  );
-  horizon.addColorStop(0,SPA(".10"));
-  horizon.addColorStop(.38,SPB(".055"));
-  horizon.addColorStop(1,"rgba(3,5,12,0)");
-  ctx.fillStyle=horizon;
-  ctx.fillRect(0,0,W,H);
-
-  /* 2.5D ground plane */
-  const ground=ctx.createLinearGradient(0,H*.18,0,H);
-  ground.addColorStop(0,"rgba(8,16,34,.24)");
-  ground.addColorStop(.45,"rgba(3,8,18,.52)");
-  ground.addColorStop(1,"rgba(1,3,9,.86)");
-  ctx.fillStyle=ground;
-  ctx.fillRect(0,H*.16,W,H*.84);
-
-  /* NOT: "Animated perspective lanes" grid katmani KALDIRILDI.
-     Burasi zemindeki perspektifli dikey cizgileri (topX'e dogru
-     daralan) ve asagi kayan yatay cizgileri ciziyordu; ikisi
-     birlikte grid gorunumunu olusturuyordu.
-     Arka planin diger TUM katmanlari aynen korunmustur: gokyuzu
-     gradyani, skyline siluetleri, horizon glow, 2.5D zemin
-     gradyani, neon serit aksanlari, oyuncu isik havuzu, sis
-     bantlari, vignette ve scanline dokusu.
-     laneStep / laneOffset degiskenleri sadece bu blokta
-     kullaniliyordu, birlikte kaldirildi. */
-
-  /* NOT: "Neon lane accents" seritleri de KALDIRILDI.
-     5 adet parlak cyan/mor diyagonal serit ciziyordu.
-     Neon atmosferi seritlerden degil, korunan katmanlardan geliyor:
-     horizon glow, bina pencere isiklari, oyuncu isik havuzu,
-     sis bantlari. */
-
-  /* Player-centered light pool */
-  const px=player.x||W/2;
-  const py=player.y||H*.62;
-  const light=ctx.createRadialGradient(px,py,4,px,py,Math.max(110,W*.32));
-  light.addColorStop(0,"rgba(34,230,255,.095)");
-  light.addColorStop(.35,"rgba(34,230,255,.035)");
-  light.addColorStop(1,"rgba(34,230,255,0)");
-  ctx.fillStyle=light;
-  ctx.fillRect(
-    Math.max(0,px-W*.35),
-    Math.max(0,py-H*.35),
-    Math.min(W,W*.7),
-    Math.min(H,H*.7)
-  );
-
-  /* Atmospheric fog bands */
-  ctx.save();
-  for(let i=0;i<3;i++){
-    const y=H*(.25+i*.25)+Math.sin(bgTime*.35+i)*10;
-    const fog=ctx.createLinearGradient(0,y-26,0,y+26);
-    fog.addColorStop(0,SPB("0"));
-    fog.addColorStop(.5,i===1?SPA(".018"):SPB(".016"));
-    fog.addColorStop(1,SPB("0"));
-    ctx.fillStyle=fog;
-    ctx.fillRect(0,y-28,W,56);
   }
   ctx.restore();
 
-  drawAmbient(bgTime);
+  /* 3 — Horizon glow */
+  const hg=ctx.createLinearGradient(0,groundY-40,0,groundY+20);
+  hg.addColorStop(0,"rgba("+A+",0.00)");
+  hg.addColorStop(0.5,"rgba("+A+",0.22)");
+  hg.addColorStop(1,"rgba("+A+",0.00)");
+  ctx.fillStyle=hg;
+  ctx.fillRect(0,groundY-40,W,60);
 
-  /* =========================================================
-     PLAYFIELD VISUAL UPGRADE — SADECE GÖRSEL
-     Daha açık, daha canlı ve daha aksiyonlu arena.
-     Gameplay / collision / spawn / balance / input DEĞİŞMEZ.
-  ========================================================= */
+  /* 4 — Ground */
+  const gr=ctx.createLinearGradient(0,groundY,0,H);
+  gr.addColorStop(0,"rgba("+A+",0.06)");
+  gr.addColorStop(1,"rgba(0,0,0,0.0)");
+  ctx.fillStyle=gr;
+  ctx.fillRect(0,groundY,W,H-groundY);
 
-  /* 1) Açık merkez atmosferi: oyuncunun çevresi artık daha okunaklı. */
-  const arenaGlow=ctx.createRadialGradient(
-    W*.50,H*.54,Math.min(W,H)*.06,
-    W*.50,H*.54,Math.max(W,H)*.68
-  );
-  arenaGlow.addColorStop(0,SPA(".090"));
-  arenaGlow.addColorStop(.24,SPA(".050"));
-  arenaGlow.addColorStop(.58,SPB(".022"));
-  arenaGlow.addColorStop(1,"rgba(0,0,0,0)");
-  ctx.fillStyle=arenaGlow;
-  ctx.fillRect(0,0,W,H);
-
-  /* 2) Çok hafif arena halkaları: yön/mesafe hissi verir, grid değildir. */
+  /* 5 — Perspective scanlines on ground */
   ctx.save();
-  ctx.translate(px,py);
-  const arenaR=Math.max(W,H)*.16;
-  for(let i=1;i<=4;i++){
-    const rr=arenaR*i*.72 + Math.sin(bgTime*.7+i)*5;
-    ctx.globalAlpha=.075-(i*.009);
-    ctx.strokeStyle=i%2===0?SPB("1"):SPA("1");
-    ctx.lineWidth=1;
-    ctx.beginPath();ctx.arc(0,0,rr,0,TAU);ctx.stroke();
+  ctx.globalAlpha=0.10;
+  ctx.strokeStyle="rgba("+A+",1)";
+  ctx.lineWidth=0.8;
+  const vx=W/2, vy=groundY;
+  for(let i=1;i<10;i++){
+    const py=groundY+(H-groundY)*i/9;
+    const spread=W*0.5*(i/9);
+    ctx.beginPath();
+    ctx.moveTo(vx-spread,py);
+    ctx.lineTo(vx+spread,py);
+    ctx.stroke();
+    if(i%2===0){
+      ctx.beginPath();
+      ctx.moveTo(vx-(spread*i/9),groundY);
+      ctx.lineTo(vx-spread,py);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(vx+(spread*i/9),groundY);
+      ctx.lineTo(vx+spread,py);
+      ctx.stroke();
+    }
   }
   ctx.restore();
 
-  /* 3) Canlı hareket hissi: uzaktaki enerji parçacıkları ve streakler. */
-  ctx.save();
-  for(let i=0;i<18;i++){
-    const seed=i*17.371;
-    const z=.22+((i*37)%70)/100;
-    const x=((seed*73 + bgTime*(7+z*14))%(W+120))-60;
-    const y=((seed*41 + Math.sin(bgTime*.35+seed)*28)%(H*.78))+H*.08;
-    const r=.7+z*1.5;
-    const pulse=.45+.55*Math.sin(bgTime*(1.4+z)+seed);
-    ctx.globalAlpha=(.10+.13*z)*pulse;
-    ctx.fillStyle=i%3===0?"#ffffff":(i%2?SPA("1"):SPB("1"));
-    ctx.shadowColor=ctx.fillStyle;
-    ctx.shadowBlur=7*z;
-    ctx.beginPath();ctx.arc(x,y,r,0,TAU);ctx.fill();
-  }
-  ctx.restore();
-
-  /* 4) Düşük yoğunluklu hareketli enerji çizgileri: arena daha canlı görünür. */
-  ctx.save();
-  const flow=(bgTime*34)%180;
-  for(let i=0;i<7;i++){
-    const y=H*(.22+i*.095)+(i%2?flow*.06:-flow*.045);
-    const len=35+(i%3)*28;
-    const x=((i*143+flow*(i%2?1:-.7))%(W+len))-len;
-    const g=ctx.createLinearGradient(x,0,x+len,0);
-    g.addColorStop(0,"rgba(0,0,0,0)");
-    g.addColorStop(.5,i%2?SPA(".13"):SPB(".11"));
-    g.addColorStop(1,"rgba(0,0,0,0)");
-    ctx.fillStyle=g;
-    ctx.fillRect(x,y, len, 1.4);
-  }
-  ctx.restore();
-
-  /* 5) Oyuncu merkezinin etrafına yumuşak ikinci ışık katmanı. */
-  const combatLight=ctx.createRadialGradient(px,py,2,px,py,Math.max(150,W*.42));
-  combatLight.addColorStop(0,"rgba(255,255,255,.045)");
-  combatLight.addColorStop(.10,SPA(".045"));
-  combatLight.addColorStop(.42,SPB(".018"));
-  combatLight.addColorStop(1,"rgba(0,0,0,0)");
-  ctx.fillStyle=combatLight;
+  /* 6 — Ambient center glow (breathing) */
+  const pulse=0.04+0.02*Math.sin(t*1.4);
+  const cg=ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,W*.52);
+  cg.addColorStop(0,"rgba("+B+","+pulse+")");
+  cg.addColorStop(1,"rgba(0,0,0,0)");
+  ctx.fillStyle=cg;
   ctx.fillRect(0,0,W,H);
 
-  /* Cinematic vignette */
-  const vignette=ctx.createRadialGradient(
-    W/2,H*.52,Math.min(W,H)*.25,
-    W/2,H*.52,Math.max(W,H)*.72
-  );
-  vignette.addColorStop(0,"rgba(0,0,0,0)");
-  vignette.addColorStop(.72,"rgba(0,0,0,.12)");
-  vignette.addColorStop(1,"rgba(0,0,0,.52)");
-  ctx.fillStyle=vignette;
+  /* 7 — Edge vignette */
+  const vg=ctx.createRadialGradient(W/2,H/2,H*.25,W/2,H/2,H*.82);
+  vg.addColorStop(0,"rgba(0,0,0,0)");
+  vg.addColorStop(1,"rgba(0,0,0,0.72)");
+  ctx.fillStyle=vg;
   ctx.fillRect(0,0,W,H);
-
-  /* NOT: "Animated scanline texture" katmani da KALDIRILDI.
-     Her karede 4 pikselde bir yatay 1px cizgi ciziyor ve bu
-     cizgiler asagi kayiyordu; telefon ekraninda kayan yatay serit
-     olarak goruluyordu. Ayrica kare basina ~210 fillRect demekti.
-     Geri istenirse eski hali:
-       ctx.fillStyle="rgba(255,255,255,.012)";
-       const scan=(bgTime*18)%4;
-       for(let y=scan;y<H;y+=4) ctx.fillRect(0,y,W,1);          */
 }
 
 
@@ -8632,7 +8617,7 @@ function drawPlayer(){
     ctx.lineWidth=2;
     ctx.globalAlpha=.65+Math.sin(performance.now()/100)*.15;
     ctx.beginPath();
-    ctx.arc(player.x,player.y,29,0,TAU);
+    ctx.arc(player.x,player.y,22,0,TAU);
     ctx.stroke();
     ctx.restore();
   }
@@ -8666,17 +8651,17 @@ function drawPlayer(){
   ctx.translate(player.x,player.y);
 
   /* 1 · zemin golgesi */
-  RR.shadow(16,.36);
+  RR.shadow(9,.30);
 
   /* 2 · enerji aurasi */
   ctx.save();
-  ctx.globalAlpha=.24+.06*Math.sin(t*4);
+  ctx.globalAlpha=.22+.06*Math.sin(t*4);
   ctx.strokeStyle=skinOuter;
   ctx.shadowColor=skin.glow;
-  ctx.shadowBlur=22;
-  ctx.lineWidth=1.6;
+  ctx.shadowBlur=16;
+  ctx.lineWidth=1.4;
   ctx.beginPath();
-  ctx.arc(0,0,22*pulse,0,TAU);
+  ctx.arc(0,0,11*pulse,0,TAU);
   ctx.stroke();
   ctx.restore();
 
@@ -8728,7 +8713,7 @@ function drawPlayer(){
     ctx.shadowColor=skin.glow;
     ctx.shadowBlur=14;
     ctx.beginPath();
-    ctx.arc(player.x,player.y+16,3.2,0,TAU);
+    ctx.arc(player.x,player.y+12,2.6,0,TAU);
     ctx.fill();
     ctx.restore();
   }
@@ -8748,11 +8733,11 @@ function rrVanguard(P){
      procedural cizim aynen calisir. */
   if(atlasHas("vanguard")){
     ctx.save();
-    atlasDraw("vanguard",47);
+    atlasDraw("vanguard",23);
     ctx.globalCompositeOperation="lighter";
     ctx.globalAlpha=.30+.22*Math.sin(P.t*5);
     ctx.fillStyle=P.acc;
-    ctx.beginPath();ctx.arc(0,-13*47/47,6.5*47/47,0,TAU);ctx.fill();
+    ctx.beginPath();ctx.arc(0,-9,4.5,0,TAU);ctx.fill();
     ctx.restore();
     return;
   }
@@ -8832,11 +8817,11 @@ function rrStriker(P){
      procedural cizim aynen calisir. */
   if(atlasHas("striker")){
     ctx.save();
-    atlasDraw("striker",45);
+    atlasDraw("striker",21);
     ctx.globalCompositeOperation="lighter";
     ctx.globalAlpha=.30+.22*Math.sin(P.t*5);
     ctx.fillStyle=P.acc;
-    ctx.beginPath();ctx.arc(0,-13*45/47,6.5*45/47,0,TAU);ctx.fill();
+    ctx.beginPath();ctx.arc(0,-9,4.5,0,TAU);ctx.fill();
     ctx.restore();
     return;
   }
@@ -8922,11 +8907,11 @@ function rrController(P){
      procedural cizim aynen calisir. */
   if(ATLAS.img&&ATLAS.f&&ATLAS.f["controller"]||atlasHas("controller")){
     ctx.save();
-    atlasDraw("controller",46);
+    atlasDraw("controller",22);
     ctx.globalCompositeOperation="lighter";
     ctx.globalAlpha=.30+.22*Math.sin(P.t*5);
     ctx.fillStyle=P.acc;
-    ctx.beginPath();ctx.arc(0,-13*46/47,6.5*46/47,0,TAU);ctx.fill();
+    ctx.beginPath();ctx.arc(0,-9,4.5,0,TAU);ctx.fill();
     ctx.restore();
     return;
   }
@@ -14791,7 +14776,7 @@ tick();
 if(typeof Audio_!=="object"||!Audio_)return;
 
 const MUS={
-  on:true, bus:null, timer:null, mode:"", next:0, step:0, tempo:.42,
+  on:true, bus:null, timer:null, mode:"", next:0, step:0, tempo:.46,
   gain:{menu:0,combat:0,boss:0}, target:{menu:0,combat:0,boss:0}
 };
 
@@ -14845,40 +14830,109 @@ function noise(when,dur,vol,hz){
 }
 
 /* ---------- DESEN ---------- */
+/* Bass line: minor pentatonic riff — 16 adım */
+const BASS_PAT=[0,0,3,0, 7,0,3,5, 0,0,3,0, 10,7,5,3];
+/* Melodi: aksiyon temalı — 16 adım, -1=sessiz */
+const MEL_PAT =[12,−1,12,−1, 15,−1,10,−1, 12,−1,7,10, 12,−1,15,12];
+
+function kick(when,vol){
+  const c=Audio_.ctx;
+  const o=c.createOscillator(),g=c.createGain();
+  o.type="sine";
+  o.frequency.setValueAtTime(160,when);
+  o.frequency.exponentialRampToValueAtTime(40,when+.08);
+  g.gain.setValueAtTime(vol,when);
+  g.gain.exponentialRampToValueAtTime(.0001,when+.22);
+  o.connect(g);g.connect(MUS.bus);
+  o.start(when);o.stop(when+.25);
+}
+
+function snare(when,vol){
+  noise(when,.14,vol*1.1,1400);
+  noise(when,.08,vol*.6,3600);
+}
+
+function hihat(when,vol,open){
+  noise(when,open?.18:.04,vol,9000);
+}
+
 function schedule(when,step){
   const R=root();
   const bar=step%16;
+  const v16=step%32; /* 2 bar döngüsü */
 
-  /* MENU — yavas pad + seyrek arpej */
+  /* ── MENU — atmosferik pad ── */
   if(MUS.target.menu>.01){
-    if(bar%8===0)voice(R,when,3.4,"sine",.16*MUS.target.menu);
-    if(bar%8===0)voice(R*semi(7),when,3.4,"sine",.10*MUS.target.menu,6);
+    const v=MUS.target.menu*.55;
+    if(bar===0){
+      voice(R,when,3.6,"sine",.22*v);
+      voice(R*semi(7),when,3.6,"sine",.14*v,5);
+      voice(R*2,when,3.6,"sine",.09*v,-3);
+    }
+    if(bar%4===0){
+      const n=SCALE[(Math.floor(step/4)*3)%SCALE.length];
+      voice(R*4*semi(n),when,.6,"triangle",.07*v);
+    }
+    /* yavaş hi-hat */
+    if(bar%8===0)hihat(when,.06*v,false);
+  }
+
+  /* ── COMBAT — aksiyon davul + bas + melodi ── */
+  if(MUS.target.combat>.01){
+    const v=MUS.target.combat;
+
+    /* KICK — 4-on-the-floor + ghost 3. barda */
+    if(bar%4===0)kick(when,.72*v);
+    if(bar===14)kick(when,.38*v); /* ghost kick */
+
+    /* SNARE — 2. ve 4. vuruşlar */
+    if(bar===4||bar===12)snare(when,.48*v);
+    /* ghost snare */
+    if(bar===6||bar===14)snare(when,.22*v);
+
+    /* HI-HAT — 8. notalar, her iki barda bir açık */
+    if(bar%2===1)hihat(when,.18*v,false);
+    if(v16===7||v16===23)hihat(when,.24*v,true); /* açık hi-hat */
+
+    /* BASS */
+    const bn=BASS_PAT[bar];
     if(bar%2===0){
-      const n=SCALE[(step*3)%SCALE.length];
-      voice(R*4*semi(n),when,.55,"triangle",.055*MUS.target.menu);
+      voice(R*semi(bn),when,.19,"sawtooth",.32*v);
+      voice(R*semi(bn),when,.32,"sine",.18*v); /* sub */
+    }
+
+    /* MELODI */
+    const mn=MEL_PAT[bar];
+    if(mn>=0)voice(R*4*semi(mn),when,.13,"square",.14*v,-6);
+
+    /* PAD — her barda kor */
+    if(bar===0){
+      voice(R*2,when,1.7,"sine",.10*v);
+      voice(R*2*semi(7),when,1.7,"sine",.07*v,4);
+      voice(R*2*semi(3),when,1.7,"sine",.05*v,-3);
     }
   }
 
-  /* COMBAT — surukleyici bas + 16'lik arpej + hi-hat */
-  if(MUS.target.combat>.01){
-    const v=MUS.target.combat;
-    if(bar%4===0)voice(R,when,.42,"square",.11*v);
-    if(bar%4===2)voice(R*semi(3),when,.30,"square",.075*v);
-    const n=SCALE[(step*5)%7];
-    voice(R*4*semi(n),when,.16,"sawtooth",.045*v,-4);
-    if(bar%2===1)noise(when,.045,.030*v,5200);
-    if(bar===0||bar===8)noise(when,.13,.075*v,180);
-  }
-
-  /* BOSS — daha agir, disonant ikinci ses + davul */
+  /* ── BOSS — daha ağır ── */
   if(MUS.target.boss>.01){
     const v=MUS.target.boss;
-    if(bar%2===0)voice(R*.5,when,.5,"sawtooth",.115*v);
-    if(bar%8===0)voice(R*semi(6),when,1.6,"sawtooth",.055*v,10);
+
+    /* Çift kick */
+    if(bar%4===0)kick(when,.85*v);
+    if(bar%4===2)kick(when,.55*v);
+
+    /* Ağır snare */
+    if(bar===4||bar===12){snare(when,.65*v);noise(when,.2,.3*v,600);}
+
+    /* Bass yarı tempo */
+    if(bar%4===0)voice(R*.5*semi(BASS_PAT[bar]),when,.35,"sawtooth",.40*v);
+
+    /* Disonant tiz */
     const n=SCALE[(step*7)%7];
-    voice(R*2*semi(n),when,.22,"square",.05*v);
-    if(bar%4===0)noise(when,.17,.10*v,140);
-    if(bar%4===2)noise(when,.05,.045*v,4200);
+    voice(R*2*semi(n),when,.20,"sawtooth",.09*v,14);
+
+    if(bar%4===0)noise(when,.22,.18*v,130);
+    if(bar%4===2)noise(when,.06,.08*v,5000);
   }
 }
 
@@ -17082,9 +17136,7 @@ const BADGES=[
   {btn:"b-missions", tab:"prog",  n:countMissions},
   {btn:"b-bp",       tab:"prog",  n:countBP},
   {btn:"b-ach",      tab:"prog",  n:countAch},
-  {btn:"b-shop",     tab:"store", n:countShop},
-  {btn:"b-tech",     tab:"char",  n:countSkill},
-  {btn:"b-rpgchar",  tab:"char",  n:countGear}
+  {btn:"b-shop",     tab:"store", n:countShop}
 ];
 
 function dot(el,n){
@@ -18087,26 +18139,81 @@ try{
   50%    { text-shadow:0 0 40px rgba(34,230,255,.65),0 0 96px rgba(34,230,255,.22); }
 }
 
-/* PLAY button — 72px premium design matching reference */
+/* ── CYBERPUNK PLAY BUTTON ── */
 #b-play{
-  width:min(340px,84vw) !important;
-  height:72px !important;
-  min-height:72px !important;
-  border-radius:18px !important;
-  font-family:'Chakra Petch',system-ui,sans-serif !important;
-  font-size:22px !important;
-  font-weight:700 !important;
-  letter-spacing:.28em !important;
-  text-indent:.28em !important;
-  color:#03121c !important;
-  background:linear-gradient(135deg,#2ff0ff 0%,#22a8ff 52%,#7a5cff 100%) !important;
-  box-shadow:0 14px 38px rgba(34,230,255,.28),inset 0 0 0 1px rgba(255,255,255,.18) !important;
-  transition:transform .16s cubic-bezier(.2,.8,.3,1),box-shadow .16s !important;
+  position:relative !important;
+  width:100% !important;
+  height:82px !important;
+  min-height:82px !important;
+  border:0 !important;
+  padding:0 !important;
+  margin-top:16px !important;
+  background:transparent !important;
+  border-radius:0 !important;
+  overflow:visible !important;
+  cursor:pointer !important;
+  letter-spacing:normal !important;
+  box-shadow:none !important;
+  transition:transform .12s ease !important;
+  margin-left:-20px !important;
+  width:calc(100% + 40px) !important;
 }
-#b-play:active{
-  transform:scale(.975) !important;
-  box-shadow:0 8px 20px rgba(34,230,255,.20),inset 0 0 0 1px rgba(255,255,255,.12) !important;
+#b-play:active{ transform:scale(.985) !important; box-shadow:none !important; }
+.cpb-bg{
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,#010d1f 0%,#030e22 40%,#080518 100%);
+  border-top:1.5px solid rgba(34,230,255,.75);
+  border-bottom:1.5px solid rgba(160,92,255,.7);
+  box-shadow:0 0 0 1px rgba(34,230,255,.08),0 8px 32px rgba(34,230,255,.22),0 -4px 20px rgba(160,92,255,.18),inset 0 1px 0 rgba(34,230,255,.14);
 }
+.cpb-scan{
+  position:absolute;left:0;right:0;height:60%;top:-60%;
+  background:linear-gradient(180deg,transparent,rgba(34,230,255,.10),rgba(34,230,255,.04),transparent);
+  animation:cpbScan 2.8s linear infinite;pointer-events:none;
+}
+@keyframes cpbScan{0%{top:-60%}100%{top:160%}}
+.cpb-glow-l{
+  position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,#22e6ff,rgba(34,230,255,.3));
+  box-shadow:0 0 14px 3px rgba(34,230,255,.6),0 0 28px rgba(34,230,255,.3);
+}
+.cpb-glow-r{
+  position:absolute;right:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,rgba(160,92,255,.4),#a05cff);
+  box-shadow:0 0 14px 3px rgba(160,92,255,.55),0 0 28px rgba(160,92,255,.25);
+}
+.cpb-stripes{
+  position:absolute;inset:0;
+  background:repeating-linear-gradient(-55deg,transparent,transparent 18px,rgba(34,230,255,.022) 18px,rgba(34,230,255,.022) 19px);
+  pointer-events:none;
+}
+.cpb-inner{
+  position:relative;height:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+  pointer-events:none;
+}
+.cpb-icon{
+  position:absolute;left:28px;top:50%;transform:translateY(-50%);
+  font-size:18px;color:#22e6ff;
+  text-shadow:0 0 12px rgba(34,230,255,1),0 0 24px rgba(34,230,255,.6);
+  animation:cpbPulse 2s ease-in-out infinite;
+}
+@keyframes cpbPulse{0%,100%{opacity:.8;text-shadow:0 0 10px rgba(34,230,255,.8)}50%{opacity:1;text-shadow:0 0 18px rgba(34,230,255,1),0 0 36px rgba(34,230,255,.5)}}
+.cpb-label{
+  font:900 26px/1 'Chakra Petch',sans-serif;
+  letter-spacing:.38em;text-indent:.38em;
+  color:#fff;
+  text-shadow:0 0 16px rgba(34,230,255,.95),0 0 32px rgba(34,230,255,.55),0 0 56px rgba(34,230,255,.25);
+}
+.cpb-sub{
+  font:700 7.5px/1 'IBM Plex Mono',monospace;
+  letter-spacing:.22em;color:rgba(34,230,255,.55);
+}
+.cpb-corner{position:absolute;width:10px;height:10px;}
+.cpb-tl{top:0;left:0;border-top:2px solid #22e6ff;border-left:2px solid #22e6ff;}
+.cpb-tr{top:0;right:0;border-top:2px solid #22e6ff;border-right:2px solid #22e6ff;}
+.cpb-bl{bottom:0;left:0;border-bottom:2px solid rgba(160,92,255,.8);border-left:2px solid rgba(160,92,255,.8);}
+.cpb-br{bottom:0;right:0;border-bottom:2px solid rgba(160,92,255,.8);border-right:2px solid rgba(160,92,255,.8);}
 
 /* Hero stage glow orb */
 .hero-stage::before{
@@ -20281,17 +20388,9 @@ function consume(){
   const mag=Math.hypot(dx,dy);
   if(mag<=ctl.deadZone)return;
 
-  /* Mirror inputMove() speed formula: meta upgrades + run-card stacks + overdrive.
-     The old ctl system omitted this, making the character feel slow after upgrades. */
-  const metaSpd=Math.min(
-    BALANCE.fixes.metaSpeedCap,
-    (Save.data.upgrades.speed||0)*BALANCE.fixes.metaSpeedPerLevel
-  );
-  const stacks=(Game.runUpgrades&&Game.runUpgrades.speed)||0;
-  const softCap=BALANCE.player.runUpgrade.speedStackSoftCap;
-  const runSpd=Math.min(stacks,softCap)*BALANCE.player.runUpgrade.speedPerStack
-    +Math.max(0,stacks-softCap)*BALANCE.player.runUpgrade.postCapSpeed;
-  const boost=(1+runSpd+metaSpd)*((Game.powers&&Game.powers.overdrive>0)?1.35:1);
+  /* Player speed sabit — level/upgrade progression hareketi etkilemez.
+     Sadece overdrive power-up aktifken 1.35x. */
+  const boost=(Game.powers&&Game.powers.overdrive>0)?1.35:1;
 
   let mx=dx*boost*ctl.gain;
   let my=dy*boost*ctl.gain;
@@ -21546,4 +21645,80 @@ document.addEventListener("click",function(e){
 },true);
 window.nvxApplyLang=applyLangOnBoot;
 })();
+</script>
+
+<script>
+/* ── NORYVX BOOT INTRO ── */
+(function(){
+  var el=document.getElementById('nvx-intro');
+  var bar=document.getElementById('nvi-bar-fill');
+  var pct=document.getElementById('nvi-pct');
+  var status=document.getElementById('nvi-status');
+  var flash=document.getElementById('nvi-flash');
+  var clock=document.getElementById('nvi-clock');
+  var coords=document.getElementById('nvi-coords');
+  var canvas=document.getElementById('nvx-intro-canvas');
+  var ctx=canvas?canvas.getContext('2d'):null;
+  if(!el)return;
+  var drops=[],CHARS='01アイウカタNORYVX◈◆▲⬡SECTOR';
+  function initCanvas(){
+    if(!ctx)return;
+    canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+    var cols=Math.ceil(canvas.width/14);drops=[];
+    for(var i=0;i<cols;i++){drops.push({x:i*14,y:Math.random()*-canvas.height,speed:20+Math.random()*50,len:4+Math.floor(Math.random()*8),timer:0,interval:.1+Math.random()*.15,chars:Array.from({length:12},function(){return CHARS[Math.floor(Math.random()*CHARS.length)];})});}
+  }
+  var lastT=0;
+  function rainFrame(ts){
+    if(!ctx||!el.parentNode)return;
+    var dt=Math.min((ts-lastT)/1000,.05);lastT=ts;
+    ctx.fillStyle='rgba(0,0,0,.18)';ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.font='11px monospace';
+    drops.forEach(function(d){
+      d.timer+=dt;
+      if(d.timer>d.interval){d.timer=0;d.chars.pop();d.chars.unshift(CHARS[Math.floor(Math.random()*CHARS.length)]);}
+      d.y+=d.speed*dt;
+      if(d.y>canvas.height+d.len*14){d.y=-d.len*14;d.speed=20+Math.random()*50;}
+      for(var j=0;j<d.len;j++){var cy=d.y-j*14;if(cy<-14||cy>canvas.height)continue;ctx.fillStyle='rgba(34,230,255,'+((1-j/d.len)*.28)+')';ctx.fillText(d.chars[j]||'0',d.x,cy);}
+    });
+    requestAnimationFrame(rainFrame);
+  }
+  initCanvas();window.addEventListener('resize',initCanvas);requestAnimationFrame(rainFrame);
+  function updateHUD(){
+    var now=new Date();
+    if(clock)clock.textContent=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');
+    if(coords)coords.textContent='X:'+String(Math.floor(Math.random()*9999)).padStart(4,'0')+' Y:'+String(Math.floor(Math.random()*9999)).padStart(4,'0');
+  }
+  var hudInt=setInterval(updateHUD,200);updateHUD();
+  var msgs=['BAŞLATILIYOR...','SEKTÖR 01 YÜKLENIYOR...','DÜŞMAN VERİTABANI...','SİLAH SİSTEMLERİ...','VANGUARD PROTOKOLü...','HAZIR.'];
+  var msgIdx=0,DURATION=3800,start=performance.now();
+  function tick(now){
+    var p=Math.min((now-start)/DURATION,1);
+    var eased=p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2;
+    var pr=Math.floor(eased*100);
+    if(bar)bar.style.width=pr+'%';
+    if(pct)pct.textContent=pr+'%';
+    var mi=Math.min(Math.floor(eased*msgs.length),msgs.length-1);
+    if(mi!==msgIdx){msgIdx=mi;if(status)status.textContent=msgs[msgIdx];}
+    if(p<1){requestAnimationFrame(tick);}else{endIntro();}
+  }
+  requestAnimationFrame(tick);
+  el.addEventListener('click',endIntro,{once:true});
+  var ended=false;
+  function endIntro(){
+    if(ended)return;ended=true;
+    clearInterval(hudInt);
+    if(bar)bar.style.width='100%';
+    if(pct)pct.textContent='100%';
+    if(status)status.textContent='HAZIR.';
+    if(flash)flash.classList.add('on');
+    setTimeout(function(){
+      if(flash)flash.classList.remove('on');
+      el.classList.add('nvi-out');
+      setTimeout(function(){
+        if(el.parentNode)el.parentNode.removeChild(el);
+      },750);
+    },120);
+  }
+})();
+
 </script>
