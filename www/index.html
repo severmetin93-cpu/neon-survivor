@@ -22932,6 +22932,7 @@ var MissionsDB={
       try{if(typeof Save!=='undefined'&&Save.data){Save.data.coins=(Save.data.coins||0)+tpl.rewardCoins;Save.save();}}catch(e){}
       try{if(tpl.rewardNeon&&window.PROG&&window.PROG.state){window.PROG.state.neon=(window.PROG.state.neon||0)+tpl.rewardNeon;if(window.PROG.persist)window.PROG.persist();}}catch(e){}
     }
+    this.checkAchievements();
     this.save();
     return{ok:true};
   },
@@ -22952,6 +22953,7 @@ var MissionsDB={
       }}catch(e){}
       try{if(tpl.rewardNeon&&window.PROG&&window.PROG.state){window.PROG.state.neon=(window.PROG.state.neon||0)+tpl.rewardNeon;if(window.PROG.persist)window.PROG.persist();}}catch(e){}
     }
+    this.checkAchievements();
     this.save();
     return{ok:true};
   },
