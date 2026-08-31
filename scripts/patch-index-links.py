@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Inject Day1 CSS + Day2 JS links into www/index.html if missing."""
+"""Inject Day1–3 CSS/JS links into www/index.html if missing."""
 from pathlib import Path
 
 INDEX = Path("www/index.html")
@@ -9,37 +9,44 @@ if not INDEX.exists():
 html = INDEX.read_text(encoding="utf-8", errors="replace")
 changed = False
 
-CSS = '<link href="css/nvx2-menu-polish.css" rel="stylesheet"/>'
-JS = '<script src="js/ms7-day2-fixes.js" defer></script>'
+LINKS = [
+    ("nvx2-menu-polish.css", '<link href="css/nvx2-menu-polish.css" rel="stylesheet"/>'),
+    ("noryvx-shop-day3.css", '<link href="css/noryvx-shop-day3.css" rel="stylesheet"/>'),
+]
 
-if "nvx2-menu-polish.css" not in html:
-    if 'rel="manifest"' in html:
-        html = html.replace(
-            '<link href="manifest.json" rel="manifest"/>',
-            '<link href="manifest.json" rel="manifest"/>\n' + CSS,
-            1,
-        )
-        if "nvx2-menu-polish.css" not in html:
-            html = html.replace("</head>", CSS + "\n</head>", 1)
-    else:
-        html = html.replace("</head>", CSS + "\n</head>", 1)
-    changed = True
-    print("injected CSS link")
-else:
-    print("CSS already present")
+SCRIPTS = [
+    ("ms7-day2-fixes.js", '<script src="js/ms7-day2-fixes.js" defer></script>'),
+    ("noryvx-day3-shop.js", '<script src="js/noryvx-day3-shop.js" defer></script>'),
+]
 
-if "ms7-day2-fixes.js" not in html:
-    if "</body>" in html:
-        html = html.replace("</body>", JS + "\n</body>", 1)
+for key, tag in LINKS:
+    if key not in html:
+        if 'rel="manifest"' in html and key == "nvx2-menu-polish.css":
+            html = html.replace(
+                '<link href="manifest.json" rel="manifest"/>',
+                '<link href="manifest.json" rel="manifest"/>\n' + tag,
+                1,
+            )
+        if key not in html:
+            html = html.replace("</head>", tag + "\n</head>", 1)
+        changed = True
+        print("injected", key)
     else:
-        html += "\n" + JS + "\n"
-    changed = True
-    print("injected JS link")
-else:
-    print("JS already present")
+        print("ok", key)
+
+for key, tag in SCRIPTS:
+    if key not in html:
+        if "</body>" in html:
+            html = html.replace("</body>", tag + "\n</body>", 1)
+        else:
+            html += "\n" + tag + "\n"
+        changed = True
+        print("injected", key)
+    else:
+        print("ok", key)
 
 if changed:
     INDEX.write_text(html, encoding="utf-8")
-    print("wrote", INDEX, "size", INDEX.stat().st_size)
+    print("wrote", INDEX.stat().st_size)
 else:
     print("no changes")

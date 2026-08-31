@@ -1,0 +1,61 @@
+/* NORYVX Day 3 — Shop / Cosmetics / Inventory visual polish */
+#scr-shop, #scr-cosm {
+  background:
+    radial-gradient(100% 60% at 50% 0%, rgba(34, 230, 255, 0.1), transparent 55%),
+    rgba(2, 6, 17, 0.96) !important;
+}
+
+#scr-shop .tutorial-title,
+#scr-cosm .tutorial-title {
+  letter-spacing: 0.2em;
+  text-shadow: 0 0 18px rgba(34, 230, 255, 0.45);
+}
+
+.shop-card, .cosm-card {
+  border-radius: 12px !important;
+  border: 1px solid rgba(34, 230, 255, 0.2) !important;
+  background: linear-gradient(180deg, rgba(12, 20, 42, 0.95), rgba(6, 12, 28, 0.92)) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.shop-card:active, .cosm-card:active {
+  transform: scale(0.98);
+  border-color: rgba(34, 230, 255, 0.55) !important;
+}
+
+.shop-section-lbl, .ms3-cat-hdr, .cosm-tabs {
+  letter-spacing: 0.16em;
+}
+
+#nvx-inv-panel {
+  margin: 12px 16px 8px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(34, 230, 255, 0.22);
+  background: linear-gradient(180deg, rgba(10, 18, 40, 0.95), rgba(4, 10, 24, 0.92));
+}
+
+#nvx-inv-panel h3 {
+  margin: 0 0 8px;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: #22e6ff;
+  text-transform: uppercase;
+}
+
+#nvx-inv-panel .inv-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(34, 230, 255, 0.08);
+  font-size: 12px;
+  color: #c8e0ff;
+}
+
+#nvx-inv-panel .inv-row:last-child { border-bottom: 0; }
+#nvx-inv-panel .inv-empty {
+  color: rgba(200, 224, 255, 0.45);
+  font-size: 11px;
+  padding: 6px 0;
+}

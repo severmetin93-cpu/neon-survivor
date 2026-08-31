@@ -1,7 +1,5 @@
-/* NORYVX — cache adi HER BUILD'DE degismeli. */
-/* V25.1.3 — HOTFIX: remove full-HTML inject (caused black screen on Android WebView).
-   index.html already has CSS/JS links from patch-index-links workflow. */
-const CACHE = "neon-survivor-v25-1-3";
+/* NORYVX V25.1.4 — Day3 assets in cache, no HTML body rewrite */
+const CACHE = "neon-survivor-v25-1-4";
 
 const ASSETS = [
   "./",
@@ -14,7 +12,9 @@ const ASSETS = [
   "./assets/atlas-items.png",
   "./assets/neon-noryvx-icon.svg",
   "./css/nvx2-menu-polish.css",
-  "./js/ms7-day2-fixes.js"
+  "./css/noryvx-shop-day3.css",
+  "./js/ms7-day2-fixes.js",
+  "./js/noryvx-day3-shop.js"
 ];
 
 self.addEventListener("install", event => {
