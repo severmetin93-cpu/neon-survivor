@@ -1,0 +1,218 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+<defs>
+  <linearGradient id="split" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#18e7ff"/>
+    <stop offset=".5" stop-color="#e9fbff"/>
+    <stop offset="1" stop-color="#ff2aa8"/>
+  </linearGradient>
+
+  <linearGradient id="cyan" x1="0" y1="0" x2="1" y2="1">
+    <stop stop-color="#00f0ff"/>
+    <stop offset="1" stop-color="#168cff"/>
+  </linearGradient>
+
+  <linearGradient id="pink" x1="0" y1="0" x2="1" y2="1">
+    <stop stop-color="#ff54c8"/>
+    <stop offset="1" stop-color="#ff087d"/>
+  </linearGradient>
+
+  <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+    <feGaussianBlur stdDeviation="9" result="b"/>
+    <feMerge>
+      <feMergeNode in="b"/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+
+  <filter id="soft" x="-50%" y="-50%" width="200%" height="200%">
+    <feGaussianBlur stdDeviation="18"/>
+  </filter>
+</defs>
+
+<!-- Background -->
+<rect width="1024" height="1024" rx="140" fill="#01040b"/>
+
+<!-- Atmospheric glow -->
+<circle cx="512" cy="430" r="300"
+        fill="#0a1c2d"
+        opacity=".42"
+        filter="url(#soft)"/>
+
+<!-- HUD ring -->
+<g fill="none" stroke-linecap="round" filter="url(#glow)">
+  <path d="M166 495 A346 346 0 0 1 512 149"
+        stroke="#19eaff" stroke-width="15"/>
+
+  <path d="M512 149 A346 346 0 0 1 858 495"
+        stroke="#ff2aa8" stroke-width="15"/>
+
+  <path d="M166 545 A346 346 0 0 0 512 891"
+        stroke="#19eaff"
+        stroke-width="10"
+        opacity=".75"/>
+
+  <path d="M512 891 A346 346 0 0 0 858 545"
+        stroke="#ff2aa8"
+        stroke-width="10"
+        opacity=".75"/>
+
+  <path d="M151 505H258M766 505H873M512 87V190"
+        stroke="url(#split)"
+        stroke-width="13"/>
+</g>
+
+<!-- Targeting ticks -->
+<g stroke="url(#split)"
+   stroke-width="9"
+   stroke-linecap="round">
+  <path d="M264 281l-34-34M760 281l34-34"/>
+  <path d="M263 729l-34 34M761 729l34 34"/>
+</g>
+
+<!-- Helmet -->
+<path d="
+M337 360
+Q355 244 512 210
+Q669 244 687 360
+L710 585
+Q680 745 512 805
+Q344 745 314 585Z"
+fill="#06111d"
+stroke="url(#split)"
+stroke-width="12"
+filter="url(#glow)"/>
+
+<!-- Crown armor -->
+<g fill="#081522"
+   stroke="url(#split)"
+   stroke-width="10"
+   stroke-linejoin="round">
+
+  <path d="M400 300L445 246H579L624 300L598 377L512 405L426 377Z"/>
+
+  <path d="M363 339L411 300L440 387L395 454L350 420Z"/>
+
+  <path d="M661 339L613 300L584 387L629 454L674 420Z"/>
+</g>
+
+<!-- Center seam -->
+<path d="M512 246V770"
+      stroke="#7edfff"
+      stroke-width="3"
+      opacity=".42"/>
+
+<!-- Left facial armor -->
+<g fill="#07131f"
+   stroke="#18e7ff"
+   stroke-width="11"
+   stroke-linejoin="round"
+   filter="url(#glow)">
+
+  <path d="M350 423L421 377L494 424L463 503L385 530L345 492Z"/>
+
+  <path d="M394 530L463 503L492 552L445 607L377 579Z"/>
+
+  <path d="M377 579L445 607L458 690L402 668L365 610Z"/>
+</g>
+
+<!-- Right facial armor -->
+<g fill="#10101d"
+   stroke="#ff2aa8"
+   stroke-width="11"
+   stroke-linejoin="round"
+   filter="url(#glow)">
+
+  <path d="M674 423L603 377L530 424L561 503L639 530L679 492Z"/>
+
+  <path d="M630 530L561 503L532 552L579 607L647 579Z"/>
+
+  <path d="M647 579L579 607L566 690L622 668L659 610Z"/>
+</g>
+
+<!-- Eyes -->
+<path d="M366 438L422 417L476 447L440 489L385 480Z"
+      fill="#bdfcff"
+      stroke="#18e7ff"
+      stroke-width="9"
+      filter="url(#glow)"/>
+
+<path d="M658 438L602 417L548 447L584 489L639 480Z"
+      fill="#ffc1e8"
+      stroke="#ff2aa8"
+      stroke-width="9"
+      filter="url(#glow)"/>
+
+<!-- Lower respirator -->
+<g fill="#07111c"
+   stroke="url(#split)"
+   stroke-width="10"
+   filter="url(#glow)">
+
+  <path d="M441 536L512 559L583 536L604 612L567 720L512 756L457 720L420 612Z"/>
+
+  <path d="M458 620L512 639L566 620L552 681L512 708L472 681Z"/>
+</g>
+
+<!-- Side respirators -->
+<g fill="#08111b"
+   stroke="url(#split)"
+   stroke-width="11"
+   filter="url(#glow)">
+
+  <circle cx="360" cy="620" r="69"/>
+  <circle cx="664" cy="620" r="69"/>
+</g>
+
+<g fill="none"
+   stroke="url(#split)"
+   filter="url(#glow)">
+
+  <circle cx="360" cy="620" r="42" stroke-width="9"/>
+  <circle cx="664" cy="620" r="42" stroke-width="9"/>
+
+  <circle cx="360" cy="620" r="17" stroke-width="7"/>
+  <circle cx="664" cy="620" r="17" stroke-width="7"/>
+</g>
+
+<!-- NEON -->
+<text x="512"
+      y="850"
+      text-anchor="middle"
+      font-family="Arial Black,Arial,sans-serif"
+      font-size="128"
+      font-weight="900"
+      letter-spacing="7"
+      fill="url(#split)"
+      stroke="#06101a"
+      stroke-width="3"
+      paint-order="stroke"
+      filter="url(#glow)">
+  NEON
+</text>
+
+<!-- NORYVX -->
+<text x="512"
+      y="924"
+      text-anchor="middle"
+      font-family="Arial,Helvetica,sans-serif"
+      font-size="54"
+      font-weight="800"
+      letter-spacing="18"
+      fill="#f6f8ff">
+  NORY<tspan fill="#18e7ff">V</tspan><tspan fill="#ff2aa8">X</tspan>
+</text>
+
+<!-- Bottom emblem -->
+<g fill="none"
+   stroke="url(#split)"
+   stroke-linejoin="round"
+   filter="url(#glow)">
+
+  <path d="M470 956L512 1000L554 956L512 976Z"
+        stroke-width="10"/>
+
+  <path d="M493 957L512 978L531 957"
+        stroke-width="5"/>
+</g>
+
+</svg>
