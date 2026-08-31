@@ -1,129 +1,180 @@
-/* NORYVX Shop — professional layout + scroll fix */
+/* NORYVX Pro Shop — layout + scroll (WebView-safe heights) */
 
-/* Root screen: column flex, no page-level scroll (pane scrolls) */
 #scr-shop.screen,
 #scr-shop.screen.on {
   display: flex !important;
   flex-direction: column !important;
-  align-items: stretch !important;
-  justify-content: flex-start !important;
   padding: 0 !important;
-  overflow: hidden !important;
+  margin: 0 !important;
+  width: 100% !important;
   height: 100% !important;
-  max-height: 100% !important;
+  max-height: 100dvh !important;
+  overflow: hidden !important;
   background:
-    radial-gradient(90% 50% at 50% 0%, rgba(34, 230, 255, 0.1), transparent 55%),
-    linear-gradient(180deg, #020c1e 0%, #030918 55%, #020611 100%) !important;
-  touch-action: manipulation;
+    radial-gradient(120% 55% at 50% -5%, rgba(34, 230, 255, 0.16), transparent 55%),
+    radial-gradient(80% 40% at 100% 100%, rgba(160, 92, 255, 0.1), transparent 50%),
+    #020812 !important;
 }
 
 #shop-hdr {
-  flex-shrink: 0 !important;
+  flex: 0 0 auto !important;
   display: flex !important;
   align-items: center !important;
   gap: 12px !important;
-  padding: calc(env(safe-area-inset-top, 0px) + 14px) 16px 12px !important;
-  background: linear-gradient(180deg, rgba(2, 12, 30, 0.98), rgba(2, 9, 20, 0.92)) !important;
-  border-bottom: 1px solid rgba(34, 230, 255, 0.12);
-  z-index: 2;
+  padding: calc(env(safe-area-inset-top, 0px) + 12px) 14px 10px !important;
+  background: rgba(2, 10, 24, 0.96) !important;
+  border-bottom: 1px solid rgba(34, 230, 255, 0.14) !important;
+  z-index: 5 !important;
 }
 
 #shop-hdr-lbl {
-  font-size: 18px !important;
+  font-size: 17px !important;
   font-weight: 800 !important;
-  letter-spacing: 0.2em !important;
-  color: #22e6ff !important;
-  text-shadow: 0 0 18px rgba(34, 230, 255, 0.45) !important;
+  letter-spacing: 0.22em !important;
+  color: #7af0ff !important;
+  text-shadow: 0 0 20px rgba(34, 230, 255, 0.55) !important;
 }
 
 #pg-shop-cur.shop-cur-line {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
   font-size: 11px !important;
-  letter-spacing: 0.06em !important;
-  color: rgba(168, 220, 255, 0.75) !important;
+  color: #a8d4ff !important;
   font-family: "IBM Plex Mono", monospace !important;
 }
 
 .shop-back-btn {
-  width: 40px !important;
-  height: 40px !important;
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px !important;
   border-radius: 12px !important;
-  background: rgba(34, 230, 255, 0.08) !important;
-  border: 1px solid rgba(34, 230, 255, 0.22) !important;
+  background: rgba(34, 230, 255, 0.1) !important;
+  border: 1px solid rgba(34, 230, 255, 0.28) !important;
   color: #22e6ff !important;
-  font-size: 22px !important;
+  font-size: 24px !important;
 }
 
 #shop-tabs {
-  flex-shrink: 0 !important;
+  flex: 0 0 auto !important;
   display: flex !important;
   gap: 8px !important;
-  padding: 10px 16px !important;
-  background: rgba(2, 9, 20, 0.85) !important;
-  z-index: 2;
+  padding: 10px 14px !important;
+  background: rgba(2, 8, 20, 0.92) !important;
+  z-index: 5 !important;
 }
 
-#shop-tabs .s-tab,
-#shop-tabs .shop-tab {
+#shop-tabs .s-tab {
   flex: 1 !important;
-  min-height: 44px !important;
-  padding: 8px 4px !important;
-  border-radius: 12px !important;
-  background: rgba(8, 16, 36, 0.9) !important;
-  border: 1px solid rgba(34, 230, 255, 0.14) !important;
-  color: rgba(168, 200, 255, 0.5) !important;
-  font-size: 10px !important;
+  min-height: 48px !important;
+  border-radius: 14px !important;
+  background: rgba(10, 18, 40, 0.95) !important;
+  border: 1px solid rgba(34, 230, 255, 0.16) !important;
+  color: rgba(170, 200, 255, 0.55) !important;
   font-weight: 800 !important;
-  letter-spacing: 0.12em !important;
+  letter-spacing: 0.1em !important;
 }
 
-#shop-tabs .s-tab.on,
-#shop-tabs .shop-tab.on {
-  background: rgba(34, 230, 255, 0.12) !important;
-  border-color: rgba(34, 230, 255, 0.45) !important;
-  color: #22e6ff !important;
-  box-shadow: 0 0 16px rgba(34, 230, 255, 0.18) !important;
+#shop-tabs .s-tab.on {
+  background: linear-gradient(180deg, rgba(34, 230, 255, 0.18), rgba(34, 230, 255, 0.06)) !important;
+  border-color: rgba(34, 230, 255, 0.55) !important;
+  color: #e8fbff !important;
+  box-shadow: 0 0 18px rgba(34, 230, 255, 0.2) !important;
 }
 
-/* Scroll region */
+/* THE scroll surface — fixed calc height, always scrollable */
 #shop-panes {
   flex: 1 1 auto !important;
-  min-height: 0 !important;
-  overflow: hidden !important;
-  display: flex !important;
-  flex-direction: column !important;
   position: relative !important;
-  -webkit-overflow-scrolling: touch;
+  min-height: 0 !important;
+  height: auto !important;
+  overflow: hidden !important;
+  display: block !important;
 }
 
 #shop-panes .s-pane {
   display: none !important;
-  flex-direction: column !important;
-  gap: 10px !important;
-  padding: 12px 16px calc(env(safe-area-inset-bottom, 0px) + 28px) !important;
-  box-sizing: border-box !important;
+  position: absolute !important;
+  inset: 0 !important;
+  overflow-y: scroll !important;
   overflow-x: hidden !important;
-  overflow-y: auto !important;
-  overscroll-behavior: contain !important;
   -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior-y: contain !important;
   touch-action: pan-y !important;
-  max-height: 100% !important;
+  padding: 12px 14px calc(env(safe-area-inset-bottom, 0px) + 36px) !important;
+  box-sizing: border-box !important;
 }
 
 #shop-panes .s-pane.on {
-  display: flex !important;
-  flex: 1 1 auto !important;
-  min-height: 0 !important;
+  display: block !important;
 }
 
-/* Cards */
+/* Featured free gift */
+.nvx-shop-hero {
+  margin-bottom: 14px;
+  padding: 16px;
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg, rgba(255, 200, 40, 0.22), rgba(255, 80, 160, 0.12) 50%, rgba(34, 230, 255, 0.08)),
+    rgba(12, 14, 28, 0.95);
+  border: 1.5px solid rgba(255, 212, 40, 0.45);
+  box-shadow: 0 0 28px rgba(255, 200, 40, 0.15), 0 8px 24px rgba(0, 0, 0, 0.35);
+  position: relative;
+  overflow: hidden;
+}
+.nvx-shop-hero::after {
+  content: "ÖNE ÇIKAN";
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  color: #041018;
+  background: linear-gradient(90deg, #ffd428, #ff9a3c);
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+.nvx-shop-hero-title {
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: #fff6d0;
+  margin-bottom: 4px;
+}
+.nvx-shop-hero-desc {
+  font-size: 12px;
+  color: rgba(255, 240, 200, 0.75);
+  margin-bottom: 12px;
+}
+.nvx-shop-hero-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  color: #1a1000;
+  background: linear-gradient(135deg, #ffe566, #ffb020);
+  border: none;
+  box-shadow: 0 4px 16px rgba(255, 180, 40, 0.35);
+}
+.nvx-shop-hero-cta.off {
+  opacity: 0.45;
+  filter: grayscale(0.4);
+}
+
 .shop-section-lbl {
-  font-size: 10px !important;
+  margin: 16px 2px 10px !important;
+  font-size: 11px !important;
   font-weight: 900 !important;
   letter-spacing: 0.2em !important;
-  color: rgba(136, 200, 255, 0.45) !important;
-  padding: 4px 2px 8px !important;
-  border-bottom: 1px solid rgba(34, 230, 255, 0.1) !important;
-  margin-bottom: 2px !important;
+  color: rgba(140, 210, 255, 0.55) !important;
+  border-bottom: 1px solid rgba(34, 230, 255, 0.12) !important;
+  padding-bottom: 8px !important;
 }
 
 .shop-card {
@@ -131,104 +182,81 @@
   align-items: center !important;
   gap: 12px !important;
   width: 100% !important;
+  margin-bottom: 10px !important;
   padding: 14px !important;
-  border-radius: 14px !important;
-  background: linear-gradient(145deg, rgba(12, 22, 48, 0.98), rgba(4, 10, 24, 0.96)) !important;
-  border: 1px solid rgba(34, 230, 255, 0.18) !important;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35) !important;
+  border-radius: 16px !important;
+  background: linear-gradient(160deg, rgba(14, 24, 52, 0.98), rgba(6, 12, 28, 0.96)) !important;
+  border: 1px solid rgba(34, 230, 255, 0.2) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35) !important;
   text-align: left !important;
 }
-
-.shop-card:active {
-  border-color: rgba(34, 230, 255, 0.5) !important;
-  transform: scale(0.985);
-}
-
-.shop-card.free-card {
-  border-color: rgba(255, 212, 40, 0.35) !important;
-  background: linear-gradient(145deg, rgba(36, 28, 6, 0.98), rgba(16, 12, 2, 0.96)) !important;
-}
-
 .shop-card-ico {
-  width: 44px !important;
-  height: 44px !important;
-  border-radius: 12px !important;
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 14px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   font-size: 22px !important;
   flex-shrink: 0 !important;
 }
-
+.shop-card-info {
+  flex: 1 !important;
+  min-width: 0 !important;
+}
 .shop-card-name {
   font-size: 13px !important;
   font-weight: 800 !important;
-  letter-spacing: 0.06em !important;
-  color: #eaf4ff !important;
+  color: #eef6ff !important;
+  letter-spacing: 0.05em !important;
 }
-
 .shop-card-desc {
   font-size: 11px !important;
-  color: rgba(180, 210, 255, 0.55) !important;
-  margin-top: 2px !important;
+  color: rgba(170, 200, 255, 0.55) !important;
+  margin-top: 3px !important;
 }
-
 .shop-card-price {
-  margin-left: auto !important;
   flex-shrink: 0 !important;
+  min-height: 40px !important;
+  min-width: 64px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   padding: 8px 12px !important;
-  border-radius: 10px !important;
+  border-radius: 12px !important;
   font-size: 11px !important;
   font-weight: 900 !important;
-  letter-spacing: 0.04em !important;
 }
 
 #nvx-inv-panel {
-  flex-shrink: 0;
-  margin: 0 0 8px;
-  padding: 12px 14px;
-  border-radius: 14px;
+  margin: 0 0 14px;
+  padding: 14px;
+  border-radius: 16px;
   border: 1px solid rgba(34, 230, 255, 0.22);
-  background: linear-gradient(180deg, rgba(10, 18, 40, 0.98), rgba(4, 10, 24, 0.95));
+  background: rgba(8, 16, 36, 0.95);
 }
-
 #nvx-inv-panel h3 {
-  margin: 0 0 8px;
+  margin: 0 0 10px;
   font-size: 10px;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.22em;
   color: #22e6ff;
-  text-transform: uppercase;
 }
-
-#nvx-inv-panel .inv-row {
+#nvx-inv-panel .inv-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+#nvx-inv-panel .inv-chip {
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(34, 230, 255, 0.06);
+  border: 1px solid rgba(34, 230, 255, 0.12);
   display: flex;
   justify-content: space-between;
-  padding: 7px 0;
-  border-bottom: 1px solid rgba(34, 230, 255, 0.08);
   font-size: 12px;
-  color: #d0e4ff;
-}
-
-#nvx-inv-panel .inv-row:last-child {
-  border-bottom: 0;
+  color: #d0e8ff;
 }
 
 #pg-shop-msg {
-  flex-shrink: 0;
-  min-height: 0;
-  padding: 0 16px 8px;
-  font-size: 11px;
-  text-align: center;
-}
-
-/* Cosmetics screen scroll too */
-#scr-cosm.screen,
-#scr-cosm.screen.on {
-  overflow-y: auto !important;
-  -webkit-overflow-scrolling: touch !important;
-  touch-action: pan-y !important;
-  align-items: stretch !important;
-  justify-content: flex-start !important;
-  padding: calc(env(safe-area-inset-top, 0px) + 16px) 16px
-    calc(env(safe-area-inset-bottom, 0px) + 24px) !important;
+  display: none;
 }
