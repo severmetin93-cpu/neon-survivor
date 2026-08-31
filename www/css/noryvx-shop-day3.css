@@ -1,43 +1,200 @@
-/* NORYVX Day 3 — Shop / Cosmetics / Inventory visual polish */
-#scr-shop, #scr-cosm {
+/* NORYVX Shop — professional layout + scroll fix */
+
+/* Root screen: column flex, no page-level scroll (pane scrolls) */
+#scr-shop.screen,
+#scr-shop.screen.on {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  height: 100% !important;
+  max-height: 100% !important;
   background:
-    radial-gradient(100% 60% at 50% 0%, rgba(34, 230, 255, 0.1), transparent 55%),
-    rgba(2, 6, 17, 0.96) !important;
+    radial-gradient(90% 50% at 50% 0%, rgba(34, 230, 255, 0.1), transparent 55%),
+    linear-gradient(180deg, #020c1e 0%, #030918 55%, #020611 100%) !important;
+  touch-action: manipulation;
 }
 
-#scr-shop .tutorial-title,
-#scr-cosm .tutorial-title {
-  letter-spacing: 0.2em;
-  text-shadow: 0 0 18px rgba(34, 230, 255, 0.45);
+#shop-hdr {
+  flex-shrink: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: calc(env(safe-area-inset-top, 0px) + 14px) 16px 12px !important;
+  background: linear-gradient(180deg, rgba(2, 12, 30, 0.98), rgba(2, 9, 20, 0.92)) !important;
+  border-bottom: 1px solid rgba(34, 230, 255, 0.12);
+  z-index: 2;
 }
 
-.shop-card, .cosm-card {
+#shop-hdr-lbl {
+  font-size: 18px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.2em !important;
+  color: #22e6ff !important;
+  text-shadow: 0 0 18px rgba(34, 230, 255, 0.45) !important;
+}
+
+#pg-shop-cur.shop-cur-line {
+  font-size: 11px !important;
+  letter-spacing: 0.06em !important;
+  color: rgba(168, 220, 255, 0.75) !important;
+  font-family: "IBM Plex Mono", monospace !important;
+}
+
+.shop-back-btn {
+  width: 40px !important;
+  height: 40px !important;
   border-radius: 12px !important;
-  border: 1px solid rgba(34, 230, 255, 0.2) !important;
-  background: linear-gradient(180deg, rgba(12, 20, 42, 0.95), rgba(6, 12, 28, 0.92)) !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  background: rgba(34, 230, 255, 0.08) !important;
+  border: 1px solid rgba(34, 230, 255, 0.22) !important;
+  color: #22e6ff !important;
+  font-size: 22px !important;
 }
 
-.shop-card:active, .cosm-card:active {
-  transform: scale(0.98);
-  border-color: rgba(34, 230, 255, 0.55) !important;
+#shop-tabs {
+  flex-shrink: 0 !important;
+  display: flex !important;
+  gap: 8px !important;
+  padding: 10px 16px !important;
+  background: rgba(2, 9, 20, 0.85) !important;
+  z-index: 2;
 }
 
-.shop-section-lbl, .ms3-cat-hdr, .cosm-tabs {
-  letter-spacing: 0.16em;
+#shop-tabs .s-tab,
+#shop-tabs .shop-tab {
+  flex: 1 !important;
+  min-height: 44px !important;
+  padding: 8px 4px !important;
+  border-radius: 12px !important;
+  background: rgba(8, 16, 36, 0.9) !important;
+  border: 1px solid rgba(34, 230, 255, 0.14) !important;
+  color: rgba(168, 200, 255, 0.5) !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.12em !important;
+}
+
+#shop-tabs .s-tab.on,
+#shop-tabs .shop-tab.on {
+  background: rgba(34, 230, 255, 0.12) !important;
+  border-color: rgba(34, 230, 255, 0.45) !important;
+  color: #22e6ff !important;
+  box-shadow: 0 0 16px rgba(34, 230, 255, 0.18) !important;
+}
+
+/* Scroll region */
+#shop-panes {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  position: relative !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+#shop-panes .s-pane {
+  display: none !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+  padding: 12px 16px calc(env(safe-area-inset-bottom, 0px) + 28px) !important;
+  box-sizing: border-box !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-y !important;
+  max-height: 100% !important;
+}
+
+#shop-panes .s-pane.on {
+  display: flex !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+}
+
+/* Cards */
+.shop-section-lbl {
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.2em !important;
+  color: rgba(136, 200, 255, 0.45) !important;
+  padding: 4px 2px 8px !important;
+  border-bottom: 1px solid rgba(34, 230, 255, 0.1) !important;
+  margin-bottom: 2px !important;
+}
+
+.shop-card {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  width: 100% !important;
+  padding: 14px !important;
+  border-radius: 14px !important;
+  background: linear-gradient(145deg, rgba(12, 22, 48, 0.98), rgba(4, 10, 24, 0.96)) !important;
+  border: 1px solid rgba(34, 230, 255, 0.18) !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35) !important;
+  text-align: left !important;
+}
+
+.shop-card:active {
+  border-color: rgba(34, 230, 255, 0.5) !important;
+  transform: scale(0.985);
+}
+
+.shop-card.free-card {
+  border-color: rgba(255, 212, 40, 0.35) !important;
+  background: linear-gradient(145deg, rgba(36, 28, 6, 0.98), rgba(16, 12, 2, 0.96)) !important;
+}
+
+.shop-card-ico {
+  width: 44px !important;
+  height: 44px !important;
+  border-radius: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 22px !important;
+  flex-shrink: 0 !important;
+}
+
+.shop-card-name {
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.06em !important;
+  color: #eaf4ff !important;
+}
+
+.shop-card-desc {
+  font-size: 11px !important;
+  color: rgba(180, 210, 255, 0.55) !important;
+  margin-top: 2px !important;
+}
+
+.shop-card-price {
+  margin-left: auto !important;
+  flex-shrink: 0 !important;
+  padding: 8px 12px !important;
+  border-radius: 10px !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.04em !important;
 }
 
 #nvx-inv-panel {
-  margin: 12px 16px 8px;
+  flex-shrink: 0;
+  margin: 0 0 8px;
   padding: 12px 14px;
-  border-radius: 12px;
+  border-radius: 14px;
   border: 1px solid rgba(34, 230, 255, 0.22);
-  background: linear-gradient(180deg, rgba(10, 18, 40, 0.95), rgba(4, 10, 24, 0.92));
+  background: linear-gradient(180deg, rgba(10, 18, 40, 0.98), rgba(4, 10, 24, 0.95));
 }
 
 #nvx-inv-panel h3 {
   margin: 0 0 8px;
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 0.2em;
   color: #22e6ff;
   text-transform: uppercase;
@@ -46,16 +203,32 @@
 #nvx-inv-panel .inv-row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 8px 0;
+  padding: 7px 0;
   border-bottom: 1px solid rgba(34, 230, 255, 0.08);
   font-size: 12px;
-  color: #c8e0ff;
+  color: #d0e4ff;
 }
 
-#nvx-inv-panel .inv-row:last-child { border-bottom: 0; }
-#nvx-inv-panel .inv-empty {
-  color: rgba(200, 224, 255, 0.45);
+#nvx-inv-panel .inv-row:last-child {
+  border-bottom: 0;
+}
+
+#pg-shop-msg {
+  flex-shrink: 0;
+  min-height: 0;
+  padding: 0 16px 8px;
   font-size: 11px;
-  padding: 6px 0;
+  text-align: center;
+}
+
+/* Cosmetics screen scroll too */
+#scr-cosm.screen,
+#scr-cosm.screen.on {
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-y !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  padding: calc(env(safe-area-inset-top, 0px) + 16px) 16px
+    calc(env(safe-area-inset-bottom, 0px) + 24px) !important;
 }
