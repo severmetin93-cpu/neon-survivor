@@ -8213,9 +8213,11 @@ const Game={
           legendary : Math.max(0,((window.PROG&&window.PROG.state&&window.PROG.state.counters&&window.PROG.state.counters.legendary)||0)-(window._ms7LegendarySnap||0)),
           enhance   : Math.max(0,((window.PROG&&window.PROG.state&&window.PROG.state.counters&&window.PROG.state.counters.enhance)||0)-(window._ms7EnhanceSnap||0)),
           nodeath   : !(player&&player.hp<=0),
-          coinsEarned : Math.max(1,Math.floor((Math.round(this.score))/12)),
-          gemsEarned  : (this.runBossKills>0?this.runBossKills:0),
-          neonEarned  : Math.max(1,Math.floor(Math.max(1,Math.floor((Math.round(this.score))/12))/2)),
+          coinsEarned     : Math.max(1,Math.floor((Math.round(this.score))/12)),
+          gemsEarned      : (this.runBossKills>0?this.runBossKills:0),
+          neonEarned      : Math.max(1,Math.floor(Math.max(1,Math.floor((Math.round(this.score))/12))/2)),
+          masteryXpGained : window._lastRunP3XP||0,
+          sectorsCompleted: 1,
         });
       }
     }catch(_e){}
@@ -11791,8 +11793,28 @@ function resumeGame(){
 
 function quitGame(){
   try{if(window.NVXAnalytics)NVXAnalytics.log("run_end",{score:Math.round((typeof Game!=="undefined"&&Game.score)||0),duration_sec:Math.round((typeof Game!=="undefined"&&Game.time)||0),wave:(typeof Game!=="undefined"&&Game.wave)||1,reason:"quit"});}catch(_){}
+  try{
+    if(window.MissionsDB&&window.MissionsDB.data){
+      var _wep=localStorage.getItem("noryvx_selected_weapon")||"pulse";
+      MissionsDB.onRunEnd({
+        score           : Math.round((typeof Game!=="undefined"&&Game.score)||0),
+        time            : (typeof Game!=="undefined"&&Game.time)||0,
+        kills           : (window.Telemetry&&window.Telemetry.kills)||0,
+        elites          : (typeof Game!=="undefined"&&Game.runElites)||0,
+        bosses          : (typeof Game!=="undefined"&&Game.runBossKills)||0,
+        energy          : (typeof Game!=="undefined"&&Game.energy)||0,
+        combo           : (typeof Game!=="undefined"&&Game.maxCombo)||1,
+        wave            : (typeof Game!=="undefined"&&Game.wave)||1,
+        weapon          : _wep,
+        legendary       : Math.max(0,((window.PROG&&window.PROG.state&&window.PROG.state.counters&&window.PROG.state.counters.legendary)||0)-(window._ms7LegendarySnap||0)),
+        enhance         : Math.max(0,((window.PROG&&window.PROG.state&&window.PROG.state.counters&&window.PROG.state.counters.enhance)||0)-(window._ms7EnhanceSnap||0)),
+        nodeath         : false,
+        masteryXpGained : window._lastRunP3XP||0,
+        sectorsCompleted: 0,
+      });
+    }
+  }catch(_e){}
   toMenu();
-
 }
 
 function showOver(record){
