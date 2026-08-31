@@ -1524,6 +1524,147 @@ button:disabled{opacity:.38 !important;filter:saturate(.35);pointer-events:none}
   font-size:10px;line-height:1.6;color:var(--ink-2)}
 .pg-iap b{color:var(--note)}
 </style>
+<style id="noryvx-shop-ux-v1">
+/* =========================================================
+   NORYVX MAĞAZA UX İYİLEŞTİRMELERİ (1-8)
+========================================================= */
+/* --- 7: YAKINDA BANNER (tekil, üstte) --- */
+.shop-yakinda-bar{
+  width:min(430px,93vw);margin:0 0 8px;
+  padding:8px 12px;border-radius:var(--r-sm);
+  background:rgba(160,92,255,.10);border:1px solid rgba(160,92,255,.28);
+  font-size:10px;font-weight:700;letter-spacing:.06em;
+  color:var(--secondary);text-align:center;
+}
+/* --- 1: SEKMELER (MARKET / PREMIUM) --- */
+.shop-tabs{
+  display:flex;gap:6px;width:min(430px,93vw);margin-bottom:8px;
+}
+.shop-tab{
+  flex:1;min-height:36px;border-radius:var(--r-sm);
+  border:1px solid var(--line);
+  background:rgba(34,230,255,.04);
+  color:var(--ink-3);font-weight:800;font-size:10px;letter-spacing:.12em;
+  cursor:pointer;transition:border-color var(--t-fast),background var(--t-fast),color var(--t-fast);
+}
+.shop-tab.on{
+  border-color:var(--primary);background:rgba(34,230,255,.10);color:var(--primary);
+  box-shadow:0 0 12px rgba(34,230,255,.16);
+}
+.shop-tab-pane{display:none}
+.shop-tab-pane.on{display:flex;flex-direction:column;gap:7px;
+  max-height:54vh;overflow-y:auto;padding:2px;overscroll-behavior:contain}
+/* --- 3: PARA BİRİMİ İKON RENKLERİ --- */
+.cur-cr{color:#ffd24d}
+.cur-sh{color:#9fd8ff}
+.cur-ne{color:#d69bff}
+.cur-ge{color:#ff4fd8}
+/* Topbar ikonları da renklensin */
+.tb-c.cr{color:#ffd24d}
+.tb-c.sh{color:#9fd8ff}
+.tb-c.ne{color:#d69bff}
+.tb-c.ge{color:#ff4fd8}
+/* --- 4: ROZET AYRIMI (nadirlik vs para birimi) --- */
+.shop-badge{
+  display:inline-block;padding:1px 5px;border-radius:3px;
+  font-size:8px;font-weight:800;letter-spacing:.09em;vertical-align:middle;
+}
+.shop-badge.cur{
+  background:rgba(34,230,255,.06);border:1px solid rgba(34,230,255,.16);
+  color:var(--ink-3);border-radius:3px;
+}
+.shop-badge.rare{
+  background:linear-gradient(135deg,rgba(72,255,155,.14),rgba(72,255,155,.04));
+  border:1px solid rgba(72,255,155,.42);color:#48ff9b;
+  box-shadow:0 0 6px rgba(72,255,155,.10);border-radius:5px;
+}
+.shop-badge.epic{
+  background:linear-gradient(135deg,rgba(160,92,255,.18),rgba(160,92,255,.06));
+  border:1px solid rgba(160,92,255,.45);color:#c9a8ff;
+  box-shadow:0 0 6px rgba(160,92,255,.12);border-radius:5px;
+}
+.shop-badge.legendary{
+  background:linear-gradient(135deg,rgba(255,227,77,.18),rgba(255,150,0,.06));
+  border:1px solid rgba(255,227,77,.50);color:#ffe34d;
+  box-shadow:0 0 8px rgba(255,227,77,.14);border-radius:5px;
+}
+.shop-badge.mythic{
+  background:linear-gradient(135deg,rgba(255,79,216,.20),rgba(34,230,255,.08));
+  border:1px solid rgba(255,79,216,.50);color:#ff4fd8;
+  box-shadow:0 0 10px rgba(255,79,216,.18);border-radius:5px;
+  animation:mythicShimmer 2s ease-in-out infinite;
+}
+@keyframes mythicShimmer{50%{box-shadow:0 0 18px rgba(255,79,216,.35);}}
+/* --- 2: KİLİT GÖSTERGESİ --- */
+.shop-lock-note{
+  display:block;margin-top:3px;font-size:8.5px;color:var(--ink-3);
+  letter-spacing:.04em;
+}
+/* --- 8: SATIN AL / AL etiketi --- */
+.shop-buy-label{
+  display:block;font-size:7.5px;font-weight:800;letter-spacing:.14em;
+  color:var(--ink-3);text-transform:uppercase;margin-bottom:1px;
+}
+/* --- 5: GEM PAKETLERİ (PREMIUM sekme) --- */
+.shop-gem-card{
+  text-align:left;padding:11px 13px;border-radius:var(--r-md);
+  border:1px solid rgba(255,79,216,.22);
+  background:linear-gradient(180deg,rgba(20,6,32,.96),rgba(5,1,10,.96));
+  color:var(--ink);display:grid;
+  grid-template-columns:1fr auto;
+  grid-template-areas:"n p" "d p" "u u";
+  gap:2px 10px;align-items:center;
+}
+.shop-gem-n{grid-area:n;font-size:12px;font-weight:800;letter-spacing:.08em;color:#ff4fd8}
+.shop-gem-d{grid-area:d;font-size:10px;color:var(--ink-3)}
+.shop-gem-u{grid-area:u;font-size:8.5px;color:var(--ink-3);margin-top:5px;
+  padding-top:5px;border-top:1px solid rgba(255,255,255,.06)}
+.shop-gem-p{grid-area:p;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.shop-gem-price{font-size:11px;font-weight:900;color:#ff4fd8;white-space:nowrap}
+.shop-gem-btn{
+  padding:5px 10px;border-radius:var(--r-sm);font-size:8.5px;font-weight:800;
+  letter-spacing:.10em;border:1px solid rgba(255,79,216,.32);
+  background:rgba(255,79,216,.08);color:#ff4fd8;
+  cursor:not-allowed;opacity:.72;white-space:nowrap;
+}
+/* --- IAP card (reklam kaldırma) --- */
+.shop-iap-card{
+  text-align:left;padding:11px 13px;border-radius:var(--r-md);
+  border:1px solid rgba(255,227,77,.20);
+  background:linear-gradient(180deg,rgba(18,14,2,.96),rgba(5,4,1,.96));
+  color:var(--ink);display:grid;
+  grid-template-columns:1fr auto;
+  grid-template-areas:"n p" "d p";
+  gap:2px 10px;align-items:center;
+}
+.shop-iap-n{grid-area:n;font-size:12px;font-weight:800;letter-spacing:.08em}
+.shop-iap-d{grid-area:d;font-size:10px;color:var(--ink-3)}
+.shop-iap-p{grid-area:p;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.shop-iap-price{font-size:11px;font-weight:900;color:var(--elite);white-space:nowrap}
+.shop-iap-btn{
+  padding:5px 10px;border-radius:var(--r-sm);font-size:8.5px;font-weight:800;
+  letter-spacing:.10em;border:1px solid rgba(255,227,77,.32);
+  background:rgba(255,227,77,.07);color:var(--elite);
+  cursor:not-allowed;opacity:.72;white-space:nowrap;
+}
+/* --- 6: KOZMETİK YÖNLENDİRME --- */
+.shop-cosm-redirect{
+  padding:12px 14px;border-radius:var(--r-md);
+  border:1px dashed rgba(34,230,255,.20);
+  background:rgba(8,16,36,.65);
+  display:flex;flex-direction:column;gap:8px;
+}
+.shop-cosm-tip{
+  margin:0;font-size:10px;color:var(--ink-2);line-height:1.5;
+}
+.shop-cosm-btn{
+  font-size:9.5px;padding:8px 14px;min-height:36px;
+}
+/* birim fiyat etiketi */
+.gem-unit-price{
+  font-size:8px;color:var(--ink-3);letter-spacing:.04em;margin-top:1px;
+}
+</style>
 <style id="noryvx-tech-css">
 /* TEKNOLOJI AGACI + USTALIK */
 .tech-wrap{width:min(430px,93vw);display:flex;flex-direction:column;gap:12px;
@@ -1738,6 +1879,31 @@ button:disabled{opacity:.38 !important;filter:saturate(.35);pointer-events:none}
 .cosm-p{font-size:11.5px;font-weight:900;color:var(--elite);white-space:nowrap}
 .cosm-note{font-size:9.5px;line-height:1.65;color:var(--ink-3);padding:8px 10px;
   border-radius:var(--r-sm);border:1px dashed rgba(72,255,155,.28);background:rgba(4,20,12,.4)}
+.cosm-tabs{display:flex;gap:6px;width:min(430px,93vw);margin-bottom:6px}
+.cosm-tab{flex:1;padding:8px 0;border-radius:var(--r-sm);border:1px solid var(--line);
+  background:rgba(8,13,28,.85);color:var(--ink-3);font:800 10px 'IBM Plex Mono';
+  letter-spacing:.12em;cursor:pointer}
+.cosm-tab.on{border-color:var(--primary);color:var(--primary);background:rgba(34,230,255,.08)}
+.cosm-iap-card{position:relative;overflow:hidden}
+.cosm-premium-badge{position:absolute;top:5px;right:5px;font-size:7.5px;font-weight:900;
+  letter-spacing:.1em;color:#ffd24d;background:rgba(255,210,77,.12);
+  border:1px solid rgba(255,210,77,.38);border-radius:3px;padding:1px 4px;pointer-events:none}
+.cosm-iap-price{font-size:10px;font-weight:800;color:var(--elite);display:block;margin-top:1px}
+.cosm-iap-badge{font-size:7.5px;font-weight:900;letter-spacing:.1em;padding:2px 5px;
+  border-radius:3px;white-space:nowrap;display:inline-block;margin-top:3px}
+.cosm-iap-badge.popular{background:rgba(255,107,138,.18);color:#ff9db2;
+  border:1px solid rgba(255,107,138,.38)}
+.cosm-iap-badge.value{background:rgba(34,230,255,.12);color:var(--primary);
+  border:1px solid rgba(34,230,255,.28)}
+.cosm-bundle-orbs{display:flex;gap:6px;align-items:center}
+.pg-iap-section{display:flex;flex-direction:column;gap:6px;margin-top:10px;
+  width:min(430px,93vw)}
+.pg-iap-section-title{font-size:9.5px;font-weight:900;letter-spacing:.16em;
+  color:var(--ink-3);padding:3px 2px 5px;border-bottom:1px solid var(--line)}
+.pg-iap-restore{margin-top:2px;width:100%;padding:9px;font-size:9.5px;font-weight:700;
+  letter-spacing:.1em;border:1px dashed rgba(234,244,255,.18);border-radius:var(--r-sm);
+  background:transparent;color:var(--ink-3);cursor:pointer}
+.pg-iap-restore:active{opacity:.7}
 .evo-pick{display:flex;gap:5px;overflow-x:auto;padding-bottom:5px;scrollbar-width:none}
 .evo-pick::-webkit-scrollbar{display:none}
 .evo-chip{--rc:#9fb3cc;flex:0 0 auto;font-size:10px;font-weight:800;padding:7px 10px;
@@ -2661,6 +2827,7 @@ window.addEventListener("unhandledrejection",function(){});
 <span class="tb-c cr">◎ <b id="tb-cr">0</b></span>
 <span class="tb-c sh">◆ <b id="tb-sh">0</b></span>
 <span class="tb-c ne">✦ <b id="tb-ne">0</b></span>
+<span class="tb-c ge">💎 <b id="tb-ge">0</b></span>
 </div>
 </div>
 <div id="bottomnav">
@@ -2949,7 +3116,7 @@ body.ls #scr-menu .nvx-mnav{margin-top:auto}
 .nvx2-play:active { transform:scale(0.97); }
 
 /* Cards */
-#nvx2-cards { flex-shrink:0; display:flex; gap:8px; margin:0 16px 8px; }
+#nvx2-cards { flex-shrink:0; display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin:0 16px 8px; }
 .nvx2-card {
   flex:1; padding:10px 4px 8px;
   background:rgba(8,14,30,0.82); border:1px solid rgba(34,230,255,0.18);
@@ -3052,6 +3219,7 @@ body.ls #scr-menu .nvx-mnav{margin-top:auto}
     <button class="nvx2-card" id="b-rpgchar"><span class="nvx2-card-ico">&#9876;</span>HERO<small>KOMUTANINI Y&Ouml;NET</small></button>
     <button class="nvx2-card" id="b-phase3"><span class="nvx2-card-ico">&#11042;</span>DEVELOP<small>GEL&#304;&#350;T&#304;R &amp; Y&Uuml;KSELT</small></button>
     <button class="nvx2-card" id="b-settings"><span class="nvx2-card-ico">&#9881;</span>SYSTEM<small>AYARLAR &amp; D&#304;&#286;ER</small></button>
+    <button class="nvx2-card" id="b-hub-store" onclick="document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('on')});var _sc=document.getElementById('scr-shop');if(_sc)_sc.classList.add('on');try{if(window.renderShop)window.renderShop();}catch(e){}"><span class="nvx2-card-ico">&#9672;</span>MA&#286;AZA<small>KOZMET&#304;K &amp; GEM</small></button>
   </div>
 
   <!-- Mission + Season row -->
@@ -3406,11 +3574,32 @@ requestAnimationFrame(frame);
 <div class="ms3-list" id="pg-mission-list"></div>
 </div>
 <div class="screen" id="scr-shop">
-<div class="tutorial-title">MAĞAZA</div>
-<div class="tag" id="pg-shop-cur">◎ 0   ◆ 0   ✦ 0</div>
-<div class="pg-list" id="pg-shop-list"></div>
-<div class="pg-msg" id="pg-shop-msg"></div>
-<button class="btn ghost" id="b-shop-back">Geri</button>
+  <div id="shop-hdr">
+    <button id="b-shop-back" class="shop-back-btn">&#8249;</button>
+    <div id="shop-hdr-center">
+      <div id="shop-hdr-lbl">MA&#286;AZA</div>
+      <div id="pg-shop-cur" class="shop-cur-line">&#9678; 0 &nbsp; &#9670; 0 &nbsp; &#10022; 0 &nbsp; &#128142; 0</div>
+    </div>
+    <div class="shop-hdr-gem-ico">&#9672;</div>
+  </div>
+  <div id="shop-tabs">
+    <button class="s-tab shop-tab on" data-stab="ingame"><span class="s-tab-i">&#9876;</span><span class="s-tab-t">MARKET</span></button>
+    <button class="s-tab" data-stab="gems"><span class="s-tab-i">&#128142;</span><span class="s-tab-t">GEM</span></button>
+    <button class="s-tab" data-stab="premium"><span class="s-tab-i">&#10022;</span><span class="s-tab-t">PREM&#304;UM</span></button>
+  </div>
+  <div id="shop-panes">
+    <div class="s-pane on" id="spane-ingame">
+      <div id="pg-shop-list"></div>
+      <div class="rpg-detail" id="shop-info-box"></div>
+    </div>
+    <div class="s-pane" id="spane-gems">
+      <div id="pg-iap-section"></div>
+    </div>
+    <div class="s-pane" id="spane-premium">
+      <div id="pg-premium-section"></div>
+    </div>
+  </div>
+  <div id="pg-shop-msg"></div>
 </div>
 <div class="screen nvx-ref-screen" id="scr-tech">
 <div class="nvx-screen-head"><button id="b-tech-back">‹</button><span>SKILL MATRIX</span><b id="noryvx-skill-points">◆ 0 PTS</b></div>
@@ -3474,7 +3663,12 @@ requestAnimationFrame(frame);
 <div class="screen" id="scr-cosm">
 <div class="tutorial-title">KOZMETİK</div>
 <div class="tag" id="cosm-cur">◎ 0   ◆ 0   ✦ 0</div>
-<div class="cosm-wrap" id="cosm-body"></div>
+<div class="cosm-tabs">
+<button class="cosm-tab on" data-ct="neon">NEON</button>
+<button class="cosm-tab" data-ct="premium">PREMIUM</button>
+</div>
+<div class="cosm-wrap" id="cosm-neon-body"></div>
+<div class="cosm-wrap" id="cosm-premium-body" style="display:none"></div>
 <div class="pg-msg" id="cosm-msg"></div>
 <button class="btn ghost" id="b-cosm-back">Geri</button>
 </div>
@@ -4386,7 +4580,7 @@ const KEY="neon_survivor_v3";
 /* BATCH B/2 — save sema surumu.
    Eski kayitlarda bu alan YOKTUR; onlar surum 1 sayilir.
    KEY degismedi: mevcut neon_survivor_v3 kayitlari aynen okunur. */
-const SCHEMA_VERSION=3;
+const SCHEMA_VERSION=4;
 
 const DEFAULTS={
   schemaVersion:SCHEMA_VERSION,
@@ -4406,6 +4600,16 @@ const DEFAULTS={
   coins:0,
   gems:0,
   lang:"tr",
+  iap:{
+    removeAdsPurchased:false,
+    purchasedProductIds:[],
+    gems:0,
+    battlePassSeason:null,
+    battlePassActive:false,
+    battlePassExpiry:null,
+    battlePassXP:0,
+    battlePassLevel:0
+  },
   selectedHero:"vanguard",
   upgrades:{speed:0,magnet:0,shield:0,score:0},
   selectedSkin:"cyan",
@@ -4433,7 +4637,7 @@ function cloneDefaults(){
   const out={};
   for(const k in DEFAULTS){
     const v=DEFAULTS[k];
-    out[k]=(v&&typeof v==="object")?Object.assign({},v):v;
+    out[k]=Array.isArray(v)?v.slice():(v&&typeof v==="object")?Object.assign({},v):v;
   }
   return out;
 }
@@ -4497,7 +4701,15 @@ function migrateSave(raw){
   }
 
   /* v2 -> v3: missions & achievements sistemi eklendi (noryvx_missions_v1).
-     O key kendi init'ini hallediyor; burada ek veri gocü gerekmez. */
+     O key kendi init'ini hallediyor; burada ek veri göçü gerekmez. */
+
+  /* v3 -> v4: IAP altyapisi eklendi. Save.data.gems (taslak, genellikle 0)
+     iap.gems'e tasinir; gems alani sifirlanir (deprecated). */
+  if(from<=3){
+    const legacyGems=Math.max(0,isFinite(+raw.gems)?+raw.gems:0);
+    if(legacyGems>0) out.iap.gems=(out.iap.gems||0)+legacyGems;
+    out.gems=0;
+  }
 
   out.ownedSkins.cyan=true;
   if(!out.selectedSkin)out.selectedSkin=DEFAULTS.selectedSkin;
@@ -7979,6 +8191,7 @@ const Game={
     Save.data.bossKills += this.runBossKills;
 
     Save.save();
+    try{if(window.NVXAnalytics)NVXAnalytics.log("run_end",{score:Math.round(this.score),duration_sec:Math.round(this.time||0),wave:this.wave||1,reason:"died"});}catch(_){}
 
     /* Phase 7 — Missions & Achievements progress */
     try{
@@ -11079,6 +11292,7 @@ function closeUpgrades(){
 function buyUpgrade(type){
   const ok=Progression.buy(type);
   if(ok){
+    try{if(window.NVXAnalytics)NVXAnalytics.log("item_purchased",{item_id:type,source:"upgrade_screen"});}catch(_){}
     Audio_.power();
     vibrate([12,25,12]);
   }else{
@@ -11309,6 +11523,7 @@ chooseRunPerk=function(type){
 const p2BaseGameStart=Game.start.bind(Game);
 Game.start=function(){
   p2BaseGameStart();
+  try{if(window.NVXAnalytics)NVXAnalytics.log("run_start",{hero:(typeof Save!=="undefined"&&Save.data&&Save.data.selectedHero)||"vanguard"});}catch(_){}
   p2ResetBuild();
   /* Starting PULSE is part of the base build, but remains COMMON until upgraded. */
   p2RefreshRarity("pulse");
@@ -11453,6 +11668,7 @@ function renderLevelChoices(){
 function openLevelUp(){
   if(Game.state!==STATE.PLAYING)return;
   Game.state=STATE.LEVELUP;
+  try{if(window.NVXAnalytics)NVXAnalytics.log("level_up",{level:Game.level||1,score:Math.round(Game.score||0),wave:Game.wave||1});}catch(_){}
   inputUp();
   const runNext=Game.nextRunXP===Infinity?"MAX":Game.nextRunXP;
   $("levelup-sub").textContent="Seviye "+Game.level+" · Run XP "+Math.floor(Game.runXP)+" / "+runNext;
@@ -11571,7 +11787,7 @@ function resumeGame(){
 }
 
 function quitGame(){
-
+  try{if(window.NVXAnalytics)NVXAnalytics.log("run_end",{score:Math.round((typeof Game!=="undefined"&&Game.score)||0),duration_sec:Math.round((typeof Game!=="undefined"&&Game.time)||0),wave:(typeof Game!=="undefined"&&Game.wave)||1,reason:"quit"});}catch(_){}
   toMenu();
 
 }
@@ -13643,6 +13859,7 @@ function claim(mid){
   RPG.state.shards +=m.sh;
   P.neon+=m.ne;
   RPG.persist();persist();
+  try{if(window.NVXAnalytics)NVXAnalytics.log("mission_completed",{mission_id:String(mid),credits:m.cr||0,shards:m.sh||0,neon:m.ne||0});}catch(_){}
   return true;
 }
 
@@ -13671,6 +13888,7 @@ function buy(bid){
     msg=RPG.DEFMAP[it.d].n+" · "+RPG.RARITY[it.r].label;
   }
   RPG.persist();persist();
+  try{if(window.NVXAnalytics)NVXAnalytics.log("item_purchased",{item_id:String(bid),item_type:o.kind||"unknown",source:"shop"});}catch(_){}
   return {ok:true,msg:msg};
 }
 function rollTier(bonus,min){
@@ -13834,30 +14052,172 @@ function renderMissions(){
 
 function renderShop(){
   var g=$$("pg-shop-list");if(!g)return;
-  setCur("pg-shop-cur");
+
+  /* Currency header */
+  var gems=0;try{gems=(Save.data.iap&&Save.data.iap.gems)||0;}catch(e){}
+  var curEl=$$("pg-shop-cur");
+  if(curEl)curEl.textContent=currencyLine()+"   \uD83D\uDC8E "+gems;
+
+  /* ── GÜNLÜK pane ── */
   var free=freeReady();
   var left=Math.max(0,P.freeAt-Date.now());
   var hrs=Math.floor(left/3600000),mins=Math.floor(left%3600000/60000);
-  var shopHtml=
-    '<button class="pg-shop free'+(free?"":" off")+'" data-free="1">'+
-      '<span class="pg-shop-n">GÜNLÜK ÜCRETSİZ</span>'+
-      '<span class="pg-shop-d">+650 kredi · +5 shard</span>'+
-      '<span class="pg-shop-p">'+(free?"AL":hrs+"s "+mins+"dk")+'</span>'+
+
+  var ITEM_META={
+    comp: {ico:'◈',col:'#88c8ff',bg:'rgba(34,200,255,0.09)',lbl:'SHARD',  bc:'cur',  lockTip:''},
+    comp2:{ico:'◈',col:'#22e6ff',bg:'rgba(34,230,255,0.11)',lbl:'SHARD',  bc:'cur',  lockTip:'◎ 5.600 kredi gerekli'},
+    box1: {ico:'⬡',col:'#22e6ff',bg:'rgba(34,230,255,0.09)',lbl:'NADİR', bc:'rare', lockTip:'◎ 1.800 kredi gerekli'},
+    box2: {ico:'◆',col:'#a05cff',bg:'rgba(160,92,255,0.11)',lbl:'EPİK',  bc:'epic', lockTip:'◎ 6.200 kredi gerekli'},
+    box3: {ico:'⬡',col:'#ffc830',bg:'rgba(255,200,48,0.10)',lbl:'EFSANE',bc:'legendary',lockTip:'✦ 60 neon gerekli'},
+    box4: {ico:'✦',col:'#ff4fd8',bg:'rgba(255,79,216,0.10)',lbl:'MİTİK', bc:'mythic',   lockTip:'✦ 180 neon gerekli'}
+  };
+
+  var ingameHtml='<div class="shop-section-lbl">GÜNLÜK ÖDÜL</div>'+
+    '<button class="shop-card free-card'+(free?'':' off')+'" data-free="1">'+
+      '<div class="shop-card-ico" style="background:rgba(255,212,40,0.1);color:#ffd428;font-size:26px">🎁</div>'+
+      '<div class="shop-card-info">'+
+        '<div class="shop-card-name">GÜNLÜK ÜCRETSİZ</div>'+
+        '<div class="shop-card-desc">+650 kredi · +5 shard</div>'+
+        (free?'':'<div class="shop-timer">⏱ '+hrs+'s '+mins+'dk</div>')+
+      '</div>'+
+      (free?'<div class="shop-card-price" style="color:#ffd428;border:1px solid rgba(255,212,40,0.4);background:rgba(255,212,40,0.1)">AL</div>':'<div class="shop-card-price shop-price-wait">BEKLİYOR</div>')+
     '</button>';
+
+  var CHEST_INFO={
+    box1:{name:'STANDART SANDIK',guarantee:'1 parça · NADİR garanti',
+      types:'SİLAH · BAŞLIK · ZIRH · ELDİVEN · BOT · ÇEKİRDEK · MODÜL · AKSESUAR',
+      rates:[{r:'NADİR',c:'#3ba7ff',pct:'54%',w:54},{r:'EPİK',c:'#b45cff',pct:'29%',w:29},
+             {r:'EFSANEVİ',c:'#ffb020',pct:'13%',w:13},{r:'MİTİK',c:'#ff3ce0',pct:'4%',w:4}]},
+    box2:{name:'GELİŞMİŞ SANDIK',guarantee:'1 parça · EPİK garanti',
+      types:'SİLAH · BAŞLIK · ZIRH · ELDİVEN · BOT · ÇEKİRDEK · MODÜL · AKSESUAR',
+      rates:[{r:'EPİK',c:'#b45cff',pct:'60%',w:60},{r:'EFSANEVİ',c:'#ffb020',pct:'30%',w:30},
+             {r:'MİTİK',c:'#ff3ce0',pct:'10%',w:10}]},
+    box3:{name:'EFSANE SANDIĞI',guarantee:'1 parça · EFSANEVİ garanti',
+      types:'SİLAH · BAŞLIK · ZIRH · ELDİVEN · BOT · ÇEKİRDEK · MODÜL · AKSESUAR',
+      rates:[{r:'EFSANEVİ',c:'#ffb020',pct:'75%',w:75},{r:'MİTİK',c:'#ff3ce0',pct:'25%',w:25}]},
+    box4:{name:'MİTİK SANDIK',guarantee:'1 parça · MİTİK garanti',
+      types:'SİLAH · BAŞLIK · ZIRH · ELDİVEN · BOT · ÇEKİRDEK · MODÜL · AKSESUAR',
+      rates:[{r:'MİTİK',c:'#ff3ce0',pct:'100%',w:100}]},
+    comp:{name:'KOMPONENT PAKETİ',guarantee:'+25 shard garantili',
+      types:'Ekipman düşmez — yalnızca shard',rates:[]},
+    comp2:{name:'BÜYÜK KOMPONENT',guarantee:'+70 shard garantili',
+      types:'Ekipman düşmez — yalnızca shard',rates:[]}
+  };
+
+  ingameHtml+='<div class="shop-section-lbl" style="margin-top:4px">EKİPMAN MARKETİ</div>';
   SHOP.forEach(function(o){
     var afford=(!o.cr||RPG.state.credits>=o.cr)&&(!o.ne||P.neon>=o.ne);
-    shopHtml+='<button class="pg-shop'+(afford?"":" off")+'" data-buy="'+o.id+'">'+
-      '<span class="pg-shop-n">'+o.n+'</span>'+
-      '<span class="pg-shop-d">'+o.d+'</span>'+
-      '<span class="pg-shop-p">'+(o.cr?'◎'+fmt(o.cr):'')+(o.ne?'✦'+o.ne:'')+'</span>'+
-    '</button>';
+    var m=ITEM_META[o.id]||{ico:'◈',col:'#88c8ff',bg:'rgba(34,230,255,0.08)',lbl:''};
+    var priceStr=(o.cr?'◎'+fmt(o.cr):'')+(o.ne?'  ✦'+o.ne:'');
+    ingameHtml+=
+      '<div class="shop-item-wrap">'+
+      '<button class="shop-card'+(afford?'':' off')+'" data-buy="'+o.id+'">'+
+        '<div class="shop-card-ico" style="background:'+m.bg+';color:'+m.col+'">'+m.ico+'</div>'+
+        '<div class="shop-card-info">'+
+          '<div class="shop-card-name">'+o.n+'</div>'+
+          '<div class="shop-card-desc">'+o.d+'</div>'+
+          (m.lbl?'<span class="shop-badge '+m.bc+'">'+m.lbl+'</span>':'')+
+          (!afford&&m.lockTip?'<span class="shop-lock-note">🔒 '+m.lockTip+'</span>':'')+
+        '</div>'+
+        '<div class="shop-card-price" style="color:'+m.col+';border:1px solid '+m.col+'44;background:'+m.bg+'">'+priceStr+'</div>'+
+      '</button>'+
+      '<button class="shop-info-btn" data-info="'+o.id+'">ⓘ</button>'+
+      '<div class="rpg-detail sip" id="sip-'+o.id+'"></div>'+
+      '</div>';
   });
-  shopHtml+=
-    '<div class="pg-iap">MAĞAZA KÖPRÜSÜ BAĞLI DEĞİL<br>'+
-      'Google Play Billing / StoreKit yapılandırması bu ortamda yok. '+
-      'Gerçek para ile satın alma <b>bilerek devre dışı</b>; sahte "satın alma başarılı" '+
-      'sonucu döndürülmüyor. NEON şu an boss ve görev ödüllerinden kazanılır.</div>';
-  g.innerHTML=shopHtml;
+  g.innerHTML=ingameHtml;
+
+  /* ⓘ bilgi kutusu — kartın hemen altında açılır */
+  function _buildSipHtml(info){
+    var topColor=info.rates.length?info.rates[info.rates.length-1].c:'#22e6ff';
+    var rHtml='';
+    if(info.rates.length){
+      rHtml='<div style="font-size:9px;font-weight:900;letter-spacing:.14em;color:var(--ink-3);margin:6px 0 4px">DÜŞME ORANLARI</div>'+
+        '<div class="shop-info-rates">'+
+        info.rates.map(function(rt){
+          return '<div class="shop-info-rate-row">'+
+            '<div class="shop-info-rate-bar" style="width:'+Math.max(rt.w*1.8,18)+'px;background:'+rt.c+'"></div>'+
+            '<span style="color:'+rt.c+';font-weight:800;font-size:10px">'+rt.pct+'</span>'+
+            '<span style="color:var(--ink-2);font-size:10px">'+rt.r+'</span>'+
+          '</div>';
+        }).join('')+
+        '</div>';
+    }
+    return {color:topColor,html:
+      '<div class="rpg-d-head"><b>'+info.name+'</b><span>'+info.guarantee+'</span></div>'+
+      rHtml+
+      '<div class="rpg-d-note" style="margin-top:4px">'+
+        '<b style="color:var(--ink-3);font-size:9px;letter-spacing:.12em">EKİPMAN TÜRLERİ</b><br>'+
+        '<span style="color:var(--ink-2);font-size:10px">'+info.types+'</span>'+
+      '</div>'};
+  }
+  g.querySelectorAll('.shop-info-btn').forEach(function(btn){
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();
+      var id=btn.dataset.info;
+      var info=CHEST_INFO[id];
+      var panel=document.getElementById('sip-'+id);
+      if(!info||!panel){return;}
+      if(panel.classList.contains('on')){
+        panel.classList.remove('on');return;
+      }
+      /* diğer açık panelleri kapat */
+      g.querySelectorAll('.sip.on').forEach(function(p){p.classList.remove('on');});
+      var built=_buildSipHtml(info);
+      panel.style.setProperty('--rc',built.color);
+      panel.innerHTML=built.html;
+      panel.classList.add('on');
+      setTimeout(function(){panel.scrollIntoView({behavior:'smooth',block:'nearest'});},50);
+    });
+  });
+
+  /* ── GEM pane ── */
+  var iapSec=$$("pg-iap-section");
+  if(iapSec){
+    var GEM_PACKS=[
+      {id:"gems_small", n:"KÜÇÜK PAKET", gems:100, bonus:"",    bonusAmt:0,   price:"₺34,99", priceNum:34.99, badge:""},
+      {id:"gems_medium",n:"ORTA PAKET",  gems:300, bonus:"+30", bonusAmt:30,  price:"₺89,99", priceNum:89.99, badge:"popular"},
+      {id:"gems_large", n:"BÜYÜK PAKET", gems:700, bonus:"+105",bonusAmt:105, price:"₺159,99",priceNum:159.99,badge:""},
+      {id:"gems_mega",  n:"MEGA PAKET",  gems:1500,bonus:"+500",bonusAmt:500, price:"₺299,99",priceNum:299.99,badge:"value"}
+    ];
+    var gemHtml='<div class="shop-section-lbl">GEM PAKETLERİ</div><div class="gem-grid">';
+    GEM_PACKS.forEach(function(pk){
+      var totalGems=pk.gems+pk.bonusAmt;
+      var unitPrice=(pk.priceNum/totalGems*100).toFixed(2).replace('.',',');
+      gemHtml+=
+        '<button class="gem-card '+pk.badge+'" data-gem-pack="'+pk.id+'" disabled>'+
+          (pk.badge?'<div class="gem-badge '+pk.badge+'">'+(pk.badge==='popular'?'🔥 POPÜLER':'⚡ AVANTAJ')+'</div>':'')+
+          '<div class="gem-ico">💎</div>'+
+          '<div class="gem-amount">'+pk.gems+'</div>'+
+          (pk.bonus?'<div class="gem-bonus">'+pk.bonus+' BONUS</div>':'')+
+          '<div class="gem-name">'+pk.n+'</div>'+
+          '<div class="gem-price">'+pk.price+'</div>'+
+          '<div class="gem-unit-price">₺'+unitPrice+' / 100 gem</div>'+
+          '<div class="gem-soon">YAKINDA</div>'+
+        '</button>';
+    });
+    gemHtml+='</div>';
+    iapSec.innerHTML=gemHtml;
+  }
+
+  /* ── PREMIUM pane ── */
+  var premSec=$$("pg-premium-section");
+  if(premSec){
+    premSec.innerHTML=
+      '<div class="shop-section-lbl">PREMIUM</div>'+
+      '<div class="prem-card">'+
+        '<div class="prem-badge">🚫 REKLAMLARI KALDIR</div>'+
+        '<div class="prem-desc">Interstitial ve banner reklamları tamamen kalkar.<br>Ödüllü reklam kalır — bonus kazanmaya devam et.</div>'+
+        '<button class="prem-price-btn" disabled>₺119,99 · YAKINDA</button>'+
+      '</div>'+
+      '<div class="shop-cosm-redirect">'+
+        '<p class="shop-cosm-tip">Premium Skin\'ler ve kostümler için Kozmetik ekranına göz at.</p>'+
+        '<button class="btn shop-cosm-btn" onclick="(function(){document.querySelectorAll(\'.screen\').forEach(function(s){s.classList.remove(\'on\')});var cs=document.getElementById(\'scr-cosm\');if(cs)cs.classList.add(\'on\');try{if(window.renderCosm)window.renderCosm();}catch(e){}})()">Kozmetik Ekranına Git →</button>'+
+      '</div>'+
+      '<button class="restore-btn" disabled>Satın Alımlarımı Geri Yükle</button>';
+  }
+
+  /* Event listeners */
   var msg=$$("pg-shop-msg");
   g.querySelectorAll("[data-buy]").forEach(function(b){
     b.addEventListener("click",function(){
@@ -13873,6 +14233,25 @@ function renderShop(){
     if(msg){msg.textContent=r.msg;msg.style.color=r.ok?"#48ff9b":"#ff6b8a";}
     renderShop();
   });
+
+  /* Tab switching (bind once per DOM mount) */
+  var tabsEl=$$("shop-tabs");
+  if(tabsEl&&!tabsEl._sb){
+    tabsEl._sb=1;
+    var stabs=tabsEl.querySelectorAll(".s-tab");
+    var spanes=document.querySelectorAll("#shop-panes .s-pane");
+    stabs.forEach(function(t){
+      t.addEventListener("click",function(){
+        stabs.forEach(function(x){x.classList.remove("on");});
+        spanes.forEach(function(p){p.classList.remove("on");});
+        t.classList.add("on");
+        var p=$$("spane-"+t.dataset.stab);
+        if(p)p.classList.add("on");
+        try{if(window.NEONAUDIO)window.NEONAUDIO.SFX.tap();}catch(e){}
+      });
+    });
+  }
+
 }
 
 function updateMenuTag(){
@@ -13909,6 +14288,7 @@ window.PROG.renderShop=renderShop;
 /* Expose closure renderMissions globally so noryvx-missions-fix can delegate to it.
    The closure version has direct access to MISSIONS, P, RPG — no window.PROG indirection. */
 window.renderMissions=renderMissions;
+window.renderShop=renderShop;
 
 }catch(e){
   window._PROG_ERROR=String(e);
@@ -14551,11 +14931,31 @@ function claimAll(){
   return n?{ok:true,msg:n+" ödül alındı"}:{ok:false,msg:"Alınacak ödül yok"};
 }
 const PREMIUM_COST=450;
-function buyPremium(){
+
+/* _activatePremium: her iki yoldan da çağrılabilir ortak aktivasyon mantığı. */
+function _activatePremium(){
+  B.premium=true;persist();
+}
+
+/* buyPremium(via)
+   via = "neon" (varsayılan) → 450 NEON düşer, premium açılır.
+   via = "iap"               → NORYVXIAP.purchaseBP() üzerinden ödeme akışı;
+                               ödeme onaylanırsa _activatePremium() çağrılır.
+   Bu fazda IAP yolu iskelet halinde; gerçek ödeme tetiklenmez. */
+function buyPremium(via){
   if(B.premium)return {ok:false,msg:"Premium zaten açık"};
+
+  if(via==="iap"){
+    if(window.NORYVXIAP&&typeof window.NORYVXIAP.purchaseBP==="function"){
+      return window.NORYVXIAP.purchaseBP();
+    }
+    return {ok:false,msg:"IAP bu yapıda henüz aktif değil — ürünler mağazada oluşturulmadı"};
+  }
+
+  /* NEON yolu — mevcut davranış aynen korundu */
   if(PROG.state.neon<PREMIUM_COST)return {ok:false,msg:"Yetersiz NEON ("+PREMIUM_COST+" gerekir)"};
   PROG.state.neon-=PREMIUM_COST;PROG.persist();
-  B.premium=true;persist();
+  _activatePremium();
   return {ok:true,msg:"PREMIUM TRACK AÇILDI"};
 }
 
@@ -14634,8 +15034,12 @@ function render(){
     '<div class="bp-xp">'+(L.need?L.into+" / "+L.need+" BP XP":"MAKSİMUM KADEME")+'</div>'+
     '<div class="bp-actions">'+
       (B.premium
-        ? '<div class="bp-prem-on">PREMIUM TRACK AKTİF</div>'
-        : '<button class="p3-btn" data-act="prem">PREMIUM AÇ · ✦'+PREMIUM_COST+'</button>')+
+        ? '<div class="bp-prem-on">✓ PREMIUM TRACK AKTİF</div>'
+        : '<div class="bp-prem-btns">'+
+            '<button class="p3-btn" data-act="prem-neon">✦ '+PREMIUM_COST+' NEON ile Aç</button>'+
+            '<button class="p3-btn bp-iap-btn" data-act="prem-iap" disabled title="Yakında">'+
+              '$2.99 — Efsanevi/Epik Parça Garantisi</button>'+
+          '</div>')+
       '<button class="p3-btn" data-act="all">TÜMÜNÜ AL</button>'+
     '</div>'+
     '<div class="bp-cols"><span>KADEME</span><span>ÜCRETSİZ</span><span>PREMIUM</span></div>'+
@@ -14658,7 +15062,10 @@ function render(){
     say(r);if(r.ok){try{Audio_.power();}catch(e){}}render();
   }));
   w.querySelectorAll("[data-act]").forEach(b=>b.addEventListener("click",()=>{
-    const r=b.dataset.act==="prem"?buyPremium():claimAll();
+    let r;
+    if(b.dataset.act==="prem-neon") r=buyPremium("neon");
+    else if(b.dataset.act==="prem-iap") r=buyPremium("iap");
+    else r=claimAll();
     say(r);if(r.ok){try{Audio_.power();}catch(e){}}render();
   }));
   w.querySelectorAll("[data-ad]").forEach(b=>b.addEventListener("click",()=>{
@@ -15554,12 +15961,109 @@ function cur(){
   return "◎ "+fmt(RPG.state.credits)+"   ◆ "+fmt(RPG.state.shards)+"   ✦ "+fmt(PROG.state.neon);
 }
 
+/* IAP (gerçek para) skin tanımları — görsel renk/efekt bilgisi */
+const IAP_SKINS=[
+  {id:"skin_void",    name:"VOID WALKER",     price:"$0.99", outer:"#7a36ff",inner:"#d7b8ff",glow:"#5a10ff",
+   desc:"Koyu mor, yıldız parçacık efekti."},
+  {id:"skin_solar",   name:"SOLAR FLARE",     price:"$0.99", outer:"#ff9b12",inner:"#fff4d8",glow:"#ffb52e",
+   desc:"Turuncu-beyaz alev, güneş halkası."},
+  {id:"skin_cyber",   name:"CYBER GHOST",     price:"$1.99", outer:"#22e6ff",inner:"#e0f8ff",glow:"#0088cc",
+   desc:"Transparan-mavi, hologram titreme."},
+  {id:"skin_crimson", name:"CRIMSON MECH",    price:"$1.99", outer:"#ff2040",inner:"#ffe4e8",glow:"#cc0022",
+   desc:"Kırmızı zırh görünümü, metal parçacık."},
+  {id:"skin_aurora",  name:"AURORA",          price:"$2.99", outer:"#48ff9b",inner:"#e0fff0",glow:"#a05cff",
+   desc:"Yeşil-mor kutupsal aura, animasyonlu."},
+  {id:"skin_phantom", name:"PHANTOM KING",    price:"$4.99", outer:"#ffd24d",inner:"#0a0a14",glow:"#c8840a",
+   desc:"Siyah-altın, hayalet izleme efekti."}
+];
+const IAP_BUNDLE={
+  id:"skin_bundle_starter", name:"BAŞLANGIÇ PAKETİ", price:"$1.49",
+  skins:["skin_void","skin_solar"],
+  desc:"Void Walker + Solar Flare · Ayrı alımdan %25 tasarruf.",
+  badge:"EN İYİ GİRİŞ"
+};
+
+function _cosmOrbSvg(outer,glow,size){
+  size=size||42;
+  return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 '+size+' '+size+'">'
+    +'<circle cx="'+(size/2)+'" cy="'+(size/2)+'" r="'+(size*0.74/2)+'" fill="none" stroke="'+outer+'" stroke-width="2.5" opacity=".5"/>'
+    +'<circle cx="'+(size/2)+'" cy="'+(size/2)+'" r="'+(size*0.42/2)+'" fill="'+outer+'" opacity=".9"/>'
+    +'<circle cx="'+(size*0.36)+'" cy="'+(size*0.36)+'" r="'+(size*0.10/2)+'" fill="#fff" opacity=".6"/>'
+    +'</svg>';
+}
+
+function _iapOwned(id){
+  try{
+    const ids=Save.data.iap.purchasedProductIds||[];
+    return ids.indexOf(id)>-1;
+  }catch(e){return false;}
+}
+
+function renderPremiumSkins(){
+  const w=$$("cosm-premium-body");if(!w)return;
+  const msg=$$("cosm-msg");
+  let sel="";try{sel=Save.data.selectedSkin;}catch(e){}
+
+  /* Bundle card */
+  const bv0=IAP_SKINS.find(x=>x.id===IAP_BUNDLE.skins[0]);
+  const bv1=IAP_SKINS.find(x=>x.id===IAP_BUNDLE.skins[1]);
+  const bundleOwned=_iapOwned(IAP_BUNDLE.id)||(_iapOwned(IAP_BUNDLE.skins[0])&&_iapOwned(IAP_BUNDLE.skins[1]));
+  let bundleHtml='<button class="cosm-card cosm-iap-card" data-iap="'+IAP_BUNDLE.id+'" disabled title="Yakında"'
+    +' style="--co:#ffd24d;--cg:#c8840a;opacity:'+(bundleOwned?1:.9)+'">'
+    +'<span class="cosm-premium-badge">◆ PREMIUM</span>'
+    +'<span class="cosm-orb cosm-bundle-orbs">'
+    +(bv0?_cosmOrbSvg(bv0.outer,bv0.glow,32):"")
+    +(bv1?_cosmOrbSvg(bv1.outer,bv1.glow,32):"")
+    +'</span>'
+    +'<span class="cosm-txt"><b style="color:#ffd24d">'+IAP_BUNDLE.name+'</b>'
+    +'<i>'+IAP_BUNDLE.desc+'</i>'
+    +(bundleOwned?'':'<span class="cosm-iap-badge popular">'+IAP_BUNDLE.badge+'</span>')
+    +'</span>'
+    +'<span class="cosm-p">'+(bundleOwned?"ALINDI":'<span class="cosm-iap-price">'+IAP_BUNDLE.price+'</span>')+'</span>'
+    +'</button>';
+
+  /* Individual skin cards */
+  let cardsHtml=IAP_SKINS.map(sk=>{
+    const owned=_iapOwned(sk.id)||!!Save.data.ownedSkins[sk.id];
+    const on=sel===sk.id;
+    const statusLabel=on?"KUŞANILI":owned?"KUŞAN":'<span class="cosm-iap-price">'+sk.price+'</span>';
+    return '<button class="cosm-card cosm-iap-card'+(on?" on":"")+'" '
+      +(owned?'data-equip="'+sk.id+'"':'data-iap="'+sk.id+'" disabled title="Yakında"')
+      +' style="--co:'+sk.outer+';--cg:'+sk.glow+'">'
+      +'<span class="cosm-premium-badge">◆ PREMIUM</span>'
+      +'<span class="cosm-orb">'+_cosmOrbSvg(sk.outer,sk.glow,42)+'</span>'
+      +'<span class="cosm-txt"><b>'+sk.name+'</b><i>'+sk.desc+'</i></span>'
+      +'<span class="cosm-p">'+statusLabel+'</span>'
+      +'</button>';
+  }).join("");
+
+  w.innerHTML=bundleHtml+cardsHtml
+    +'<div class="cosm-note">IAP görünümleri yalnızca renk ve efekt değiştirir. '
+    +'Hiçbir stat, hasar veya oynanış avantajı vermez. '
+    +'Yakında Google Play üzerinden satın alınabilecek.</div>';
+
+  w.querySelectorAll("[data-equip]").forEach(b=>b.addEventListener("click",()=>{
+    const r=selectSkin(b.dataset.equip);
+    if(msg){msg.textContent=r.msg;msg.style.color=r.ok?"#48ff9b":"#ff6b8a";}
+    renderPremiumSkins();
+  }));
+}
+
 function renderCosm(){
-  const w=$$("cosm-body");if(!w)return;
   const c=$$("cosm-cur");if(c)c.textContent=cur();
-  let sel="";
-  try{sel=Save.data.selectedSkin;}catch(e){}
-  w.innerHTML=PREMIUM.map(p=>{
+  const neonBody=$$("cosm-neon-body");
+  const premBody=$$("cosm-premium-body");
+  if(!neonBody||!premBody)return;
+  const msg=$$("cosm-msg");
+
+  /* Aktif tabı oku */
+  const tabs=document.querySelectorAll("#scr-cosm .cosm-tab");
+  let activeTab="neon";
+  tabs.forEach(t=>{if(t.classList.contains("on"))activeTab=t.dataset.ct;});
+
+  /* NEON tab içeriği */
+  let sel="";try{sel=Save.data.selectedSkin;}catch(e){}
+  neonBody.innerHTML=PREMIUM.map(p=>{
     const own=owns(p.id), on=sel===p.id;
     return '<button class="cosm-card'+(on?" on":"")+'" data-skin="'+p.id+'" '+
       'style="--co:'+p.outer+';--cg:'+p.glow+'">'+
@@ -15568,15 +16072,33 @@ function renderCosm(){
       '<span class="cosm-p">'+(on?"KUŞANILI":own?"KUŞAN":"✦"+p.neon)+'</span>'+
     '</button>';
   }).join("")+
-  '<div class="cosm-note">Premium görünümler yalnızca renk ve parıltı değiştirir. '+
+  '<div class="cosm-note">NEON skinleri yalnızca renk ve parıltı değiştirir. '+
   'Hiçbir stat, hasar veya oynanış avantajı vermez.</div>';
-  const msg=$$("cosm-msg");
-  w.querySelectorAll("[data-skin]").forEach(b=>b.addEventListener("click",()=>{
+
+  neonBody.querySelectorAll("[data-skin]").forEach(b=>b.addEventListener("click",()=>{
     const id=b.dataset.skin;
     const r=owns(id)?selectSkin(id):buySkin(id);
     if(msg){msg.textContent=r.msg;msg.style.color=r.ok?"#48ff9b":"#ff6b8a";}
     renderCosm();
   }));
+
+  /* PREMIUM tab içeriği */
+  try{renderPremiumSkins();}catch(e){}
+
+  /* Tab görünürlüğü */
+  neonBody.style.display=activeTab==="neon"?"":"none";
+  premBody.style.display=activeTab==="premium"?"":"none";
+
+  /* Tab buton click bağlama (her render'da rebind) */
+  tabs.forEach(t=>{
+    t.onclick=()=>{
+      tabs.forEach(x=>x.classList.remove("on"));
+      t.classList.add("on");
+      neonBody.style.display=t.dataset.ct==="neon"?"":"none";
+      premBody.style.display=t.dataset.ct==="premium"?"":"none";
+      if(msg)msg.textContent="";
+    };
+  });
 }
 
 function renderEvo(){
@@ -15648,6 +16170,7 @@ bind("b-evo-back",()=>{hideAll();const m=$$("scr-menu");if(m)m.classList.add("on
 
 window.NEONCOSM={PREMIUM,buySkin,selectSkin,owns};
 window.NEONEVO={EVO_MAX,evOf,evName,canEvolve,evoCost,fodderFor,evolve,nextRarity};
+window.renderCosm=renderCosm;
 
 })();
 </script>
@@ -17106,6 +17629,7 @@ function topbar(){
     /* ◆ ALWAYS shows Save.data.cores — single source of truth */
     {const _c=(Save&&Save.data&&Save.data.cores)||0;const _ts=$("tb-sh");if(_ts)_ts.textContent=fmt(_c);}
     if(P){$("tb-ne").textContent=fmt(P.state.neon);}
+    try{const ge=$("tb-ge");if(ge)ge.textContent=fmt(Save&&Save.data&&Save.data.gems||0);}catch(_){}
   }catch(e){}
   try{
     const a=window.NORYVX_P3&&window.NORYVX_P3.archetype
@@ -20045,6 +20569,7 @@ button, .btn, .p2-tab, .p3-btn{
   nav('b-mastery',()=>{open('scr-mastery');if(window.renderMastery)renderMastery();try{if(typeof updateProgressUI==="function")updateProgressUI();}catch(e){}});
   nav('b-tech',()=>{open('scr-tech');if(window.renderTech)renderTech();});
   nav('b-settings',()=>open('scr-settings'));
+
   const backToMenu=()=>{open('scr-menu');try{if(typeof updateProgressUI==="function")updateProgressUI();}catch(e){}};
   nav('b-rpgchar-back',backToMenu);nav('b-phase3-back',backToMenu);nav('b-mastery-back',backToMenu);nav('b-tech-back',backToMenu);nav('b-settings-back',()=>open('scr-menu'));
   nav('p3-open-weapons',()=>{open('scr-mastery');if(window.renderMastery)renderMastery();try{if(typeof updateProgressUI==="function")updateProgressUI();}catch(e){}});
@@ -20676,6 +21201,7 @@ window.NORYVXAdService={
 
     if(!completed){
       telemetry("failed",{context});
+      try{if(window.NVXAnalytics)NVXAnalytics.log("ad_watched",{ad_type:"rewarded",result:"cancelled",context:context||"generic"});}catch(_){}
       return false;
     }
 
@@ -20683,6 +21209,7 @@ window.NORYVXAdService={
     state.dailyCount++;
     save();
     telemetry("completed",{context});
+    try{if(window.NVXAnalytics)NVXAnalytics.log("ad_watched",{ad_type:"rewarded",result:"completed",context:context||"generic"});}catch(_){}
     try{ if(typeof grant==="function") grant(); }catch(_){}
     return true;
   },
@@ -20701,6 +21228,7 @@ window.NORYVXAdService={
     if(shown){
       state.lastInterstitial=now();save();
       telemetry("interstitial_completed",{context});
+      try{if(window.NVXAnalytics)NVXAnalytics.log("ad_watched",{ad_type:"interstitial",result:"completed",context:context||"run_transition"});}catch(_){}
     }
     return shown;
   }
@@ -20884,6 +21412,130 @@ if(document.readyState==="complete"){
   initCapacitorAdMob();
 }else{
   window.addEventListener("load",initCapacitorAdMob);
+}
+})();
+</script>
+<script id="noryvx-revenuecat-v1">
+/* =========================================================
+   NORYVX IAP — RevenueCat Capacitor Bridge
+   Faz 1: Altyapı iskeleti. Gerçek ödeme akışı KAPALI.
+   Ürün ID'leri App Store Connect / Play Console'da oluşturulunca
+   PLACEHOLDER_* sabitleri gerçek değerlerle değiştirilecek.
+========================================================= */
+(function(){
+"use strict";
+
+/* ---------- ÜRÜN ID SABITLERI (placeholder) ---------- */
+var PRODUCTS={
+  gems_small  :"com.tumes.neonsurvivor.gems_small",
+  gems_medium :"com.tumes.neonsurvivor.gems_medium",
+  gems_large  :"com.tumes.neonsurvivor.gems_large",
+  gems_mega   :"com.tumes.neonsurvivor.gems_mega",
+  remove_ads  :"com.tumes.neonsurvivor.remove_ads",
+  bp_premium  :"com.tumes.neonsurvivor.bp_premium",
+  skin_void   :"com.tumes.neonsurvivor.skin_void",
+  skin_solar  :"com.tumes.neonsurvivor.skin_solar",
+  skin_cyber  :"com.tumes.neonsurvivor.skin_cyber",
+  skin_crimson:"com.tumes.neonsurvivor.skin_crimson",
+  skin_aurora :"com.tumes.neonsurvivor.skin_aurora",
+  skin_phantom:"com.tumes.neonsurvivor.skin_phantom"
+  /* bundle_no_ads_bp ileride eklenecek — ilk sürümde mağazada yok */
+};
+
+/* ---------- API ANAHTARLARI (placeholder) ---------- */
+var RC_KEY_ANDROID="PLACEHOLDER_REVENUECAT_ANDROID_KEY";
+var RC_KEY_IOS    ="PLACEHOLDER_REVENUECAT_IOS_KEY";
+
+var _rcReady=false;
+
+function getRC(){
+  try{
+    if(window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.Purchases)
+      return window.Capacitor.Plugins.Purchases;
+  }catch(e){}
+  return null;
+}
+
+async function initRevenueCat(){
+  var RC=getRC();
+  if(!RC)return;
+
+  var key=RC_KEY_ANDROID;
+  try{
+    var platform=(window.Capacitor&&window.Capacitor.getPlatform)?window.Capacitor.getPlatform():"android";
+    if(platform==="ios")key=RC_KEY_IOS;
+  }catch(e){}
+
+  if(key.indexOf("PLACEHOLDER")===0){
+    /* Gerçek anahtarlar henüz eklenmedi — init yapılmaz, hata loglanmaz */
+    return;
+  }
+
+  try{
+    await RC.configure({apiKey:key});
+    _rcReady=true;
+    window.dispatchEvent(new CustomEvent("noryvx-rc-ready",{detail:{provider:"revenuecat"}}));
+  }catch(e){}
+}
+
+/* ---------- NORYVXIAP — genel satın alma arayüzü ---------- */
+window.NORYVXIAP={
+
+  ready:function(){ return _rcReady; },
+
+  /* purchaseBP: $2.99 IAP yolu — bu fazda pasif, iskelet hazır */
+  purchaseBP:async function(){
+    if(!_rcReady)
+      return {ok:false,msg:"IAP bu yapıda henüz aktif değil — ürünler mağazada oluşturulmadı"};
+    /* TODO (Faz 2): RC.purchaseStoreProduct ile gerçek satın alma akışı */
+    return {ok:false,msg:"IAP bu yapıda henüz aktif değil"};
+  },
+
+  /* purchaseRemoveAds: $2.99 tek seferlik — bu fazda pasif */
+  purchaseRemoveAds:async function(){
+    if(!_rcReady)
+      return {ok:false,msg:"IAP bu yapıda henüz aktif değil"};
+    /* TODO (Faz 2): satın alma + Save.data.iap.removeAdsPurchased = true */
+    return {ok:false,msg:"IAP bu yapıda henüz aktif değil"};
+  },
+
+  /* restorePurchases: cihaz değişiminde non-consumable'ları geri yükler */
+  restorePurchases:async function(){
+    if(!_rcReady)
+      return {ok:false,msg:"IAP bu yapıda henüz aktif değil"};
+    /* TODO (Faz 2): RC.restorePurchases + Save senkronizasyonu */
+    return {ok:false,msg:"IAP bu yapıda henüz aktif değil"};
+  },
+
+  /* purchaseSkin: IAP skin satın alma — şu an pasif shell, RevenueCat aktif olduğunda devreye girer */
+  purchaseSkin:async function(productId){
+    if(!_rcReady)
+      return {ok:false,msg:"IAP bu yapıda henüz aktif değil"};
+    /* TODO (Faz 2):
+       1. RC.purchaseStoreProduct(PRODUCTS[productId])
+       2. Save.data.iap.purchasedProductIds.push(productId)
+       3. Save.data.ownedSkins[skinId] = true
+       4. Save.data.selectedSkin = skinId
+       5. Save.save()
+    */
+    return {ok:false,msg:"IAP bu yapıda henüz aktif değil"};
+  },
+
+  /* purchaseGems: Gem paketi satın alma — şu an pasif shell */
+  purchaseGems:async function(packId){
+    if(!_rcReady)
+      return {ok:false,msg:"IAP bu yapıda henüz aktif değil"};
+    /* TODO (Faz 2): RC satın alma + Save.data.iap.gems += miktar + Save.save() */
+    return {ok:false,msg:"IAP bu yapıda henüz aktif değil"};
+  },
+
+  PRODUCTS:PRODUCTS
+};
+
+if(document.readyState==="complete"){
+  initRevenueCat();
+}else{
+  window.addEventListener("load",initRevenueCat);
 }
 })();
 </script>
@@ -21807,6 +22459,72 @@ window.nvxApplyLang=applyLangOnBoot;
 .ms7-ach-btn.locked{background:rgba(10,20,36,.6);color:#2a4a5a;cursor:default}
 /* ---- Notification dot on hub card ---- */
 .ms7-hub-dot{display:inline-block;width:7px;height:7px;background:#ff4455;border-radius:50%;margin-left:6px;vertical-align:middle}
+/* ===== PREMIUM SHOP REDESIGN ===== */
+#scr-shop{position:absolute!important;inset:0!important;padding:0!important;align-items:stretch!important;justify-content:flex-start!important;overflow:hidden!important;background:linear-gradient(180deg,#020c1e 0%,#030918 50%,#020c1e 100%)!important;}
+#shop-hdr{flex-shrink:0;display:flex;align-items:center;gap:12px;padding:calc(var(--safe-t,0px) + 16px) 16px 12px;position:relative;background:linear-gradient(180deg,rgba(2,12,30,0.98),rgba(2,9,20,0.92));}
+#shop-hdr::after{content:'';position:absolute;bottom:0;left:16px;right:16px;height:1px;background:linear-gradient(90deg,transparent,rgba(34,230,255,0.4),transparent);}
+.shop-back-btn{width:38px;height:38px;border-radius:10px;background:rgba(34,230,255,0.07);border:1px solid rgba(34,230,255,0.18);color:#22e6ff;font-size:22px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background 0.15s,border-color 0.15s;}
+.shop-back-btn:active{background:rgba(34,230,255,0.15);border-color:rgba(34,230,255,0.4);}
+#shop-hdr-center{flex:1;display:flex;flex-direction:column;gap:2px;}
+#shop-hdr-lbl{font-family:'Chakra Petch',sans-serif;font-size:20px;font-weight:700;letter-spacing:0.22em;color:#22e6ff;text-shadow:0 0 20px rgba(34,230,255,0.5);}
+#pg-shop-cur.shop-cur-line{font-size:10px!important;font-weight:600!important;letter-spacing:0.08em!important;color:rgba(136,200,255,0.65)!important;margin:0!important;text-align:left!important;font-family:'IBM Plex Mono',monospace!important;line-height:1.4!important;}
+.shop-hdr-gem-ico{font-size:28px;color:rgba(34,230,255,0.28);text-shadow:0 0 16px rgba(34,230,255,0.35);flex-shrink:0;}
+#shop-tabs{flex-shrink:0;display:flex;gap:6px;padding:10px 16px;background:rgba(2,9,20,0.8);}
+.s-tab{flex:1;padding:9px 4px;border-radius:9px;background:rgba(6,14,30,0.8);border:1px solid rgba(34,230,255,0.1);color:rgba(136,200,255,0.45);font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:all 0.15s;}
+.s-tab-i{font-size:16px;line-height:1;}
+.s-tab-t{font-size:9px;letter-spacing:0.1em;}
+.s-tab.on{background:rgba(34,230,255,0.1);border-color:rgba(34,230,255,0.4);color:#22e6ff;box-shadow:0 0 14px rgba(34,230,255,0.15),inset 0 0 12px rgba(34,230,255,0.04);}
+#shop-panes{flex:1;min-height:0;overflow:hidden;position:relative;display:flex;flex-direction:column;}
+.s-pane{display:none;flex-direction:column;gap:8px;padding:12px 16px calc(var(--safe-b,0px) + 20px);overflow-y:auto;box-sizing:border-box;overscroll-behavior:contain;}
+.s-pane.on{display:flex;flex:1;min-height:0;}
+.shop-section-lbl{font-size:9px;font-weight:900;letter-spacing:0.22em;color:rgba(136,200,255,0.38);padding:2px 2px 6px;border-bottom:1px solid rgba(34,230,255,0.08);text-transform:uppercase;flex-shrink:0;}
+.shop-card{display:flex;align-items:center;gap:12px;padding:13px 14px;border-radius:13px;background:linear-gradient(135deg,rgba(8,18,42,0.95),rgba(4,9,22,0.95));border:1px solid rgba(34,230,255,0.13);position:relative;overflow:hidden;cursor:pointer;text-align:left;transition:border-color 0.15s,box-shadow 0.15s;width:100%;}
+.shop-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(34,230,255,0.15),transparent);}
+.shop-card:active{border-color:rgba(34,230,255,0.35);box-shadow:0 0 16px rgba(34,230,255,0.1);}
+.shop-card.off{opacity:0.38;filter:saturate(0.25);}
+.shop-card.free-card{border-color:rgba(255,212,40,0.3);background:linear-gradient(135deg,rgba(28,22,4,0.97),rgba(14,11,2,0.97));}
+.shop-card.free-card::before{background:linear-gradient(90deg,transparent,rgba(255,212,40,0.2),transparent);}
+.shop-card.free-card:active{border-color:rgba(255,212,40,0.5);}
+.shop-card-ico{width:46px;height:46px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;font-weight:900;}
+.shop-card-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;}
+.shop-card-name{font-size:12px;font-weight:800;letter-spacing:0.06em;color:#eaf4ff;}
+.shop-card-desc{font-size:10px;color:rgba(136,200,255,0.6);letter-spacing:0.03em;}
+.shop-rarity-badge{display:inline-block;font-size:8px;font-weight:900;letter-spacing:0.12em;padding:2px 6px;border-radius:4px;border:1px solid;margin-top:2px;width:fit-content;}
+.shop-card-price{flex-shrink:0;padding:8px 12px;border-radius:9px;font-size:11px;font-weight:900;letter-spacing:0.05em;white-space:nowrap;}
+.shop-price-wait{color:rgba(136,200,255,0.4)!important;border-color:rgba(136,200,255,0.15)!important;background:rgba(136,200,255,0.05)!important;font-size:9px!important;letter-spacing:0.08em!important;}
+.shop-timer{display:inline-block;background:rgba(255,107,138,0.12);border:1px solid rgba(255,107,138,0.25);color:#ff6b8a;border-radius:4px;font-size:9px;font-weight:700;padding:2px 6px;letter-spacing:0.06em;}
+.gem-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.gem-card{position:relative;padding:18px 10px 14px;border-radius:14px;background:linear-gradient(160deg,rgba(10,6,28,0.97),rgba(5,3,16,0.97));border:1px solid rgba(160,92,255,0.22);display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;cursor:pointer;overflow:hidden;transition:border-color 0.15s,box-shadow 0.15s;}
+.gem-card:active{border-color:rgba(160,92,255,0.5);box-shadow:0 0 20px rgba(160,92,255,0.18);}
+.gem-card.popular{border-color:rgba(255,107,138,0.4);background:linear-gradient(160deg,rgba(22,4,12,0.97),rgba(14,2,8,0.97));}
+.gem-card.value{border-color:rgba(255,190,30,0.35);background:linear-gradient(160deg,rgba(20,16,2,0.97),rgba(12,10,1,0.97));}
+.gem-badge{position:absolute;top:0;right:0;font-size:7.5px;font-weight:900;letter-spacing:0.06em;padding:4px 8px;border-radius:0 14px 0 8px;}
+.gem-badge.popular{background:rgba(255,107,138,0.9);color:#fff;}
+.gem-badge.value{background:rgba(255,190,30,0.9);color:#000;}
+.gem-ico{font-size:32px;line-height:1;}
+.gem-amount{font-size:26px;font-weight:900;color:#eaf4ff;line-height:1.1;text-shadow:0 0 16px rgba(160,92,255,0.4);}
+.gem-bonus{font-size:9px;font-weight:800;color:rgba(255,212,40,0.85);letter-spacing:0.06em;}
+.gem-name{font-size:9px;font-weight:700;letter-spacing:0.1em;color:rgba(160,92,255,0.8);text-transform:uppercase;}
+.gem-price{margin-top:5px;padding:8px 12px;border-radius:9px;background:rgba(160,92,255,0.15);border:1px solid rgba(160,92,255,0.35);color:#c8a0ff;font-size:12px;font-weight:900;letter-spacing:0.04em;width:100%;}
+.gem-card.popular .gem-price{background:rgba(255,107,138,0.15);border-color:rgba(255,107,138,0.4);color:#ff9db2;}
+.gem-card.value .gem-price{background:rgba(255,190,30,0.15);border-color:rgba(255,190,30,0.35);color:#ffc830;}
+.gem-soon{font-size:8px;color:rgba(136,200,255,0.3);letter-spacing:0.08em;}
+.prem-card{padding:20px 16px;border-radius:14px;background:linear-gradient(135deg,rgba(8,2,18,0.97),rgba(5,1,12,0.97));border:1px solid rgba(255,107,138,0.28);position:relative;overflow:hidden;}
+.prem-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(255,107,138,0.5),transparent);}
+.prem-badge{font-size:13px;font-weight:900;letter-spacing:0.1em;color:#ff6b8a;margin-bottom:8px;}
+.prem-desc{font-size:11px;color:rgba(136,200,255,0.6);line-height:1.65;margin-bottom:14px;}
+.prem-price-btn{width:100%;padding:13px;border-radius:10px;background:linear-gradient(135deg,rgba(255,107,138,0.2),rgba(200,50,80,0.12));border:1px solid rgba(255,107,138,0.45);color:#ff6b8a;font-size:14px;font-weight:900;letter-spacing:0.1em;cursor:pointer;}
+.restore-btn{margin-top:8px;width:100%;padding:11px;border:1px dashed rgba(136,200,255,0.18);border-radius:9px;background:transparent;color:rgba(136,200,255,0.42);font-size:10px;font-weight:700;letter-spacing:0.08em;cursor:pointer;}
+#pg-shop-msg{flex-shrink:0;padding:6px 16px 8px;text-align:center;font-size:11px;font-weight:800;letter-spacing:0.07em;min-height:22px;}
+.shop-item-wrap{width:100%;display:flex;flex-direction:column;gap:0;position:relative;}
+.shop-item-wrap .shop-card{padding-right:38px;}
+.shop-info-btn{position:absolute;top:50%;right:10px;transform:translateY(-50%);z-index:10;width:22px;height:22px;border-radius:50%;background:rgba(34,230,255,0.12);border:1px solid rgba(34,230,255,0.28);color:rgba(34,230,255,0.7);font-size:11px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;transition:background 0.12s,color 0.12s;pointer-events:auto;}
+.shop-info-btn:active{background:rgba(34,230,255,0.25);color:#22e6ff;}
+#shop-info-box{display:none!important;}
+.sip{margin-top:4px;}
+.shop-info-rates{display:flex;flex-direction:column;gap:4px;margin:6px 0 4px;}
+.shop-info-rate-row{display:flex;align-items:center;gap:8px;font-size:11px;}
+.shop-info-rate-bar{height:4px;border-radius:2px;flex-shrink:0;opacity:.75;}
 </style>
 
 <!-- New screen HTML -->
@@ -22231,6 +22949,7 @@ var MissionsDB={
       }}catch(e){}
     }
     this.save();
+    try{if(window.NVXAnalytics)NVXAnalytics.log("achievement_unlocked",{achievement_id:String(id),reward_type:(ach.reward&&ach.reward.type)||"none"});}catch(_){}
     return{ok:true,reward:ach.reward};
   },
 };
@@ -22448,5 +23167,27 @@ if(document.readyState==='loading'){
   setTimeout(ms7Init,0);
 }
 
+})();
+</script>
+<script>
+/* NVXAnalytics — Firebase Analytics wrapper. Analytics errors never affect gameplay. */
+window.NVXAnalytics=(function(){
+  var _fa=null;
+  function _init(){
+    if(_fa)return;
+    try{
+      if(window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.FirebaseAnalytics){
+        _fa=window.Capacitor.Plugins.FirebaseAnalytics;
+      }
+    }catch(e){ console.error('[NVX Analytics INIT ERROR]', e); }
+  }
+  function log(name,params){
+    try{
+      _init();
+      if(!_fa)return;
+      _fa.logEvent({name:name,params:params||{}});
+    }catch(e){ console.error('[NVX Analytics LOG ERROR]', name, e); }
+  }
+  return{log:log};
 })();
 </script>
