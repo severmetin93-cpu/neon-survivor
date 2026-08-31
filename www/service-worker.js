@@ -18,7 +18,7 @@
    Score display: live score shown in wave HUD during combat.
    Touch handlers: hero-select upgraded to tap() system, back button uses tap().
    Cache adi guncellendi (aksi halde eski asset'ler ilkanimlandiktan sonra calisir). */
-const CACHE = "neon-survivor-v25-1-0";
+const CACHE = "neon-survivor-v25-1-1";
 
 const ASSETS = [
   "./",
@@ -29,7 +29,9 @@ const ASSETS = [
   "./assets/atlas-units.png",
   "./assets/atlas-items.json",
   "./assets/atlas-items.png",
-  "./assets/neon-noryvx-icon.svg"
+  "./assets/neon-noryvx-icon.svg",
+  "./css/nvx2-menu-polish.css",
+  "./js/ms7-day2-fixes.js"
 ];
 
 self.addEventListener("install", event => {
@@ -50,8 +52,6 @@ self.addEventListener("activate", event => {
       .then(keys => {
         return Promise.all(
           keys
-            /* Guncel cache disindaki TUM neon-survivor cache'leri silinir.
-               Yabanci originlerin cache'lerine dokunulmaz. */
             .filter(key => key !== CACHE)
             .filter(key => key.indexOf("neon-survivor") === 0)
             .map(key => caches.delete(key))
@@ -64,11 +64,6 @@ self.addEventListener("activate", event => {
 self.addEventListener("fetch", event => {
   if (event.request.method !== "GET") return;
 
-  /* index.html / navigasyon istekleri NETWORK-FIRST.
-     Diger varliklar (ikon, manifest) eskisi gibi CACHE-FIRST kalir.
-     Neden: cache-first index.html, cache adi degismedigi surece yeni
-     build'i hicbir zaman gostermiyordu. Network-first ile yeni dosya
-     her acilista alinir; cevrimdisi durumda cache'e dusulur. */
   const req = event.request;
   const isDoc =
     req.mode === "navigate" ||
