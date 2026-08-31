@@ -21080,7 +21080,13 @@ canvas.addEventListener("touchstart",function(e){
 },{capture:true,passive:false});
 
 canvas.addEventListener("touchmove",function(e){
-  if(!ctl.active)return;
+  if(!ctl.active){
+    const t=e.changedTouches&&e.changedTouches[0];
+    if(t&&(Game.state===STATE.PLAYING||Game.state===STATE.COUNTDOWN)){
+      begin(t.clientX,t.clientY,t.identifier);
+    }
+    return;
+  }
   for(const t of e.changedTouches||[]){
     if(t.identifier===ctl.id){
       move(t.clientX,t.clientY,t.identifier,e);
