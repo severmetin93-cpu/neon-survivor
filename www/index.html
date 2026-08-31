@@ -11677,6 +11677,7 @@ function openLevelUp(){
   hide(scrMenu);hide(scrHow);hide(scrUpgrades);hide(scrSkins);hide(scrPause);hide(scrOver);
   renderLevelChoices();
   show(scrLevelup);
+  try{if(window.NEONAUDIO)window.NEONAUDIO.SFX.levelUp();}catch(e){}
   vibrate([20,35,20]);
 }
 
@@ -13959,7 +13960,7 @@ function renderSectors(){
       var id=+b.dataset.sec;
       if(!P.unlocked[id])return;
       P.sector=id;persist();renderSectors();updateMenuTag();
-      try{Audio_.power();}catch(e){}
+      try{if(window.NEONAUDIO)window.NEONAUDIO.SFX.sector();}catch(e){}
     });
   });
 }
