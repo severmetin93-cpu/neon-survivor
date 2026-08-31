@@ -1,86 +1,61 @@
-/* NORYVX Shop v5.1 — shop + cosmetics open fix */
+/* NORYVX Shop v5.2 — reliable cosmetics open */
 (function () {
   'use strict';
 
-  var STYLE_ID = 'nvx-shop-v5-css';
-  var BADGE_ID = 'nvx-ui-badge';
+  var STYLE_ID = 'nvx-shop-v52-css';
 
   function injectCss() {
+    var old = document.getElementById('nvx-shop-v5-css');
+    if (old) old.remove();
     if (document.getElementById(STYLE_ID)) return;
     var s = document.createElement('style');
     s.id = STYLE_ID;
     s.textContent = [
-      '#scr-shop.screen.on{',
-      '  display:block!important;padding:0!important;height:100%!important;',
-      '  overflow-y:scroll!important;overflow-x:hidden!important;',
-      '  -webkit-overflow-scrolling:touch!important;touch-action:pan-y!important;',
-      '}',
+      '#scr-shop.screen.on{display:block!important;padding:0!important;height:100%!important;overflow-y:scroll!important;-webkit-overflow-scrolling:touch!important;touch-action:pan-y!important;}',
       '#shop-panes{display:block!important;position:static!important;height:auto!important;overflow:visible!important;}',
       '#shop-panes .s-pane{display:none!important;position:static!important;height:auto!important;overflow:visible!important;padding:12px 14px 40px!important;}',
       '#shop-panes .s-pane.on{display:block!important;}',
-      '#pg-shop-list,.shop-card{display:flex!important;visibility:visible!important;opacity:1!important;}',
-      '#pg-shop-list{display:block!important;}',
-      /* Cosmetics screen */
+      '#pg-shop-list{display:block!important;visibility:visible!important;opacity:1!important;}',
+      '.shop-card{display:flex!important;visibility:visible!important;opacity:1!important;}',
       '#scr-cosm.screen.on{',
-      '  display:flex!important;flex-direction:column!important;align-items:stretch!important;',
-      '  justify-content:flex-start!important;',
+      '  display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;',
       '  padding:calc(env(safe-area-inset-top,0px) + 16px) 16px calc(env(safe-area-inset-bottom,0px) + 28px)!important;',
       '  height:100%!important;max-height:100dvh!important;',
-      '  overflow-y:scroll!important;overflow-x:hidden!important;',
-      '  -webkit-overflow-scrolling:touch!important;touch-action:pan-y!important;',
-      '  background:radial-gradient(100% 50% at 50% 0%,rgba(160,92,255,.12),transparent 55%),#020812!important;',
-      '  z-index:40!important;',
+      '  overflow-y:scroll!important;-webkit-overflow-scrolling:touch!important;touch-action:pan-y!important;',
+      '  background:radial-gradient(100% 50% at 50% 0%,rgba(160,92,255,.14),transparent 55%),#020812!important;',
+      '  opacity:1!important;visibility:visible!important;pointer-events:auto!important;z-index:50!important;',
       '}',
-      '#scr-cosm .tutorial-title{',
-      '  font-size:18px!important;letter-spacing:.2em!important;color:#e8f4ff!important;',
-      '  text-shadow:0 0 16px rgba(160,92,255,.45)!important;margin:0 0 8px!important;text-align:center!important;',
-      '}',
-      '#scr-cosm .tag,#cosm-cur{',
-      '  color:#a8d4ff!important;font-size:12px!important;margin-bottom:12px!important;text-align:center!important;',
-      '}',
-      '#scr-cosm .cosm-tabs{',
-      '  display:flex!important;gap:8px!important;width:100%!important;max-width:430px!important;margin:0 auto 12px!important;',
-      '}',
-      '#scr-cosm .cosm-tab{',
-      '  flex:1!important;min-height:44px!important;border-radius:12px!important;',
-      '  border:1px solid rgba(34,230,255,.2)!important;background:rgba(10,18,40,.95)!important;',
-      '  color:rgba(180,210,255,.55)!important;font-weight:800!important;',
-      '}',
-      '#scr-cosm .cosm-tab.on{',
-      '  border-color:rgba(160,92,255,.55)!important;color:#f0e8ff!important;',
-      '  background:rgba(160,92,255,.15)!important;',
-      '}',
-      '#scr-cosm .cosm-wrap{',
-      '  width:100%!important;max-width:430px!important;margin:0 auto!important;',
-      '  max-height:none!important;overflow:visible!important;',
-      '  display:flex!important;flex-direction:column!important;gap:10px!important;',
-      '}',
-      '#scr-cosm .cosm-card{',
-      '  display:grid!important;grid-template-columns:54px 1fr auto!important;',
-      '  align-items:center!important;gap:10px!important;width:100%!important;',
-      '  padding:12px 14px!important;border-radius:14px!important;',
-      '  border:1px solid rgba(34,230,255,.22)!important;',
-      '  background:linear-gradient(160deg,rgba(14,24,52,.98),rgba(6,12,28,.96))!important;',
-      '  color:#eaf4ff!important;text-align:left!important;',
-      '}',
-      '#scr-cosm #b-cosm-back{',
-      '  margin:16px auto 0!important;min-height:44px!important;min-width:120px!important;',
-      '  display:block!important;',
-      '}'
+      '#scr-cosm .tutorial-title{font-size:18px!important;letter-spacing:.18em!important;color:#e8f4ff!important;text-align:center!important;margin:0 0 8px!important;}',
+      '#scr-cosm .tag,#cosm-cur{color:#a8d4ff!important;text-align:center!important;margin-bottom:12px!important;}',
+      '#scr-cosm .cosm-tabs{display:flex!important;gap:8px!important;width:100%!important;max-width:430px!important;margin:0 auto 12px!important;}',
+      '#scr-cosm .cosm-tab{flex:1!important;min-height:44px!important;border-radius:12px!important;border:1px solid rgba(34,230,255,.2)!important;background:rgba(10,18,40,.95)!important;color:rgba(180,210,255,.55)!important;font-weight:800!important;}',
+      '#scr-cosm .cosm-tab.on{border-color:rgba(160,92,255,.55)!important;color:#f0e8ff!important;background:rgba(160,92,255,.15)!important;}',
+      '#scr-cosm .cosm-wrap{width:100%!important;max-width:430px!important;margin:0 auto!important;max-height:none!important;overflow:visible!important;display:flex!important;flex-direction:column!important;gap:10px!important;}',
+      '#scr-cosm .cosm-card{display:grid!important;grid-template-columns:54px 1fr auto!important;align-items:center!important;gap:10px!important;padding:12px 14px!important;border-radius:14px!important;border:1px solid rgba(34,230,255,.22)!important;background:rgba(10,18,40,.96)!important;color:#eaf4ff!important;text-align:left!important;}',
+      '#scr-cosm #b-cosm-back{margin:16px auto 0!important;min-height:44px!important;display:block!important;}'
     ].join('\n');
     document.head.appendChild(s);
   }
 
-  function injectBadge(text) {
-    var old = document.getElementById(BADGE_ID);
-    if (old) old.remove();
-    var b = document.createElement('div');
-    b.id = BADGE_ID;
-    b.textContent = text || 'SHOP v5';
-    b.style.cssText = 'position:fixed;top:calc(8px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:9999;pointer-events:none;font-size:10px;font-weight:800;letter-spacing:.18em;padding:4px 10px;border-radius:999px;color:#041018;background:linear-gradient(90deg,#22e6ff,#a05cff)';
-    document.body.appendChild(b);
-    setTimeout(function () { try { b.style.opacity = '0'; } catch (e) {} }, 5000);
-    setTimeout(function () { try { b.remove(); } catch (e) {} }, 6000);
+  function hideAllScreens() {
+    document.querySelectorAll('.screen').forEach(function (s) {
+      s.classList.remove('on');
+      s.style.opacity = '';
+      s.style.visibility = '';
+      s.style.pointerEvents = '';
+    });
+  }
+
+  function showScreen(id) {
+    hideAllScreens();
+    var el = document.getElementById(id);
+    if (!el) return null;
+    el.classList.add('on');
+    el.style.opacity = '1';
+    el.style.visibility = 'visible';
+    el.style.pointerEvents = 'auto';
+    el.style.zIndex = '50';
+    return el;
   }
 
   function attachManualScroll(el) {
@@ -129,8 +104,7 @@
   function enhanceFreeCard() {
     var list = document.getElementById('pg-shop-list');
     var pane = document.getElementById('spane-ingame');
-    if (!list || !pane) return;
-    if (pane.querySelector('.nvx-shop-hero')) return;
+    if (!list || !pane || pane.querySelector('.nvx-shop-hero')) return;
     var free = list.querySelector('.shop-card.free-card, .shop-card[data-free]');
     if (!free) return;
     var name = (free.querySelector('.shop-card-name') || {}).textContent || 'GÜNLÜK ÜCRETSİZ';
@@ -143,73 +117,85 @@
       '<div class="nvx-shop-hero-desc">' + desc + '</div>' +
       '<button type="button" class="nvx-shop-hero-cta">' + (off ? 'BEKLEMEDE' : 'HEMEN AL') + '</button>';
     var cta = hero.querySelector('.nvx-shop-hero-cta');
-    if (cta && !off) {
-      cta.addEventListener('click', function () { try { free.click(); } catch (e) {} });
-    }
+    if (cta && !off) cta.addEventListener('click', function () { try { free.click(); } catch (e) {} });
     pane.insertBefore(hero, pane.firstChild.nextSibling || list);
   }
 
   function fallbackCosmContent() {
     var neon = document.getElementById('cosm-neon-body');
     if (!neon) return;
-    if (neon.innerHTML && neon.innerHTML.trim().length > 20) return;
+    if (neon.innerHTML && neon.innerHTML.trim().length > 30) return;
+    neon.style.display = 'flex';
     neon.innerHTML =
       '<div class="cosm-card" style="--co:#22e6ff">' +
       '<span class="cosm-orb"></span>' +
-      '<span class="cosm-txt"><b>DEFAULT</b><i>Standart neon görünüm</i></span>' +
+      '<span class="cosm-txt"><b>DEFAULT</b><i>Standart neon</i></span>' +
       '<span class="cosm-p">KUŞANILI</span></div>' +
-      '<div class="cosm-note">Skin listesi yüklenemedi veya boş. Geri dönüp tekrar dene.</div>';
-    neon.style.display = '';
+      '<div class="cosm-note">Skinler yükleniyor… Geri dönüp tekrar açmayı dene.</div>';
   }
 
   function openCosm() {
     try {
-      document.querySelectorAll('.screen').forEach(function (s) { s.classList.remove('on'); });
-      var cs = document.getElementById('scr-cosm');
+      var cs = showScreen('scr-cosm');
       if (!cs) return;
-      cs.classList.add('on');
-      cs.style.opacity = '1';
-      cs.style.visibility = 'visible';
-      cs.style.pointerEvents = 'auto';
-      cs.style.zIndex = '40';
 
       try {
         if (typeof window.renderCosm === 'function') window.renderCosm();
       } catch (err) {}
 
+      /* force neon body visible */
+      var neon = document.getElementById('cosm-neon-body');
+      var prem = document.getElementById('cosm-premium-body');
+      if (neon) {
+        neon.style.display = 'flex';
+        neon.style.visibility = 'visible';
+        neon.style.opacity = '1';
+      }
+      if (prem) prem.style.display = 'none';
+
       fallbackCosmContent();
       attachManualScroll(cs);
-      injectBadge('COSM v5');
 
       var back = document.getElementById('b-cosm-back');
-      if (back && !back._nvx) {
-        back._nvx = true;
-        back.addEventListener('click', function (e) {
-          e.preventDefault();
+      if (back) {
+        back.onclick = function (e) {
+          if (e) e.preventDefault();
           openShop();
-        }, true);
+        };
       }
     } catch (e) {}
   }
 
+  function rebindCosmButtons() {
+    document.querySelectorAll('.shop-cosm-btn').forEach(function (btn) {
+      try { btn.removeAttribute('onclick'); } catch (e) {}
+      btn.onclick = function (e) {
+        if (e) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+        openCosm();
+        return false;
+      };
+    });
+  }
+
   function openShop() {
     try {
-      document.querySelectorAll('.screen').forEach(function (s) { s.classList.remove('on'); });
-      var sc = document.getElementById('scr-shop');
+      var sc = showScreen('scr-shop');
       if (!sc) return;
-      sc.classList.add('on');
 
       if (typeof window.renderShop === 'function') window.renderShop();
       else if (window.PROG && window.PROG.renderShop) window.PROG.renderShop();
 
       var panes = document.querySelectorAll('#shop-panes .s-pane');
-      var tabs = document.querySelectorAll('#shop-tabs .s-tab');
       if (panes.length) {
         panes.forEach(function (p) { p.classList.remove('on'); });
         var ingame = document.getElementById('spane-ingame');
         if (ingame) ingame.classList.add('on');
         else panes[0].classList.add('on');
       }
+      var tabs = document.querySelectorAll('#shop-tabs .s-tab');
       if (tabs.length) {
         tabs.forEach(function (t) { t.classList.remove('on'); });
         var first = document.querySelector('#shop-tabs .s-tab[data-stab="ingame"]') || tabs[0];
@@ -218,33 +204,59 @@
 
       renderInventoryPanel();
       enhanceFreeCard();
+      rebindCosmButtons();
       attachManualScroll(sc);
+
+      /* Premium tab: also rebind when user switches tabs */
+      var tabBar = document.getElementById('shop-tabs');
+      if (tabBar && !tabBar._nvxRebind) {
+        tabBar._nvxRebind = true;
+        tabBar.addEventListener('click', function () {
+          setTimeout(rebindCosmButtons, 50);
+        }, true);
+      }
     } catch (e) {}
   }
 
+  function findCosmBtn(node) {
+    var t = node;
+    if (!t) return null;
+    if (t.nodeType === 3) t = t.parentElement;
+    var hops = 0;
+    while (t && hops < 8) {
+      if (t.classList && t.classList.contains('shop-cosm-btn')) return t;
+      if (t.id === 'scr-shop' || t === document.body) break;
+      t = t.parentElement;
+      hops++;
+    }
+    return null;
+  }
+
+  function onCosmIntent(e) {
+    var btn = findCosmBtn(e.target);
+    if (!btn) return;
+    try {
+      e.preventDefault();
+      e.stopPropagation();
+    } catch (err) {}
+    openCosm();
+  }
+
   function wire() {
-    var btn = document.getElementById('b-hub-store');
-    if (btn && !btn._shopV5) {
-      btn._shopV5 = true;
-      btn.addEventListener('click', function (e) {
+    var hub = document.getElementById('b-hub-store');
+    if (hub && !hub._shopV52) {
+      hub._shopV52 = true;
+      hub.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
         openShop();
       }, true);
     }
-    if (!document._nvxCosmDel) {
-      document._nvxCosmDel = true;
-      document.addEventListener('click', function (e) {
-        var t = e.target;
-        if (!t) return;
-        var b = t.closest ? t.closest('.shop-cosm-btn') : null;
-        if (!b && t.classList && t.classList.contains('shop-cosm-btn')) b = t;
-        if (b) {
-          e.preventDefault();
-          e.stopPropagation();
-          openCosm();
-        }
-      }, true);
+
+    if (!document._nvxCosmV52) {
+      document._nvxCosmV52 = true;
+      document.addEventListener('click', onCosmIntent, true);
+      document.addEventListener('touchend', onCosmIntent, true);
     }
   }
 
@@ -254,6 +266,7 @@
       wire();
       window.NVXDay3 = { openShop: openShop, openCosm: openCosm };
       window.openCosm = openCosm;
+      window.openShop = openShop;
     } catch (e) {}
   }
 
@@ -262,6 +275,6 @@
   } else {
     setTimeout(boot, 30);
   }
-  setTimeout(boot, 500);
-  setTimeout(boot, 1500);
+  setTimeout(boot, 400);
+  setTimeout(boot, 1200);
 })();
