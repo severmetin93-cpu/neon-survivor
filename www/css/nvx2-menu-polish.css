@@ -1,0 +1,59 @@
+/* NORYVX Day 1 — menu polish overlay
+   Link from index.html after design system, or merge into nvx2 block.
+*/
+:root {
+  --s0: #020611;
+  --card-bg: rgba(8, 14, 30, 0.88);
+  --card-border: rgba(34, 230, 255, 0.16);
+  --glow-cyan: 0 0 20px rgba(34, 230, 255, 0.35);
+  --t-slow: 320ms cubic-bezier(0.2, 0.7, 0.3, 1);
+  --r-sm: 10px;
+  --r-md: 14px;
+}
+
+#nvx2-hud {
+  padding: calc(10px + env(safe-area-inset-top, 0px)) 16px 14px;
+  background: linear-gradient(
+    to bottom,
+    rgba(2, 6, 17, 0.96),
+    rgba(2, 6, 17, 0.4) 70%,
+    transparent
+  );
+}
+
+.nvx2-play {
+  margin: 8px 16px !important;
+  padding: 16px 0 14px !important;
+  border-radius: var(--r-md) !important;
+  background:
+    linear-gradient(135deg, rgba(34, 230, 255, 0.18) 0%, rgba(59, 123, 255, 0.14) 50%, rgba(160, 92, 255, 0.12) 100%),
+    linear-gradient(160deg, #001840 0%, #002866 45%, #1a0a40 100%) !important;
+  border: 2px solid rgba(34, 230, 255, 0.75) !important;
+  box-shadow:
+    0 0 28px rgba(34, 230, 255, 0.28),
+    0 4px 20px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+  color: #eaf4ff !important;
+  letter-spacing: 0.32em !important;
+}
+
+.nvx2-card {
+  min-height: 54px !important;
+  padding: 12px 6px 10px !important;
+  border-radius: var(--r-sm) !important;
+  background: var(--card-bg) !important;
+  border-color: var(--card-border) !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+  transition: border-color 150ms, box-shadow 220ms, transform 150ms !important;
+}
+
+.nvx2-card:active {
+  transform: scale(0.97);
+  border-color: rgba(34, 230, 255, 0.6) !important;
+}
+
+.nvx2-ms-card {
+  background: var(--card-bg) !important;
+  border-color: var(--card-border) !important;
+  border-radius: var(--r-sm) !important;
+}

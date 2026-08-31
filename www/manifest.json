@@ -1,14 +1,14 @@
 {
-  "name": "Neon Survivor",
-  "short_name": "Neon Survivor",
-  "description": "Neon enerji çekirdeğiyle hayatta kalma arcade oyunu.",
+  "name": "NORYVX",
+  "short_name": "NORYVX",
+  "description": "Neon enerji çekirdeğiyle taktik hayatta kalma arcade oyunu.",
   "lang": "tr",
   "start_url": "./index.html",
   "scope": "./",
   "display": "fullscreen",
   "orientation": "portrait",
-  "background_color": "#04060f",
-  "theme_color": "#04060f",
+  "background_color": "#020611",
+  "theme_color": "#020611",
   "icons": [
     {
       "src": "assets/icons/icon.svg",
