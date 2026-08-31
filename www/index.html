@@ -8216,6 +8216,7 @@ const Game={
           coinsEarned     : Math.max(1,Math.floor((Math.round(this.score))/12)),
           gemsEarned      : (this.runBossKills>0?this.runBossKills:0),
           neonEarned      : Math.max(1,Math.floor(Math.max(1,Math.floor((Math.round(this.score))/12))/2)),
+          coresEarned     : this.runCoreBonus||0,
           masteryXpGained : window._lastRunP3XP||0,
           sectorsCompleted: 1,
         });
@@ -11809,7 +11810,7 @@ function quitGame(){
         legendary       : Math.max(0,((window.PROG&&window.PROG.state&&window.PROG.state.counters&&window.PROG.state.counters.legendary)||0)-(window._ms7LegendarySnap||0)),
         enhance         : Math.max(0,((window.PROG&&window.PROG.state&&window.PROG.state.counters&&window.PROG.state.counters.enhance)||0)-(window._ms7EnhanceSnap||0)),
         nodeath         : false,
-        masteryXpGained : window._lastRunP3XP||0,
+        masteryXpGained : 0,
         sectorsCompleted: 0,
       });
     }
