@@ -1,6 +1,7 @@
 /* NORYVX — cache adi HER BUILD'DE degismeli. */
-/* V25.1.2 — Day2: inject menu CSS + missions fixes into HTML responses (avoids 4MB index push). */
-const CACHE = "neon-survivor-v25-1-2";
+/* V25.1.3 — HOTFIX: remove full-HTML inject (caused black screen on Android WebView).
+   index.html already has CSS/JS links from patch-index-links workflow. */
+const CACHE = "neon-survivor-v25-1-3";
 
 const ASSETS = [
   "./",
@@ -15,32 +16,6 @@ const ASSETS = [
   "./css/nvx2-menu-polish.css",
   "./js/ms7-day2-fixes.js"
 ];
-
-const INJECT_CSS = '<link href="css/nvx2-menu-polish.css" rel="stylesheet"/>';
-const INJECT_JS  = '<script src="js/ms7-day2-fixes.js" defer></script>';
-
-function injectDayMarkup(html) {
-  if (typeof html !== "string") return html;
-  let out = html;
-  if (out.indexOf("nvx2-menu-polish.css") === -1) {
-    if (out.indexOf('rel="manifest"') !== -1) {
-      out = out.replace(
-        /(<link[^>]*rel=["']manifest["'][^>]*\/?>)/i,
-        "$1\n" + INJECT_CSS
-      );
-    } else if (out.indexOf("</head>") !== -1) {
-      out = out.replace("</head>", INJECT_CSS + "\n</head>");
-    }
-  }
-  if (out.indexOf("ms7-day2-fixes.js") === -1) {
-    if (out.indexOf("</body>") !== -1) {
-      out = out.replace("</body>", INJECT_JS + "\n</body>");
-    } else {
-      out += INJECT_JS;
-    }
-  }
-  return out;
-}
 
 self.addEventListener("install", event => {
   event.waitUntil(
@@ -74,43 +49,34 @@ self.addEventListener("fetch", event => {
     req.mode === "navigate" ||
     req.destination === "document" ||
     /\/index\.html($|\?)/.test(req.url) ||
-    (url.origin === self.location.origin && (url.pathname === "/" || url.pathname.endsWith("/")));
+    (url.origin === self.location.origin &&
+      (url.pathname === "/" || url.pathname.endsWith("/")));
 
   if (isDoc) {
     event.respondWith(
       fetch(req)
-        .then(async response => {
-          if (!response || response.status !== 200) {
-            const cached = await caches.match(req);
-            if (cached) return injectResponse(cached);
-            const fallback = await caches.match("./index.html");
-            return fallback ? injectResponse(fallback) : response;
-          }
-          const injected = await injectResponse(response);
-          try {
-            const copy = injected.clone();
+        .then(response => {
+          if (response && response.status === 200) {
+            const copy = response.clone();
             caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {});
-          } catch (e) {}
-          return injected;
+          }
+          return response;
         })
-        .catch(async () => {
-          const cached = await caches.match(req);
-          if (cached) return injectResponse(cached);
-          const fallback = await caches.match("./index.html");
-          return fallback ? injectResponse(fallback) : Response.error();
-        })
+        .catch(() =>
+          caches.match(req).then(hit => hit || caches.match("./index.html"))
+        )
     );
     return;
   }
 
   event.respondWith(
-    caches.match(event.request).then(cached => {
+    caches.match(req).then(cached => {
       if (cached) return cached;
-      return fetch(event.request)
+      return fetch(req)
         .then(response => {
           if (response && response.status === 200 && response.type === "basic") {
             const copy = response.clone();
-            caches.open(CACHE).then(cache => cache.put(event.request, copy)).catch(() => {});
+            caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {});
           }
           return response;
         })
@@ -118,24 +84,3 @@ self.addEventListener("fetch", event => {
     })
   );
 });
-
-async function injectResponse(response) {
-  try {
-    const ct = (response.headers.get("content-type") || "").toLowerCase();
-    if (ct && ct.indexOf("text/html") === -1 && ct.indexOf("text/plain") === -1) {
-      return response;
-    }
-    const text = await response.text();
-    const out = injectDayMarkup(text);
-    const headers = new Headers(response.headers);
-    headers.set("content-type", "text/html; charset=utf-8");
-    headers.delete("content-length");
-    return new Response(out, {
-      status: response.status,
-      statusText: response.statusText,
-      headers
-    });
-  } catch (e) {
-    return response;
-  }
-}
