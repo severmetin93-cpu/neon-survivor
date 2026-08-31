@@ -424,18 +424,19 @@ function verify() {
   const strings  = fs.readFileSync(`${RES}/values/strings.xml`, "utf8");  
   const activity = fs.readFileSync(MAIN_ACTIVITY, "utf8");  
   
-  const checks = [  
-    ["portrait kilidi",        /android:screenOrientation="portrait"/.test(manifest)],  
-    ["VIBRATE izni",           manifest.includes("android.permission.VIBRATE")],  
-    ["izin <application> oncesinde",  
-                               manifest.indexOf("android.permission.VIBRATE") < manifest.indexOf("<application")],  
-    ["tam ekran tema",         styles.includes("neon-survivor-fullscreen")],  
-    ["tools namespace",        styles.includes("xmlns:tools")],  
-    ["uygulama adi",           strings.includes(">NEON SURVIVOR<")],  
-    ["immersive mode",         activity.includes("BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE")],  
-    ["adaptive icon xml",      fs.existsSync(`${RES}/mipmap-anydpi-v26/ic_launcher.xml`)],  
-    ["launcher background",    fs.readFileSync(`${RES}/values/neon_colors.xml`, "utf8")  
-                                 .includes("neonLauncherBackground")]  
+  const checks = [
+    ["portrait kilidi",        /android:screenOrientation="portrait"/.test(manifest)],
+    ["VIBRATE izni",           manifest.includes("android.permission.VIBRATE")],
+    ["izin <application> oncesinde",
+                               manifest.indexOf("android.permission.VIBRATE") < manifest.indexOf("<application")],
+    ["AdMob APPLICATION_ID",  manifest.includes("com.google.android.gms.ads.APPLICATION_ID")],
+    ["tam ekran tema",         styles.includes("neon-survivor-fullscreen")],
+    ["tools namespace",        styles.includes("xmlns:tools")],
+    ["uygulama adi",           strings.includes(">NEON SURVIVOR<")],
+    ["immersive mode",         activity.includes("BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE")],
+    ["adaptive icon xml",      fs.existsSync(`${RES}/mipmap-anydpi-v26/ic_launcher.xml`)],
+    ["launcher background",    fs.readFileSync(`${RES}/values/neon_colors.xml`, "utf8")
+                                 .includes("neonLauncherBackground")]
   ];  
   
   for (const d of Object.keys(DENSITIES)) {  
