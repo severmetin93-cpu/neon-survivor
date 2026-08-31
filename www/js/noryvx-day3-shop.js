@@ -78,7 +78,7 @@
   function currencyBits() {
     var c = { credits: 0, shards: 0, neon: 0, gems: 0 };
     try { if (window.RPG && RPG.state) { c.credits = RPG.state.credits || 0; c.shards = RPG.state.shards || 0; } } catch (e) {}
-    try { if (window.P) c.neon = P.neon || 0; } catch (e) {}
+    try { if (window.PROG && window.PROG.state) c.neon = window.PROG.state.neon || 0; } catch (e) {}
     try { if (window.Save && Save.data && Save.data.iap) c.gems = Save.data.iap.gems || 0; } catch (e) {}
     return c;
   }
@@ -122,20 +122,12 @@
   }
 
   function skinList() {
-    var list = [];
     try {
       if (window.NEONCOSM && NEONCOSM.PREMIUM && NEONCOSM.PREMIUM.length) {
         return NEONCOSM.PREMIUM.slice();
       }
     } catch (e) {}
-    /* hardcoded fallback matching game data */
-    return [
-      { id: 'px_glacier', name: 'BUZUL', neon: 180, outer: '#8fe9ff', desc: 'Kutup buzu enerji çekirdeği.' },
-      { id: 'px_ember', name: 'KOR', neon: 220, outer: '#ff8a4c', desc: 'Köz kırmızısı aura.' },
-      { id: 'px_violet', name: 'MORF', neon: 260, outer: '#c084fc', desc: 'Mor frekans alanı.' },
-      { id: 'px_toxic', name: 'TOKSİK', neon: 300, outer: '#4ade80', desc: 'Zehirli neon parıltı.' },
-      { id: 'px_gold', name: 'ALTIN', neon: 400, outer: '#fbbf24', desc: 'Efsanevi altın kaplama.' }
-    ];
+    return [];
   }
 
   function ownsSkin(id) {

@@ -8210,8 +8210,8 @@ const Game={
           combo     : this.maxCombo||1,
           wave      : this.wave||1,
           weapon    : _wep,
-          legendary : Math.max(0,((window.P&&window.P.counters&&window.P.counters.legendary)||0)-(window._ms7LegendarySnap||0)),
-          enhance   : Math.max(0,((window.P&&window.P.counters&&window.P.counters.enhance)||0)-(window._ms7EnhanceSnap||0)),
+          legendary : Math.max(0,((window.PROG&&window.PROG.state&&window.PROG.state.counters&&window.PROG.state.counters.legendary)||0)-(window._ms7LegendarySnap||0)),
+          enhance   : Math.max(0,((window.PROG&&window.PROG.state&&window.PROG.state.counters&&window.PROG.state.counters.enhance)||0)-(window._ms7EnhanceSnap||0)),
           nodeath   : !(player&&player.hp<=0),
           coinsEarned : Math.max(1,Math.floor((Math.round(this.score))/12)),
           gemsEarned  : (this.runBossKills>0?this.runBossKills:0),
@@ -22764,7 +22764,7 @@ var MissionsDB={
     var p3={};
     try{p3=JSON.parse(localStorage.getItem('noryvx_phase3_v1')||'{}');}catch(e){}
     var pc={};
-    try{pc=(window.P&&window.P.counters)||{};}catch(e){}
+    try{pc=(window.PROG&&window.PROG.state&&window.PROG.state.counters)||{};}catch(e){}
     var prog={};
     try{prog=(window.PROG&&window.PROG.state)||{};}catch(e){}
     var db=this.data;
@@ -22799,7 +22799,7 @@ var MissionsDB={
 
     /* Best wave (stored in P.bestWave as object) */
     var bestWave=0;
-    try{var bw=window.P&&window.P.bestWave;if(bw)Object.values(bw).forEach(function(v){if(v>bestWave)bestWave=v;});}catch(e){}
+    try{var bw=window.PROG&&window.PROG.state&&window.PROG.state.bestWave;if(bw)Object.values(bw).forEach(function(v){if(v>bestWave)bestWave=v;});}catch(e){}
 
     return {
       kills        : (pc.kills||0)+(sd.totalElites||0)+(sd.bossKills||0),
@@ -22906,7 +22906,7 @@ var MissionsDB={
     for(var i=0;i<DAILY_POOL.length;i++){if(DAILY_POOL[i].id===m.templateId){tpl=DAILY_POOL[i];break;}}
     if(tpl){
       try{if(typeof Save!=='undefined'&&Save.data){Save.data.coins=(Save.data.coins||0)+tpl.rewardCoins;Save.save();}}catch(e){}
-      try{if(tpl.rewardNeon&&window.P){window.P.neon=(window.P.neon||0)+tpl.rewardNeon;if(window.PROG&&window.PROG.persist)window.PROG.persist();}}catch(e){}
+      try{if(tpl.rewardNeon&&window.PROG&&window.PROG.state){window.PROG.state.neon=(window.PROG.state.neon||0)+tpl.rewardNeon;if(window.PROG.persist)window.PROG.persist();}}catch(e){}
     }
     this.save();
     return{ok:true};
@@ -22926,7 +22926,7 @@ var MissionsDB={
         if(tpl.rewardGems)Save.data.gems=(Save.data.gems||0)+tpl.rewardGems;
         Save.save();
       }}catch(e){}
-      try{if(tpl.rewardNeon&&window.P){window.P.neon=(window.P.neon||0)+tpl.rewardNeon;if(window.PROG&&window.PROG.persist)window.PROG.persist();}}catch(e){}
+      try{if(tpl.rewardNeon&&window.PROG&&window.PROG.state){window.PROG.state.neon=(window.PROG.state.neon||0)+tpl.rewardNeon;if(window.PROG.persist)window.PROG.persist();}}catch(e){}
     }
     this.save();
     return{ok:true};
@@ -23155,8 +23155,8 @@ function ms7Init(){
       var _ms7OrigStart=Game.start.bind(Game);
       Game.start=function(){
         _ms7OrigStart();
-        window._ms7EnhanceSnap  =(window.P&&window.P.counters?window.P.counters.enhance  :0)||0;
-        window._ms7LegendarySnap=(window.P&&window.P.counters?window.P.counters.legendary:0)||0;
+        window._ms7EnhanceSnap  =(window.PROG&&window.PROG.state&&window.PROG.state.counters?window.PROG.state.counters.enhance  :0)||0;
+        window._ms7LegendarySnap=(window.PROG&&window.PROG.state&&window.PROG.state.counters?window.PROG.state.counters.legendary:0)||0;
       };
       Game._ms7SnapWrapped=true;
     }
