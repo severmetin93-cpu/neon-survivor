@@ -1,44 +1,43 @@
-/* NORYVX Pro Shop — layout + scroll (WebView-safe heights) */
+/* NORYVX Shop v5 — single scroll surface (no nested zero-height panes) */
 
 #scr-shop.screen,
 #scr-shop.screen.on {
-  display: flex !important;
-  flex-direction: column !important;
+  display: block !important;
   padding: 0 !important;
   margin: 0 !important;
   width: 100% !important;
   height: 100% !important;
   max-height: 100dvh !important;
-  overflow: hidden !important;
+  overflow-x: hidden !important;
+  overflow-y: scroll !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior-y: contain !important;
+  touch-action: pan-y !important;
   background:
-    radial-gradient(120% 55% at 50% -5%, rgba(34, 230, 255, 0.16), transparent 55%),
-    radial-gradient(80% 40% at 100% 100%, rgba(160, 92, 255, 0.1), transparent 50%),
+    radial-gradient(120% 50% at 50% 0%, rgba(34, 230, 255, 0.14), transparent 55%),
     #020812 !important;
 }
 
 #shop-hdr {
-  flex: 0 0 auto !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 20 !important;
   display: flex !important;
   align-items: center !important;
   gap: 12px !important;
   padding: calc(env(safe-area-inset-top, 0px) + 12px) 14px 10px !important;
   background: rgba(2, 10, 24, 0.96) !important;
   border-bottom: 1px solid rgba(34, 230, 255, 0.14) !important;
-  z-index: 5 !important;
 }
 
 #shop-hdr-lbl {
   font-size: 17px !important;
   font-weight: 800 !important;
-  letter-spacing: 0.22em !important;
+  letter-spacing: 0.2em !important;
   color: #7af0ff !important;
-  text-shadow: 0 0 20px rgba(34, 230, 255, 0.55) !important;
 }
 
 #pg-shop-cur.shop-cur-line {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  gap: 8px !important;
   font-size: 11px !important;
   color: #a8d4ff !important;
   font-family: "IBM Plex Mono", monospace !important;
@@ -47,7 +46,6 @@
 .shop-back-btn {
   width: 42px !important;
   height: 42px !important;
-  min-width: 42px !important;
   border-radius: 12px !important;
   background: rgba(34, 230, 255, 0.1) !important;
   border: 1px solid rgba(34, 230, 255, 0.28) !important;
@@ -56,52 +54,51 @@
 }
 
 #shop-tabs {
-  flex: 0 0 auto !important;
+  position: sticky !important;
+  top: 56px !important;
+  z-index: 19 !important;
   display: flex !important;
   gap: 8px !important;
   padding: 10px 14px !important;
-  background: rgba(2, 8, 20, 0.92) !important;
-  z-index: 5 !important;
+  background: rgba(2, 8, 20, 0.94) !important;
+  border-bottom: 1px solid rgba(34, 230, 255, 0.08) !important;
 }
 
 #shop-tabs .s-tab {
   flex: 1 !important;
-  min-height: 48px !important;
+  min-height: 46px !important;
   border-radius: 14px !important;
   background: rgba(10, 18, 40, 0.95) !important;
   border: 1px solid rgba(34, 230, 255, 0.16) !important;
   color: rgba(170, 200, 255, 0.55) !important;
   font-weight: 800 !important;
-  letter-spacing: 0.1em !important;
 }
 
 #shop-tabs .s-tab.on {
-  background: linear-gradient(180deg, rgba(34, 230, 255, 0.18), rgba(34, 230, 255, 0.06)) !important;
-  border-color: rgba(34, 230, 255, 0.55) !important;
+  background: rgba(34, 230, 255, 0.14) !important;
+  border-color: rgba(34, 230, 255, 0.5) !important;
   color: #e8fbff !important;
-  box-shadow: 0 0 18px rgba(34, 230, 255, 0.2) !important;
 }
 
-/* THE scroll surface — fixed calc height, always scrollable */
+/* Content area — natural height, parent scrolls */
 #shop-panes {
-  flex: 1 1 auto !important;
-  position: relative !important;
-  min-height: 0 !important;
-  height: auto !important;
-  overflow: hidden !important;
   display: block !important;
+  position: static !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+  min-height: 0 !important;
+  padding: 0 !important;
 }
 
 #shop-panes .s-pane {
   display: none !important;
-  position: absolute !important;
-  inset: 0 !important;
-  overflow-y: scroll !important;
-  overflow-x: hidden !important;
-  -webkit-overflow-scrolling: touch !important;
-  overscroll-behavior-y: contain !important;
-  touch-action: pan-y !important;
-  padding: 12px 14px calc(env(safe-area-inset-bottom, 0px) + 36px) !important;
+  position: static !important;
+  inset: auto !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+  padding: 12px 14px calc(env(safe-area-inset-bottom, 0px) + 40px) !important;
   box-sizing: border-box !important;
 }
 
@@ -109,36 +106,25 @@
   display: block !important;
 }
 
-/* Featured free gift */
+#pg-shop-list {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  min-height: 120px !important;
+}
+
 .nvx-shop-hero {
   margin-bottom: 14px;
   padding: 16px;
   border-radius: 18px;
-  background:
-    linear-gradient(135deg, rgba(255, 200, 40, 0.22), rgba(255, 80, 160, 0.12) 50%, rgba(34, 230, 255, 0.08)),
-    rgba(12, 14, 28, 0.95);
+  background: linear-gradient(135deg, rgba(255, 200, 40, 0.2), rgba(34, 230, 255, 0.08)), rgba(12, 14, 28, 0.95);
   border: 1.5px solid rgba(255, 212, 40, 0.45);
-  box-shadow: 0 0 28px rgba(255, 200, 40, 0.15), 0 8px 24px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   position: relative;
-  overflow: hidden;
-}
-.nvx-shop-hero::after {
-  content: "ÖNE ÇIKAN";
-  position: absolute;
-  top: 10px;
-  right: 12px;
-  font-size: 9px;
-  font-weight: 900;
-  letter-spacing: 0.14em;
-  color: #041018;
-  background: linear-gradient(90deg, #ffd428, #ff9a3c);
-  padding: 3px 8px;
-  border-radius: 999px;
 }
 .nvx-shop-hero-title {
   font-size: 15px;
   font-weight: 900;
-  letter-spacing: 0.08em;
   color: #fff6d0;
   margin-bottom: 4px;
 }
@@ -148,30 +134,22 @@
   margin-bottom: 12px;
 }
 .nvx-shop-hero-cta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   min-height: 44px;
   padding: 0 18px;
   border-radius: 12px;
   font-size: 12px;
   font-weight: 900;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   color: #1a1000;
   background: linear-gradient(135deg, #ffe566, #ffb020);
   border: none;
-  box-shadow: 0 4px 16px rgba(255, 180, 40, 0.35);
-}
-.nvx-shop-hero-cta.off {
-  opacity: 0.45;
-  filter: grayscale(0.4);
 }
 
 .shop-section-lbl {
-  margin: 16px 2px 10px !important;
+  margin: 14px 2px 10px !important;
   font-size: 11px !important;
   font-weight: 900 !important;
-  letter-spacing: 0.2em !important;
+  letter-spacing: 0.18em !important;
   color: rgba(140, 210, 255, 0.55) !important;
   border-bottom: 1px solid rgba(34, 230, 255, 0.12) !important;
   padding-bottom: 8px !important;
@@ -187,9 +165,12 @@
   border-radius: 16px !important;
   background: linear-gradient(160deg, rgba(14, 24, 52, 0.98), rgba(6, 12, 28, 0.96)) !important;
   border: 1px solid rgba(34, 230, 255, 0.2) !important;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3) !important;
   text-align: left !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
+
 .shop-card-ico {
   width: 48px !important;
   height: 48px !important;
@@ -200,28 +181,21 @@
   font-size: 22px !important;
   flex-shrink: 0 !important;
 }
-.shop-card-info {
-  flex: 1 !important;
-  min-width: 0 !important;
-}
+
 .shop-card-name {
   font-size: 13px !important;
   font-weight: 800 !important;
   color: #eef6ff !important;
-  letter-spacing: 0.05em !important;
 }
+
 .shop-card-desc {
   font-size: 11px !important;
   color: rgba(170, 200, 255, 0.55) !important;
-  margin-top: 3px !important;
 }
+
 .shop-card-price {
   flex-shrink: 0 !important;
   min-height: 40px !important;
-  min-width: 64px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
   padding: 8px 12px !important;
   border-radius: 12px !important;
   font-size: 11px !important;
@@ -238,7 +212,7 @@
 #nvx-inv-panel h3 {
   margin: 0 0 10px;
   font-size: 10px;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.2em;
   color: #22e6ff;
 }
 #nvx-inv-panel .inv-grid {
@@ -258,5 +232,7 @@
 }
 
 #pg-shop-msg {
-  display: none;
+  padding: 8px 14px 20px;
+  text-align: center;
+  font-size: 12px;
 }
