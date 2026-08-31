@@ -3889,6 +3889,7 @@ requestAnimationFrame(frame);
 <div style="text-align:right"><div style="font:500 8px/1 'IBM Plex Mono',monospace;letter-spacing:.16em;color:rgba(234,244,255,.4)">LEVEL</div><div id="o-level" style="margin-top:7px;font:600 14px/1 'IBM Plex Mono',monospace">—</div></div>
 </div>
 <div id="o-sector" style="flex:none;margin-top:8px;text-align:center;font:500 9px/1 'IBM Plex Mono',monospace;color:rgba(234,244,255,.4);letter-spacing:.12em"></div>
+<div id="o-loot-summary" style="flex:none;margin-top:8px;text-align:center"></div>
 <div style="flex:1"></div>
 <button class="btn" id="b-revive" style="flex:none;width:100%;height:60px;border:0;border-radius:17px;cursor:pointer;background:linear-gradient(135deg,#48ff9b,#22e6a0 55%,#00c97a);box-shadow:0 10px 28px rgba(72,255,155,.28);color:#021a0e;font:700 14px/1 'Chakra Petch',sans-serif;letter-spacing:.2em;text-indent:.2em;display:none">▶ WATCH AD · REVIVE</button>
 <button class="btn" id="b-again" style="flex:none;margin-top:8px;width:100%;height:68px;border:0;border-radius:17px;cursor:pointer;background:linear-gradient(135deg,#2ff0ff,#22a8ff 55%,#7a5cff);box-shadow:0 12px 32px rgba(34,230,255,.26);color:#03121c;font:700 19px/1 'Chakra Petch',sans-serif;letter-spacing:.26em;text-indent:.26em" data-i18n="retry">RETRY</button>
@@ -7917,6 +7918,7 @@ const Game={
     resetPlayer();
 
     Telemetry.reset();   /* FAZ 3 */
+    try{window._runStartInvSize=(window.RPG&&RPG.state&&RPG.state.inv)?RPG.state.inv.length:0;}catch(e){}
 
     this.time=0;
     this.score=0;
@@ -11876,6 +11878,26 @@ function showOver(record){
     const p3xp=window._lastRunP3XP||0;
     const lvup=window._lastRunP3LevelUp?` · <span style="color:#48ff9b">LV ${window._lastRunP3Level||1} ↑ +1 SP</span>`:"";
     rewardLine.innerHTML += `<div style="margin-top:6px;color:#a05cff;font-size:11px;font-weight:800;letter-spacing:.14em">+${p3xp} XP${lvup} · +1 SP (MATRIX)</div>`;
+  }catch(e){}
+  /* Run loot summary */
+  try{
+    var _ls=document.getElementById('o-loot-summary');
+    if(_ls){
+      if(window.RPG&&RPG.state&&RPG.state.inv&&RPG.RARITY){
+        var _newItems=RPG.state.inv.slice(window._runStartInvSize||0);
+        if(_newItems.length>0){
+          var _rc={};
+          _newItems.forEach(function(it){_rc[it.r]=(_rc[it.r]||0)+1;});
+          var _rKeys=Object.keys(_rc).sort(function(a,b){return (RPG.RARITY[b]?RPG.RARITY[b].i:0)-(RPG.RARITY[a]?RPG.RARITY[a].i:0);});
+          var _parts=_rKeys.map(function(r){var rd=RPG.RARITY[r];return '<span style="color:'+(rd?rd.color:'#eaf4ff')+'">'+_rc[r]+'\u00a0'+(rd?rd.label:'?')+'</span>';});
+          _ls.innerHTML='<div style="font:500 8px/1 \'IBM Plex Mono\',monospace;letter-spacing:.16em;color:rgba(234,244,255,.4)">BULUNAN PARÇALAR</div><div style="margin-top:5px;font:600 11px/1.5 \'IBM Plex Mono\',monospace">'+_parts.join(' · ')+'</div>';
+        }else{
+          _ls.innerHTML='';
+        }
+      }else{
+        _ls.innerHTML='';
+      }
+    }
   }catch(e){}
 
   /* Show revive button only if not already revived this run and ads available */
@@ -22977,6 +22999,7 @@ var MissionsDB={
       }}catch(e){}
     }
     this.save();
+    this.checkAchievements();
     try{if(window.NVXAnalytics)NVXAnalytics.log("achievement_unlocked",{achievement_id:String(id),reward_type:(ach.reward&&ach.reward.type)||"none"});}catch(_){}
     return{ok:true,reward:ach.reward};
   },
