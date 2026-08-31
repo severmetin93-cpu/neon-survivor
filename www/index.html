@@ -8690,7 +8690,10 @@ const ATLAS={
     dasher:{x:258,y:772,w:224,h:224},
     hunter:{x:484,y:772,w:192,h:192},
     orbiter:{x:678,y:772,w:192,h:192},
-    weaver:{x:0,y:1030,w:192,h:192}
+    weaver:{x:0,y:1030,w:192,h:192},
+    bullet_pulse:{x:0,y:1222,w:64,h:16},
+    bullet_plasma:{x:64,y:1222,w:64,h:64},
+    bullet_arc:{x:128,y:1222,w:64,h:32}
   };
   const im=new Image();
   im.onload=()=>{ATLAS.img=im;ATLAS.ready=true;};
@@ -10390,6 +10393,14 @@ function drawWeapons(){
 
     if(p.type==="plasma"){
 
+      /* PLASMA — atlas-first: use sprite when atlas is ready */
+      if(atlasHas("bullet_plasma")){
+        ctx.rotate(ang);
+        atlasDraw("bullet_plasma",p.r*2.5);
+        ctx.restore();
+        return;
+      }
+
       /* PLASMA — agir, sicak, yogun glow + plazma izi */
       ctx.rotate(ang);
       ctx.globalAlpha=.22;
@@ -10414,6 +10425,14 @@ function drawWeapons(){
       ctx.fill();
 
     }else if(p.type==="arc"){
+
+      /* ARC — atlas-first: use sprite when atlas is ready */
+      if(atlasHas("bullet_arc")){
+        ctx.rotate(ang);
+        atlasDraw("bullet_arc",p.r*5);
+        ctx.restore();
+        return;
+      }
 
       /* ARC — elektriksel, kirikli enerji hatti */
       ctx.rotate(ang);
@@ -10447,6 +10466,14 @@ function drawWeapons(){
       ctx.fill();
 
     }else{
+
+      /* PULSE — atlas-first: use sprite when atlas is ready */
+      if(atlasHas("bullet_pulse")){
+        ctx.rotate(ang);
+        atlasDraw("bullet_pulse",p.r*4);
+        ctx.restore();
+        return;
+      }
 
       /* PULSE — temiz, hizli cyan enerji bolt + kisa iz */
       ctx.rotate(ang);
