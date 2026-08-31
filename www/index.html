@@ -90,8 +90,6 @@ button,
       transparent 60%
     ),
     rgba(4,6,15,.88);
-  backdrop-filter:blur(7px);
-  -webkit-backdrop-filter:blur(7px);
   opacity:0;
   visibility:hidden;
   pointer-events:none;
@@ -106,6 +104,8 @@ button,
   visibility:visible;
   pointer-events:auto;
   transition:opacity .22s ease, visibility 0s linear 0s;
+  backdrop-filter:blur(7px);
+  -webkit-backdrop-filter:blur(7px);
 }
 
 .logo{
@@ -9754,7 +9754,7 @@ function drawEnemies(){
 
   /* Kalabalikta ince detaylar kapanir — mobil performans korunur.
      Bu yalnizca cizim yogunlugudur, spawn/cap degismez. */
-  const lod=(enemies.count?enemies.count():0)>22;
+  const lod=(enemies.count?enemies.count():0)>8;
 
   enemies.forEach(e=>{
 
@@ -9868,7 +9868,7 @@ function rrEnemyUnit(e,paint,r,lod){
 
   ctx.save();
   ctx.shadowColor=paint.edge;
-  ctx.shadowBlur=e.type===1?14:10;
+  ctx.shadowBlur=lod?0:e.type===1?6:4;
   ctx.lineWidth=e.type===1?2.4:1.9;
 
   if(e.type===1){
@@ -9894,10 +9894,7 @@ function rrEnemyUnit(e,paint,r,lod){
     RR.plate(-r*.30, r*.62,r*.60,r*.24,1.5,"rgba(40,8,24,.95)",paint.edge,1.2);
 
     /* on namlu — tank silah kimligini guclendirir */
-    ctx.save();
-    ctx.shadowColor=paint.edge;ctx.shadowBlur=8;
-    RR.plate(r*.88,-r*.12,r*.44,r*.24,1.5,"rgba(40,8,24,.95)",paint.edge,1.4);
-    ctx.restore();
+    if(!lod){ctx.save();ctx.shadowColor=paint.edge;ctx.shadowBlur=4;RR.plate(r*.88,-r*.12,r*.44,r*.24,1.5,"rgba(40,8,24,.95)",paint.edge,1.4);ctx.restore();}
 
     if(!lod){
       RR.light(-r*.55,-r*.32,r*.35,-r*.32,paint.edge,1,.45);
