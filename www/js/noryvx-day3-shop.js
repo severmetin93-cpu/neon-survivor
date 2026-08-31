@@ -20,7 +20,7 @@
       '#shop-panes .s-pane.on{display:block!important;}',
       '#pg-shop-list,.shop-card{display:flex!important;visibility:visible!important;opacity:1!important;}',
       '#pg-shop-list{display:block!important;}',
-      /* Cosmetics screen — same single-scroll pattern */',
+      /* Cosmetics screen */
       '#scr-cosm.screen.on{',
       '  display:flex!important;flex-direction:column!important;align-items:stretch!important;',
       '  justify-content:flex-start!important;',
@@ -166,10 +166,7 @@
     try {
       document.querySelectorAll('.screen').forEach(function (s) { s.classList.remove('on'); });
       var cs = document.getElementById('scr-cosm');
-      if (!cs) {
-        console.warn('[cosm] scr-cosm missing');
-        return;
-      }
+      if (!cs) return;
       cs.classList.add('on');
       cs.style.opacity = '1';
       cs.style.visibility = 'visible';
@@ -178,15 +175,12 @@
 
       try {
         if (typeof window.renderCosm === 'function') window.renderCosm();
-      } catch (err) {
-        console.warn('[cosm] renderCosm error', err);
-      }
+      } catch (err) {}
 
       fallbackCosmContent();
       attachManualScroll(cs);
       injectBadge('COSM v5');
 
-      /* back button → shop or menu */
       var back = document.getElementById('b-cosm-back');
       if (back && !back._nvx) {
         back._nvx = true;
@@ -195,9 +189,7 @@
           openShop();
         }, true);
       }
-    } catch (e) {
-      console.warn('[cosm open]', e);
-    }
+    } catch (e) {}
   }
 
   function openShop() {
@@ -227,22 +219,7 @@
       renderInventoryPanel();
       enhanceFreeCard();
       attachManualScroll(sc);
-      wireCosmButtons();
-    } catch (e) {
-      console.warn('[shop-v5]', e);
-    }
-  }
-
-  function wireCosmButtons() {
-    document.querySelectorAll('.shop-cosm-btn').forEach(function (btn) {
-      if (btn._nvxCosm) return;
-      btn._nvxCosm = true;
-      btn.addEventListener('click', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        openCosm();
-      }, true);
-    });
+    } catch (e) {}
   }
 
   function wire() {
@@ -255,15 +232,14 @@
         openShop();
       }, true);
     }
-    /* Event delegation for dynamically rendered cosm buttons */
     if (!document._nvxCosmDel) {
       document._nvxCosmDel = true;
       document.addEventListener('click', function (e) {
         var t = e.target;
         if (!t) return;
-        var btn = t.closest ? t.closest('.shop-cosm-btn') : null;
-        if (!btn && t.classList && t.classList.contains('shop-cosm-btn')) btn = t;
-        if (btn) {
+        var b = t.closest ? t.closest('.shop-cosm-btn') : null;
+        if (!b && t.classList && t.classList.contains('shop-cosm-btn')) b = t;
+        if (b) {
           e.preventDefault();
           e.stopPropagation();
           openCosm();
@@ -273,10 +249,12 @@
   }
 
   function boot() {
-    injectCss();
-    wire();
-    window.NVXDay3 = { openShop: openShop, openCosm: openCosm };
-    window.openCosm = openCosm;
+    try {
+      injectCss();
+      wire();
+      window.NVXDay3 = { openShop: openShop, openCosm: openCosm };
+      window.openCosm = openCosm;
+    } catch (e) {}
   }
 
   if (document.readyState === 'loading') {
