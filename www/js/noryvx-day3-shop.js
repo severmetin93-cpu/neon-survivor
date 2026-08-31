@@ -1,12 +1,15 @@
-/* NORYVX Shop v5.2 — reliable cosmetics open */
+/* NORYVX Shop v5.3 — cosmetics as fixed opaque overlay (no blank city) */
 (function () {
   'use strict';
 
-  var STYLE_ID = 'nvx-shop-v52-css';
+  var STYLE_ID = 'nvx-shop-v53-css';
+  var OVERLAY_ID = 'nvx-cosm-overlay';
 
   function injectCss() {
-    var old = document.getElementById('nvx-shop-v5-css');
-    if (old) old.remove();
+    ['nvx-shop-v5-css', 'nvx-shop-v52-css'].forEach(function (id) {
+      var n = document.getElementById(id);
+      if (n) n.remove();
+    });
     if (document.getElementById(STYLE_ID)) return;
     var s = document.createElement('style');
     s.id = STYLE_ID;
@@ -15,24 +18,28 @@
       '#shop-panes{display:block!important;position:static!important;height:auto!important;overflow:visible!important;}',
       '#shop-panes .s-pane{display:none!important;position:static!important;height:auto!important;overflow:visible!important;padding:12px 14px 40px!important;}',
       '#shop-panes .s-pane.on{display:block!important;}',
-      '#pg-shop-list{display:block!important;visibility:visible!important;opacity:1!important;}',
-      '.shop-card{display:flex!important;visibility:visible!important;opacity:1!important;}',
-      '#scr-cosm.screen.on{',
-      '  display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;',
-      '  padding:calc(env(safe-area-inset-top,0px) + 16px) 16px calc(env(safe-area-inset-bottom,0px) + 28px)!important;',
-      '  height:100%!important;max-height:100dvh!important;',
-      '  overflow-y:scroll!important;-webkit-overflow-scrolling:touch!important;touch-action:pan-y!important;',
-      '  background:radial-gradient(100% 50% at 50% 0%,rgba(160,92,255,.14),transparent 55%),#020812!important;',
-      '  opacity:1!important;visibility:visible!important;pointer-events:auto!important;z-index:50!important;',
+      '#pg-shop-list{display:block!important;}',
+      '.shop-card{display:flex!important;}',
+      '#' + OVERLAY_ID + '{',
+      '  position:fixed!important;inset:0!important;z-index:99999!important;',
+      '  background:#020812!important;',
+      '  overflow-y:auto!important;-webkit-overflow-scrolling:touch!important;touch-action:pan-y!important;',
+      '  padding:calc(env(safe-area-inset-top,0px) + 12px) 16px calc(env(safe-area-inset-bottom,0px) + 24px)!important;',
+      '  box-sizing:border-box!important;color:#eaf4ff!important;',
+      '  font-family:system-ui,-apple-system,sans-serif!important;',
       '}',
-      '#scr-cosm .tutorial-title{font-size:18px!important;letter-spacing:.18em!important;color:#e8f4ff!important;text-align:center!important;margin:0 0 8px!important;}',
-      '#scr-cosm .tag,#cosm-cur{color:#a8d4ff!important;text-align:center!important;margin-bottom:12px!important;}',
-      '#scr-cosm .cosm-tabs{display:flex!important;gap:8px!important;width:100%!important;max-width:430px!important;margin:0 auto 12px!important;}',
-      '#scr-cosm .cosm-tab{flex:1!important;min-height:44px!important;border-radius:12px!important;border:1px solid rgba(34,230,255,.2)!important;background:rgba(10,18,40,.95)!important;color:rgba(180,210,255,.55)!important;font-weight:800!important;}',
-      '#scr-cosm .cosm-tab.on{border-color:rgba(160,92,255,.55)!important;color:#f0e8ff!important;background:rgba(160,92,255,.15)!important;}',
-      '#scr-cosm .cosm-wrap{width:100%!important;max-width:430px!important;margin:0 auto!important;max-height:none!important;overflow:visible!important;display:flex!important;flex-direction:column!important;gap:10px!important;}',
-      '#scr-cosm .cosm-card{display:grid!important;grid-template-columns:54px 1fr auto!important;align-items:center!important;gap:10px!important;padding:12px 14px!important;border-radius:14px!important;border:1px solid rgba(34,230,255,.22)!important;background:rgba(10,18,40,.96)!important;color:#eaf4ff!important;text-align:left!important;}',
-      '#scr-cosm #b-cosm-back{margin:16px auto 0!important;min-height:44px!important;display:block!important;}'
+      '#' + OVERLAY_ID + ' .nvx-c-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;}',
+      '#' + OVERLAY_ID + ' .nvx-c-back{width:42px;height:42px;border-radius:12px;border:1px solid rgba(34,230,255,.3);background:rgba(34,230,255,.1);color:#22e6ff;font-size:22px;}',
+      '#' + OVERLAY_ID + ' .nvx-c-title{font-size:18px;font-weight:800;letter-spacing:.2em;color:#c4f0ff;}',
+      '#' + OVERLAY_ID + ' .nvx-c-sub{font-size:11px;color:rgba(168,210,255,.7);margin-top:2px;}',
+      '#' + OVERLAY_ID + ' .nvx-c-tabs{display:flex;gap:8px;margin-bottom:14px;}',
+      '#' + OVERLAY_ID + ' .nvx-c-tab{flex:1;min-height:44px;border-radius:12px;border:1px solid rgba(34,230,255,.2);background:rgba(10,18,40,.95);color:rgba(180,210,255,.55);font-weight:800;font-size:11px;letter-spacing:.12em;}',
+      '#' + OVERLAY_ID + ' .nvx-c-tab.on{border-color:rgba(160,92,255,.55);color:#f0e8ff;background:rgba(160,92,255,.15);}',
+      '#' + OVERLAY_ID + ' .nvx-c-card{display:flex;align-items:center;gap:12px;padding:14px;margin-bottom:10px;border-radius:14px;border:1px solid rgba(34,230,255,.22);background:rgba(10,18,40,.96);}',
+      '#' + OVERLAY_ID + ' .nvx-c-orb{width:44px;height:44px;border-radius:50%;flex-shrink:0;box-shadow:0 0 16px currentColor;}',
+      '#' + OVERLAY_ID + ' .nvx-c-name{font-size:13px;font-weight:800;letter-spacing:.08em;}',
+      '#' + OVERLAY_ID + ' .nvx-c-desc{font-size:11px;color:rgba(180,210,255,.55);margin-top:2px;}',
+      '#' + OVERLAY_ID + ' .nvx-c-price{margin-left:auto;font-size:12px;font-weight:900;color:#ffd24d;}'
     ].join('\n');
     document.head.appendChild(s);
   }
@@ -40,9 +47,6 @@
   function hideAllScreens() {
     document.querySelectorAll('.screen').forEach(function (s) {
       s.classList.remove('on');
-      s.style.opacity = '';
-      s.style.visibility = '';
-      s.style.pointerEvents = '';
     });
   }
 
@@ -51,10 +55,6 @@
     var el = document.getElementById(id);
     if (!el) return null;
     el.classList.add('on');
-    el.style.opacity = '1';
-    el.style.visibility = 'visible';
-    el.style.pointerEvents = 'auto';
-    el.style.zIndex = '50';
     return el;
   }
 
@@ -121,59 +121,133 @@
     pane.insertBefore(hero, pane.firstChild.nextSibling || list);
   }
 
-  function fallbackCosmContent() {
-    var neon = document.getElementById('cosm-neon-body');
-    if (!neon) return;
-    if (neon.innerHTML && neon.innerHTML.trim().length > 30) return;
-    neon.style.display = 'flex';
-    neon.innerHTML =
-      '<div class="cosm-card" style="--co:#22e6ff">' +
-      '<span class="cosm-orb"></span>' +
-      '<span class="cosm-txt"><b>DEFAULT</b><i>Standart neon</i></span>' +
-      '<span class="cosm-p">KUŞANILI</span></div>' +
-      '<div class="cosm-note">Skinler yükleniyor… Geri dönüp tekrar açmayı dene.</div>';
+  function skinList() {
+    var list = [];
+    try {
+      if (window.NEONCOSM && NEONCOSM.PREMIUM && NEONCOSM.PREMIUM.length) {
+        return NEONCOSM.PREMIUM.slice();
+      }
+    } catch (e) {}
+    /* hardcoded fallback matching game data */
+    return [
+      { id: 'px_glacier', name: 'BUZUL', neon: 180, outer: '#8fe9ff', desc: 'Kutup buzu enerji çekirdeği.' },
+      { id: 'px_ember', name: 'KOR', neon: 220, outer: '#ff8a4c', desc: 'Köz kırmızısı aura.' },
+      { id: 'px_violet', name: 'MORF', neon: 260, outer: '#c084fc', desc: 'Mor frekans alanı.' },
+      { id: 'px_toxic', name: 'TOKSİK', neon: 300, outer: '#4ade80', desc: 'Zehirli neon parıltı.' },
+      { id: 'px_gold', name: 'ALTIN', neon: 400, outer: '#fbbf24', desc: 'Efsanevi altın kaplama.' }
+    ];
+  }
+
+  function ownsSkin(id) {
+    try {
+      if (window.NEONCOSM && typeof NEONCOSM.owns === 'function') return !!NEONCOSM.owns(id);
+    } catch (e) {}
+    try {
+      var o = (window.Save && Save.data && Save.data.ownedSkins) || {};
+      return !!o[id];
+    } catch (e2) {}
+    return false;
+  }
+
+  function selectedSkin() {
+    try { return (Save.data && Save.data.selectedSkin) || ''; } catch (e) { return ''; }
+  }
+
+  function closeOverlay() {
+    var ov = document.getElementById(OVERLAY_ID);
+    if (ov) ov.remove();
   }
 
   function openCosm() {
     try {
-      var cs = showScreen('scr-cosm');
-      if (!cs) return;
+      closeOverlay();
+      /* keep shop under but cover everything with opaque overlay */
+      var cur = currencyBits();
+      var skins = skinList();
+      var sel = selectedSkin();
 
-      try {
-        if (typeof window.renderCosm === 'function') window.renderCosm();
-      } catch (err) {}
+      var ov = document.createElement('div');
+      ov.id = OVERLAY_ID;
 
-      /* force neon body visible */
-      var neon = document.getElementById('cosm-neon-body');
-      var prem = document.getElementById('cosm-premium-body');
-      if (neon) {
-        neon.style.display = 'flex';
-        neon.style.visibility = 'visible';
-        neon.style.opacity = '1';
+      var html = '';
+      html += '<div class="nvx-c-head">';
+      html += '<button type="button" class="nvx-c-back" id="nvx-c-back">‹</button>';
+      html += '<div><div class="nvx-c-title">KOZMETİK</div>';
+      html += '<div class="nvx-c-sub">◎ ' + cur.credits + ' · ◆ ' + cur.shards + ' · ✦ ' + cur.neon + '</div></div>';
+      html += '</div>';
+      html += '<div class="nvx-c-tabs">';
+      html += '<button type="button" class="nvx-c-tab on" data-tab="neon">NEON</button>';
+      html += '<button type="button" class="nvx-c-tab" data-tab="prem">PREMIUM</button>';
+      html += '</div>';
+      html += '<div id="nvx-c-list"></div>';
+
+      ov.innerHTML = html;
+      document.body.appendChild(ov);
+      attachManualScroll(ov);
+
+      function paint(tab) {
+        var list = ov.querySelector('#nvx-c-list');
+        if (!list) return;
+        if (tab === 'prem') {
+          list.innerHTML =
+            '<div class="nvx-c-card"><div><div class="nvx-c-name">PREMIUM SKINLER</div>' +
+            '<div class="nvx-c-desc">IAP paketleri yakında. Şimdilik NEON sekmesinden skin alabilirsin.</div></div></div>';
+          return;
+        }
+        var out = '';
+        skins.forEach(function (p) {
+          var own = ownsSkin(p.id);
+          var on = sel === p.id;
+          var price = on ? 'KUŞANILI' : own ? 'KUŞAN' : ('✦' + (p.neon || 0));
+          out += '<button type="button" class="nvx-c-card" data-skin="' + p.id + '">';
+          out += '<div class="nvx-c-orb" style="background:' + (p.outer || '#22e6ff') + ';color:' + (p.outer || '#22e6ff') + '"></div>';
+          out += '<div style="flex:1;min-width:0;text-align:left">';
+          out += '<div class="nvx-c-name" style="color:' + (p.outer || '#eaf4ff') + '">' + (p.name || p.id) + '</div>';
+          out += '<div class="nvx-c-desc">' + (p.desc || '') + '</div></div>';
+          out += '<div class="nvx-c-price">' + price + '</div></button>';
+        });
+        if (!out) out = '<div class="nvx-c-card"><div class="nvx-c-name">Skin yok</div></div>';
+        list.innerHTML = out;
+
+        list.querySelectorAll('[data-skin]').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var id = btn.getAttribute('data-skin');
+            try {
+              if (window.NEONCOSM) {
+                if (ownsSkin(id) && NEONCOSM.selectSkin) NEONCOSM.selectSkin(id);
+                else if (NEONCOSM.buySkin) NEONCOSM.buySkin(id);
+              }
+            } catch (e) {}
+            sel = selectedSkin();
+            paint('neon');
+          });
+        });
       }
-      if (prem) prem.style.display = 'none';
 
-      fallbackCosmContent();
-      attachManualScroll(cs);
+      paint('neon');
 
-      var back = document.getElementById('b-cosm-back');
-      if (back) {
-        back.onclick = function (e) {
-          if (e) e.preventDefault();
-          openShop();
-        };
-      }
-    } catch (e) {}
+      ov.querySelector('#nvx-c-back').addEventListener('click', function () {
+        closeOverlay();
+        openShop();
+      });
+
+      ov.querySelectorAll('.nvx-c-tab').forEach(function (t) {
+        t.addEventListener('click', function () {
+          ov.querySelectorAll('.nvx-c-tab').forEach(function (x) { x.classList.remove('on'); });
+          t.classList.add('on');
+          paint(t.getAttribute('data-tab') === 'prem' ? 'prem' : 'neon');
+        });
+      });
+    } catch (e) {
+      console.warn('[cosm overlay]', e);
+    }
   }
 
   function rebindCosmButtons() {
     document.querySelectorAll('.shop-cosm-btn').forEach(function (btn) {
       try { btn.removeAttribute('onclick'); } catch (e) {}
       btn.onclick = function (e) {
-        if (e) {
-          e.preventDefault();
-          e.stopPropagation();
-        }
+        if (e) { e.preventDefault(); e.stopPropagation(); }
         openCosm();
         return false;
       };
@@ -182,6 +256,7 @@
 
   function openShop() {
     try {
+      closeOverlay();
       var sc = showScreen('scr-shop');
       if (!sc) return;
 
@@ -195,19 +270,12 @@
         if (ingame) ingame.classList.add('on');
         else panes[0].classList.add('on');
       }
-      var tabs = document.querySelectorAll('#shop-tabs .s-tab');
-      if (tabs.length) {
-        tabs.forEach(function (t) { t.classList.remove('on'); });
-        var first = document.querySelector('#shop-tabs .s-tab[data-stab="ingame"]') || tabs[0];
-        if (first) first.classList.add('on');
-      }
 
       renderInventoryPanel();
       enhanceFreeCard();
       rebindCosmButtons();
       attachManualScroll(sc);
 
-      /* Premium tab: also rebind when user switches tabs */
       var tabBar = document.getElementById('shop-tabs');
       if (tabBar && !tabBar._nvxRebind) {
         tabBar._nvxRebind = true;
@@ -223,9 +291,9 @@
     if (!t) return null;
     if (t.nodeType === 3) t = t.parentElement;
     var hops = 0;
-    while (t && hops < 8) {
+    while (t && hops < 10) {
       if (t.classList && t.classList.contains('shop-cosm-btn')) return t;
-      if (t.id === 'scr-shop' || t === document.body) break;
+      if (t === document.body) break;
       t = t.parentElement;
       hops++;
     }
@@ -235,26 +303,22 @@
   function onCosmIntent(e) {
     var btn = findCosmBtn(e.target);
     if (!btn) return;
-    try {
-      e.preventDefault();
-      e.stopPropagation();
-    } catch (err) {}
+    try { e.preventDefault(); e.stopPropagation(); } catch (err) {}
     openCosm();
   }
 
   function wire() {
     var hub = document.getElementById('b-hub-store');
-    if (hub && !hub._shopV52) {
-      hub._shopV52 = true;
+    if (hub && !hub._shopV53) {
+      hub._shopV53 = true;
       hub.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
         openShop();
       }, true);
     }
-
-    if (!document._nvxCosmV52) {
-      document._nvxCosmV52 = true;
+    if (!document._nvxCosmV53) {
+      document._nvxCosmV53 = true;
       document.addEventListener('click', onCosmIntent, true);
       document.addEventListener('touchend', onCosmIntent, true);
     }
