@@ -1,8 +1,14 @@
-/* NORYVX Day 2 — Missions wiring polish
-   Loaded after main game if linked from index.html
-*/
+/* NORYVX Day 2 — Missions wiring polish + CSS fallback inject */
 (function(){
   'use strict';
+
+  (function ensureCss(){
+    if(document.querySelector('link[href*="nvx2-menu-polish"]')) return;
+    var l=document.createElement('link');
+    l.rel='stylesheet';
+    l.href='css/nvx2-menu-polish.css';
+    document.head.appendChild(l);
+  })();
 
   function afterRunEndRefresh(){
     try{

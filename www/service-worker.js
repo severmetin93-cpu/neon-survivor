@@ -1,24 +1,6 @@
-/* NORYVX — cache adi HER BUILD'DE degismeli.
-   ONCE: "neon-survivor-v4" V15.5'ten beri hic degismemisti. activate
-   asamasi eski cache'leri temizliyor ama SADECE ad degistiginde
-   tetikleniyor; ad sabit kaldigi icin hicbir zaman temizlenmedi ve
-   fetch cache-first oldugu icin cihaz ilk kurulumdaki index.html'i
-   sonsuza kadar sunmaya devam etti. Yeni APK'larda eski oyunun
-   gorunmesinin sebebi buydu.
-   SONRA: ad surumle birlikte degisir. */
-/* V16.8.0 — sprite atlas eklendi. Varliklar CACHE-FIRST oldugu icin
-   cache adi degismezse yeni atlas cihaza HIC ULASMAZ; dosyanin en
-   ustundeki notun tarif ettigi hata tam olarak budur. Ad bu yuzden
-   surumle birlikte yukseltildi. Temizleme mantigi degismedi. */
-/* NORYVX V20.3.0 — Full combat HUD redesign.
-   Boss HUD redesigned as full card (name, phase label, threat, segmented bar).
-   Weapon pills: 48x38px per design spec.
-   Power pills: horizontal flex layout with name+time.
-   Hull bar: player HP displayed during gameplay.
-   Score display: live score shown in wave HUD during combat.
-   Touch handlers: hero-select upgraded to tap() system, back button uses tap().
-   Cache adi guncellendi (aksi halde eski asset'ler ilkanimlandiktan sonra calisir). */
-const CACHE = "neon-survivor-v25-1-1";
+/* NORYVX — cache adi HER BUILD'DE degismeli. */
+/* V25.1.2 — Day2: inject menu CSS + missions fixes into HTML responses (avoids 4MB index push). */
+const CACHE = "neon-survivor-v25-1-2";
 
 const ASSETS = [
   "./",
@@ -34,14 +16,36 @@ const ASSETS = [
   "./js/ms7-day2-fixes.js"
 ];
 
+const INJECT_CSS = '<link href="css/nvx2-menu-polish.css" rel="stylesheet"/>';
+const INJECT_JS  = '<script src="js/ms7-day2-fixes.js" defer></script>';
+
+function injectDayMarkup(html) {
+  if (typeof html !== "string") return html;
+  let out = html;
+  if (out.indexOf("nvx2-menu-polish.css") === -1) {
+    if (out.indexOf('rel="manifest"') !== -1) {
+      out = out.replace(
+        /(<link[^>]*rel=["']manifest["'][^>]*\/?>)/i,
+        "$1\n" + INJECT_CSS
+      );
+    } else if (out.indexOf("</head>") !== -1) {
+      out = out.replace("</head>", INJECT_CSS + "\n</head>");
+    }
+  }
+  if (out.indexOf("ms7-day2-fixes.js") === -1) {
+    if (out.indexOf("</body>") !== -1) {
+      out = out.replace("</body>", INJECT_JS + "\n</body>");
+    } else {
+      out += INJECT_JS;
+    }
+  }
+  return out;
+}
+
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE)
-      .then(cache => {
-        return Promise.allSettled(
-          ASSETS.map(asset => cache.add(asset))
-        );
-      })
+      .then(cache => Promise.allSettled(ASSETS.map(a => cache.add(a))))
       .then(() => self.skipWaiting())
   );
 });
@@ -49,14 +53,14 @@ self.addEventListener("install", event => {
 self.addEventListener("activate", event => {
   event.waitUntil(
     caches.keys()
-      .then(keys => {
-        return Promise.all(
+      .then(keys =>
+        Promise.all(
           keys
             .filter(key => key !== CACHE)
             .filter(key => key.indexOf("neon-survivor") === 0)
             .map(key => caches.delete(key))
-        );
-      })
+        )
+      )
       .then(() => self.clients.claim())
   );
 });
@@ -65,58 +69,73 @@ self.addEventListener("fetch", event => {
   if (event.request.method !== "GET") return;
 
   const req = event.request;
+  const url = new URL(req.url);
   const isDoc =
     req.mode === "navigate" ||
-    (req.destination === "document") ||
+    req.destination === "document" ||
     /\/index\.html($|\?)/.test(req.url) ||
-    /\/$/.test(new URL(req.url).pathname);
+    (url.origin === self.location.origin && (url.pathname === "/" || url.pathname.endsWith("/")));
 
   if (isDoc) {
     event.respondWith(
       fetch(req)
-        .then(response => {
-          if (response && response.status === 200) {
-            const copy = response.clone();
-            caches.open(CACHE)
-              .then(cache => cache.put(req, copy))
-              .catch(() => {});
+        .then(async response => {
+          if (!response || response.status !== 200) {
+            const cached = await caches.match(req);
+            if (cached) return injectResponse(cached);
+            const fallback = await caches.match("./index.html");
+            return fallback ? injectResponse(fallback) : response;
           }
-          return response;
+          const injected = await injectResponse(response);
+          try {
+            const copy = injected.clone();
+            caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {});
+          } catch (e) {}
+          return injected;
         })
-        .catch(() => {
-          return caches.match(req)
-            .then(hit => hit || caches.match("./index.html"));
+        .catch(async () => {
+          const cached = await caches.match(req);
+          if (cached) return injectResponse(cached);
+          const fallback = await caches.match("./index.html");
+          return fallback ? injectResponse(fallback) : Response.error();
         })
     );
     return;
   }
 
   event.respondWith(
-    caches.match(event.request)
-      .then(cached => {
-        if (cached) {
-          return cached;
-        }
-
-        return fetch(event.request)
-          .then(response => {
-            if (
-              response &&
-              response.status === 200 &&
-              response.type === "basic"
-            ) {
-              const copy = response.clone();
-
-              caches.open(CACHE)
-                .then(cache => cache.put(event.request, copy))
-                .catch(() => {});
-            }
-
-            return response;
-          })
-          .catch(() => {
-            return caches.match("./index.html");
-          });
-      })
+    caches.match(event.request).then(cached => {
+      if (cached) return cached;
+      return fetch(event.request)
+        .then(response => {
+          if (response && response.status === 200 && response.type === "basic") {
+            const copy = response.clone();
+            caches.open(CACHE).then(cache => cache.put(event.request, copy)).catch(() => {});
+          }
+          return response;
+        })
+        .catch(() => caches.match("./index.html"));
+    })
   );
 });
+
+async function injectResponse(response) {
+  try {
+    const ct = (response.headers.get("content-type") || "").toLowerCase();
+    if (ct && ct.indexOf("text/html") === -1 && ct.indexOf("text/plain") === -1) {
+      return response;
+    }
+    const text = await response.text();
+    const out = injectDayMarkup(text);
+    const headers = new Headers(response.headers);
+    headers.set("content-type", "text/html; charset=utf-8");
+    headers.delete("content-length");
+    return new Response(out, {
+      status: response.status,
+      statusText: response.statusText,
+      headers
+    });
+  } catch (e) {
+    return response;
+  }
+}

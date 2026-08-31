@@ -1,0 +1,37 @@
+name: Patch index.html links
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/patch-index-links.py"
+      - "www/css/**"
+      - "www/js/**"
+      - ".github/workflows/patch-index-links.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Inject CSS/JS links into index.html
+        run: python3 scripts/patch-index-links.py
+
+      - name: Commit if changed
+        run: |
+          git config user.name "noryvx-bot"
+          git config user.email "noryvx-bot@users.noreply.github.com"
+          git add www/index.html
+          if git diff --staged --quiet; then
+            echo "No index changes"
+          else
+            git commit -m "chore(day2): inject menu polish CSS + MS7 day2 fixes into index.html"
+            git push
+          fi
