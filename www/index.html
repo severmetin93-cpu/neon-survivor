@@ -16390,13 +16390,13 @@ function buyKill(id){
   if(PROG.state.neon<k.neon)return {ok:false,msg:"Yetersiz NEON ("+k.neon+" gerekir)"};
   PROG.state.neon-=k.neon;PROG.persist();
   K.owned[id]=1;K.sel=id;kPersist();
-  try{window.NEONAUDIO.SFX.buy();}catch(e){}
+  try{if(window.NEONAUDIO)window.NEONAUDIO.SFX.buy();}catch(e){}
   return {ok:true,msg:k.n+" alındı ve seçildi"};
 }
 function selKill(id){
   if(!K.owned[id])return {ok:false,msg:"Sahip değilsin"};
   K.sel=id;kPersist();
-  try{window.NEONAUDIO.SFX.select();}catch(e){}
+  try{if(window.NEONAUDIO)window.NEONAUDIO.SFX.select();}catch(e){}
   return {ok:true,msg:KMAP[id].n+" seçildi"};
 }
 
@@ -16489,7 +16489,7 @@ function renderOnb(){
   const x=box.querySelector("[data-onb-x]");
   if(x)x.addEventListener("click",()=>{
     O.done=true;oPersist();box.classList.remove("on");
-    try{window.NEONAUDIO.SFX.tap();}catch(e){}
+    try{if(window.NEONAUDIO)window.NEONAUDIO.SFX.tap();}catch(e){}
   });
 }
 setInterval(()=>{
@@ -17598,7 +17598,7 @@ function go(key){
   panes.forEach(p=>p.classList.toggle("on",p.dataset.mpane===key));
   tabs.forEach(t=>t.classList.toggle("on",t.dataset.mtab===key));
   navs.forEach(n=>n.classList.toggle("on",n.dataset.nav===key));
-  try{window.NEONAUDIO.SFX.tap();}catch(e){}
+  try{if(window.NEONAUDIO)window.NEONAUDIO.SFX.tap();}catch(e){}
 }
 navs.forEach(n=>n.addEventListener("click",()=>go(n.dataset.nav)));
 tabs.forEach(t=>t.addEventListener("click",()=>go(t.dataset.mtab)));

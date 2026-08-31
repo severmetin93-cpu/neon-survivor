@@ -77,9 +77,9 @@
 
   function currencyBits() {
     var c = { credits: 0, shards: 0, neon: 0, gems: 0 };
-    try { if (window.RPG && RPG.state) { c.credits = RPG.state.credits || 0; c.shards = RPG.state.shards || 0; } } catch (e) {}
+    try { if (window.RPG && window.RPG.state) { c.credits = window.RPG.state.credits || 0; c.shards = window.RPG.state.shards || 0; } } catch (e) {}
     try { if (window.PROG && window.PROG.state) c.neon = window.PROG.state.neon || 0; } catch (e) {}
-    try { if (window.Save && Save.data && Save.data.iap) c.gems = Save.data.iap.gems || 0; } catch (e) {}
+    try { if (window.Save && window.Save.data && window.Save.data.iap) c.gems = window.Save.data.iap.gems || 0; } catch (e) {}
     return c;
   }
 
@@ -135,14 +135,14 @@
       if (window.NEONCOSM && typeof NEONCOSM.owns === 'function') return !!NEONCOSM.owns(id);
     } catch (e) {}
     try {
-      var o = (window.Save && Save.data && Save.data.ownedSkins) || {};
+      var o = (window.Save && window.Save.data && window.Save.data.ownedSkins) || {};
       return !!o[id];
     } catch (e2) {}
     return false;
   }
 
   function selectedSkin() {
-    try { return (Save.data && Save.data.selectedSkin) || ''; } catch (e) { return ''; }
+    try { return (window.Save && window.Save.data && window.Save.data.selectedSkin) || ''; } catch (e) { return ''; }
   }
 
   function closeOverlay() {
