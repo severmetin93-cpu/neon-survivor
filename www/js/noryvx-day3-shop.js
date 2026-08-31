@@ -1,4 +1,4 @@
-/* NORYVX Shop v5 — content visible + single-screen scroll */
+/* NORYVX Shop v5.1 — shop + cosmetics open fix */
 (function () {
   'use strict';
 
@@ -14,26 +14,73 @@
       '  display:block!important;padding:0!important;height:100%!important;',
       '  overflow-y:scroll!important;overflow-x:hidden!important;',
       '  -webkit-overflow-scrolling:touch!important;touch-action:pan-y!important;',
-      '  overscroll-behavior-y:contain!important;',
       '}',
-      '#shop-panes{display:block!important;position:static!important;height:auto!important;overflow:visible!important;max-height:none!important;}',
-      '#shop-panes .s-pane{display:none!important;position:static!important;height:auto!important;overflow:visible!important;max-height:none!important;padding:12px 14px 40px!important;}',
+      '#shop-panes{display:block!important;position:static!important;height:auto!important;overflow:visible!important;}',
+      '#shop-panes .s-pane{display:none!important;position:static!important;height:auto!important;overflow:visible!important;padding:12px 14px 40px!important;}',
       '#shop-panes .s-pane.on{display:block!important;}',
-      '#pg-shop-list{display:block!important;visibility:visible!important;opacity:1!important;min-height:80px!important;}',
-      '.shop-card{display:flex!important;visibility:visible!important;opacity:1!important;}'
+      '#pg-shop-list,.shop-card{display:flex!important;visibility:visible!important;opacity:1!important;}',
+      '#pg-shop-list{display:block!important;}',
+      /* Cosmetics screen — same single-scroll pattern */',
+      '#scr-cosm.screen.on{',
+      '  display:flex!important;flex-direction:column!important;align-items:stretch!important;',
+      '  justify-content:flex-start!important;',
+      '  padding:calc(env(safe-area-inset-top,0px) + 16px) 16px calc(env(safe-area-inset-bottom,0px) + 28px)!important;',
+      '  height:100%!important;max-height:100dvh!important;',
+      '  overflow-y:scroll!important;overflow-x:hidden!important;',
+      '  -webkit-overflow-scrolling:touch!important;touch-action:pan-y!important;',
+      '  background:radial-gradient(100% 50% at 50% 0%,rgba(160,92,255,.12),transparent 55%),#020812!important;',
+      '  z-index:40!important;',
+      '}',
+      '#scr-cosm .tutorial-title{',
+      '  font-size:18px!important;letter-spacing:.2em!important;color:#e8f4ff!important;',
+      '  text-shadow:0 0 16px rgba(160,92,255,.45)!important;margin:0 0 8px!important;text-align:center!important;',
+      '}',
+      '#scr-cosm .tag,#cosm-cur{',
+      '  color:#a8d4ff!important;font-size:12px!important;margin-bottom:12px!important;text-align:center!important;',
+      '}',
+      '#scr-cosm .cosm-tabs{',
+      '  display:flex!important;gap:8px!important;width:100%!important;max-width:430px!important;margin:0 auto 12px!important;',
+      '}',
+      '#scr-cosm .cosm-tab{',
+      '  flex:1!important;min-height:44px!important;border-radius:12px!important;',
+      '  border:1px solid rgba(34,230,255,.2)!important;background:rgba(10,18,40,.95)!important;',
+      '  color:rgba(180,210,255,.55)!important;font-weight:800!important;',
+      '}',
+      '#scr-cosm .cosm-tab.on{',
+      '  border-color:rgba(160,92,255,.55)!important;color:#f0e8ff!important;',
+      '  background:rgba(160,92,255,.15)!important;',
+      '}',
+      '#scr-cosm .cosm-wrap{',
+      '  width:100%!important;max-width:430px!important;margin:0 auto!important;',
+      '  max-height:none!important;overflow:visible!important;',
+      '  display:flex!important;flex-direction:column!important;gap:10px!important;',
+      '}',
+      '#scr-cosm .cosm-card{',
+      '  display:grid!important;grid-template-columns:54px 1fr auto!important;',
+      '  align-items:center!important;gap:10px!important;width:100%!important;',
+      '  padding:12px 14px!important;border-radius:14px!important;',
+      '  border:1px solid rgba(34,230,255,.22)!important;',
+      '  background:linear-gradient(160deg,rgba(14,24,52,.98),rgba(6,12,28,.96))!important;',
+      '  color:#eaf4ff!important;text-align:left!important;',
+      '}',
+      '#scr-cosm #b-cosm-back{',
+      '  margin:16px auto 0!important;min-height:44px!important;min-width:120px!important;',
+      '  display:block!important;',
+      '}'
     ].join('\n');
     document.head.appendChild(s);
   }
 
-  function injectBadge() {
-    if (document.getElementById(BADGE_ID)) return;
+  function injectBadge(text) {
+    var old = document.getElementById(BADGE_ID);
+    if (old) old.remove();
     var b = document.createElement('div');
     b.id = BADGE_ID;
-    b.textContent = 'SHOP v5';
+    b.textContent = text || 'SHOP v5';
     b.style.cssText = 'position:fixed;top:calc(8px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:9999;pointer-events:none;font-size:10px;font-weight:800;letter-spacing:.18em;padding:4px 10px;border-radius:999px;color:#041018;background:linear-gradient(90deg,#22e6ff,#a05cff)';
     document.body.appendChild(b);
-    setTimeout(function () { try { b.style.opacity = '0'; } catch (e) {} }, 6000);
-    setTimeout(function () { try { b.remove(); } catch (e) {} }, 7000);
+    setTimeout(function () { try { b.style.opacity = '0'; } catch (e) {} }, 5000);
+    setTimeout(function () { try { b.remove(); } catch (e) {} }, 6000);
   }
 
   function attachManualScroll(el) {
@@ -97,12 +144,60 @@
       '<button type="button" class="nvx-shop-hero-cta">' + (off ? 'BEKLEMEDE' : 'HEMEN AL') + '</button>';
     var cta = hero.querySelector('.nvx-shop-hero-cta');
     if (cta && !off) {
-      cta.addEventListener('click', function () {
-        try { free.click(); } catch (e) {}
-      });
+      cta.addEventListener('click', function () { try { free.click(); } catch (e) {} });
     }
-    /* keep original card visible as well — do NOT hide list content */
     pane.insertBefore(hero, pane.firstChild.nextSibling || list);
+  }
+
+  function fallbackCosmContent() {
+    var neon = document.getElementById('cosm-neon-body');
+    if (!neon) return;
+    if (neon.innerHTML && neon.innerHTML.trim().length > 20) return;
+    neon.innerHTML =
+      '<div class="cosm-card" style="--co:#22e6ff">' +
+      '<span class="cosm-orb"></span>' +
+      '<span class="cosm-txt"><b>DEFAULT</b><i>Standart neon görünüm</i></span>' +
+      '<span class="cosm-p">KUŞANILI</span></div>' +
+      '<div class="cosm-note">Skin listesi yüklenemedi veya boş. Geri dönüp tekrar dene.</div>';
+    neon.style.display = '';
+  }
+
+  function openCosm() {
+    try {
+      document.querySelectorAll('.screen').forEach(function (s) { s.classList.remove('on'); });
+      var cs = document.getElementById('scr-cosm');
+      if (!cs) {
+        console.warn('[cosm] scr-cosm missing');
+        return;
+      }
+      cs.classList.add('on');
+      cs.style.opacity = '1';
+      cs.style.visibility = 'visible';
+      cs.style.pointerEvents = 'auto';
+      cs.style.zIndex = '40';
+
+      try {
+        if (typeof window.renderCosm === 'function') window.renderCosm();
+      } catch (err) {
+        console.warn('[cosm] renderCosm error', err);
+      }
+
+      fallbackCosmContent();
+      attachManualScroll(cs);
+      injectBadge('COSM v5');
+
+      /* back button → shop or menu */
+      var back = document.getElementById('b-cosm-back');
+      if (back && !back._nvx) {
+        back._nvx = true;
+        back.addEventListener('click', function (e) {
+          e.preventDefault();
+          openShop();
+        }, true);
+      }
+    } catch (e) {
+      console.warn('[cosm open]', e);
+    }
   }
 
   function openShop() {
@@ -115,7 +210,6 @@
       if (typeof window.renderShop === 'function') window.renderShop();
       else if (window.PROG && window.PROG.renderShop) window.PROG.renderShop();
 
-      /* ensure market tab visible */
       var panes = document.querySelectorAll('#shop-panes .s-pane');
       var tabs = document.querySelectorAll('#shop-tabs .s-tab');
       if (panes.length) {
@@ -133,15 +227,22 @@
       renderInventoryPanel();
       enhanceFreeCard();
       attachManualScroll(sc);
-
-      /* debug: if list empty, show fallback text */
-      var list = document.getElementById('pg-shop-list');
-      if (list && !list.innerHTML.trim()) {
-        list.innerHTML = '<div class="shop-section-lbl">MARKET</div><div class="shop-card"><div class="shop-card-info"><div class="shop-card-name">Yükleniyor…</div><div class="shop-card-desc">renderShop boş döndü</div></div></div>';
-      }
+      wireCosmButtons();
     } catch (e) {
       console.warn('[shop-v5]', e);
     }
+  }
+
+  function wireCosmButtons() {
+    document.querySelectorAll('.shop-cosm-btn').forEach(function (btn) {
+      if (btn._nvxCosm) return;
+      btn._nvxCosm = true;
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        openCosm();
+      }, true);
+    });
   }
 
   function wire() {
@@ -154,18 +255,28 @@
         openShop();
       }, true);
     }
-    var bShop = document.getElementById('b-shop');
-    if (bShop && !bShop._shopV5) {
-      bShop._shopV5 = true;
-      bShop.addEventListener('click', function () { setTimeout(openShop, 0); }, true);
+    /* Event delegation for dynamically rendered cosm buttons */
+    if (!document._nvxCosmDel) {
+      document._nvxCosmDel = true;
+      document.addEventListener('click', function (e) {
+        var t = e.target;
+        if (!t) return;
+        var btn = t.closest ? t.closest('.shop-cosm-btn') : null;
+        if (!btn && t.classList && t.classList.contains('shop-cosm-btn')) btn = t;
+        if (btn) {
+          e.preventDefault();
+          e.stopPropagation();
+          openCosm();
+        }
+      }, true);
     }
   }
 
   function boot() {
     injectCss();
-    injectBadge();
     wire();
-    window.NVXDay3 = { openShop: openShop };
+    window.NVXDay3 = { openShop: openShop, openCosm: openCosm };
+    window.openCosm = openCosm;
   }
 
   if (document.readyState === 'loading') {
