@@ -1,5 +1,5 @@
 /* NORYVX V26.2.0 — planes inline in 1945 runtime */
-const CACHE = "neon-survivor-v26-2-0";
+const CACHE = "noryvx-v26-3-0";
 
 const ASSETS = [
   "./",
