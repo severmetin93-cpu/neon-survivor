@@ -1,10 +1,12 @@
-/* NORYVX V26.2.0 — planes inline in 1945 runtime */
-const CACHE = "noryvx-v26-3-0";
+/* NORYVX V27.0.0 — extracted CSS/JS for performance */
+const CACHE = "noryvx-v27-0-0";
 
 const ASSETS = [
   "./",
   "./index.html",
+  "./css/noryvx-combined.css",
   "./js/noryvx-1945-runtime.js",
+  "./js/noryvx-extracted-0.js",
   "./assets/hero-vanguard.png",
   "./assets/hero-striker.png",
   "./assets/hero-controller.png",
