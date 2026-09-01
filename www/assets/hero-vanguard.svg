@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <linearGradient id="vg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7af0ff"/>
+      <stop offset="45%" stop-color="#22e6ff"/>
+      <stop offset="100%" stop-color="#0a6a9a"/>
+    </linearGradient>
+    <linearGradient id="vgBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#d8f8ff"/>
+      <stop offset="40%" stop-color="#4ad4f0"/>
+      <stop offset="100%" stop-color="#0d3a55"/>
+    </linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <path d="M48 150 L110 118 L146 118 L208 150 L180 168 L146 148 L110 148 Z" fill="url(#vg)" opacity="0.95" filter="url(#glow)"/>
+  <path d="M128 36 L152 170 L128 196 L104 170 Z" fill="url(#vgBody)" filter="url(#glow)"/>
+  <ellipse cx="128" cy="88" rx="14" ry="22" fill="#e8fbff" opacity="0.9"/>
+  <rect x="108" y="168" width="12" height="28" rx="4" fill="#22e6ff" opacity="0.85"/>
+  <rect x="136" y="168" width="12" height="28" rx="4" fill="#22e6ff" opacity="0.85"/>
+  <ellipse cx="114" cy="200" rx="8" ry="6" fill="#7af0ff" opacity="0.7"/>
+  <ellipse cx="142" cy="200" rx="8" ry="6" fill="#7af0ff" opacity="0.7"/>
+  <circle cx="128" cy="40" r="5" fill="#ffffff"/>
+</svg>

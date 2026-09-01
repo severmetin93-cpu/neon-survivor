@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e0b0ff"/>
+      <stop offset="50%" stop-color="#a05cff"/>
+      <stop offset="100%" stop-color="#4a2080"/>
+    </linearGradient>
+    <linearGradient id="cgBody" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f0e0ff"/>
+      <stop offset="40%" stop-color="#c080ff"/>
+      <stop offset="100%" stop-color="#2a1050"/>
+    </linearGradient>
+    <filter id="glow3"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <path d="M36 145 L112 115 L144 115 L220 145 L188 165 L144 140 L112 140 Z" fill="url(#cg)" filter="url(#glow3)"/>
+  <circle cx="48" cy="150" r="10" fill="#d0a0ff" opacity="0.85"/>
+  <circle cx="208" cy="150" r="10" fill="#d0a0ff" opacity="0.85"/>
+  <path d="M128 40 L150 168 L128 198 L106 168 Z" fill="url(#cgBody)" filter="url(#glow3)"/>
+  <ellipse cx="128" cy="90" rx="13" ry="21" fill="#f8f0ff" opacity="0.9"/>
+  <rect x="110" y="165" width="11" height="26" rx="4" fill="#b070ff"/>
+  <rect x="135" y="165" width="11" height="26" rx="4" fill="#b070ff"/>
+  <ellipse cx="115.5" cy="195" rx="7" ry="5" fill="#e0c0ff" opacity="0.7"/>
+  <ellipse cx="140.5" cy="195" rx="7" ry="5" fill="#e0c0ff" opacity="0.7"/>
+  <circle cx="128" cy="44" r="5" fill="#ffffff"/>
+</svg>
