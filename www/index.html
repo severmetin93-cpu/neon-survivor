@@ -11715,9 +11715,28 @@ function loop(now){
       .04
     );
 
-  try{_gameUpdate(dt);}catch(e){}
-  try{_gameRender(dt);}catch(e){}
-  try{renderMenuHero(dt);}catch(e){}
+  /* Emergency diagnostic fill — confirms loop is alive */
+  try{
+    if(ctx&&(W>0||canvas.clientWidth>0)){
+      var _w=W||canvas.clientWidth,_h=H||canvas.clientHeight;
+      ctx.fillStyle='#080820';ctx.fillRect(0,0,_w,_h);
+    }
+  }catch(_de){}
+
+  try{_gameUpdate(dt);}catch(eu){}
+  try{
+    _gameRender(dt);
+  }catch(er){
+    try{
+      ctx.save();
+      ctx.setTransform(1,0,0,1,0,0);
+      ctx.fillStyle='#200000';ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle='#ff4444';ctx.font='13px monospace';
+      ctx.fillText('RENDER ERR:'+(er&&er.message||er),8,20);
+      ctx.restore();
+    }catch(e2){}
+  }
+  try{renderMenuHero(dt);}catch(em){}
 
 }
 
