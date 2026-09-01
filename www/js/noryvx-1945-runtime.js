@@ -1,32 +1,53 @@
-/* NORYVX 1945 + INLINE visual force (planes only, no robots) */
+/* NORYVX 1945 V5 — force planes on menu canvas + gameplay */
 (function () {
   'use strict';
-  if (window.__NVX1945_V4__) return;
+  if (window.__NVX1945_V5__) return;
+  window.__NVX1945_V5__ = true;
   window.__NVX1945_V4__ = true;
 
-  /* ========== PLANE IMAGES (repo assets) ========== */
-  var HERO_IMG = { vanguard: null, striker: null, controller: null };
-  var ENEMY_IMG = { scout: null, assault: null, elite: null, boss: null };
+  var HERO_IMG = {};
+  var ENEMY_IMG = {};
 
-  function loadImg(map, key, path) {
+  function tryLoad(map, key, paths) {
     var im = new Image();
     im.decoding = 'async';
-    im.src = path;
+    var i = 0;
+    function next() {
+      if (i >= paths.length) return;
+      im.src = paths[i++];
+    }
+    im.onerror = next;
     map[key] = im;
+    next();
   }
-  loadImg(HERO_IMG, 'vanguard', 'assets/hero-vanguard.png');
-  loadImg(HERO_IMG, 'striker', 'assets/hero-striker.png');
-  loadImg(HERO_IMG, 'controller', 'assets/hero-controller.png');
-  loadImg(ENEMY_IMG, 'scout', 'assets/enemy-scout.svg');
-  loadImg(ENEMY_IMG, 'assault', 'assets/enemy-assault.svg');
-  loadImg(ENEMY_IMG, 'elite', 'assets/enemy-elite.svg');
-  loadImg(ENEMY_IMG, 'boss', 'assets/enemy-boss.svg');
+
+  tryLoad(HERO_IMG, 'vanguard', [
+    'assets/hero-vanguard.png',
+    './assets/hero-vanguard.png',
+    '/assets/hero-vanguard.png',
+    'assets/hero-vanguard.svg'
+  ]);
+  tryLoad(HERO_IMG, 'striker', [
+    'assets/hero-striker.png',
+    './assets/hero-striker.png',
+    '/assets/hero-striker.png',
+    'assets/hero-striker.svg'
+  ]);
+  tryLoad(HERO_IMG, 'controller', [
+    'assets/hero-controller.png',
+    './assets/hero-controller.png',
+    '/assets/hero-controller.png',
+    'assets/hero-controller.svg'
+  ]);
+  tryLoad(ENEMY_IMG, 'scout', ['assets/enemy-scout.svg', './assets/enemy-scout.svg']);
+  tryLoad(ENEMY_IMG, 'assault', ['assets/enemy-assault.svg', './assets/enemy-assault.svg']);
+  tryLoad(ENEMY_IMG, 'elite', ['assets/enemy-elite.svg', './assets/enemy-elite.svg']);
+  tryLoad(ENEMY_IMG, 'boss', ['assets/enemy-boss.svg', './assets/enemy-boss.svg']);
 
   function ready(im) {
     return im && im.complete && im.naturalWidth > 0;
   }
 
-  /* Fallback vector plane if image not ready */
   function pathPlane(c, r, colors, faceDown) {
     colors = colors || { wing: '#22e6ff', hull: '#d8f8ff', glow: '#7af0ff' };
     c.save();
@@ -77,32 +98,136 @@
     return { wing: '#22e6ff', hull: '#d8f8ff', glow: '#7af0ff' };
   }
 
-  /* ---- MENU: replace rrHeroFull (robot full body) ---- */
-  function forceMenuHero() {
+  function drawHeroPlaneOnCtx(c, key, cx, cy, size, time) {
+    key = heroKeyNorm(key);
+    var t = +time || performance.now() / 1000;
+    var floatY = 6 * Math.sin(t * 1.6);
+    var im = HERO_IMG[key];
+    c.save();
+    c.translate(cx, cy + floatY);
+    if (ready(im)) {
+      var h = size;
+      var w = h * (im.naturalWidth / im.naturalHeight);
+      c.shadowColor = heroColors(key).glow;
+      c.shadowBlur = 22;
+      c.drawImage(im, -w / 2, -h * 0.55, w, h);
+    } else {
+      pathPlane(c, size * 0.28, heroColors(key), false);
+    }
+    c.restore();
+  }
+
+  /* Nuke robot full-body */
+  function forceRrHeroFull() {
     function planeHero(cxCtx, heroKey, cx, cy, scale, time) {
-      var key = heroKeyNorm(heroKey);
-      var t = +time || 0;
-      var floatY = 5 * Math.sin(t * 1.6);
-      var im = HERO_IMG[key];
-      cxCtx.save();
-      cxCtx.translate(cx, cy + floatY);
-      if (ready(im)) {
-        var h = Math.max(180, 420 * (scale || 1));
-        var w = h * (im.naturalWidth / im.naturalHeight);
-        cxCtx.shadowColor = heroColors(key).glow;
-        cxCtx.shadowBlur = 24;
-        cxCtx.drawImage(im, -w / 2, -h * 0.82, w, h);
-      } else {
-        cxCtx.scale(scale || 1, scale || 1);
-        pathPlane(cxCtx, 90, heroColors(key), false);
-      }
-      cxCtx.restore();
+      var size = Math.max(160, 380 * (scale || 1));
+      drawHeroPlaneOnCtx(cxCtx, heroKey, cx, cy - size * 0.15, size, time);
     }
     window.rrHeroFull = planeHero;
     try { rrHeroFull = planeHero; } catch (e) {}
   }
 
-  /* ---- GAMEPLAY: player ---- */
+  /* Main menu hero canvas loop */
+  function forceRenderMenuHero() {
+    function planeMenu(dt) {
+      try {
+        var scr = document.getElementById('scr-menu');
+        if (!scr || !scr.classList.contains('on')) return;
+
+        if (typeof HERO === 'undefined' || !HERO) return;
+        if (!HERO.cv) {
+          HERO.cv = document.getElementById('hero-canvas');
+          if (!HERO.cv) return;
+          HERO.cx = HERO.cv.getContext('2d');
+        }
+        if (!HERO.cx) return;
+
+        try {
+          if (typeof heroResize === 'function') heroResize();
+        } catch (e) {}
+
+        if (!HERO.w || !HERO.h) {
+          var r = HERO.cv.getBoundingClientRect();
+          var dpr = Math.min(2, window.devicePixelRatio || 1);
+          if (r.width && r.height) {
+            HERO.w = Math.round(r.width * dpr);
+            HERO.h = Math.round(r.height * dpr);
+            HERO.cv.width = HERO.w;
+            HERO.cv.height = HERO.h;
+          }
+        }
+        if (!HERO.w || !HERO.h) return;
+
+        HERO.t = (HERO.t || 0) + (dt || 0.016);
+
+        var key = 'vanguard';
+        try {
+          if (typeof heroArchId === 'function') key = heroKeyNorm(heroArchId());
+          else if (Save && Save.data && Save.data.selectedHero) key = heroKeyNorm(Save.data.selectedHero);
+        } catch (e) {}
+
+        if (key !== HERO.last) {
+          HERO.last = key;
+          var n = document.getElementById('hero-class');
+          var role = document.getElementById('hero-role');
+          if (n) n.textContent = key.toUpperCase();
+          if (role) {
+            role.textContent =
+              key === 'striker'
+                ? 'INTERCEPTOR · STRIKE WING'
+                : key === 'controller'
+                  ? 'SUPPORT CRAFT · EW'
+                  : 'HEAVY FIGHTER · FRONTLINE';
+          }
+        }
+
+        var c = HERO.cx;
+        var w = HERO.w;
+        var h = HERO.h;
+        c.clearRect(0, 0, w, h);
+
+        /* soft ground glow */
+        var g = c.createRadialGradient(w / 2, h * 0.7, 4, w / 2, h * 0.7, w * 0.45);
+        g.addColorStop(0, 'rgba(34,230,255,0.12)');
+        g.addColorStop(1, 'rgba(0,0,0,0)');
+        c.fillStyle = g;
+        c.fillRect(0, 0, w, h);
+
+        drawHeroPlaneOnCtx(c, key, w / 2, h * 0.52, Math.min(w, h) * 0.72, HERO.t);
+      } catch (err) {}
+    }
+    window.renderMenuHero = planeMenu;
+    try { renderMenuHero = planeMenu; } catch (e) {}
+  }
+
+  /* Character select screen paint */
+  function forceNvxHeroPaint() {
+    function planePaint() {
+      try {
+        var cv = document.getElementById('nvx-hero-canvas') || document.querySelector('#scr-rpgchar canvas');
+        if (!cv) return;
+        var c = cv.getContext('2d');
+        if (!c) return;
+        var dpr = Math.min(2, window.devicePixelRatio || 1);
+        var rect = cv.getBoundingClientRect();
+        var w = Math.round((rect.width || 300) * dpr);
+        var h = Math.round((rect.height || 400) * dpr);
+        if (cv.width !== w || cv.height !== h) {
+          cv.width = w;
+          cv.height = h;
+        }
+        c.clearRect(0, 0, w, h);
+        var key = 'vanguard';
+        try {
+          if (typeof nvxHeroCurrent === 'function') key = heroKeyNorm(nvxHeroCurrent().key);
+        } catch (e) {}
+        drawHeroPlaneOnCtx(c, key, w / 2, h * 0.55, Math.min(w, h) * 0.7, performance.now() / 1000);
+      } catch (err) {}
+    }
+    window.nvxHeroPaint = planePaint;
+    try { nvxHeroPaint = planePaint; } catch (e) {}
+  }
+
   function forcePlayer() {
     function planePlayer() {
       try {
@@ -111,42 +236,34 @@
         var key = 'vanguard';
         try {
           if (window.NORYVX_P3 && typeof window.NORYVX_P3.archetype === 'function') {
-            key = heroKeyNorm(window.NORYVX_P3.archetype().id || window.NORYVX_P3.archetype().key);
-          } else if (typeof Save !== 'undefined' && Save && Save.data && Save.data.selectedHero) {
+            var a = window.NORYVX_P3.archetype();
+            key = heroKeyNorm(a.id || a.key || a.name);
+          } else if (Save && Save.data && Save.data.selectedHero) {
             key = heroKeyNorm(Save.data.selectedHero);
           }
         } catch (e) {}
-        var destroyed = false;
-        try {
-          if (typeof STATE !== 'undefined' && Game && Game.state === STATE.OVER) destroyed = true;
-        } catch (e2) {}
-
         ctx.save();
-        if (destroyed) ctx.globalAlpha = 0.35;
-
         try {
           if (Game && Game.powers && Game.powers.shield > 0) {
             ctx.strokeStyle = '#48d9ff';
             ctx.shadowColor = '#48d9ff';
-            ctx.shadowBlur = 18;
+            ctx.shadowBlur = 16;
             ctx.lineWidth = 2;
             ctx.globalAlpha = 0.65;
             ctx.beginPath();
             ctx.arc(player.x, player.y, 26, 0, Math.PI * 2);
             ctx.stroke();
-            ctx.globalAlpha = destroyed ? 0.35 : 1;
+            ctx.globalAlpha = 1;
           }
-        } catch (e3) {}
-
+        } catch (e2) {}
         ctx.translate(player.x, player.y);
         var im = HERO_IMG[key];
         if (ready(im)) {
-          var h = 36;
-          var w = h * (im.naturalWidth / im.naturalHeight);
+          var hh = 38;
+          var ww = hh * (im.naturalWidth / im.naturalHeight);
           ctx.shadowColor = heroColors(key).glow;
           ctx.shadowBlur = 12;
-          /* nose up in menu assets; rotate so nose points up-screen (enemies come from top) */
-          ctx.drawImage(im, -w / 2, -h / 2, w, h);
+          ctx.drawImage(im, -ww / 2, -hh / 2, ww, hh);
         } else {
           pathPlane(ctx, 14, heroColors(key), true);
         }
@@ -157,7 +274,6 @@
     try { drawPlayer = planePlayer; } catch (e) {}
   }
 
-  /* ---- GAMEPLAY: enemies — kill atlas robots ---- */
   function forceEnemies() {
     try {
       if (typeof atlasHas === 'function' && !atlasHas.__nvxPlane) {
@@ -186,7 +302,7 @@
         var h = rad * (mode === 'boss' ? 3.2 : mode === 'elite' ? 2.6 : 2.4);
         var w = h * (im.naturalWidth / im.naturalHeight);
         ctx.shadowColor = (paint && paint.edge) || '#ff4060';
-        ctx.shadowBlur = mode === 'boss' ? 18 : 10;
+        ctx.shadowBlur = mode === 'boss' ? 16 : 10;
         ctx.drawImage(im, -w / 2, -h / 2, w, h);
       } else {
         var col =
@@ -213,69 +329,18 @@
     try { rrBossUnit = window.rrBossUnit; } catch (e) {}
   }
 
-  /* ---- DOM: any leftover robot imgs in menu ---- */
-  function forceDomImgs() {
-    try {
-      document.querySelectorAll('img').forEach(function (img) {
-        var blob = ((img.src || '') + ' ' + (img.alt || '') + ' ' + (img.className || '') + ' ' + (img.id || '')).toLowerCase();
-        var key = null;
-        if (/vanguard|koruyucu/.test(blob)) key = 'vanguard';
-        else if (/striker|sald/.test(blob)) key = 'striker';
-        else if (/controller|kontrol/.test(blob)) key = 'controller';
-        if (!key) return;
-        var want = 'assets/hero-' + key + '.png';
-        if ((img.getAttribute('src') || '').indexOf(want) < 0) {
-          img.src = want + '?v=plane4';
-          img.style.objectFit = 'contain';
-          img.style.filter = 'drop-shadow(0 0 16px rgba(34,230,255,.5))';
-        }
-      });
-    } catch (e) {}
-  }
-
-  /* ========== original 1945 HUD / rings (kept) ========== */
   function injectHudCss() {
     if (document.getElementById('nvx-1945-hud-css')) return;
     var s = document.createElement('style');
     s.id = 'nvx-1945-hud-css';
-    s.textContent = [
-      '#nvx-weapon-power{position:absolute!important;left:12px!important;',
-      'bottom:calc(env(safe-area-inset-bottom,0px)+20px)!important;z-index:12!important;',
-      'pointer-events:none!important;padding:8px 10px!important;border-radius:12px!important;',
-      'background:rgba(2,10,24,.82)!important;border:1px solid rgba(34,230,255,.28)!important;',
-      'display:none!important;flex-direction:column!important;gap:4px!important;}',
-      '#nvx-weapon-power.on{display:flex!important;}',
-      '#nvx-wp-label{font:700 7px IBM Plex Mono,monospace!important;letter-spacing:.2em!important;color:rgba(34,230,255,.65)!important;}',
-      '#nvx-wp-level{font:800 20px Chakra Petch,sans-serif!important;color:#7af0ff!important;line-height:1!important;}',
-      '#nvx-wp-track{width:64px!important;height:5px!important;border-radius:99px!important;background:rgba(34,230,255,.12)!important;overflow:hidden!important;}',
-      '#nvx-wp-bar{height:100%!important;background:linear-gradient(90deg,#22e6ff,#7b2fff)!important;}'
-    ].join('');
+    s.textContent =
+      '#nvx-weapon-power{position:absolute!important;left:12px!important;bottom:calc(env(safe-area-inset-bottom,0px)+20px)!important;z-index:12!important;pointer-events:none!important;padding:8px 10px!important;border-radius:12px!important;background:rgba(2,10,24,.82)!important;border:1px solid rgba(34,230,255,.28)!important;display:none!important;flex-direction:column!important;gap:4px!important;}' +
+      '#nvx-weapon-power.on{display:flex!important;}' +
+      '#nvx-wp-label{font:700 7px IBM Plex Mono,monospace!important;letter-spacing:.2em!important;color:rgba(34,230,255,.65)!important;}' +
+      '#nvx-wp-level{font:800 20px Chakra Petch,sans-serif!important;color:#7af0ff!important;line-height:1!important;}' +
+      '#nvx-wp-track{width:64px!important;height:5px!important;border-radius:99px!important;background:rgba(34,230,255,.12)!important;overflow:hidden!important;}' +
+      '#nvx-wp-bar{height:100%!important;background:linear-gradient(90deg,#22e6ff,#7b2fff)!important;}';
     document.head.appendChild(s);
-  }
-
-  function ensureGameWeaponPower() {
-    try {
-      if (typeof Game !== 'undefined' && Game) {
-        if (typeof Game.weaponPower !== 'number' || !isFinite(Game.weaponPower)) Game.weaponPower = 1;
-        Game.weaponPower = Math.max(1, Math.min(5, Game.weaponPower | 0));
-      }
-    } catch (e) {}
-  }
-
-  function syncWeaponHud() {
-    ensureGameWeaponPower();
-    var lvl = 1;
-    try { lvl = (Game && Game.weaponPower) || 1; } catch (e) {}
-    var el = document.getElementById('nvx-wp-level');
-    if (el) el.textContent = 'LV' + lvl;
-    var bar = document.getElementById('nvx-wp-bar');
-    if (bar) bar.style.width = (((lvl - 1) / 4) * 100) + '%';
-  }
-
-  function setWeaponHudVisible(on) {
-    var el = document.getElementById('nvx-weapon-power');
-    if (!el) return;
-    el.classList.toggle('on', !!on);
   }
 
   function isPlaying() {
@@ -288,103 +353,54 @@
     }
   }
 
-  function getRingsArray() {
-    try {
-      if (typeof RINGS !== 'undefined' && RINGS) return RINGS;
-    } catch (e) {}
-    try {
-      if (window.RINGS) return window.RINGS;
-    } catch (e2) {}
-    return null;
-  }
-
   function scrubRings() {
-    var rings = getRingsArray();
+    var rings = null;
+    try {
+      if (typeof RINGS !== 'undefined') rings = RINGS;
+      else if (window.RINGS) rings = window.RINGS;
+    } catch (e) {}
     if (!rings) return;
     for (var i = 0; i < rings.length; i++) {
       var s = rings[i];
       if (!s || !s.alive) continue;
-      if (!isFinite(s.life) || !isFinite(s.max) || s.max <= 0) {
+      if (!isFinite(s.life) || s.max > 0.55) {
+        if (s.max > 0.55) s.max = 0.55;
+        if (s.life > 0.55) s.life = 0.55;
+      }
+      if (s.life <= 0 || !isFinite(s.life)) {
         s.alive = false;
         s.life = 0;
-        continue;
-      }
-      if (s.max > 0.55) s.max = 0.55;
-      if (s.life > 0.55) s.life = 0.55;
-      if (s.life <= 0) s.alive = false;
-    }
-  }
-
-  function patchRingSystem() {
-    if (window.__nvxRingPatchedV4) return;
-    if (typeof ringBurst === 'function' || typeof window.ringBurst === 'function') {
-      var origBurst = window.ringBurst || ringBurst;
-      if (!origBurst.__nvx) {
-        function safeBurst(x, y, r0, r1, color, life, w) {
-          var L = life;
-          if (L == null || !isFinite(L) || L <= 0) L = 0.35;
-          if (L > 0.5) L = 0.5;
-          try {
-            return origBurst.call(this, x, y, r0, r1, color, L, w);
-          } catch (e) {}
-        }
-        safeBurst.__nvx = true;
-        window.ringBurst = safeBurst;
-        try { ringBurst = safeBurst; } catch (e) {}
       }
     }
-    if (typeof updateRings === 'function' || typeof window.updateRings === 'function') {
-      var origUp = window.updateRings || updateRings;
-      if (!origUp.__nvx) {
-        function safeUpdate(dt) {
-          var d = (!isFinite(dt) || dt <= 0) ? 1 / 60 : Math.min(dt, 0.1);
-          try { origUp.call(this, d); } catch (e) {}
-          var rings = getRingsArray();
-          if (!rings) return;
-          for (var i = 0; i < rings.length; i++) {
-            var s = rings[i];
-            if (!s || !s.alive) continue;
-            s.life -= d * 1.35;
-            if (s.life <= 0 || !isFinite(s.life)) {
-              s.alive = false;
-              s.life = 0;
-            }
-          }
-        }
-        safeUpdate.__nvx = true;
-        window.updateRings = safeUpdate;
-        try { updateRings = safeUpdate; } catch (e) {}
-      }
-    }
-    window.__nvxRingPatchedV4 = true;
   }
 
   function bootVisual() {
-    forceMenuHero();
+    forceRrHeroFull();
+    forceRenderMenuHero();
+    forceNvxHeroPaint();
     forcePlayer();
     forceEnemies();
-    forceDomImgs();
   }
 
   function boot() {
     bootVisual();
     injectHudCss();
-    ensureGameWeaponPower();
-    patchRingSystem();
     setInterval(function () {
       bootVisual();
       scrubRings();
-      setWeaponHudVisible(isPlaying());
-      if (isPlaying()) syncWeaponHud();
-    }, 400);
+      var el = document.getElementById('nvx-weapon-power');
+      if (el) el.classList.toggle('on', isPlaying());
+    }, 300);
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function () { setTimeout(boot, 20); });
+    document.addEventListener('DOMContentLoaded', function () {
+      setTimeout(boot, 10);
+    });
   } else {
-    setTimeout(boot, 20);
+    setTimeout(boot, 10);
   }
-  setTimeout(boot, 200);
-  setTimeout(boot, 1000);
-  setTimeout(boot, 2500);
+  setTimeout(boot, 150);
+  setTimeout(boot, 800);
+  setTimeout(boot, 2000);
 })();
