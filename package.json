@@ -1,6 +1,6 @@
 {
   "name": "neon-survivor",
-  "version": "1.0.0",
+  "version": "26.3.0",
   "private": true,
   "description": "NORYVX — Neon Survivor (hyper-casual endless survival game, HTML5 Canvas + Capacitor)",
   "scripts": {
