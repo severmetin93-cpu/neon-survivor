@@ -11715,14 +11715,16 @@ function loop(now){
       .04
     );
 
-  update(dt);
-  render(dt);
+  _gameUpdate(dt);
+  _gameRender(dt);
   renderMenuHero(dt);
 
 }
 
-/* Save reference before music system redefines 'loop' */
+/* Save references before later scripts redefine these names */
 var _gameLoop=loop;
+var _gameUpdate=update;
+var _gameRender=render;
 
 requestAnimationFrame(_gameLoop);
 
