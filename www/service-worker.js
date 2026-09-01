@@ -1,12 +1,10 @@
-/* NORYVX V26.0.0 — network-first for JS/CSS, hard cache bust */
-const CACHE = "neon-survivor-v26-0-0";
+/* NORYVX V26.1.0 — force visual plane pack, network-first code */
+const CACHE = "neon-survivor-v26-1-0";
 
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.json",
-  "./assets/icons/icon.svg",
-  "./assets/neon-noryvx-icon.svg",
   "./css/nvx2-menu-polish.css",
   "./css/noryvx-shop-day3.css",
   "./css/noryvx-gameplay-pro.css",
@@ -21,6 +19,7 @@ const ASSETS = [
   "./js/noryvx-combo.js",
   "./js/noryvx-damage-items.js",
   "./js/noryvx-gameplay-pro.js",
+  "./js/noryvx-visual-force.js",
   "./assets/hero-vanguard.svg",
   "./assets/hero-striker.svg",
   "./assets/hero-controller.svg"
@@ -37,68 +36,54 @@ self.addEventListener("install", event => {
 self.addEventListener("activate", event => {
   event.waitUntil(
     caches.keys()
-      .then(keys =>
-        Promise.all(
-          keys
-            .filter(key => key !== CACHE)
-            .map(key => caches.delete(key))
-        )
-      )
+      .then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
 
-function isDocRequest(req, url) {
+function isDoc(req, url) {
   return (
     req.mode === "navigate" ||
     req.destination === "document" ||
     /\/index\.html($|\?)/.test(req.url) ||
-    (url.origin === self.location.origin &&
-      (url.pathname === "/" || url.pathname.endsWith("/")))
+    (url.origin === self.location.origin && (url.pathname === "/" || url.pathname.endsWith("/")))
   );
 }
 
-function isCodeAsset(url) {
+function isCode(url) {
   return /\.(js|css)($|\?)/i.test(url.pathname);
 }
 
 self.addEventListener("fetch", event => {
   if (event.request.method !== "GET") return;
-
   const req = event.request;
   const url = new URL(req.url);
 
-  /* HTML + JS + CSS: network-first so APK/PWA always try latest */
-  if (isDocRequest(req, url) || isCodeAsset(url)) {
+  if (isDoc(req, url) || isCode(url)) {
     event.respondWith(
       fetch(req)
-        .then(response => {
-          if (response && response.status === 200) {
-            const copy = response.clone();
+        .then(res => {
+          if (res && res.status === 200) {
+            const copy = res.clone();
             caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {});
           }
-          return response;
+          return res;
         })
-        .catch(() =>
-          caches.match(req).then(hit => hit || caches.match("./index.html"))
-        )
+        .catch(() => caches.match(req).then(h => h || caches.match("./index.html")))
     );
     return;
   }
 
-  /* Other assets: cache-first */
   event.respondWith(
     caches.match(req).then(cached => {
       if (cached) return cached;
-      return fetch(req)
-        .then(response => {
-          if (response && response.status === 200 && response.type === "basic") {
-            const copy = response.clone();
-            caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {});
-          }
-          return response;
-        })
-        .catch(() => caches.match("./index.html"));
+      return fetch(req).then(res => {
+        if (res && res.status === 200 && res.type === "basic") {
+          const copy = res.clone();
+          caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {});
+        }
+        return res;
+      }).catch(() => caches.match("./index.html"));
     })
   );
 });
