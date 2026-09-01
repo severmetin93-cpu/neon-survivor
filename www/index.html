@@ -9037,19 +9037,19 @@ function drawBackground(dt){
   window._bgScroll=(window._bgScroll||0)+dt*72;
 
   /* Uzay tabanı */
-  ctx.fillStyle='#020409';
+  ctx.fillStyle='#060d1e';
   ctx.fillRect(0,0,W,H);
 
   /* Nebula glow 1 */
-  const nbPulse=0.028+0.012*Math.sin(t*0.38);
+  const nbPulse=0.18+0.06*Math.sin(t*0.38);
   const ng1=ctx.createRadialGradient(W*0.28,H*0.22,0,W*0.28,H*0.22,W*0.65);
-  ng1.addColorStop(0,'rgba(55,18,115,'+nbPulse*2.5+')');
+  ng1.addColorStop(0,'rgba(80,20,160,'+nbPulse+')');
   ng1.addColorStop(1,'rgba(0,0,0,0)');
   ctx.fillStyle=ng1; ctx.fillRect(0,0,W,H);
 
   /* Nebula glow 2 */
   const ng2=ctx.createRadialGradient(W*0.72,H*0.55,0,W*0.72,H*0.55,W*0.5);
-  ng2.addColorStop(0,'rgba(18,55,115,'+nbPulse+')');
+  ng2.addColorStop(0,'rgba(10,60,140,'+nbPulse+')');
   ng2.addColorStop(1,'rgba(0,0,0,0)');
   ctx.fillStyle=ng2; ctx.fillRect(0,0,W,H);
 
@@ -9057,7 +9057,7 @@ function drawBackground(dt){
   const sc=window._bgScroll;
   window._st1.forEach(s=>{
     const y=(s.y+sc*0.12)%H;
-    ctx.globalAlpha=s.b*(0.7+0.3*Math.sin(t*1.2+s.x));
+    ctx.globalAlpha=Math.min(1,s.b*1.4*(0.7+0.3*Math.sin(t*1.2+s.x)));
     ctx.fillStyle='#c8d4ff';
     ctx.beginPath(); ctx.arc(s.x,y,s.r,0,TAU); ctx.fill();
   });
@@ -9065,7 +9065,7 @@ function drawBackground(dt){
   /* Katman 2: Orta yıldızlar */
   window._st2.forEach(s=>{
     const y=(s.y+sc*0.32)%H;
-    ctx.globalAlpha=s.b*(0.8+0.2*Math.sin(t*0.9+s.x*0.03));
+    ctx.globalAlpha=Math.min(1,s.b*1.4*(0.8+0.2*Math.sin(t*0.9+s.x*0.03)));
     ctx.fillStyle='#dce8ff';
     ctx.beginPath(); ctx.arc(s.x,y,s.r,0,TAU); ctx.fill();
   });
@@ -11715,9 +11715,9 @@ function loop(now){
       .04
     );
 
-  _gameUpdate(dt);
-  _gameRender(dt);
-  renderMenuHero(dt);
+  try{_gameUpdate(dt);}catch(e){}
+  try{_gameRender(dt);}catch(e){}
+  try{renderMenuHero(dt);}catch(e){}
 
 }
 
