@@ -1,21 +1,29 @@
-/* NORYVX V25.1.5 — 1945 runtime in cache, no HTML body rewrite */
-const CACHE = "neon-survivor-v25-1-5";
+/* NORYVX V26.0.0 — network-first for JS/CSS, hard cache bust */
+const CACHE = "neon-survivor-v26-0-0";
 
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.json",
   "./assets/icons/icon.svg",
-  "./assets/atlas-units.json",
-  "./assets/atlas-units.png",
-  "./assets/atlas-items.json",
-  "./assets/atlas-items.png",
   "./assets/neon-noryvx-icon.svg",
   "./css/nvx2-menu-polish.css",
   "./css/noryvx-shop-day3.css",
+  "./css/noryvx-gameplay-pro.css",
   "./js/ms7-day2-fixes.js",
   "./js/noryvx-day3-shop.js",
-  "./js/noryvx-1945-runtime.js"
+  "./js/noryvx-p3-global.js",
+  "./js/noryvx-1945-runtime.js",
+  "./js/noryvx-airforce-theme.js",
+  "./js/noryvx-hero-assets.js",
+  "./js/noryvx-powerups.js",
+  "./js/noryvx-difficulty.js",
+  "./js/noryvx-combo.js",
+  "./js/noryvx-damage-items.js",
+  "./js/noryvx-gameplay-pro.js",
+  "./assets/hero-vanguard.svg",
+  "./assets/hero-striker.svg",
+  "./assets/hero-controller.svg"
 ];
 
 self.addEventListener("install", event => {
@@ -33,7 +41,6 @@ self.addEventListener("activate", event => {
         Promise.all(
           keys
             .filter(key => key !== CACHE)
-            .filter(key => key.indexOf("neon-survivor") === 0)
             .map(key => caches.delete(key))
         )
       )
@@ -41,19 +48,28 @@ self.addEventListener("activate", event => {
   );
 });
 
+function isDocRequest(req, url) {
+  return (
+    req.mode === "navigate" ||
+    req.destination === "document" ||
+    /\/index\.html($|\?)/.test(req.url) ||
+    (url.origin === self.location.origin &&
+      (url.pathname === "/" || url.pathname.endsWith("/")))
+  );
+}
+
+function isCodeAsset(url) {
+  return /\.(js|css)($|\?)/i.test(url.pathname);
+}
+
 self.addEventListener("fetch", event => {
   if (event.request.method !== "GET") return;
 
   const req = event.request;
   const url = new URL(req.url);
-  const isDoc =
-    req.mode === "navigate" ||
-    req.destination === "document" ||
-    /\/index\.html($|\?)/.test(req.url) ||
-    (url.origin === self.location.origin &&
-      (url.pathname === "/" || url.pathname.endsWith("/")));
 
-  if (isDoc) {
+  /* HTML + JS + CSS: network-first so APK/PWA always try latest */
+  if (isDocRequest(req, url) || isCodeAsset(url)) {
     event.respondWith(
       fetch(req)
         .then(response => {
@@ -70,6 +86,7 @@ self.addEventListener("fetch", event => {
     return;
   }
 
+  /* Other assets: cache-first */
   event.respondWith(
     caches.match(req).then(cached => {
       if (cached) return cached;
