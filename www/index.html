@@ -17387,20 +17387,7 @@ function down(x,y,id){JOY.on=true;JOY.id=id;JOY.ox=x;JOY.oy=y;JOY.x=x;JOY.y=y;JO
 function move(x,y){if(JOY.on){JOY.x=x;JOY.y=y;}}
 function up(){JOY.on=false;JOY.id=null;}
 
-canvas.addEventListener("touchstart",e=>{
-  const t=e.changedTouches[0];if(t)down(t.clientX,t.clientY,t.identifier);
-},{passive:true});
-canvas.addEventListener("touchmove",e=>{
-  for(let i=0;i<e.changedTouches.length;i++){
-    const t=e.changedTouches[i];
-    if(JOY.id===null||t.identifier===JOY.id){move(t.clientX,t.clientY);break;}
-  }
-},{passive:true});
-["touchend","touchcancel"].forEach(ev=>
-  canvas.addEventListener(ev,up,{passive:true}));
-canvas.addEventListener("mousedown",e=>down(e.clientX,e.clientY,"m"),{passive:true});
-canvas.addEventListener("mousemove",e=>{if(JOY.on)move(e.clientX,e.clientY);},{passive:true});
-canvas.addEventListener("mouseup",up,{passive:true});
+/* legacy JOY listeners removed — single input layer: noryvx-touch-control-v2 */
 
 function drawJoy(dt){
   return; /* natural touch — no visual overlay */
@@ -21690,6 +21677,7 @@ function queueDelta(x,y){
 }
 
 function begin(clientX,clientY,id){
+  if(ctl.active)return false;
   if(Game.state!==STATE.PLAYING && Game.state!==STATE.COUNTDOWN)return false;
   const p=point(clientX,clientY);
   ctl.active=true;ctl.id=id;
