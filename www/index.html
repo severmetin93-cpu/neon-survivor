@@ -13432,6 +13432,15 @@ if(typeof Game!=="undefined"&&typeof Game.over==="function"){
     return oldOver();
   };
 }
+
+/* Export phase3 helpers globally so other script blocks can use them */
+window.p3MasteryRank=p3MasteryRank;
+window.p3SkillRank=p3SkillRank;
+window.p3AwardMastery=p3AwardMastery;
+window.p3TotalMastery=p3TotalMastery;
+window.p3MasteryBonus=p3MasteryBonus;
+window.p3Save=p3Save;
+window.p3Render=p3Render;
 })();
 </script>
 <!-- NOT: ikinci karakter secim script'i kaldirildi.
