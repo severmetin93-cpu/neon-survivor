@@ -1,8 +1,17 @@
-/* NORYVX x 1945 Air Force — runtime integration + ring cleanup */
+/* NORYVX x 1945 Air Force — runtime + ring cleanup + visual-force loader */
 (function () {
   'use strict';
-  if (window.__NVX1945_V2__) return;
-  window.__NVX1945_V2__ = true;
+  if (window.__NVX1945_V3__) return;
+  window.__NVX1945_V3__ = true;
+
+  function loadVisualForce() {
+    if (window.__NVX_VISUAL_FORCE_V1__ || document.getElementById('nvx-visual-force')) return;
+    var s = document.createElement('script');
+    s.id = 'nvx-visual-force';
+    s.src = 'js/noryvx-visual-force.js?v=26';
+    s.async = true;
+    document.head.appendChild(s);
+  }
 
   function injectHudCss() {
     if (document.getElementById('nvx-1945-hud-css')) return;
@@ -81,7 +90,6 @@
     }
   }
 
-  /* ---- FIX: death rings that never fade ---- */
   function getRingsArray() {
     try {
       if (typeof RINGS !== 'undefined' && RINGS && RINGS.length) return RINGS;
@@ -97,14 +105,12 @@
     if (!rings) return;
     for (var i = 0; i < rings.length; i++) {
       var s = rings[i];
-      if (!s) continue;
-      if (!s.alive) continue;
+      if (!s || !s.alive) continue;
       if (!isFinite(s.life) || !isFinite(s.max) || s.max <= 0) {
         s.alive = false;
         s.life = 0;
         continue;
       }
-      /* hard cap: nothing lives longer than 0.55s */
       if (s.max > 0.55) s.max = 0.55;
       if (s.life > 0.55) s.life = 0.55;
       if (s.life <= 0) s.alive = false;
@@ -155,7 +161,6 @@
           if (!isFinite(d) || d <= 0) d = 1 / 60;
           if (d > 0.1) d = 0.1;
           try { origUp.call(this, d); } catch (e) {}
-          /* force decay even if orig skipped */
           var rings = getRingsArray();
           if (rings) {
             for (var i = 0; i < rings.length; i++) {
@@ -278,6 +283,7 @@
   }
 
   function boot() {
+    loadVisualForce();
     injectHudCss();
     ensureHudFn();
     ensureGameWeaponPower();
@@ -286,6 +292,7 @@
     patchStart();
     setInterval(tickHud, 250);
     setInterval(function () {
+      loadVisualForce();
       patchDrawEnemyBullets();
       patchRingSystem();
       scrubRings();
