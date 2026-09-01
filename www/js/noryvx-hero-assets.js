@@ -1,13 +1,13 @@
-/* Swap menu/tutorial hero images to Air Force plane SVGs */
+/* Swap menu/tutorial hero images to space warship PNGs (CC0 – Kenney Space Shooter Remastered) */
 (function () {
   'use strict';
   if (window.__NVX_HERO_ASSETS_V2__) return;
   window.__NVX_HERO_ASSETS_V2__ = true;
 
   var MAP = {
-    vanguard: 'assets/hero-vanguard.svg?v=af2',
-    striker: 'assets/hero-striker.svg?v=af2',
-    controller: 'assets/hero-controller.svg?v=af2'
+    vanguard: 'assets/hero-vanguard.png?v=ship1',
+    striker: 'assets/hero-striker.png?v=ship1',
+    controller: 'assets/hero-controller.png?v=ship1'
   };
 
   function detectKey(img) {

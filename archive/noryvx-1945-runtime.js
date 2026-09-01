@@ -23,21 +23,18 @@
     next();
   }
 
-  /* SVG FIRST — never load old robot PNGs */
+  /* Space warship PNGs — CC0 Kenney Space Shooter Remastered */
   tryLoad(HERO_IMG, 'vanguard', [
-    'assets/hero-vanguard.svg',
-    './assets/hero-vanguard.svg',
-    '/assets/hero-vanguard.svg'
+    'assets/hero-vanguard.png',
+    './assets/hero-vanguard.png'
   ]);
   tryLoad(HERO_IMG, 'striker', [
-    'assets/hero-striker.svg',
-    './assets/hero-striker.svg',
-    '/assets/hero-striker.svg'
+    'assets/hero-striker.png',
+    './assets/hero-striker.png'
   ]);
   tryLoad(HERO_IMG, 'controller', [
-    'assets/hero-controller.svg',
-    './assets/hero-controller.svg',
-    '/assets/hero-controller.svg'
+    'assets/hero-controller.png',
+    './assets/hero-controller.png'
   ]);
   tryLoad(ENEMY_IMG, 'scout', ['assets/enemy-scout.svg', './assets/enemy-scout.svg']);
   tryLoad(ENEMY_IMG, 'assault', ['assets/enemy-assault.svg', './assets/enemy-assault.svg']);
