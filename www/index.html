@@ -11697,7 +11697,7 @@ let last=0;
 
 function loop(now){
 
-  requestAnimationFrame(loop);
+  requestAnimationFrame(_gameLoop);
 
   if(document.hidden){last=0;return;}
 
@@ -11721,7 +11721,10 @@ function loop(now){
 
 }
 
-requestAnimationFrame(loop);
+/* Save reference before music system redefines 'loop' */
+var _gameLoop=loop;
+
+requestAnimationFrame(_gameLoop);
 
 
 /* =========================================================
