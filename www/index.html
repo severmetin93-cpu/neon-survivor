@@ -8936,24 +8936,83 @@ function drawPlayer(){
 
   ctx.restore();
 
-  /* NORYVX ATTACK — muzzle bloom (world-space). */
-  if(_fireDt<140 && !_destroyed){
-    const k=1-_fireDt/140;
-    const mx=player.x+(player.lastFireDx||0)*18;
-    const my=player.y+(player.lastFireDy||0)*18;
+  /* NORYVX WEAPON ARM — robotik silah kolu (world-space, hero ciziminden sonra). */
+  if(!_destroyed){
+    const _wdx=player.lastFireDx||1,_wdy=player.lastFireDy||0;
+    const _wang=Math.atan2(_wdy,_wdx);
+    const _wpulse=(Math.sin(t*4.2)+1)*0.5;
+    const _wcolor=player.lastFireColor||skinInner;
     ctx.save();
-    ctx.globalCompositeOperation="lighter";
-    ctx.globalAlpha=0.85*k;
-    ctx.fillStyle=player.lastFireColor||skinInner;
-    ctx.shadowColor=player.lastFireColor||skin.glow;
-    ctx.shadowBlur=18;
-    ctx.beginPath();
-    ctx.arc(mx,my,4+6*k,0,TAU);
-    ctx.fill();
-    ctx.globalAlpha=0.35*k;
-    ctx.beginPath();
-    ctx.arc(mx,my,10+8*k,0,TAU);
-    ctx.fill();
+    ctx.translate(player.x,player.y);
+    ctx.rotate(_wang);
+    if(archId.includes('striker')){
+      // Striker: ince ikiz namlu
+      ctx.fillStyle='#1a2a44';ctx.fillRect(3,-3.5,11,2.5);ctx.fillRect(3,1.2,11,2.5);
+      ctx.fillStyle='#0d1522';ctx.fillRect(3,-3,9,1.8);ctx.fillRect(3,1.7,9,1.8);
+      ctx.shadowColor=_wcolor;ctx.shadowBlur=6+4*_wpulse;
+      ctx.fillStyle=_wcolor;ctx.globalAlpha=0.7+0.3*_wpulse;
+      ctx.fillRect(13,-3.7,2.5,2.5);ctx.fillRect(13,0.8,2.5,2.5);
+      // Enerji bağlantı çubuğu
+      ctx.globalAlpha=0.4;ctx.fillRect(4,-1.5,9,3);
+    }else if(archId.includes('controller')){
+      // Controller: enerji asası
+      ctx.fillStyle='#1a1a33';ctx.fillRect(2,-1.8,13,3.6);
+      ctx.fillStyle='#0d0d22';ctx.fillRect(3,-1,10,2);
+      // Kayan enerji orb
+      ctx.shadowColor=_wcolor;ctx.shadowBlur=10+6*_wpulse;
+      ctx.fillStyle=_wcolor;ctx.globalAlpha=0.75+0.25*_wpulse;
+      ctx.beginPath();ctx.arc(16,0,2.8+_wpulse*0.8,0,TAU);ctx.fill();
+      ctx.fillStyle='#ffffff';ctx.globalAlpha=0.6;
+      ctx.beginPath();ctx.arc(16.5,-0.5,1,0,TAU);ctx.fill();
+    }else{
+      // Vanguard: ağır top kolu
+      ctx.fillStyle='#1a2a44';ctx.fillRect(2,-4,14,8);
+      ctx.fillStyle='#0d1a2e';ctx.fillRect(4,-2.8,10,5.6);
+      ctx.fillStyle='#253548';ctx.fillRect(2,-4,5,8);  // omuz bloğu
+      // Enerji hücresi namlu ucu
+      ctx.shadowColor=_wcolor;ctx.shadowBlur=10+7*_wpulse;
+      ctx.fillStyle=_wcolor;ctx.globalAlpha=0.8+0.2*_wpulse;
+      ctx.fillRect(13.5,-2.5,3,5);
+      ctx.fillStyle='#ffffff';ctx.globalAlpha=0.5;
+      ctx.beginPath();ctx.arc(15,-1,0.9,0,TAU);ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  /* NORYVX ATTACK — gelişmiş muzzle bloom + spike efekti (world-space). */
+  if(_fireDt<160 && !_destroyed){
+    const k=1-_fireDt/160;
+    const _fdx=player.lastFireDx||0,_fdy=player.lastFireDy||0;
+    const _fc=player.lastFireColor||skinInner;
+    // Namlu ucu mesafesi: silah uzunluğu ~16px
+    const mx=player.x+_fdx*16,my=player.y+_fdy*16;
+    const _fang=Math.atan2(_fdy,_fdx);
+    ctx.save();
+    ctx.globalCompositeOperation='lighter';
+    // 1. Geniş arka glow
+    ctx.globalAlpha=0.25*k;
+    ctx.fillStyle=_fc;
+    ctx.shadowColor=_fc;ctx.shadowBlur=30*k;
+    ctx.beginPath();ctx.arc(mx,my,14*k,0,TAU);ctx.fill();
+    // 2. Dikey cross spike'lar
+    ctx.shadowBlur=8;
+    for(let _si=0;_si<4;_si++){
+      const _sa=_fang+_si*TAU*0.25;
+      const _slen=(8+10*k)*(_si%2===0?1:0.55);
+      ctx.globalAlpha=0.7*k*(_si%2===0?1:0.65);
+      ctx.strokeStyle=_si%2===0?'#ffffff':_fc;
+      ctx.lineWidth=_si%2===0?2*k:1.2*k;
+      ctx.lineCap='round';
+      ctx.beginPath();ctx.moveTo(mx,my);ctx.lineTo(mx+Math.cos(_sa)*_slen,my+Math.sin(_sa)*_slen);ctx.stroke();
+    }
+    // 3. Merkezi parlak çekirdek
+    ctx.globalAlpha=k;
+    ctx.fillStyle='#ffffff';ctx.shadowColor=_fc;ctx.shadowBlur=12;
+    ctx.beginPath();ctx.arc(mx,my,2.2+2*k,0,TAU);ctx.fill();
+    // 4. Orta halka
+    ctx.globalAlpha=0.6*k;
+    ctx.strokeStyle=_fc;ctx.lineWidth=1.2*k;ctx.shadowBlur=6;
+    ctx.beginPath();ctx.arc(mx,my,6+5*(1-k),0,TAU);ctx.stroke();
     ctx.restore();
   }
 
@@ -8986,7 +9045,7 @@ function rrVanguard(P){
      procedural cizim aynen calisir. */
   if(atlasHas("vanguard")){
     ctx.save();
-    atlasDraw("vanguard",23);
+    atlasDraw("vanguard",15);
     ctx.globalCompositeOperation="lighter";
     ctx.globalAlpha=.30+.22*Math.sin(P.t*5);
     ctx.fillStyle=P.acc;
@@ -9070,7 +9129,7 @@ function rrStriker(P){
      procedural cizim aynen calisir. */
   if(atlasHas("striker")){
     ctx.save();
-    atlasDraw("striker",21);
+    atlasDraw("striker",14);
     ctx.globalCompositeOperation="lighter";
     ctx.globalAlpha=.30+.22*Math.sin(P.t*5);
     ctx.fillStyle=P.acc;
@@ -9160,7 +9219,7 @@ function rrController(P){
      procedural cizim aynen calisir. */
   if(ATLAS.img&&ATLAS.f&&ATLAS.f["controller"]||atlasHas("controller")){
     ctx.save();
-    atlasDraw("controller",22);
+    atlasDraw("controller",15);
     ctx.globalCompositeOperation="lighter";
     ctx.globalAlpha=.30+.22*Math.sin(P.t*5);
     ctx.fillStyle=P.acc;
