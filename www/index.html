@@ -3403,11 +3403,10 @@ function resize() {
   H = canvas.height = window.innerHeight;
   initRain();
 }
-window.addEventListener('resize', resize);
-resize();
-
 const CHARS = '01アイウエオカキクケコタチツテトナニヌネノABCDEF◈◆▲⬡';
 const CHAR_W = 14;
+window.addEventListener('resize', resize);
+resize();
 let drops = [];
 
 function initRain() {
@@ -17014,10 +17013,12 @@ function threat(){
 
 /* Düşman HP eğrisine uygula. Sektör çarpanı zaten ayrı bir
    sarmalayıcıda; bu üçüncü katman onu bozmaz. */
+try{
 if(typeof BALANCE==="object"&&BALANCE.enemy&&typeof BALANCE.enemy.hpCurve==="function"){
   const _hp=BALANCE.enemy.hpCurve;
   BALANCE.enemy.hpCurve=function(level){return _hp(level)*threat();};
 }
+}catch(_e){}
 
 window.NEONTHREAT={threat,BASE_POWER,DIV,CAP};
 })();
