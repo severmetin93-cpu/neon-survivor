@@ -212,6 +212,7 @@
   }
 
   function patchDamageEnemy() {
+    if(window.__nvxWrap_damageItems)return; window.__nvxWrap_damageItems=1;
     if (typeof damageEnemy !== 'function' && typeof window.damageEnemy !== 'function') return;
     var orig = window.damageEnemy || damageEnemy;
     if (orig.__nvxDmgElite) return;

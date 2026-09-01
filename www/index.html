@@ -7496,6 +7496,8 @@ function nearestEnemy(){
    Sadece telemetri atifi icin kullanilir; hasar hesabina etkisi yoktur.
    Eski 3 parametreli cagrilar aynen calisir. */
 function damageEnemy(e,amount,color,src){
+  if(damageEnemy.__d>8)return; damageEnemy.__d=(damageEnemy.__d|0)+1;
+  try{
   if(!e.alive)return;
 
   Telemetry.onDamageDealt(
@@ -7592,6 +7594,7 @@ function damageEnemy(e,amount,color,src){
       }
     }
   }
+  }finally{ damageEnemy.__d--; }
 }
 
 
