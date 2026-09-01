@@ -3322,7 +3322,7 @@ body.ls #scr-menu .nvx-mnav{margin-top:auto}
   </div>
 
   <!-- OYNA button -->
-  <button id="b-play" class="nvx2-play">
+  <button id="b-play" class="nvx2-play" onclick="if(typeof startGame==='function')startGame();" ontouchend="event.preventDefault();if(typeof startGame==='function')startGame();">
     <span class="cpb-bg"></span>
     <span class="cpb-scan"></span>
     <span class="cpb-glow-l"></span>
@@ -8466,9 +8466,12 @@ const Game={
     this.state=
       STATE.PLAYING;
 
-    const sec=Math.max(1,Math.ceil((Game.level||1)/10));
-    popText(W/2,H*.28,"◈ SEKTÖR "+String(sec).padStart(2,'0')+" · GİRİLİYOR ◈","#22e6ff",16);
-    setTimeout(()=>popText(W/2,H*.38,"HAYATTA KAL · ENERJİNİ TOPLA","rgba(34,230,255,0.7)",12),900);
+    try{
+      var _s=Math.max(1,Math.ceil(((this.level||1))/10));
+      var _sp=(_s<10?"0":"")+_s;
+      popText(W/2,H*.28,"\u25C8 SEKT\u00D6R "+_sp+" \u00B7 G\u0130R\u0130L\u0130YOR \u25C8","#22e6ff",16);
+      setTimeout(function(){try{popText(W/2,H*.38,"HAYATTA KAL \u00B7 ENERJINI TOPLA","rgba(34,230,255,0.7)",12);}catch(e){}},900);
+    }catch(e){}
 
     showPauseButton();
 
@@ -8766,8 +8769,7 @@ function update(dt){
       Game.wave=nextWave;
       if(Game.wave!==Game.lastAnnouncedWave){
         Game.lastAnnouncedWave=Game.wave;
-        const secNum=Math.max(1,Math.ceil((Game.level||1)/10));
-        popText(W/2,H*.22,"SEKTÖR "+String(secNum).padStart(2,'0')+" · DALGA "+Game.wave,"#22e6ff",18);
+        try{var _sn=Math.max(1,Math.ceil(((Game.level||1))/10));var _snp=(_sn<10?"0":"")+_sn;popText(W/2,H*.22,"SEKT\u00D6R "+_snp+" \u00B7 DALGA "+Game.wave,"#22e6ff",18);}catch(e){popText(W/2,H*.22,"DALGA "+Game.wave,"#22e6ff",20);}
         emit(player.x,player.y,18,"#22e6ff",160,2.8,.45);
         Audio_.power();
         vibrate([12,24,12]);
@@ -11826,18 +11828,20 @@ function syncSelectedHeroForRun(){
 }
 
 function startGame(){
-  syncSelectedHeroForRun();
+  try{syncSelectedHeroForRun();}catch(e){}
 
+  /* REGRESSION FIX: TUM .screen dugumlerini kapat */
+  try{
+    document.querySelectorAll(".screen").forEach(function(s){
+      s.classList.remove("on");
+    });
+  }catch(e){}
+  try{runCountdown.classList.remove("on");}catch(e){}
 
-  /* REGRESSION FIX: sadece cache'lenmis ekranlari degil, TUM .screen
-     dugumlerini kapat. Aksi halde RPG/EVO/TECH/MASTERY vb. ekranlar
-     acikken OYNA'ya basildiginda oyun ekranin ALTINDA baslayabilir. */
-  document.querySelectorAll(".screen").forEach(function(s){
-    s.classList.remove("on");
-  });
-  runCountdown.classList.remove("on");
-
-  Game.start();
+  try{Game.start();}catch(e){
+    /* Fallback: en az state'i PLAYING yap */
+    try{if(Game)Game.state="PLAYING";}catch(e2){}
+  }
 
   hintHidden=false;
 
@@ -19358,9 +19362,9 @@ try{
   letter-spacing:normal !important;
   box-shadow:none !important;
   transition:transform .12s ease !important;
-  margin-left:0 !important;
-  width:100% !important;
-  box-sizing:border-box !important;
+  margin-left:-20px !important;
+  width:calc(100% + 40px) !important;
+  pointer-events:auto !important;
 }
 #b-play:active{ transform:scale(.985) !important; box-shadow:none !important; }
 .cpb-bg{
