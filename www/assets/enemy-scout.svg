@@ -1,13 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
-  <defs>
-    <linearGradient id="s" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#8ec8ff"/><stop offset="100%" stop-color="#1a4a8a"/>
-    </linearGradient>
-    <filter id="g"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-  </defs>
-  <path d="M20 70 L50 55 L78 55 L108 70 L90 82 L78 68 L50 68 Z" fill="url(#s)" filter="url(#g)"/>
-  <path d="M64 22 L74 88 L64 100 L54 88 Z" fill="#5aa0e0" filter="url(#g)"/>
-  <ellipse cx="64" cy="48" rx="6" ry="10" fill="#c8e8ff" opacity="0.9"/>
-  <rect x="58" y="88" width="12" height="16" rx="3" fill="#3b7bff"/>
-  <ellipse cx="64" cy="106" rx="7" ry="4" fill="#7ab0ff" opacity="0.7"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <polygon points="10,70 50,55 64,58 78,55 118,70 95,82 78,70 64,74 50,70" fill="#ff6a4a"/>
+  <polygon points="64,18 74,50 78,95 64,112 50,95 54,50" fill="#ff7060"/>
+  <ellipse cx="64" cy="48" rx="7" ry="11" fill="#ffe0e0"/>
+  <ellipse cx="56" cy="108" rx="5" ry="4" fill="#ff9080"/>
+  <ellipse cx="72" cy="108" rx="5" ry="4" fill="#ff9080"/>
 </svg>

@@ -1,15 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160">
-  <defs>
-    <linearGradient id="b" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#ff6b8a"/><stop offset="100%" stop-color="#6a1020"/>
-    </linearGradient>
-    <filter id="g4"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-  </defs>
-  <path d="M10 90 L55 60 L105 60 L150 90 L120 110 L105 78 L55 78 Z" fill="url(#b)" filter="url(#g4)"/>
-  <path d="M80 16 L102 115 L80 140 L58 115 Z" fill="#c03050" filter="url(#g4)"/>
-  <ellipse cx="80" cy="55" rx="12" ry="18" fill="#ffd0d8" opacity="0.9"/>
-  <rect x="62" y="112" width="12" height="22" rx="3" fill="#ff3b6b"/>
-  <rect x="86" y="112" width="12" height="22" rx="3" fill="#ff3b6b"/>
-  <ellipse cx="68" cy="136" rx="8" ry="5" fill="#ff8090" opacity="0.7"/>
-  <ellipse cx="92" cy="136" rx="8" ry="5" fill="#ff8090" opacity="0.7"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160">
+  <polygon points="5,90 55,60 80,66 105,60 155,90 125,110 105,82 80,90 55,82" fill="#ff3b6b"/>
+  <polygon points="80,10 100,55 108,120 80,148 52,120 60,55" fill="#ff4060"/>
+  <polygon points="20,95 50,85 50,100" fill="#ff6080"/>
+  <polygon points="140,95 110,85 110,100" fill="#ff6080"/>
+  <ellipse cx="80" cy="52" rx="12" ry="18" fill="#ffe0e8"/>
+  <circle cx="80" cy="85" r="8" fill="#ffd0d8"/>
 </svg>
