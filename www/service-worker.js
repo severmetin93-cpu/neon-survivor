@@ -1,5 +1,5 @@
-/* NORYVX V25.1.4 — Day3 assets in cache, no HTML body rewrite */
-const CACHE = "neon-survivor-v25-1-4";
+/* NORYVX V25.1.5 — 1945 runtime in cache, no HTML body rewrite */
+const CACHE = "neon-survivor-v25-1-5";
 
 const ASSETS = [
   "./",
@@ -14,7 +14,8 @@ const ASSETS = [
   "./css/nvx2-menu-polish.css",
   "./css/noryvx-shop-day3.css",
   "./js/ms7-day2-fixes.js",
-  "./js/noryvx-day3-shop.js"
+  "./js/noryvx-day3-shop.js",
+  "./js/noryvx-1945-runtime.js"
 ];
 
 self.addEventListener("install", event => {
