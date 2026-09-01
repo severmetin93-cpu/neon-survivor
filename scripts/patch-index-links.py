@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Inject Day1–3 CSS/JS links into www/index.html if missing."""
+"""Inject Day1-3 + 1945 runtime CSS/JS links into www/index.html if missing."""
 from pathlib import Path
 
 INDEX = Path("www/index.html")
@@ -17,17 +17,12 @@ LINKS = [
 SCRIPTS = [
     ("ms7-day2-fixes.js", '<script src="js/ms7-day2-fixes.js" defer></script>'),
     ("noryvx-day3-shop.js", '<script src="js/noryvx-day3-shop.js" defer></script>'),
+    ("noryvx-1945-runtime.js", '<script src="js/noryvx-1945-runtime.js" defer></script>'),
 ]
 
 for key, tag in LINKS:
     if key not in html:
-        if 'rel="manifest"' in html and key == "nvx2-menu-polish.css":
-            html = html.replace(
-                '<link href="manifest.json" rel="manifest"/>',
-                '<link href="manifest.json" rel="manifest"/>\n' + tag,
-                1,
-            )
-        if key not in html:
+        if "</head>" in html:
             html = html.replace("</head>", tag + "\n</head>", 1)
         changed = True
         print("injected", key)
