@@ -13156,6 +13156,7 @@ function p3MasteryRank(key){
   for(const t of P3.masteryThresholds){ if(xp>=t)r++; else break; }
   return Math.min(5,r);
 }
+window.p3MasteryRank=p3MasteryRank;
 
 /* Kosu sonunda cagrilir: o kosuda her silahla verilen hasari
    kalici masteryXP'ye ekler ve rutbeleri yeniden hesaplar. */
