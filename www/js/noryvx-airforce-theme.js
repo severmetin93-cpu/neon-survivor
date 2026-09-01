@@ -1,11 +1,12 @@
-/* NORYVX Air Force theme — menu + in-run HUD + plane silhouettes */
+/* NORYVX Air Force theme — menu + in-run HUD + plane silhouettes + clean skills */
 (function () {
   'use strict';
-  if (window.__NVX_AF_THEME_V2__) return;
-  window.__NVX_AF_THEME_V2__ = true;
+  if (window.__NVX_AF_THEME_V3__) return;
+  window.__NVX_AF_THEME_V3__ = true;
 
   function injectCss() {
-    if (document.getElementById('nvx-af-theme-css')) return;
+    var old = document.getElementById('nvx-af-theme-css');
+    if (old) old.remove();
     var s = document.createElement('style');
     s.id = 'nvx-af-theme-css';
     s.textContent = [
@@ -19,11 +20,55 @@
       '  filter: drop-shadow(0 0 18px rgba(34,230,255,.55)) drop-shadow(0 8px 24px rgba(0,0,0,.45))!important;',
       '  transform: rotate(-12deg) scale(1.05)!important;',
       '}',
-      /* declutter: vertical YETENEKLER label off — skills are on the right */',
       '#weapon-hud::after{display:none!important;content:none!important;}',
-      '#weapon-hud{opacity:.92!important;}',
-      /* keep bottom POWER HUD primary */',
-      '#nvx-weapon-power{z-index:14!important;}'
+      '#nvx-weapon-power{z-index:14!important;}',
+
+      /* ===== RIGHT SKILLS — compact 1945-style ===== */',
+      '#nvx-active-skills{',
+      '  right:8px!important;',
+      '  bottom:calc(env(safe-area-inset-bottom,0px) + 88px)!important;',
+      '  gap:8px!important;',
+      '  align-items:center!important;',
+      '  z-index:12!important;',
+      '}',
+      '#nvx-active-skills .nvx-sk{',
+      '  width:46px!important;',
+      '  height:46px!important;',
+      '  border-radius:50%!important;',
+      '  background:rgba(4,10,26,.88)!important;',
+      '  border:1.5px solid rgba(34,230,255,.28)!important;',
+      '  box-shadow:0 4px 14px rgba(0,0,0,.35)!important;',
+      '}',
+      '#nvx-active-skills .nvx-sk.ready{',
+      '  border-color:rgba(34,230,255,.75)!important;',
+      '  box-shadow:0 0 16px rgba(34,230,255,.4)!important;',
+      '}',
+      /* Hide name labels under buttons (BURST/HEAL text clutter) */',
+      '#nvx-active-skills .sk-name{display:none!important;}',
+      /* CD / LV badge — small, inside top edge */',
+      '#nvx-active-skills .sk-cd{',
+      '  top:auto!important;',
+      '  bottom:2px!important;',
+      '  font:700 7px IBM Plex Mono,monospace!important;',
+      '  letter-spacing:0!important;',
+      '  opacity:.9!important;',
+      '}',
+      '#nvx-active-skills .sk-icon{font-size:16px!important;}',
+      /* Locked skills fully hidden (not grey clutter) */',
+      '#nvx-active-skills .nvx-sk.locked{display:none!important;}',
+
+      /* Power-up pills — tuck away from skills */',
+      '#power-hud{',
+      '  right:8px!important;',
+      '  top:calc(var(--safe-t,0px) + 120px)!important;',
+      '  max-width:90px!important;',
+      '}',
+      '#power-hud .power-pill{',
+      '  min-width:0!important;',
+      '  height:28px!important;',
+      '  font-size:7px!important;',
+      '  padding:0 8px!important;',
+      '}'
     ].join('\n');
     document.head.appendChild(s);
   }
@@ -74,16 +119,12 @@
     if (tag) tag.textContent = 'AIR FORCE · BÖLGE 01';
   }
 
-  /* Simple fighter silhouette drawn in local enemy space (nose up = -Y) */
   function drawFighterSilhouette(ctx, r, paint, elite) {
     var body = r * 1.15;
     ctx.save();
-    /* face downward (toward player) like classic shmup */
     ctx.rotate(Math.PI);
     ctx.shadowColor = paint.edge || paint.core || '#ff4060';
     ctx.shadowBlur = elite ? 18 : 10;
-
-    /* wings */
     ctx.fillStyle = paint.edge || '#ff6a4a';
     ctx.beginPath();
     ctx.moveTo(-body * 0.95, body * 0.15);
@@ -94,8 +135,6 @@
     ctx.lineTo(-body * 0.35, body * 0.35);
     ctx.closePath();
     ctx.fill();
-
-    /* fuselage */
     ctx.fillStyle = paint.core || '#ffe0e8';
     ctx.beginPath();
     ctx.moveTo(0, -body * 0.95);
@@ -104,14 +143,10 @@
     ctx.lineTo(-body * 0.28, body * 0.55);
     ctx.closePath();
     ctx.fill();
-
-    /* cockpit */
     ctx.fillStyle = 'rgba(180,240,255,0.85)';
     ctx.beginPath();
     ctx.ellipse(0, -body * 0.35, body * 0.12, body * 0.18, 0, 0, Math.PI * 2);
     ctx.fill();
-
-    /* engine glow */
     ctx.shadowBlur = 14;
     ctx.fillStyle = elite ? '#ffd24d' : '#22e6ff';
     ctx.beginPath();
@@ -146,6 +181,17 @@
     }
   }
 
+  function declutterSkills() {
+    var box = document.getElementById('nvx-active-skills');
+    if (!box) return;
+    box.querySelectorAll('.nvx-sk.locked').forEach(function (el) {
+      el.style.display = 'none';
+    });
+    box.querySelectorAll('.sk-name').forEach(function (el) {
+      el.style.display = 'none';
+    });
+  }
+
   function boot() {
     injectCss();
     setSubtitles();
@@ -153,6 +199,7 @@
     retargetText(document.getElementById('scr-shop'));
     retargetText(document.body);
     patchEnemyDraw();
+    declutterSkills();
   }
 
   if (document.readyState === 'loading') {
@@ -164,7 +211,7 @@
   setTimeout(boot, 2000);
   setInterval(function () {
     retargetText(document.getElementById('run-wave-hud'));
-    retargetText(document.body);
     patchEnemyDraw();
-  }, 3000);
+    declutterSkills();
+  }, 2500);
 })();
