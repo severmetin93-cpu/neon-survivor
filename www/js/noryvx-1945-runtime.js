@@ -1,12 +1,14 @@
-/* NORYVX 1945 V5 — force planes on menu canvas + gameplay */
+/* NORYVX 1945 V6 — plane SVG assets ONLY (robot PNGs ignored) */
 (function () {
   'use strict';
-  if (window.__NVX1945_V5__) return;
+  if (window.__NVX1945_V6__) return;
+  window.__NVX1945_V6__ = true;
   window.__NVX1945_V5__ = true;
   window.__NVX1945_V4__ = true;
 
   var HERO_IMG = {};
   var ENEMY_IMG = {};
+  var BUST = '?v=plane6';
 
   function tryLoad(map, key, paths) {
     var im = new Image();
@@ -14,30 +16,28 @@
     var i = 0;
     function next() {
       if (i >= paths.length) return;
-      im.src = paths[i++];
+      im.src = paths[i++] + (paths[i - 1].indexOf('?') >= 0 ? '' : BUST);
     }
     im.onerror = next;
     map[key] = im;
     next();
   }
 
+  /* SVG FIRST — never load old robot PNGs */
   tryLoad(HERO_IMG, 'vanguard', [
-    'assets/hero-vanguard.png',
-    './assets/hero-vanguard.png',
-    '/assets/hero-vanguard.png',
-    'assets/hero-vanguard.svg'
+    'assets/hero-vanguard.svg',
+    './assets/hero-vanguard.svg',
+    '/assets/hero-vanguard.svg'
   ]);
   tryLoad(HERO_IMG, 'striker', [
-    'assets/hero-striker.png',
-    './assets/hero-striker.png',
-    '/assets/hero-striker.png',
-    'assets/hero-striker.svg'
+    'assets/hero-striker.svg',
+    './assets/hero-striker.svg',
+    '/assets/hero-striker.svg'
   ]);
   tryLoad(HERO_IMG, 'controller', [
-    'assets/hero-controller.png',
-    './assets/hero-controller.png',
-    '/assets/hero-controller.png',
-    'assets/hero-controller.svg'
+    'assets/hero-controller.svg',
+    './assets/hero-controller.svg',
+    '/assets/hero-controller.svg'
   ]);
   tryLoad(ENEMY_IMG, 'scout', ['assets/enemy-scout.svg', './assets/enemy-scout.svg']);
   tryLoad(ENEMY_IMG, 'assault', ['assets/enemy-assault.svg', './assets/enemy-assault.svg']);
@@ -117,7 +117,6 @@
     c.restore();
   }
 
-  /* Nuke robot full-body */
   function forceRrHeroFull() {
     function planeHero(cxCtx, heroKey, cx, cy, scale, time) {
       var size = Math.max(160, 380 * (scale || 1));
@@ -127,13 +126,11 @@
     try { rrHeroFull = planeHero; } catch (e) {}
   }
 
-  /* Main menu hero canvas loop */
   function forceRenderMenuHero() {
     function planeMenu(dt) {
       try {
         var scr = document.getElementById('scr-menu');
         if (!scr || !scr.classList.contains('on')) return;
-
         if (typeof HERO === 'undefined' || !HERO) return;
         if (!HERO.cv) {
           HERO.cv = document.getElementById('hero-canvas');
@@ -141,11 +138,9 @@
           HERO.cx = HERO.cv.getContext('2d');
         }
         if (!HERO.cx) return;
-
         try {
           if (typeof heroResize === 'function') heroResize();
         } catch (e) {}
-
         if (!HERO.w || !HERO.h) {
           var r = HERO.cv.getBoundingClientRect();
           var dpr = Math.min(2, window.devicePixelRatio || 1);
@@ -157,15 +152,12 @@
           }
         }
         if (!HERO.w || !HERO.h) return;
-
         HERO.t = (HERO.t || 0) + (dt || 0.016);
-
         var key = 'vanguard';
         try {
           if (typeof heroArchId === 'function') key = heroKeyNorm(heroArchId());
           else if (Save && Save.data && Save.data.selectedHero) key = heroKeyNorm(Save.data.selectedHero);
         } catch (e) {}
-
         if (key !== HERO.last) {
           HERO.last = key;
           var n = document.getElementById('hero-class');
@@ -180,19 +172,15 @@
                   : 'HEAVY FIGHTER · FRONTLINE';
           }
         }
-
         var c = HERO.cx;
         var w = HERO.w;
         var h = HERO.h;
         c.clearRect(0, 0, w, h);
-
-        /* soft ground glow */
         var g = c.createRadialGradient(w / 2, h * 0.7, 4, w / 2, h * 0.7, w * 0.45);
         g.addColorStop(0, 'rgba(34,230,255,0.12)');
         g.addColorStop(1, 'rgba(0,0,0,0)');
         c.fillStyle = g;
         c.fillRect(0, 0, w, h);
-
         drawHeroPlaneOnCtx(c, key, w / 2, h * 0.52, Math.min(w, h) * 0.72, HERO.t);
       } catch (err) {}
     }
@@ -200,7 +188,6 @@
     try { renderMenuHero = planeMenu; } catch (e) {}
   }
 
-  /* Character select screen paint */
   function forceNvxHeroPaint() {
     function planePaint() {
       try {
@@ -363,10 +350,8 @@
     for (var i = 0; i < rings.length; i++) {
       var s = rings[i];
       if (!s || !s.alive) continue;
-      if (!isFinite(s.life) || s.max > 0.55) {
-        if (s.max > 0.55) s.max = 0.55;
-        if (s.life > 0.55) s.life = 0.55;
-      }
+      if (s.max > 0.55) s.max = 0.55;
+      if (s.life > 0.55) s.life = 0.55;
       if (s.life <= 0 || !isFinite(s.life)) {
         s.alive = false;
         s.life = 0;
