@@ -5508,8 +5508,7 @@ const powerups=Pool(()=>({
   _drop:false   /* Düşman dropu mu? */
 }));
 
-/* Oyunun silah gücü (1-5, 1945 P sistemi) */
-if(typeof Game!=='undefined')Game.weaponPower=1;
+/* Oyunun silah gücü (1-5, 1945 P sistemi) — Game.start() içinde sıfırlanır */
 
 /* ====================================================
    DÜŞMAN MERMİ HAVUZU (1945 stili - aşağı inen mermiler)
