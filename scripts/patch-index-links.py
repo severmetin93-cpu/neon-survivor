@@ -24,6 +24,7 @@ SCRIPTS = [
     ("noryvx-powerups.js", '<script src="js/noryvx-powerups.js" defer></script>'),
     ("noryvx-difficulty.js", '<script src="js/noryvx-difficulty.js" defer></script>'),
     ("noryvx-combo.js", '<script src="js/noryvx-combo.js" defer></script>'),
+    ("noryvx-damage-items.js", '<script src="js/noryvx-damage-items.js" defer></script>'),
 ]
 
 for key, tag in LINKS:
