@@ -1,8 +1,8 @@
-/* NORYVX x 1945 Air Force — runtime integration layer */
+/* NORYVX x 1945 Air Force — runtime integration + ring cleanup */
 (function () {
   'use strict';
-  if (window.__NVX1945__) return;
-  window.__NVX1945__ = true;
+  if (window.__NVX1945_V2__) return;
+  window.__NVX1945_V2__ = true;
 
   function injectHudCss() {
     if (document.getElementById('nvx-1945-hud-css')) return;
@@ -81,6 +81,103 @@
     }
   }
 
+  /* ---- FIX: death rings that never fade ---- */
+  function getRingsArray() {
+    try {
+      if (typeof RINGS !== 'undefined' && RINGS && RINGS.length) return RINGS;
+    } catch (e) {}
+    try {
+      if (window.RINGS && window.RINGS.length) return window.RINGS;
+    } catch (e2) {}
+    return null;
+  }
+
+  function scrubRings() {
+    var rings = getRingsArray();
+    if (!rings) return;
+    for (var i = 0; i < rings.length; i++) {
+      var s = rings[i];
+      if (!s) continue;
+      if (!s.alive) continue;
+      if (!isFinite(s.life) || !isFinite(s.max) || s.max <= 0) {
+        s.alive = false;
+        s.life = 0;
+        continue;
+      }
+      /* hard cap: nothing lives longer than 0.55s */
+      if (s.max > 0.55) s.max = 0.55;
+      if (s.life > 0.55) s.life = 0.55;
+      if (s.life <= 0) s.alive = false;
+    }
+  }
+
+  function patchRingSystem() {
+    if (window.__nvxRingPatched) return;
+
+    if (typeof window.ringBurst === 'function' || typeof ringBurst === 'function') {
+      var origBurst = window.ringBurst || ringBurst;
+      if (!origBurst.__nvx) {
+        function safeBurst(x, y, r0, r1, color, life, w) {
+          var L = life;
+          if (L == null || !isFinite(L) || L <= 0) L = 0.35;
+          if (L > 0.5) L = 0.5;
+          try {
+            return origBurst.call(this, x, y, r0, r1, color, L, w);
+          } catch (e) {
+            try {
+              var rings = getRingsArray();
+              if (!rings) return;
+              var s = null;
+              for (var i = 0; i < rings.length; i++) {
+                if (!rings[i].alive) { s = rings[i]; break; }
+              }
+              if (!s) s = rings[0];
+              s.alive = true;
+              s.x = x; s.y = y;
+              s.r0 = r0 || 4; s.r1 = r1 || 40;
+              s.max = s.life = L;
+              s.color = color || '#22e6ff';
+              s.w = w || 3;
+            } catch (e2) {}
+          }
+        }
+        safeBurst.__nvx = true;
+        window.ringBurst = safeBurst;
+        try { ringBurst = safeBurst; } catch (e) {}
+      }
+    }
+
+    if (typeof window.updateRings === 'function' || typeof updateRings === 'function') {
+      var origUp = window.updateRings || updateRings;
+      if (!origUp.__nvx) {
+        function safeUpdate(dt) {
+          var d = dt;
+          if (!isFinite(d) || d <= 0) d = 1 / 60;
+          if (d > 0.1) d = 0.1;
+          try { origUp.call(this, d); } catch (e) {}
+          /* force decay even if orig skipped */
+          var rings = getRingsArray();
+          if (rings) {
+            for (var i = 0; i < rings.length; i++) {
+              var s = rings[i];
+              if (!s || !s.alive) continue;
+              s.life -= d * 1.35;
+              if (s.life <= 0 || !isFinite(s.life)) {
+                s.alive = false;
+                s.life = 0;
+              }
+            }
+          }
+        }
+        safeUpdate.__nvx = true;
+        window.updateRings = safeUpdate;
+        try { updateRings = safeUpdate; } catch (e) {}
+      }
+    }
+
+    window.__nvxRingPatched = true;
+  }
+
   function patchDrawEnemyBullets() {
     var orig = null;
     try {
@@ -155,6 +252,8 @@
       if (playing) {
         ensureGameWeaponPower();
         syncWeaponHud();
+      } else {
+        scrubRings();
       }
     } else if (playing) {
       setWeaponHudVisible(true);
@@ -165,6 +264,7 @@
     if (typeof window.startGame === 'function' && !window.startGame.__nvx1945) {
       var sg = window.startGame;
       window.startGame = function () {
+        scrubRings();
         var r = sg.apply(this, arguments);
         try {
           ensureGameWeaponPower();
@@ -182,9 +282,14 @@
     ensureHudFn();
     ensureGameWeaponPower();
     patchDrawEnemyBullets();
+    patchRingSystem();
     patchStart();
     setInterval(tickHud, 250);
-    setInterval(patchDrawEnemyBullets, 2000);
+    setInterval(function () {
+      patchDrawEnemyBullets();
+      patchRingSystem();
+      scrubRings();
+    }, 1500);
     setInterval(patchStart, 2000);
   }
 
