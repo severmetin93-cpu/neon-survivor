@@ -6,7 +6,8 @@
 
   var ROBOT_SPRITES = {
     hunter: 1, tank: 1, orbiter: 1, dasher: 1, weaver: 1,
-    elite: 1, boss: 1, unit: 1, robot: 1
+    elite: 1, boss: 1, unit: 1, robot: 1,
+    vanguard: 1, striker: 1, controller: 1
   };
 
   /* ---- pure canvas plane (nose toward -Y local, we rotate for direction) ---- */
