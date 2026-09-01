@@ -1,65 +1,45 @@
-/* NORYVX V26.1.0 — force visual plane pack, network-first code */
-const CACHE = "neon-survivor-v26-1-0";
+/* NORYVX V26.2.0 — planes inline in 1945 runtime */
+const CACHE = "neon-survivor-v26-2-0";
 
 const ASSETS = [
   "./",
   "./index.html",
-  "./manifest.json",
-  "./css/nvx2-menu-polish.css",
-  "./css/noryvx-shop-day3.css",
-  "./css/noryvx-gameplay-pro.css",
-  "./js/ms7-day2-fixes.js",
-  "./js/noryvx-day3-shop.js",
-  "./js/noryvx-p3-global.js",
   "./js/noryvx-1945-runtime.js",
-  "./js/noryvx-airforce-theme.js",
-  "./js/noryvx-hero-assets.js",
-  "./js/noryvx-powerups.js",
-  "./js/noryvx-difficulty.js",
-  "./js/noryvx-combo.js",
-  "./js/noryvx-damage-items.js",
-  "./js/noryvx-gameplay-pro.js",
-  "./js/noryvx-visual-force.js",
-  "./assets/hero-vanguard.svg",
-  "./assets/hero-striker.svg",
-  "./assets/hero-controller.svg"
+  "./assets/hero-vanguard.png",
+  "./assets/hero-striker.png",
+  "./assets/hero-controller.png",
+  "./assets/enemy-scout.svg",
+  "./assets/enemy-assault.svg",
+  "./assets/enemy-elite.svg",
+  "./assets/enemy-boss.svg"
 ];
 
-self.addEventListener("install", event => {
-  event.waitUntil(
+self.addEventListener("install", e => {
+  e.waitUntil(
     caches.open(CACHE)
-      .then(cache => Promise.allSettled(ASSETS.map(a => cache.add(a))))
+      .then(c => Promise.allSettled(ASSETS.map(a => c.add(a))))
       .then(() => self.skipWaiting())
   );
 });
 
-self.addEventListener("activate", event => {
-  event.waitUntil(
+self.addEventListener("activate", e => {
+  e.waitUntil(
     caches.keys()
       .then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
 
-function isDoc(req, url) {
-  return (
-    req.mode === "navigate" ||
-    req.destination === "document" ||
-    /\/index\.html($|\?)/.test(req.url) ||
-    (url.origin === self.location.origin && (url.pathname === "/" || url.pathname.endsWith("/")))
-  );
-}
-
-function isCode(url) {
-  return /\.(js|css)($|\?)/i.test(url.pathname);
-}
-
 self.addEventListener("fetch", event => {
   if (event.request.method !== "GET") return;
   const req = event.request;
   const url = new URL(req.url);
+  const isCode =
+    /\.(js|css|png|svg)($|\?)/i.test(url.pathname) ||
+    req.mode === "navigate" ||
+    /index\.html/i.test(url.pathname);
 
-  if (isDoc(req, url) || isCode(url)) {
+  if (isCode) {
     event.respondWith(
       fetch(req)
         .then(res => {
