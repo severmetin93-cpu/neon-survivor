@@ -15178,6 +15178,16 @@ window.TITAN={T,phaseOf};
    uzerine dallanan bir teknoloji agaci ve 4 teknoloji ailesi
    ekler.
 
+/* Fallback: p3 IIFE crash etmişse bile bu fonksiyon çalışır */
+if(typeof p3MasteryRank==='undefined'){
+  var p3MasteryRank=window.p3MasteryRank||function(key){
+    try{var xp=Math.max(0,(window.P3S&&window.P3S.masteryXP&&window.P3S.masteryXP[key])||0);var thresh=[100,300,700,1500,3000];var r=0;for(var i=0;i<thresh.length;i++){if(xp>=thresh[i])r++;else break;}return Math.min(5,r);}catch(e){return 0;}
+  };
+}
+if(typeof p3SkillRank==='undefined'){
+  var p3SkillRank=window.p3SkillRank||function(id){try{return Math.max(0,(window.P3S&&window.P3S.skills&&window.P3S.skills[id])||0);}catch(e){return 0;}};
+}
+
    SAHTE DUGUM YOK — her kademe gercek bir carpana baglidir:
      TP1 plasma hasari      -> weaponStat("plasma").damage
      TP2 patlama yaricapi   -> weaponStat(plasma/nova).radius
