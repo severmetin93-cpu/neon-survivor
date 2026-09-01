@@ -19,3 +19,8 @@ config/admob.json
 
 # Design reference files (tasarım referansları, üretim kodu değil)
 design-references/
+
+# Build artifacts (APK, arşiv) — asla commit edilmez
+apk-out/
+*.apk
+*.zip
