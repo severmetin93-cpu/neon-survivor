@@ -2645,7 +2645,7 @@ body.ls .bn{width:70px}
     <div class="nvi-logo-wrap">
       <div class="nvi-pre-label">[ COMBAT PROTOCOL ACTIVE ]</div>
       <div class="nvi-logo" id="nvi-logo">NORYVX</div>
-      <div class="nvi-tagline">TACTICAL SURVIVOR · SECTOR 01</div>
+      <div class="nvi-tagline">TACTICAL SURVIVOR ◈ SEKTÖR 01</div>
     </div>
     <div class="nvi-scan-line"></div>
   </div>
@@ -4250,13 +4250,13 @@ const BALANCE={
     },
 
     baseSpeed:61,                // CFG.enemy.baseSpeed
-    speedPerLevel:0.043,         // CFG.diff.speedPerLevel
+    speedPerLevel:0.010,         // tactical: enemies slow not fast with level
     lateGameFrom:9,              // lateGamePressure()
-    lateGamePerLevel:0.018,
+    lateGamePerLevel:0.005,
 
     capBase:8,                   // enemyCapForLevel()
-    capPerLevel:2.5,
-    capMax:31,                   // CFG.enemy.maxAlive
+    capPerLevel:3.0,
+    capMax:40,                   // CFG.enemy.maxAlive
     spawnMargin:46,              // BATCH B <- CFG.enemy.margin
     separation:34,               // BATCH B <- CFG.enemy.separation
     separationForce:0.72,        // BATCH B <- CFG.enemy.separationForce
@@ -4267,8 +4267,8 @@ const BALANCE={
     elite:{
       hpBase:5,                  // 5 + floor(level/5)
       hpPerFiveLevels:1,
-      firstAt:150,               // Game.nextEliteAt
-      everySec:90,
+      firstAt:90,                // Game.nextEliteAt - earlier elite spawn
+      everySec:75,
       speedMult:1.08,
       danger:1.35,
       coreReward:2,
@@ -5839,7 +5839,7 @@ const player={
 function resetPlayer(){
 
   player.x=W/2;
-  player.y=H*0.82;
+  player.y=H*0.78;
   /* 1945 — Silah gücünü sıfırla */
   Game.weaponPower=1;
   Game._waveKills=0;
@@ -5868,7 +5868,11 @@ const input={
   active:false,
   id:null,
   x:0,
-  y:0
+  y:0,
+  ox:0,  // touch start X
+  oy:0,  // touch start Y
+  px:0,  // player X at touch start
+  py:0   // player Y at touch start
 };
 
 /* Mobile touch sensitivity: comfortable direct finger-to-hero mapping. */
@@ -5888,6 +5892,10 @@ function inputDown(
   input.id=id;
   input.x=x;
   input.y=y;
+  input.ox=x;
+  input.oy=y;
+  input.px=player.x;
+  input.py=player.y;
 
   Audio_.init();
   Audio_.resume();
@@ -5900,7 +5908,6 @@ function inputMove(x,y){
 
   const dx=x-input.x;
   const dy=y-input.y;
-
   input.x=x;
   input.y=y;
 
@@ -5909,38 +5916,23 @@ function inputMove(x,y){
 
   Telemetry.onMove(dx,dy);   /* FAZ 3 */
 
-  /* FAZ 0 · FIX 0.3
-     ONCE: Save.data.upgrades.speed HICBIR yerde okunmuyordu.
-           Oyuncu kalici "NEON HIZI" upgrade'ine cekirdek harciyor,
-           karsiliginda hicbir sey almiyordu.
-     SONRA: seviye basina +%4, toplamda +%20 ile sinirli.
-            Sinir, "kalici ham stat cok sinirli olsun" ilkesinin
-            geregidir; run ici kartlar (%10/stack) etkilenmedi. */
-  /* Player speed sabit — level/upgrade progression hareketi etkilemez.
-     Sadece overdrive power-up aktifken 1.35x (geçici, oyun içi güç). */
+  /* Direct absolute tracking — player-origin + (finger-origin delta).
+     No delta accumulation = no drift, no dead-zones at walls. */
   const boost=Game.powers.overdrive>0?1.35:1;
 
-  player.x=
-    clamp(
-      player.x+dx*boost*TOUCH_SENSITIVITY,
-      player.r||BALANCE.player.radius,
-      W-(player.r||BALANCE.player.radius)
-    );
+  const tr=player.r||BALANCE.player.radius;
+
+  /* Absolute target from finger offset */
+  const tx=input.px+(x-input.ox)*boost;
+  const ty=input.py+(y-input.oy)*boost;
+
+  player.x=clamp(tx, tr, W-tr);
 
   /* 1945 — Oyuncu ekranın alt %55'inde kalır */
-  player.y=
-    clamp(
-      player.y+dy*boost*TOUCH_SENSITIVITY,
-      H*0.45+BALANCE.player.radius,
-      H-BALANCE.player.radius
-    );
+  player.y=clamp(ty, H*0.45+tr, H-tr);
 
-  if(
-    Math.abs(dx)+Math.abs(dy)>2
-  ){
-
+  if(Math.abs(dx)+Math.abs(dy)>2){
     hideHint();
-
   }
 
 }
@@ -8427,7 +8419,7 @@ const Game={
     this.runUpgrades={speed:0,magnet:0,score:0};
 
     this.weapons={pulse:1,plasma:0,arc:0,novaWeapon:0};
-    this.weaponTimers={pulse:.72,plasma:1.08,arc:1.30,novaWeapon:2.70};
+    this.weaponTimers={pulse:.65,plasma:1.00,arc:1.20,novaWeapon:2.50};
     this._synergyShown={};
     projectiles.clear();
 
@@ -8474,7 +8466,9 @@ const Game={
     this.state=
       STATE.PLAYING;
 
-    popText(W/2,H*.38,"HAYATTA KAL · ENERJİNİ TOPLA","#22e6ff",13);
+    const sec=Math.max(1,Math.ceil((Game.level||1)/10));
+    popText(W/2,H*.28,"◈ SEKTÖR "+String(sec).padStart(2,'0')+" · GİRİLİYOR ◈","#22e6ff",16);
+    setTimeout(()=>popText(W/2,H*.38,"HAYATTA KAL · ENERJİNİ TOPLA","rgba(34,230,255,0.7)",12),900);
 
     showPauseButton();
 
@@ -8772,7 +8766,8 @@ function update(dt){
       Game.wave=nextWave;
       if(Game.wave!==Game.lastAnnouncedWave){
         Game.lastAnnouncedWave=Game.wave;
-        popText(W/2,H*.22,"DALGA "+Game.wave,"#22e6ff",20);
+        const secNum=Math.max(1,Math.ceil((Game.level||1)/10));
+        popText(W/2,H*.22,"SEKTÖR "+String(secNum).padStart(2,'0')+" · DALGA "+Game.wave,"#22e6ff",18);
         emit(player.x,player.y,18,"#22e6ff",160,2.8,.45);
         Audio_.power();
         vibrate([12,24,12]);
@@ -19363,8 +19358,9 @@ try{
   letter-spacing:normal !important;
   box-shadow:none !important;
   transition:transform .12s ease !important;
-  margin-left:-20px !important;
-  width:calc(100% + 40px) !important;
+  margin-left:0 !important;
+  width:100% !important;
+  box-sizing:border-box !important;
 }
 #b-play:active{ transform:scale(.985) !important; box-shadow:none !important; }
 .cpb-bg{
@@ -22265,9 +22261,10 @@ function patch(){
  if(window.NORYVX_UNIFIED_COMBAT_PATCH)return true;
  if(typeof rrVanguard!=="function"||typeof rrStriker!=="function"||typeof rrController!=="function")return false;
  var v=rrVanguard,s=rrStriker,c=rrController;
- rrVanguard=function(P){if(draw("vanguard",P,38))return;v(P)};
- rrStriker=function(P){if(draw("striker",P,36))return;s(P)};
- rrController=function(P){if(draw("controller",P,38))return;c(P)};
+ var _hs=function(){return Math.round(Math.min(window.innerWidth||320,window.innerHeight||568)*0.052)||32;};
+ rrVanguard=function(P){if(draw("vanguard",P,_hs()))return;v(P)};
+ rrStriker=function(P){if(draw("striker",P,Math.round(_hs()*0.92)))return;s(P)};
+ rrController=function(P){if(draw("controller",P,_hs()))return;c(P)};
  window.NORYVX_UNIFIED_COMBAT_PATCH=true;return true
 }
 function boot(){setHero(selected());patch();setTimeout(patch,100);setTimeout(patch,500);setTimeout(patch,1200)}
