@@ -3405,9 +3405,9 @@ function resize() {
 }
 const CHARS = '01アイウエオカキクケコタチツテトナニヌネノABCDEF◈◆▲⬡';
 const CHAR_W = 14;
+let drops = [];
 window.addEventListener('resize', resize);
 resize();
-let drops = [];
 
 function initRain() {
   const cols = Math.ceil(W / CHAR_W);
@@ -21408,10 +21408,12 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
 </script><script id="noryvx-intro-real-assets-runtime">
 (function(){
 function cycle(){
+ try{
  var h=document.getElementById("nvx-intro-hero"),w=document.getElementById("nvx-intro-weapon");if(!h||!w)return;
  var pairs=[[SRC.vanguard,"assets/weapon-pulse.png"],[SRC.striker,"assets/weapon-plasma.png"],[SRC.controller,"assets/weapon-arc.png"],[SRC.vanguard,"assets/weapon-nova.png"]];
  var i=0;function next(){h.classList.remove("intro-swap");w.classList.remove("intro-swap");void h.offsetWidth;h.src=pairs[i][0];w.src=pairs[i][1];h.classList.add("intro-swap");w.classList.add("intro-swap");i=(i+1)%pairs.length}
  next();setInterval(function(){var el=document.getElementById("noryvx-intro");if(el&&!el.classList.contains("hide"))next()},2200);
+ }catch(_e){}
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",cycle);else cycle();
 })();
