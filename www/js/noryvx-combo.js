@@ -82,6 +82,7 @@
   }
 
   function patchKill() {
+    if(window.__nvxWrap_combo)return; window.__nvxWrap_combo=1;
     if (typeof damageEnemy !== 'function' && typeof window.damageEnemy !== 'function') return;
     var orig = window.damageEnemy || damageEnemy;
     if (orig.__nvxCombo) return;

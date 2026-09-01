@@ -1,13 +1,6 @@
 name: Patch index.html links
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "scripts/patch-index-links.py"
-      - "www/css/**"
-      - "www/js/**"
-      - ".github/workflows/patch-index-links.yml"
   workflow_dispatch:
 
 permissions:

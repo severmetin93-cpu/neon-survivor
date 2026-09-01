@@ -51,7 +51,7 @@ edit(MANIFEST, src => {
     const before = src;  
     src = src.replace(  
       /(<activity\b[^>]*?android:name="\.MainActivity")/,  
-      `$1\n            android:screenOrientation="portrait"\n            android:resizeableActivity="false"`  
+      `$1\n            android:screenOrientation="sensorLandscape"\n            android:resizeableActivity="false"`
     );  
     if (src === before) fail('AndroidManifest icinde <activity android:name=".MainActivity"> bulunamadi.');  
     log("portrait");  
@@ -425,7 +425,7 @@ function verify() {
   const activity = fs.readFileSync(MAIN_ACTIVITY, "utf8");  
   
   const checks = [
-    ["portrait kilidi",        /android:screenOrientation="portrait"/.test(manifest)],
+    ["landscape kilidi",        /android:screenOrientation="sensorLandscape"/.test(manifest)],
     ["VIBRATE izni",           manifest.includes("android.permission.VIBRATE")],
     ["izin <application> oncesinde",
                                manifest.indexOf("android.permission.VIBRATE") < manifest.indexOf("<application")],
