@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="e" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffe34d"/><stop offset="100%" stop-color="#8a6010"/>
+    </linearGradient>
+    <filter id="g3"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <path d="M12 72 L48 52 L80 52 L116 72 L96 88 L80 66 L48 66 Z" fill="url(#e)" filter="url(#g3)"/>
+  <path d="M64 14 L82 92 L64 112 L46 92 Z" fill="#d4a820" filter="url(#g3)"/>
+  <ellipse cx="64" cy="46" rx="8" ry="12" fill="#fff8d0" opacity="0.92"/>
+  <rect x="52" y="88" width="10" height="18" rx="3" fill="#ffc040"/>
+  <rect x="66" y="88" width="10" height="18" rx="3" fill="#ffc040"/>
+  <ellipse cx="57" cy="108" rx="6" ry="4" fill="#ffe080" opacity="0.7"/>
+  <ellipse cx="71" cy="108" rx="6" ry="4" fill="#ffe080" opacity="0.7"/>
+</svg>
