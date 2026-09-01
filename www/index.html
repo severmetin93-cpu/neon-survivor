@@ -21772,9 +21772,9 @@ function patch(){
  if(window.NORYVX_UNIFIED_COMBAT_PATCH)return true;
  if(typeof rrVanguard!=="function"||typeof rrStriker!=="function"||typeof rrController!=="function")return false;
  var v=rrVanguard,s=rrStriker,c=rrController;
- rrVanguard=function(P){if(draw("vanguard",P,62))return;v(P)};
- rrStriker=function(P){if(draw("striker",P,62))return;s(P)};
- rrController=function(P){if(draw("controller",P,62))return;c(P)};
+ rrVanguard=function(P){if(draw("vanguard",P,38))return;v(P)};
+ rrStriker=function(P){if(draw("striker",P,36))return;s(P)};
+ rrController=function(P){if(draw("controller",P,38))return;c(P)};
  window.NORYVX_UNIFIED_COMBAT_PATCH=true;return true
 }
 function boot(){setHero(selected());patch();setTimeout(patch,100);setTimeout(patch,500);setTimeout(patch,1200)}
