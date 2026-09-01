@@ -1,0 +1,216 @@
+/* NORYVX — Professional cyberpunk gameplay field */
+:root {
+  --nvx-cp-cyan: #2ee6ff;
+  --nvx-cp-magenta: #ff4fd8;
+  --nvx-cp-amber: #ffc14d;
+  --nvx-cp-panel: rgba(3, 10, 22, 0.72);
+  --nvx-cp-border: rgba(46, 230, 255, 0.22);
+  --nvx-cp-glow: rgba(46, 230, 255, 0.35);
+  --nvx-cp-ink: #eaf4ff;
+  --nvx-cp-muted: rgba(234, 244, 255, 0.45);
+}
+
+/* Stage atmosphere */
+#stage {
+  background:
+    radial-gradient(120% 80% at 50% -10%, rgba(46, 230, 255, 0.08), transparent 42%),
+    radial-gradient(90% 60% at 100% 100%, rgba(255, 79, 216, 0.05), transparent 45%),
+    radial-gradient(70% 50% at 0% 80%, rgba(60, 100, 255, 0.06), transparent 40%),
+    #01040c !important;
+}
+
+#game {
+  position: relative;
+  z-index: 1;
+}
+
+/* Soft vignette + film grain overlay on gameplay */
+#nvx-cp-frame {
+  position: fixed;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+#nvx-cp-frame .nvx-cp-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at center, transparent 42%, rgba(0, 4, 12, 0.55) 100%),
+    linear-gradient(180deg, rgba(0, 8, 18, 0.35) 0%, transparent 12%, transparent 88%, rgba(0, 6, 14, 0.5) 100%);
+}
+
+#nvx-cp-frame .nvx-cp-scan {
+  position: absolute;
+  inset: 0;
+  opacity: 0.04;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.35) 3px
+  );
+  mix-blend-mode: multiply;
+}
+
+#nvx-cp-frame .nvx-cp-grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.045;
+  background-image:
+    linear-gradient(rgba(46, 230, 255, 0.5) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(46, 230, 255, 0.5) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse at center, black 20%, transparent 72%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 20%, transparent 72%);
+}
+
+/* Corner brackets */
+#nvx-cp-frame .nvx-cp-corner {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  border-color: rgba(46, 230, 255, 0.45);
+  border-style: solid;
+  opacity: 0.7;
+}
+#nvx-cp-frame .c-tl {
+  top: calc(var(--safe-t, 0px) + 10px);
+  left: calc(var(--safe-l, 0px) + 10px);
+  border-width: 2px 0 0 2px;
+}
+#nvx-cp-frame .c-tr {
+  top: calc(var(--safe-t, 0px) + 10px);
+  right: calc(var(--safe-r, 0px) + 10px);
+  border-width: 2px 2px 0 0;
+}
+#nvx-cp-frame .c-bl {
+  bottom: calc(var(--safe-b, 0px) + 10px);
+  left: calc(var(--safe-l, 0px) + 10px);
+  border-width: 0 0 2px 2px;
+}
+#nvx-cp-frame .c-br {
+  bottom: calc(var(--safe-b, 0px) + 10px);
+  right: calc(var(--safe-r, 0px) + 10px);
+  border-width: 0 2px 2px 0;
+}
+
+/* Top status strip */
+#nvx-cp-topstrip {
+  position: fixed;
+  top: calc(var(--safe-t, 0px) + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 13;
+  pointer-events: none;
+  display: none;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  background: var(--nvx-cp-panel);
+  border: 1px solid var(--nvx-cp-border);
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.35), inset 0 0 12px rgba(46, 230, 255, 0.04);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font: 600 8px 'IBM Plex Mono', monospace;
+  letter-spacing: 0.14em;
+  color: var(--nvx-cp-muted);
+}
+#nvx-cp-topstrip.on { display: flex; }
+#nvx-cp-topstrip .dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--nvx-cp-cyan);
+  box-shadow: 0 0 8px var(--nvx-cp-glow);
+}
+#nvx-cp-topstrip b {
+  color: var(--nvx-cp-ink);
+  font-weight: 700;
+}
+
+/* Glass panels for existing HUD nodes */
+#b-pause {
+  background: var(--nvx-cp-panel) !important;
+  border: 1px solid var(--nvx-cp-border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35), inset 0 0 10px rgba(46, 230, 255, 0.05) !important;
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  color: var(--nvx-cp-ink) !important;
+}
+
+#nvx-weapon-power {
+  background: var(--nvx-cp-panel) !important;
+  border: 1px solid var(--nvx-cp-border) !important;
+  border-radius: 14px !important;
+  box-shadow:
+    0 8px 28px rgba(0, 0, 0, 0.4),
+    inset 0 0 16px rgba(46, 230, 255, 0.06) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+#run-wave-hud,
+#run-wave-hud .wave-card,
+.mission-pill,
+.nvi-tagline {
+  background: rgba(3, 10, 22, 0.68) !important;
+  border: 1px solid rgba(46, 230, 255, 0.18) !important;
+  border-radius: 12px !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Score / timer blocks — cleaner type */
+#hud-score,
+#hud-time,
+.score-val,
+.time-val {
+  text-shadow: 0 0 12px rgba(46, 230, 255, 0.35) !important;
+  letter-spacing: 0.04em;
+}
+
+/* Skill buttons — pro ring */
+#nvx-active-skills .nvx-sk {
+  background: rgba(4, 10, 22, 0.88) !important;
+  border: 1.5px solid rgba(46, 230, 255, 0.28) !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4) !important;
+}
+#nvx-active-skills .nvx-sk.ready {
+  border-color: rgba(46, 230, 255, 0.75) !important;
+  box-shadow: 0 0 18px rgba(46, 230, 255, 0.35) !important;
+}
+
+/* Combo badge refinement */
+#nvx-combo-badge {
+  text-shadow: 0 0 20px rgba(46, 230, 255, 0.55) !important;
+}
+
+/* Bottom power bar glass */
+#nvx-weapon-power #nvx-wp-track,
+.power-track {
+  background: rgba(46, 230, 255, 0.1) !important;
+  border: 1px solid rgba(46, 230, 255, 0.22) !important;
+}
+
+/* Hide heavy dual clutter labels if present */
+#weapon-hud::after {
+  display: none !important;
+}
+
+/* Hint */
+#hint {
+  background: rgba(3, 10, 22, 0.8) !important;
+  border: 1px solid rgba(46, 230, 255, 0.25) !important;
+  border-radius: 12px !important;
+  padding: 10px 16px !important;
+  color: var(--nvx-cp-ink) !important;
+  letter-spacing: 0.08em;
+  font: 600 11px 'IBM Plex Mono', monospace !important;
+}
+
+/* Reduce pure neon scream — prefer controlled glow */
+#stage::after {
+  content: none;
+}

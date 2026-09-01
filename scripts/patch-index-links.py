@@ -12,6 +12,7 @@ changed = False
 LINKS = [
     ("nvx2-menu-polish.css", '<link href="css/nvx2-menu-polish.css" rel="stylesheet"/>'),
     ("noryvx-shop-day3.css", '<link href="css/noryvx-shop-day3.css" rel="stylesheet"/>'),
+    ("noryvx-gameplay-pro.css", '<link href="css/noryvx-gameplay-pro.css" rel="stylesheet"/>'),
 ]
 
 SCRIPTS = [
@@ -25,6 +26,7 @@ SCRIPTS = [
     ("noryvx-difficulty.js", '<script src="js/noryvx-difficulty.js" defer></script>'),
     ("noryvx-combo.js", '<script src="js/noryvx-combo.js" defer></script>'),
     ("noryvx-damage-items.js", '<script src="js/noryvx-damage-items.js" defer></script>'),
+    ("noryvx-gameplay-pro.js", '<script src="js/noryvx-gameplay-pro.js" defer></script>'),
 ]
 
 for key, tag in LINKS:
