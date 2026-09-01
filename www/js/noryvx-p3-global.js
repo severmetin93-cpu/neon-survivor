@@ -1,4 +1,4 @@
-/* NORYVX — expose P3/P3S as real globals (fixes ReferenceError: P3 is not defined) */
+/* NORYVX — P3/P3S globals + p3Attach (fixes ReferenceError spam) */
 (function (g) {
   var thresholds = [1500, 5000, 13000, 30000, 65000];
   var archetypes = {
@@ -41,9 +41,23 @@
       };
     }
   }
+
+  if (typeof g.p3Attach !== 'function') {
+    g.p3Attach = function (node, fn, withAudio) {
+      if (!node || typeof fn !== 'function') return;
+      if (node.__p3Attached) return;
+      node.__p3Attached = true;
+      node.addEventListener('click', function (e) {
+        try {
+          if (withAudio && g.Audio_ && typeof g.Audio_.ui === 'function') g.Audio_.ui();
+        } catch (err) {}
+        try { fn(e); } catch (err2) {}
+      });
+    };
+  }
 })(typeof window !== "undefined" ? window : this);
 
-/* Classic global bindings for bare identifier lookups in other scripts */
 var P3 = window.P3;
 var P3S = window.P3S;
 var P3_KEY = window.P3_KEY || "noryvx_phase3_v1";
+var p3Attach = window.p3Attach;
