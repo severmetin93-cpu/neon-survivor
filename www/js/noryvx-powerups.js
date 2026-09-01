@@ -138,6 +138,7 @@
 
   /* Wrap kill path so elite/boss get bonus flags */
   function patchKillDrops() {
+    if(window.__nvxWrap_powerups_slow)return; window.__nvxWrap_powerups_slow=1;
     if (typeof damageEnemy !== 'function' && typeof window.damageEnemy !== 'function') return;
     var orig = window.damageEnemy || damageEnemy;
     if (orig.__nvxPuDropFlag) return;
@@ -303,6 +304,7 @@
   }
 
   function patchScoreOnKill() {
+    if(window.__nvxWrap_powerups_chain)return; window.__nvxWrap_powerups_chain=1;
     if (typeof damageEnemy !== 'function' && typeof window.damageEnemy !== 'function') return;
     var orig = window.damageEnemy || damageEnemy;
     if (orig.__nvxPuScore) return;
