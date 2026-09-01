@@ -9852,329 +9852,42 @@ const HERO_FULL_SPEC={
   }
 };
 
-/* rrHeroFull(ctx,heroKey,cx,cy,scale,time)
-   Draws a full-body 280x460 mech centred at (cx,cy).
-   scale is a uniform scale factor (1 = 280x460 authoring size).
-   time is a seconds value used for pulses/floats. */
+/* rrHeroFull — Kenney CC0 space warship PNGs (robot mech removed) */
+var _nvxShipImgs=(function(){
+  var imgs={};
+  ['vanguard','striker','controller'].forEach(function(k){
+    var im=new Image();im.src='assets/hero-'+k+'.png?v=ship1';imgs[k]=im;
+  });
+  return imgs;
+}());
 function rrHeroFull(cxCtx,heroKey,cx,cy,scale,time){
-  const key=(heroKey==="striker"||heroKey==="controller")?heroKey:"vanguard";
-  const spec=HERO_FULL_SPEC[key];
-  const t=+time||0;
-
-  /* NORYVX motion: reactor breathing 2.6s, subtle float 3.6s */
-  const breathe=1+0.06*Math.sin(t*2.4);
-  const floatOff=4*Math.sin(t*1.74);
-  const cySafe=cy+floatOff*scale;
-
+  var key=(heroKey==="striker"||heroKey==="controller")?heroKey:"vanguard";
+  var t=+time||0;
+  var floatOff=5*Math.sin(t*1.74)*scale;
+  var glowCol=key==="striker"?"#ff8040":key==="controller"?"#c080ff":"#7af0ff";
+  var img=_nvxShipImgs[key];
   cxCtx.save();
-  cxCtx.translate(cx,cySafe);
-  cxCtx.scale(scale,scale);
-  /* Centre the 280x460 authoring box on the origin using bottom
-     anchor so feet planted on cy. */
-  cxCtx.translate(-140,-420);
-  /* hareket egimi — sadece gorsel, gameplay degeri okunmaz */
-  const _lean=typeof player!=='undefined'?(player.vx||0)*0.0018:0;
-  cxCtx.rotate(Math.max(-.10,Math.min(.10,_lean)));
-
-  /* --- floor glow --- */
-  const gg=cxCtx.createRadialGradient(140,184,4,140,184,170);
-  gg.addColorStop(0,spec.glow);
-  gg.addColorStop(1,"rgba(0,0,0,0)");
-  cxCtx.fillStyle=gg;
-  cxCtx.beginPath();
-  cxCtx.arc(140,184,170,0,TAU);
-  cxCtx.fill();
-
-  /* --- footprint ring under feet --- */
-  cxCtx.save();
-  cxCtx.globalAlpha=.55+0.1*Math.sin(t*2);
-  cxCtx.strokeStyle=spec.accent;
-  cxCtx.lineWidth=2;
-  cxCtx.shadowColor=spec.accent;
-  cxCtx.shadowBlur=16;
-  cxCtx.beginPath();
-  cxCtx.ellipse(140,456,107,20,0,0,TAU);
-  cxCtx.stroke();
-  cxCtx.restore();
-
-  /* Helpers */
-  const gradV=(x,y,w,h,c1,c2)=>{
-    const g=cxCtx.createLinearGradient(x,y,x+w*0.4,y+h);
-    g.addColorStop(0,c1); g.addColorStop(1,c2); return g;
-  };
-  const rectRad=(x,y,w,h,r,fill)=>{
-    cxCtx.fillStyle=fill;
-    cxCtx.beginPath();
-    cxCtx.roundRect(x,y,w,h,r);
-    cxCtx.fill();
-  };
-  const poly=(pts,fill)=>{
-    cxCtx.fillStyle=fill;
-    cxCtx.beginPath();
-    for(let i=0;i<pts.length;i+=2){
-      if(i===0)cxCtx.moveTo(pts[i],pts[i+1]);
-      else cxCtx.lineTo(pts[i],pts[i+1]);
-    }
-    cxCtx.closePath();
-    cxCtx.fill();
-  };
-
-  /* --- LEGS (thighs) --- */
-  rectRad(70,234,52,86,10,gradV(70,234,52,86,"#1b1f28","#080a0f"));
-  rectRad(158,234,52,86,10,gradV(210,234,-52,86,"#1b1f28","#080a0f"));
-  rectRad(74,234,44,70,8,gradV(74,234,44,70,"#e4ebf4","#4e586b"));
-  rectRad(162,234,44,70,8,gradV(206,234,-44,70,"#e4ebf4","#4e586b"));
-
-  /* Knees */
-  cxCtx.fillStyle="#dbe3ee";
-  cxCtx.beginPath(); cxCtx.arc(96,329,19,0,TAU); cxCtx.fill();
-  cxCtx.fillStyle="#4a5464";
-  cxCtx.beginPath(); cxCtx.arc(96,329,12,0,TAU); cxCtx.fill();
-  cxCtx.fillStyle="#dbe3ee";
-  cxCtx.beginPath(); cxCtx.arc(184,329,19,0,TAU); cxCtx.fill();
-  cxCtx.fillStyle="#4a5464";
-  cxCtx.beginPath(); cxCtx.arc(184,329,12,0,TAU); cxCtx.fill();
-
-  /* Shins */
-  rectRad(74,338,44,88,6,gradV(74,338,44,88,"#1b1f28","#080a0f"));
-  rectRad(162,338,44,88,6,gradV(206,338,-44,88,"#1b1f28","#080a0f"));
-  rectRad(78,338,34,74,5,gradV(78,338,34,74,"#e4ebf4","#465064"));
-  rectRad(168,338,34,74,5,gradV(202,338,-34,74,"#e4ebf4","#465064"));
-
-  /* Shin vents (accent) */
-  cxCtx.save();
-  cxCtx.shadowColor=spec.accent; cxCtx.shadowBlur=12;
-  cxCtx.fillStyle=spec.accent;
-  cxCtx.fillRect(94,354,5,32);
-  cxCtx.fillRect(181,354,5,32);
-  cxCtx.restore();
-
-  /* Feet */
-  rectRad(68,424,58,26,4,gradV(68,424,58,26,"#cdd7e4","#1d232e"));
-  rectRad(154,424,58,26,4,gradV(212,424,-58,26,"#cdd7e4","#1d232e"));
-
-  /* --- WAIST / PELVIS --- */
-  rectRad(92,202,96,34,10,gradV(92,202,96,34,"#1b1f28","#080a0f"));
-  /* Hip plates */
-  poly([66,206,96,209,90,236,72,231],gradV(66,206,30,30,"#e2e9f3","#3c4657"));
-  poly([214,206,184,209,190,236,208,231],gradV(214,206,-30,30,"#e2e9f3","#3c4657"));
-  /* Waist lamp */
-  cxCtx.save();
-  cxCtx.shadowColor=spec.accent; cxCtx.shadowBlur=12;
-  cxCtx.fillStyle=spec.accent;
-  cxCtx.fillRect(123,210,34,4);
-  cxCtx.restore();
-
-  /* --- ABS --- */
-  rectRad(99,160,82,44,6,gradV(99,160,82,44,"#191d26","#070910"));
-  rectRad(107,168,66,6,3,gradV(107,168,66,6,"#aab6c8","#3a4353"));
-  rectRad(111,182,58,6,3,gradV(111,182,58,6,"#98a4b6","#333c4a"));
-
-  /* --- ARMS --- */
-  rectRad(20,82,36,68,10,gradV(20,82,36,68,"#1b1f28","#080a0f"));
-  rectRad(224,82,36,68,10,gradV(260,82,-36,68,"#1b1f28","#080a0f"));
-  rectRad(24,82,28,56,7,gradV(24,82,28,56,"#dde5f0","#434d60"));
-  rectRad(228,82,28,56,7,gradV(256,82,-28,56,"#dde5f0","#434d60"));
-
-  /* Elbows */
-  cxCtx.fillStyle="#d5deea";
-  cxCtx.beginPath(); cxCtx.arc(37,161,15,0,TAU); cxCtx.fill();
-  cxCtx.fillStyle="#454f60";
-  cxCtx.beginPath(); cxCtx.arc(37,161,10,0,TAU); cxCtx.fill();
-  cxCtx.fillStyle="#d5deea";
-  cxCtx.beginPath(); cxCtx.arc(243,161,15,0,TAU); cxCtx.fill();
-  cxCtx.fillStyle="#454f60";
-  cxCtx.beginPath(); cxCtx.arc(243,161,10,0,TAU); cxCtx.fill();
-
-  /* Forearms */
-  rectRad(16,166,42,78,7,gradV(16,166,42,78,"#e6edf6","#3f4959"));
-  rectRad(222,166,42,78,7,gradV(264,166,-42,78,"#e6edf6","#3f4959"));
-
-  /* Forearm accent bands */
-  cxCtx.save();
-  cxCtx.shadowColor=spec.accent; cxCtx.shadowBlur=14;
-  cxCtx.fillStyle=spec.accent;
-  cxCtx.fillRect(23,186,28,5);
-  cxCtx.fillRect(229,186,28,5);
-  cxCtx.restore();
-
-  /* --- CHEST --- */
-  poly([50,68,110,68,140,68,170,68,230,68,247,124,207,168,73,168,33,124],
-    gradV(50,68,197,100,"#f1f5fa","#2a323f"));
-
-  /* Chest inner (dark) */
-  poly([73,74,207,74,232,120,140,168,48,120],
-    gradV(73,74,159,94,"#161a23","#06080d"));
-
-  /* Chest accent overlay */
-  cxCtx.save();
-  cxCtx.globalAlpha=.22;
-  poly([50,68,230,68,247,124,207,168,73,168,33,124],
-    gradV(50,68,197,100,spec.accent,"rgba(0,0,0,0)"));
-  cxCtx.restore();
-
-  /* Collars */
-  poly([64,68,110,74,102,146,50,120],gradV(50,68,60,80,"#ffffff","#48525f"));
-  poly([216,68,170,74,178,146,230,120],gradV(230,68,-60,80,"#ffffff","#48525f"));
-
-  /* Intake accents */
-  cxCtx.save();
-  cxCtx.shadowColor=spec.accent; cxCtx.shadowBlur=12;
-  cxCtx.fillStyle=spec.accent;
-  cxCtx.globalAlpha=.85;
-  cxCtx.fillRect(88,126,18,4);
-  cxCtx.fillRect(174,126,18,4);
-  cxCtx.restore();
-
-  /* --- REACTOR (center chest, breathing) --- */
-  const rCx=140, rCy=114;
-  /* frame */
-  cxCtx.save();
-  cxCtx.fillStyle=gradV(rCx-25,rCy-25,50,50,"#ffffff","#2c3542");
-  cxCtx.beginPath(); cxCtx.arc(rCx,rCy,25,0,TAU); cxCtx.fill();
-  cxCtx.fillStyle="#0a0d14";
-  cxCtx.beginPath(); cxCtx.arc(rCx,rCy,18,0,TAU); cxCtx.fill();
-  cxCtx.strokeStyle=spec.accent;
-  cxCtx.globalAlpha=.6;
-  cxCtx.lineWidth=1;
-  cxCtx.beginPath(); cxCtx.arc(rCx,rCy,13,0,TAU); cxCtx.stroke();
-  cxCtx.restore();
-
-  /* Core (breathing) */
-  cxCtx.save();
-  cxCtx.shadowColor=spec.accent;
-  cxCtx.shadowBlur=44;
-  const coreR=13*breathe;
-  const rgrad=cxCtx.createRadialGradient(rCx,rCy,1,rCx,rCy,coreR);
-  rgrad.addColorStop(0,"#ffffff");
-  rgrad.addColorStop(.5,spec.accent);
-  rgrad.addColorStop(1,"rgba(0,0,0,0)");
-  cxCtx.fillStyle=rgrad;
-  cxCtx.beginPath(); cxCtx.arc(rCx,rCy,coreR,0,TAU); cxCtx.fill();
-  cxCtx.restore();
-
-  /* --- SHOULDERS --- */
-  poly([26,58,68,54,100,72,92,118,48,124],gradV(26,58,80,70,"#ffffff","#2f3742"));
-  poly([254,58,212,54,180,72,188,118,232,124],gradV(254,58,-80,70,"#ffffff","#2f3742"));
-  /* Shoulder trim */
-  poly([38,58,70,54,94,74,86,110,52,102],gradV(38,58,60,60,"#dfe6f0","#4c5666"));
-  poly([242,58,210,54,186,74,194,110,228,102],gradV(242,58,-60,60,"#dfe6f0","#4c5666"));
-  /* Shoulder lamps */
-  cxCtx.save();
-  cxCtx.shadowColor=spec.accent; cxCtx.shadowBlur=16;
-  cxCtx.fillStyle=spec.accent;
-  cxCtx.fillRect(48,82,26,5);
-  cxCtx.fillRect(206,82,26,5);
-  cxCtx.restore();
-
-  /* --- NECK --- */
-  rectRad(128,54,24,14,3,gradV(128,54,24,14,"#2c3441","#0a0d13"));
-
-  /* --- HEAD / HELMET --- */
-  poly([110,0,170,0,196,24,182,44,140,56,98,44,84,24],
-    gradV(84,0,112,60,"#ffffff","#252c37"));
-
-  /* Face (dark visor recess) */
-  poly([120,16,160,16,155,46,125,46],
-    gradV(120,16,40,30,"#13171f","#05070b"));
-
-  /* Visor (accent glow) */
-  cxCtx.save();
-  cxCtx.shadowColor=spec.accent;
-  cxCtx.shadowBlur=20;
-  cxCtx.fillStyle=spec.accent;
-  cxCtx.beginPath();
-  cxCtx.moveTo(121,24); cxCtx.lineTo(159,24);
-  cxCtx.lineTo(155,32); cxCtx.lineTo(125,32);
-  cxCtx.closePath();
-  cxCtx.fill();
-  cxCtx.restore();
-
-  /* Crown */
-  poly([129,0,151,0,155,9,125,9],gradV(129,0,26,9,"#ffffff","#8e9aad"));
-
-  /* Ears */
-  cxCtx.fillStyle="#dbe3ee";
-  cxCtx.fillRect(98,18,9,24);
-  cxCtx.fillRect(173,18,9,24);
-
-  /* Jaw guards */
-  poly([104,34,120,42,116,52,102,50],"#e9eff7");
-  poly([176,34,160,42,164,52,178,50],"#e9eff7");
-
-  /* --- CLASS-SPECIFIC ACCESSORY --- */
-  if(key==="vanguard"){
-    /* Shoulder cannon */
-    rectRad(214,38,34,26,4,gradV(214,38,34,26,"#c8d2e0","#12161e"));
-    rectRad(220,8,13,34,3,gradV(220,8,13,34,"#e4ebf4","#161b24"));
-    rectRad(230,14,11,28,3,gradV(230,14,11,28,"#c3ceda","#12161e"));
-    cxCtx.save();
-    cxCtx.shadowColor=spec.accent; cxCtx.shadowBlur=16;
-    cxCtx.fillStyle=spec.accent;
-    cxCtx.fillRect(220,8,11,5);
-    cxCtx.restore();
-    /* Left gauntlet */
-    rectRad(14,224,46,36,6,gradV(14,224,46,36,"#dde5f0","#2c3440"));
-    cxCtx.save();
-    cxCtx.shadowColor=spec.accent; cxCtx.shadowBlur=16;
-    cxCtx.fillStyle=spec.accent;
-    cxCtx.fillRect(20,236,32,6);
-    cxCtx.restore();
-  } else if(key==="striker"){
-    /* Head spike */
-    cxCtx.save();
-    cxCtx.shadowColor=spec.accent; cxCtx.shadowBlur=18;
-    cxCtx.fillStyle=spec.accent;
-    cxCtx.beginPath();
-    cxCtx.moveTo(140,-10); cxCtx.lineTo(147,20); cxCtx.lineTo(133,20);
-    cxCtx.closePath(); cxCtx.fill();
-    cxCtx.restore();
-    /* Left blade */
-    cxCtx.save();
-    cxCtx.shadowColor=spec.accent; cxCtx.shadowBlur=28;
-    cxCtx.fillStyle=spec.accent;
-    cxCtx.globalAlpha=.9;
-    cxCtx.beginPath();
-    cxCtx.moveTo(22,158); cxCtx.lineTo(40,166);
-    cxCtx.lineTo(30,270); cxCtx.lineTo(14,246);
-    cxCtx.closePath(); cxCtx.fill();
-    cxCtx.restore();
-    /* Right gun */
-    rectRad(232,164,14,58,5,gradV(232,164,14,58,"#d5deea","#141922"));
-    cxCtx.save();
-    cxCtx.shadowColor=spec.accent2; cxCtx.shadowBlur=14;
-    cxCtx.fillStyle=spec.accent2;
-    cxCtx.fillRect(233,164,12,5);
-    cxCtx.restore();
+  cxCtx.shadowColor=glowCol;
+  cxCtx.shadowBlur=30*scale;
+  if(img&&img.complete&&img.naturalWidth>0){
+    var shipH=Math.round(210*scale);
+    var shipW=Math.round(img.naturalWidth/img.naturalHeight*shipH);
+    cxCtx.drawImage(img,cx-shipW/2,cy-shipH/2+floatOff,shipW,shipH);
   } else {
-    /* Controller — floating drones */
-    const droneY=t*22;
-    const dY1=118+Math.sin(t*1.72)*8;
-    const dY2=186+Math.sin(t*1.42+1)*8;
-    const dY3=92+Math.sin(t*1.24+.5)*8;
-    cxCtx.save();
-    cxCtx.shadowColor=spec.accent; cxCtx.shadowBlur=24;
-    cxCtx.fillStyle=spec.accent;
-    cxCtx.beginPath(); cxCtx.arc(15,dY1,15,0,TAU); cxCtx.fill();
-    cxCtx.beginPath(); cxCtx.arc(263,dY2,12,0,TAU); cxCtx.fill();
-    cxCtx.shadowColor=spec.accent2;
-    cxCtx.fillStyle=spec.accent2;
-    cxCtx.beginPath(); cxCtx.arc(255,dY3,9,0,TAU); cxCtx.fill();
-    /* Emitters */
-    cxCtx.beginPath(); cxCtx.arc(37,220,11,0,TAU); cxCtx.fill();
-    cxCtx.beginPath(); cxCtx.arc(243,220,11,0,TAU); cxCtx.fill();
-    /* veri baglanti cizgileri — drone'lardan emitter'lara */
-    cxCtx.save();
-    cxCtx.globalAlpha=.22+.08*Math.sin(t*3.5);
-    cxCtx.strokeStyle=spec.accent;cxCtx.lineWidth=1;
-    cxCtx.setLineDash([4,6]);
-    cxCtx.beginPath();cxCtx.moveTo(15,dY1);cxCtx.lineTo(37,220);cxCtx.stroke();
-    cxCtx.beginPath();cxCtx.moveTo(263,dY2);cxCtx.lineTo(243,220);cxCtx.stroke();
-    cxCtx.setLineDash([]);
-    cxCtx.restore();
-    cxCtx.restore();
+    var r=55*scale;
+    var wing=key==="striker"?"#ff6a3d":key==="controller"?"#b070ff":"#22e6ff";
+    var hull=key==="striker"?"#ffe0d0":key==="controller"?"#f0e0ff":"#d8f8ff";
+    cxCtx.translate(cx,cy+floatOff);cxCtx.rotate(Math.PI);
+    cxCtx.fillStyle=wing;
+    cxCtx.beginPath();
+    cxCtx.moveTo(-r*1.05,r*0.12);cxCtx.lineTo(-r*0.12,-r*0.08);cxCtx.lineTo(r*0.12,-r*0.08);
+    cxCtx.lineTo(r*1.05,r*0.12);cxCtx.lineTo(r*0.38,r*0.38);cxCtx.lineTo(-r*0.38,r*0.38);
+    cxCtx.closePath();cxCtx.fill();
+    cxCtx.fillStyle=hull;
+    cxCtx.beginPath();
+    cxCtx.moveTo(0,-r*1.05);cxCtx.lineTo(r*0.3,r*0.55);cxCtx.lineTo(0,r*0.32);cxCtx.lineTo(-r*0.3,r*0.55);
+    cxCtx.closePath();cxCtx.fill();
   }
-
   cxCtx.restore();
 }
 
@@ -24071,6 +23784,6 @@ window.NVXAnalytics=(function(){
 <script src="js/noryvx-damage-items.js" defer></script>
 <script src="js/noryvx-gameplay-pro.js" defer></script>
 <script src="js/noryvx-visual-force.js" defer></script>
-<script>document.querySelectorAll('[data-nvx-img="1"]').forEach(function(el){el.src=window.__NVX_IMG1;});</script>
+<script>document.querySelectorAll('[data-nvx-img="1"]').forEach(function(el){var k=(el.alt||el.id||'').toLowerCase();var s=k.indexOf('striker')>=0?'striker':k.indexOf('controller')>=0?'controller':'vanguard';el.src='assets/hero-'+s+'.png?v=ship1';});</script>
 </body>
 </html>

@@ -38,7 +38,9 @@
     });
 
     /* Also force known ids used in tutorials */
-    ['nvx-intro-hero', 'nvx2-hero-img', 'hero-img', 'menu-hero'].forEach(function (id) {
+    ['nvx-intro-hero', 'nvx2-hero-img', 'hero-img', 'menu-hero',
+     'noryvx-tutorial-hero', 'nob-hero', 'nob-tut-hero',
+     'noryvx-unified-hero-select-img', 'noryvx-unified-hero-menu-img'].forEach(function (id) {
       var el = document.getElementById(id);
       if (!el || el.tagName !== 'IMG') return;
       var key = detectKey(el) || 'vanguard';

@@ -226,38 +226,58 @@
     try { drawPlayer = enhanced; } catch (e) {}
   }
 
-  /* Menu hero portrait — replace robot full-body with plane */
-  function patchMenuHero() {
-    if (typeof rrHeroFull !== 'function' && typeof window.rrHeroFull !== 'function') return;
-    var orig = window.rrHeroFull || rrHeroFull;
-    if (orig.__nvxForce) return;
+  /* Menu hero portrait — ship PNG, locked with defineProperty so nothing can override */
+  var _vfShipImgs = (function () {
+    var imgs = {};
+    ['vanguard', 'striker', 'controller'].forEach(function (k) {
+      var im = new Image();
+      im.src = 'assets/hero-' + k + '.png?v=ship1';
+      imgs[k] = im;
+    });
+    return imgs;
+  }());
 
-    function enhanced(cxCtx, heroKey, cx, cy, scale, time) {
-      try {
-        var key = (heroKey === 'striker' || heroKey === 'controller') ? heroKey : 'vanguard';
-        var colors =
-          key === 'striker'
-            ? { wing: '#ff6a3d', hull: '#ffe0d0', glow: '#ff8040' }
-            : key === 'controller'
-              ? { wing: '#b070ff', hull: '#f0e0ff', glow: '#c080ff' }
-              : { wing: '#22e6ff', hull: '#d8f8ff', glow: '#7af0ff' };
-
-        var t = +time || 0;
-        var floatOff = 6 * Math.sin(t * 1.7);
-        cxCtx.save();
-        cxCtx.translate(cx, cy + floatOff);
-        cxCtx.scale(scale * 0.55, scale * 0.55);
-        /* plane facing up for menu showcase */
-        cxCtx.rotate(Math.PI); /* paintPlane already rotates PI, net upright-ish */
-        paintPlane(cxCtx, 90, colors, { scale: 1.2 });
-        cxCtx.restore();
-      } catch (e) {
-        try { return orig.apply(this, arguments); } catch (e2) {}
-      }
+  function _shipHeroDraw(cxCtx, heroKey, cx, cy, scale, time) {
+    var key = (heroKey === 'striker' || heroKey === 'controller') ? heroKey : 'vanguard';
+    var t = +time || 0;
+    var floatOff = 5 * Math.sin(t * 1.74) * scale;
+    var glowCol = key === 'striker' ? '#ff8040' : key === 'controller' ? '#c080ff' : '#7af0ff';
+    var img = _vfShipImgs[key];
+    cxCtx.save();
+    cxCtx.shadowColor = glowCol;
+    cxCtx.shadowBlur = 30 * scale;
+    if (img && img.complete && img.naturalWidth > 0) {
+      var shipH = Math.round(210 * scale);
+      var shipW = Math.round(img.naturalWidth / img.naturalHeight * shipH);
+      cxCtx.drawImage(img, cx - shipW / 2, cy - shipH / 2 + floatOff, shipW, shipH);
+    } else {
+      var colors = key === 'striker'
+        ? { wing: '#ff6a3d', hull: '#ffe0d0', glow: '#ff8040' }
+        : key === 'controller'
+          ? { wing: '#b070ff', hull: '#f0e0ff', glow: '#c080ff' }
+          : { wing: '#22e6ff', hull: '#d8f8ff', glow: '#7af0ff' };
+      cxCtx.save();
+      cxCtx.translate(cx, cy + floatOff);
+      cxCtx.scale(scale * 0.55, scale * 0.55);
+      cxCtx.rotate(Math.PI);
+      paintPlane(cxCtx, 90, colors, { scale: 1.2 });
+      cxCtx.restore();
     }
-    enhanced.__nvxForce = true;
-    window.rrHeroFull = enhanced;
-    try { rrHeroFull = enhanced; } catch (e) {}
+    cxCtx.restore();
+  }
+  _shipHeroDraw.__nvxForce = true;
+
+  function patchMenuHero() {
+    try {
+      Object.defineProperty(window, 'rrHeroFull', {
+        get: function () { return _shipHeroDraw; },
+        set: function () {},
+        configurable: false
+      });
+    } catch (e) {
+      window.rrHeroFull = _shipHeroDraw;
+    }
+    try { rrHeroFull = _shipHeroDraw; } catch (e) {}
   }
 
   function boot() {
