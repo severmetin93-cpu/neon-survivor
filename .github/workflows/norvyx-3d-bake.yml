@@ -1,0 +1,119 @@
+name: NORVYX 3D PBR Sprite Bake
+
+on:
+  workflow_dispatch:
+    inputs:
+      quick:
+        description: 'Quick mode (1024px instead of 2048px)'
+        required: false
+        default: 'false'
+        type: choice
+        options: ['false', 'true']
+
+jobs:
+  bake:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 180
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y \
+            wget xvfb \
+            libxrender1 libxi6 libxkbcommon0 \
+            libsm6 libice6 libgl1 \
+            libglib2.0-0 libxext6 libxfixes3 \
+            python3-pip
+          pip3 install pillow
+
+      - name: Download and install Blender 4.2 LTS
+        run: |
+          BLENDER_VERSION="4.2.0"
+          BLENDER_DIR="blender-${BLENDER_VERSION}-linux-x64"
+          BLENDER_URL="https://download.blender.org/release/Blender4.2/${BLENDER_DIR}.tar.xz"
+          echo "Downloading Blender ${BLENDER_VERSION}..."
+          wget -q "${BLENDER_URL}" -O blender.tar.xz
+          tar xf blender.tar.xz
+          echo "${GITHUB_WORKSPACE}/${BLENDER_DIR}" >> $GITHUB_PATH
+          echo "BLENDER_BIN=${GITHUB_WORKSPACE}/${BLENDER_DIR}/blender" >> $GITHUB_ENV
+          ${GITHUB_WORKSPACE}/${BLENDER_DIR}/blender --version
+
+      - name: Verify models
+        run: |
+          echo "OBJ models found:"
+          ls models/*.obj | wc -l
+          ls models/
+
+      - name: Bake 3D PBR sprites (Cycles/CPU)
+        run: |
+          QUICK_FLAG=""
+          if [ "${{ inputs.quick }}" = "true" ]; then
+            QUICK_FLAG="--quick"
+          fi
+          echo "Starting Blender bake (CYCLES CPU renderer)..."
+          xvfb-run -a ${BLENDER_BIN} -b --python blender/bake_sprites.py -- ${QUICK_FLAG}
+          echo "Bake complete. Output:"
+          ls baked/*.png 2>/dev/null | wc -l || echo "0 PNGs found"
+
+      - name: Verify bake output
+        run: |
+          EXPECTED=96  # 12 ships × 8 frames
+          if [ "${{ inputs.quick }}" = "true" ]; then
+            EXPECTED=96
+          fi
+          COUNT=$(ls baked/*.png 2>/dev/null | wc -l)
+          echo "Baked PNGs: ${COUNT} (expected ${EXPECTED})"
+          ls baked/ | head -20
+          if [ "${COUNT}" -eq 0 ]; then
+            echo "ERROR: No PNGs baked — aborting"
+            exit 1
+          fi
+
+      - name: Build atlas and rename game sprites
+        run: |
+          python3 blender/build_atlas.py
+          echo "Game-ready sprites:"
+          ls baked/ships/
+          echo "Atlas:"
+          ls baked/atlas-units.png baked/atlas-units.json
+
+      - name: Upload baked sprites artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: norvyx-baked-sprites
+          path: |
+            baked/ships/
+            baked/atlas-units.png
+            baked/atlas-units.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload raw master PNGs (2048px)
+        uses: actions/upload-artifact@v4
+        with:
+          name: norvyx-baked-masters
+          path: baked/*.png
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Summary
+        run: |
+          echo "## NORVYX 3D PBR Bake Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          BLENDER_VER=$(${BLENDER_BIN} --version | head -1)
+          echo "**Blender:** ${BLENDER_VER}" >> $GITHUB_STEP_SUMMARY
+          QUICK="${{ inputs.quick }}"
+          SIZE="2048×2048"
+          if [ "$QUICK" = "true" ]; then SIZE="1024×1024"; fi
+          echo "**Resolution:** ${SIZE}" >> $GITHUB_STEP_SUMMARY
+          TOTAL=$(ls baked/*.png 2>/dev/null | wc -l)
+          echo "**Total master PNGs:** ${TOTAL}" >> $GITHUB_STEP_SUMMARY
+          GAME=$(ls baked/ships/*.png 2>/dev/null | wc -l)
+          echo "**Game sprites (ships/):** ${GAME}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Game sprites produced" >> $GITHUB_STEP_SUMMARY
+          ls baked/ships/ | sed 's/^/- /' >> $GITHUB_STEP_SUMMARY

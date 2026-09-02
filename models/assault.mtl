@@ -1,0 +1,52 @@
+newmtl armor
+Kd 0.62 0.66 0.72
+Ks 0.65 0.65 0.65
+Ns 160
+d 1.0
+
+newmtl dark
+Kd 0.025 0.035 0.055
+Ks 0.65 0.65 0.65
+Ns 160
+d 1.0
+
+newmtl carbon
+Kd 0.08 0.09 0.11
+Ks 0.65 0.65 0.65
+Ns 160
+d 1.0
+
+newmtl cyan
+Kd 0.01 0.8 1.0
+Ks 0.65 0.65 0.65
+Ns 160
+Ke 0.01 0.8 1.0
+d 1.0
+
+newmtl red
+Kd 1.0 0.025 0.02
+Ks 0.65 0.65 0.65
+Ns 160
+Ke 1.0 0.025 0.02
+d 1.0
+
+newmtl magenta
+Kd 1.0 0.02 0.55
+Ks 0.65 0.65 0.65
+Ns 160
+Ke 1.0 0.02 0.55
+d 1.0
+
+newmtl orange
+Kd 1.0 0.22 0.02
+Ks 0.65 0.65 0.65
+Ns 160
+Ke 1.0 0.22 0.02
+d 1.0
+
+newmtl glass
+Kd 0.06 0.12 0.18
+Ks 0.65 0.65 0.65
+Ns 160
+d 1.0
+
