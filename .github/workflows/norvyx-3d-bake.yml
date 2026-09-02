@@ -61,25 +61,31 @@ jobs:
           path: baked/vanguard_00.png
           if-no-files-found: error
 
-  # ── Step 2: parallel bake (4 groups × 3 ships × 8 frames = 96 total) ──────
+  # ── Step 2: parallel bake (12 groups × 1 ship × 8 frames = 96 total) ────────
+  # ortho_scale=3.5 fills ~30% of canvas → 3× more Cycles work than before.
+  # 3 ships/group was ~107 min → timeout. 1 ship/group is ~36 min → safe.
   bake:
-    name: "Bake ${{ matrix.group }} — ${{ matrix.ships }}"
+    name: "Bake ${{ matrix.ship }}"
     needs: test-render
     runs-on: ubuntu-22.04
     timeout-minutes: 60
 
     strategy:
-      fail-fast: false   # if one group fails, others continue
+      fail-fast: false   # if one ship fails, others continue
       matrix:
         include:
-          - group: "a"
-            ships: "vanguard,striker,controller"
-          - group: "b"
-            ships: "scout,dasher,hunter"
-          - group: "c"
-            ships: "assault,elite,tank"
-          - group: "d"
-            ships: "weaver,orbiter,boss"
+          - ship: "vanguard"
+          - ship: "striker"
+          - ship: "controller"
+          - ship: "scout"
+          - ship: "dasher"
+          - ship: "hunter"
+          - ship: "assault"
+          - ship: "elite"
+          - ship: "tank"
+          - ship: "weaver"
+          - ship: "orbiter"
+          - ship: "boss"
 
     steps:
       - uses: actions/checkout@v4
@@ -98,30 +104,30 @@ jobs:
           echo "${GITHUB_WORKSPACE}/${{ env.BLENDER_DIR }}" >> $GITHUB_PATH
           echo "BLENDER_BIN=${GITHUB_WORKSPACE}/${{ env.BLENDER_DIR }}/blender" >> $GITHUB_ENV
 
-      - name: Bake group ${{ matrix.group }} (${{ matrix.ships }})
+      - name: Bake ${{ matrix.ship }} (8 frames)
         run: |
-          echo "Baking ships: ${{ matrix.ships }}"
+          echo "Baking ship: ${{ matrix.ship }}"
           xvfb-run -a ${BLENDER_BIN} -b \
             --python blender/bake_sprites.py \
-            -- --ships "${{ matrix.ships }}"
+            -- --ships "${{ matrix.ship }}"
           echo "Baked PNGs:"
           ls baked/*.png | wc -l
           ls baked/*.png
 
-      - name: Verify group output
+      - name: Verify ship output
         run: |
           COUNT=$(ls baked/*.png 2>/dev/null | wc -l)
-          EXPECTED=24  # 3 ships × 8 frames
+          EXPECTED=8  # 1 ship × 8 frames
           echo "Baked: ${COUNT} / Expected: ${EXPECTED}"
           if [ "${COUNT}" -lt "${EXPECTED}" ]; then
             echo "ERROR: Expected ${EXPECTED} PNGs, got ${COUNT}"
             exit 1
           fi
 
-      - name: Upload group artifact
+      - name: Upload ship artifact
         uses: actions/upload-artifact@v4
         with:
-          name: baked-masters-group-${{ matrix.group }}
+          name: baked-masters-${{ matrix.ship }}
           path: baked/*.png
           if-no-files-found: error
           retention-days: 7
@@ -139,10 +145,10 @@ jobs:
       - name: Install Python dependencies
         run: pip3 install pillow
 
-      - name: Download all group artifacts
+      - name: Download all ship artifacts
         uses: actions/download-artifact@v4
         with:
-          pattern: baked-masters-group-*
+          pattern: baked-masters-*
           path: baked-raw/
           merge-multiple: false
 
