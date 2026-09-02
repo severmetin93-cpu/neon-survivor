@@ -104,12 +104,12 @@ def setup_world():
     bg.inputs['Strength'].default_value = 0.08
 
 
-def setup_camera():
+def setup_camera(scale=3.5):
     bpy.ops.object.camera_add(location=(8.5, -0.1, 7.5))
     cam = bpy.context.object
     cam.name = 'SpriteCamera'
     cam.data.type = 'ORTHO'
-    cam.data.ortho_scale = 3.5
+    cam.data.ortho_scale = scale
     direction = Vector((0, 0, 0)) - cam.location
     cam.rotation_euler = direction.to_track_quat('-Z', 'Y').to_euler()
     bpy.context.scene.camera = cam
@@ -201,6 +201,13 @@ def configure_render_engine(scene):
     scene.view_settings.look = 'AgX - Medium High Contrast'
 
 
+# ---------- per-ship ortho_scale overrides ----------
+# Boss model is ~2x larger than hero/enemy units — needs wider frustum.
+ORTHO_SCALE = {
+    'boss': 4.5,
+}
+DEFAULT_ORTHO_SCALE = 3.5
+
 # ---------- main render loop ----------
 # Import each ship ONCE, render all 8 angles, then clear.
 # use_persistent_data reuses BVH between angle renders → ~40% faster.
@@ -213,9 +220,12 @@ for ship in SHIP_LIST:
         print(f'[NORVYX] WARNING: {ship}.obj not found — skipping')
         continue
 
+    ship_scale = ORTHO_SCALE.get(ship, DEFAULT_ORTHO_SCALE)
+    print(f'[NORVYX] {ship}: ortho_scale={ship_scale}')
+
     clear()
     setup_world()
-    setup_camera()
+    setup_camera(ship_scale)
     setup_lights()
     root, objs = import_obj(obj_path)
     add_bevel(objs)

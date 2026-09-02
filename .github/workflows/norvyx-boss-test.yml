@@ -1,0 +1,96 @@
+name: NORVYX Boss ortho_scale=4.5 Test
+
+on:
+  workflow_dispatch:
+
+env:
+  BLENDER_VERSION: "4.2.0"
+  BLENDER_DIR: "blender-4.2.0-linux-x64"
+  BLENDER_URL: "https://download.blender.org/release/Blender4.2/blender-4.2.0-linux-x64.tar.xz"
+
+jobs:
+  boss-test:
+    name: "Boss frame test — ortho_scale=4.5"
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y wget xvfb \
+            libxrender1 libxi6 libxkbcommon0 libsm6 libice6 libgl1 \
+            libglib2.0-0 libxext6 libxfixes3
+          pip3 install pillow
+
+      - name: Install Blender 4.2 LTS
+        run: |
+          wget -q "${{ env.BLENDER_URL }}" -O blender.tar.xz
+          tar xf blender.tar.xz
+          echo "${GITHUB_WORKSPACE}/${{ env.BLENDER_DIR }}" >> $GITHUB_PATH
+          echo "BLENDER_BIN=${GITHUB_WORKSPACE}/${{ env.BLENDER_DIR }}/blender" >> $GITHUB_ENV
+
+      - name: Render boss_00 (2048×2048, ortho_scale=4.5)
+        run: |
+          echo "Rendering boss_00 with ortho_scale=4.5..."
+          START=$(date +%s)
+          xvfb-run -a ${BLENDER_BIN} -b \
+            --python blender/bake_sprites.py \
+            -- --test --ships boss
+          END=$(date +%s)
+          echo "Render time: $((END - START))s"
+          ls -lh baked/boss_00.png
+
+      - name: Measure + validate boss opaque ratio (Pillow)
+        run: |
+          python3 - <<'PYEOF'
+          import os, sys
+          from PIL import Image
+
+          path = 'baked/boss_00.png'
+          if not os.path.exists(path):
+              print('FAIL: boss_00.png not found')
+              sys.exit(1)
+
+          img = Image.open(path).convert('RGBA')
+          w, h = img.size
+          alpha = list(img.getchannel('A').getdata())
+          total = w * h
+          opaque = sum(1 for a in alpha if a > 10)
+          pct = opaque * 100.0 / total
+          size_kb = os.path.getsize(path) // 1024
+
+          print(f'boss_00: {w}x{h} | {size_kb}KB | opaque={pct:.1f}%')
+          print(f'Target: 45–60%')
+
+          if pct < 22.5:   # hard fail: below 50% of target minimum
+              print('FAIL: boss fill too low — ship likely cropped or off-frame')
+              sys.exit(1)
+          elif 45.0 <= pct <= 60.0:
+              print('PASS: boss correctly framed')
+          elif pct > 60.0:
+              print(f'WARN: boss fill {pct:.1f}% > 60% — slightly large but acceptable')
+          else:
+              print(f'WARN: boss fill {pct:.1f}% outside target 45–60% but above hard-fail threshold')
+          PYEOF
+
+      - name: Upload boss test frame
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: norvyx-boss-test-4.5
+          path: baked/boss_00.png
+          if-no-files-found: warn
+          retention-days: 3
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## NORVYX Boss ortho_scale=4.5 Test" >> $GITHUB_STEP_SUMMARY
+          echo "| Ship | ortho_scale |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|------------|" >> $GITHUB_STEP_SUMMARY
+          echo "| boss | 4.5 |" >> $GITHUB_STEP_SUMMARY
+          echo "| all others | 3.5 |" >> $GITHUB_STEP_SUMMARY
+          ls -lh baked/boss_00.png 2>/dev/null >> $GITHUB_STEP_SUMMARY || true
