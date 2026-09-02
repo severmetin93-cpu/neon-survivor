@@ -90,7 +90,7 @@ def setup_camera():
     cam = bpy.context.object
     cam.name = 'SpriteCamera'
     cam.data.type = 'ORTHO'
-    cam.data.ortho_scale = 8.6
+    cam.data.ortho_scale = 3.5
     direction = Vector((0, 0, 0)) - cam.location
     cam.rotation_euler = direction.to_track_quat('-Z', 'Y').to_euler()
     bpy.context.scene.camera = cam
@@ -118,8 +118,8 @@ def setup_lights():
 def assign_render_materials():
     mats = {
         'armor':   mat('NVX_Armor',   (0.38, 0.43, 0.50), 0.86, 0.28),
-        'dark':    mat('NVX_Dark',    (0.012, 0.018, 0.028), 0.78, 0.24),
-        'carbon':  mat('NVX_Carbon',  (0.035, 0.045, 0.06), 0.55, 0.34),
+        'dark':    mat('NVX_Dark',    (0.060, 0.075, 0.100), 0.78, 0.24),
+        'carbon':  mat('NVX_Carbon',  (0.090, 0.100, 0.130), 0.55, 0.34),
         'cyan':    mat('NVX_Cyan',    (0.005, 0.15, 0.22), 0.15, 0.22,
                        (0.0, 0.65, 1.0), 8.0),
         'red':     mat('NVX_Red',     (0.28, 0.01, 0.015), 0.2, 0.25,

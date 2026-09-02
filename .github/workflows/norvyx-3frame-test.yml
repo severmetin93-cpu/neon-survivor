@@ -1,0 +1,170 @@
+name: NORVYX 3-Frame Camera+Material Test
+
+on:
+  workflow_dispatch:
+
+env:
+  BLENDER_VERSION: "4.2.0"
+  BLENDER_DIR: "blender-4.2.0-linux-x64"
+  BLENDER_URL: "https://download.blender.org/release/Blender4.2/blender-4.2.0-linux-x64.tar.xz"
+
+jobs:
+  test-3frame:
+    name: "3-frame test — vanguard_00 / hunter_00 / boss_00"
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y wget xvfb \
+            libxrender1 libxi6 libxkbcommon0 libsm6 libice6 libgl1 \
+            libglib2.0-0 libxext6 libxfixes3
+
+      - name: Install Blender 4.2 LTS
+        run: |
+          wget -q "${{ env.BLENDER_URL }}" -O blender.tar.xz
+          tar xf blender.tar.xz
+          echo "${GITHUB_WORKSPACE}/${{ env.BLENDER_DIR }}" >> $GITHUB_PATH
+          echo "BLENDER_BIN=${GITHUB_WORKSPACE}/${{ env.BLENDER_DIR }}/blender" >> $GITHUB_ENV
+          ${GITHUB_WORKSPACE}/${{ env.BLENDER_DIR }}/blender --version
+
+      - name: Render vanguard_00 + hunter_00 + boss_00 (2048×2048)
+        run: |
+          echo "Rendering 3 test frames with ortho_scale=3.5 + fixed materials..."
+          START=$(date +%s)
+          xvfb-run -a ${BLENDER_BIN} -b \
+            --python blender/bake_sprites.py \
+            -- --test --ships vanguard,hunter,boss
+          END=$(date +%s)
+          echo "Total render time: $((END - START))s"
+          echo "Output files:"
+          ls -lh baked/*.png
+
+      - name: Measure opaque pixel ratios
+        run: |
+          python3 - <<'PYEOF'
+          import struct, zlib, os
+
+          def opaque_pct(path):
+              with open(path, 'rb') as f:
+                  raw = f.read()
+              # find IHDR
+              w = struct.unpack('>I', raw[16:20])[0]
+              h = struct.unpack('>I', raw[20:24])[0]
+              # find IDAT chunks
+              pos, idat = 8, b''
+              while pos < len(raw):
+                  length = struct.unpack('>I', raw[pos:pos+4])[0]
+                  ctype  = raw[pos+4:pos+8]
+                  data   = raw[pos+8:pos+8+length]
+                  if ctype == b'IDAT':
+                      idat += data
+                  elif ctype == b'IEND':
+                      break
+                  pos += 12 + length
+              pixels = zlib.decompress(idat)
+              stride = 1 + w * 4
+              total = w * h
+              opaque = sum(
+                  1 for row in range(h)
+                  for col in range(w)
+                  if pixels[row * stride + 1 + col * 4 + 3] > 10
+              )
+              return w, h, opaque * 100.0 / total
+
+          for name in ['vanguard', 'hunter', 'boss']:
+              path = f'baked/{name}_00.png'
+              if os.path.exists(path):
+                  w, h, pct = opaque_pct(path)
+                  size_kb = os.path.getsize(path) // 1024
+                  print(f'{name}_00: {w}x{h} | {size_kb}KB | opaque={pct:.1f}%')
+              else:
+                  print(f'{name}_00: NOT FOUND')
+          PYEOF
+
+      - name: Framing sanity check
+        run: |
+          python3 - <<'PYEOF'
+          import struct, zlib, os, sys
+
+          TARGETS = {
+              'vanguard': (20.0, 35.0),
+              'hunter':   (15.0, 30.0),
+              'boss':     (35.0, 55.0),
+          }
+
+          def opaque_pct(path):
+              with open(path, 'rb') as f:
+                  raw = f.read()
+              w = struct.unpack('>I', raw[16:20])[0]
+              h = struct.unpack('>I', raw[20:24])[0]
+              pos, idat = 8, b''
+              while pos < len(raw):
+                  length = struct.unpack('>I', raw[pos:pos+4])[0]
+                  ctype  = raw[pos+4:pos+8]
+                  data   = raw[pos+8:pos+8+length]
+                  if ctype == b'IDAT':
+                      idat += data
+                  elif ctype == b'IEND':
+                      break
+                  pos += 12 + length
+              pixels = zlib.decompress(idat)
+              stride = 1 + w * 4
+              total = w * h
+              opaque = sum(
+                  1 for row in range(h)
+                  for col in range(w)
+                  if pixels[row * stride + 1 + col * 4 + 3] > 10
+              )
+              return opaque * 100.0 / total
+
+          passed = True
+          results = []
+          for name, (lo, hi) in TARGETS.items():
+              path = f'baked/{name}_00.png'
+              if not os.path.exists(path):
+                  results.append(f'FAIL  {name}: file missing')
+                  passed = False
+                  continue
+              pct = opaque_pct(path)
+              status = 'PASS' if lo <= pct <= hi else 'FAIL'
+              if status == 'FAIL':
+                  passed = False
+              results.append(f'{status}  {name}: {pct:.1f}% (target {lo:.0f}–{hi:.0f}%)')
+
+          for r in results:
+              print(r)
+
+          if not passed:
+              print('\nFRAMING TEST: FAIL — do not start full bake')
+              sys.exit(1)
+          else:
+              print('\nFRAMING TEST: PASS — safe to start full 96-frame bake')
+          PYEOF
+
+      - name: Upload test frames
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: norvyx-3frame-test
+          path: baked/*.png
+          if-no-files-found: warn
+          retention-days: 3
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## NORVYX 3-Frame Camera+Material Test" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Setting | Old | New |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|-----|-----|" >> $GITHUB_STEP_SUMMARY
+          echo "| ortho_scale | 8.6 | 3.5 |" >> $GITHUB_STEP_SUMMARY
+          echo "| NVX_Dark base | (0.012, 0.018, 0.028) | (0.060, 0.075, 0.100) |" >> $GITHUB_STEP_SUMMARY
+          echo "| NVX_Carbon base | (0.035, 0.045, 0.060) | (0.090, 0.100, 0.130) |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Test frames: baked/vanguard_00.png · hunter_00.png · boss_00.png" >> $GITHUB_STEP_SUMMARY
+          ls -lh baked/*.png 2>/dev/null >> $GITHUB_STEP_SUMMARY || true
