@@ -2,86 +2,175 @@ name: NORVYX 3D PBR Sprite Bake
 
 on:
   workflow_dispatch:
-    inputs:
-      quick:
-        description: 'Quick mode (1024px instead of 2048px)'
-        required: false
-        default: 'false'
-        type: choice
-        options: ['false', 'true']
+
+env:
+  BLENDER_VERSION: "4.2.0"
+  BLENDER_DIR: "blender-4.2.0-linux-x64"
+  BLENDER_URL: "https://download.blender.org/release/Blender4.2/blender-4.2.0-linux-x64.tar.xz"
 
 jobs:
-  bake:
+
+  # ── Step 1: single test frame ──────────────────────────────────────────────
+  test-render:
+    name: "Test render — vanguard_00 (2048px)"
     runs-on: ubuntu-22.04
-    timeout-minutes: 180
+    timeout-minutes: 15
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Install system dependencies
         run: |
           sudo apt-get update -q
-          sudo apt-get install -y \
-            wget xvfb \
-            libxrender1 libxi6 libxkbcommon0 \
-            libsm6 libice6 libgl1 \
-            libglib2.0-0 libxext6 libxfixes3 \
-            python3-pip
-          pip3 install pillow
+          sudo apt-get install -y wget xvfb \
+            libxrender1 libxi6 libxkbcommon0 libsm6 libice6 libgl1 \
+            libglib2.0-0 libxext6 libxfixes3
 
-      - name: Download and install Blender 4.2 LTS
+      - name: Install Blender 4.2 LTS
         run: |
-          BLENDER_VERSION="4.2.0"
-          BLENDER_DIR="blender-${BLENDER_VERSION}-linux-x64"
-          BLENDER_URL="https://download.blender.org/release/Blender4.2/${BLENDER_DIR}.tar.xz"
-          echo "Downloading Blender ${BLENDER_VERSION}..."
-          wget -q "${BLENDER_URL}" -O blender.tar.xz
+          wget -q "${{ env.BLENDER_URL }}" -O blender.tar.xz
           tar xf blender.tar.xz
-          echo "${GITHUB_WORKSPACE}/${BLENDER_DIR}" >> $GITHUB_PATH
-          echo "BLENDER_BIN=${GITHUB_WORKSPACE}/${BLENDER_DIR}/blender" >> $GITHUB_ENV
-          ${GITHUB_WORKSPACE}/${BLENDER_DIR}/blender --version
+          echo "${GITHUB_WORKSPACE}/${{ env.BLENDER_DIR }}" >> $GITHUB_PATH
+          echo "BLENDER_BIN=${GITHUB_WORKSPACE}/${{ env.BLENDER_DIR }}/blender" >> $GITHUB_ENV
+          ${GITHUB_WORKSPACE}/${{ env.BLENDER_DIR }}/blender --version
 
-      - name: Verify models
+      - name: Test render vanguard_00 (2048×2048)
         run: |
-          echo "OBJ models found:"
-          ls models/*.obj | wc -l
-          ls models/
+          echo "Rendering vanguard_00 as timing test..."
+          START=$(date +%s)
+          xvfb-run -a ${BLENDER_BIN} -b --python blender/bake_sprites.py -- --test --ships vanguard
+          END=$(date +%s)
+          ELAPSED=$((END - START))
+          echo "Test frame time: ${ELAPSED}s"
+          echo "FRAME_TIME=${ELAPSED}" >> $GITHUB_ENV
+          ls -lh baked/vanguard_00.png
 
-      - name: Bake 3D PBR sprites (Cycles/CPU)
+      - name: Timing report
         run: |
-          QUICK_FLAG=""
-          if [ "${{ inputs.quick }}" = "true" ]; then
-            QUICK_FLAG="--quick"
-          fi
-          echo "Starting Blender bake (CYCLES CPU renderer)..."
-          xvfb-run -a ${BLENDER_BIN} -b --python blender/bake_sprites.py -- ${QUICK_FLAG}
-          echo "Bake complete. Output:"
-          ls baked/*.png 2>/dev/null | wc -l || echo "0 PNGs found"
+          echo "## Test Render Result" >> $GITHUB_STEP_SUMMARY
+          echo "- **Frame:** vanguard_00.png @ 2048×2048" >> $GITHUB_STEP_SUMMARY
+          echo "- **Render time:** ${FRAME_TIME}s" >> $GITHUB_STEP_SUMMARY
+          PROJECTED=$(( FRAME_TIME * 24 / 60 ))
+          echo "- **Projected per-group time:** ~${PROJECTED} min (24 frames)" >> $GITHUB_STEP_SUMMARY
+          ls -lh baked/vanguard_00.png >> $GITHUB_STEP_SUMMARY || true
 
-      - name: Verify bake output
+      - name: Upload test frame
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-vanguard-00
+          path: baked/vanguard_00.png
+          if-no-files-found: error
+
+  # ── Step 2: parallel bake (4 groups × 3 ships × 8 frames = 96 total) ──────
+  bake:
+    name: "Bake ${{ matrix.group }} — ${{ matrix.ships }}"
+    needs: test-render
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+
+    strategy:
+      fail-fast: false   # if one group fails, others continue
+      matrix:
+        include:
+          - group: "a"
+            ships: "vanguard,striker,controller"
+          - group: "b"
+            ships: "scout,dasher,hunter"
+          - group: "c"
+            ships: "assault,elite,tank"
+          - group: "d"
+            ships: "weaver,orbiter,boss"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system dependencies
         run: |
-          EXPECTED=96  # 12 ships × 8 frames
-          if [ "${{ inputs.quick }}" = "true" ]; then
-            EXPECTED=96
-          fi
+          sudo apt-get update -q
+          sudo apt-get install -y wget xvfb \
+            libxrender1 libxi6 libxkbcommon0 libsm6 libice6 libgl1 \
+            libglib2.0-0 libxext6 libxfixes3
+
+      - name: Install Blender 4.2 LTS
+        run: |
+          wget -q "${{ env.BLENDER_URL }}" -O blender.tar.xz
+          tar xf blender.tar.xz
+          echo "${GITHUB_WORKSPACE}/${{ env.BLENDER_DIR }}" >> $GITHUB_PATH
+          echo "BLENDER_BIN=${GITHUB_WORKSPACE}/${{ env.BLENDER_DIR }}/blender" >> $GITHUB_ENV
+
+      - name: Bake group ${{ matrix.group }} (${{ matrix.ships }})
+        run: |
+          echo "Baking ships: ${{ matrix.ships }}"
+          xvfb-run -a ${BLENDER_BIN} -b \
+            --python blender/bake_sprites.py \
+            -- --ships "${{ matrix.ships }}"
+          echo "Baked PNGs:"
+          ls baked/*.png | wc -l
+          ls baked/*.png
+
+      - name: Verify group output
+        run: |
           COUNT=$(ls baked/*.png 2>/dev/null | wc -l)
-          echo "Baked PNGs: ${COUNT} (expected ${EXPECTED})"
-          ls baked/ | head -20
-          if [ "${COUNT}" -eq 0 ]; then
-            echo "ERROR: No PNGs baked — aborting"
+          EXPECTED=24  # 3 ships × 8 frames
+          echo "Baked: ${COUNT} / Expected: ${EXPECTED}"
+          if [ "${COUNT}" -lt "${EXPECTED}" ]; then
+            echo "ERROR: Expected ${EXPECTED} PNGs, got ${COUNT}"
             exit 1
+          fi
+
+      - name: Upload group artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: baked-masters-group-${{ matrix.group }}
+          path: baked/*.png
+          if-no-files-found: error
+          retention-days: 7
+
+  # ── Step 3: merge + atlas + final artifact ─────────────────────────────────
+  finalize:
+    name: "Finalize — merge + atlas + game sprites"
+    needs: bake
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Python dependencies
+        run: pip3 install pillow
+
+      - name: Download all group artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: baked-masters-group-*
+          path: baked-raw/
+          merge-multiple: false
+
+      - name: Merge all PNGs into baked/
+        run: |
+          mkdir -p baked
+          find baked-raw/ -name "*.png" -exec cp {} baked/ \;
+          echo "Total master PNGs merged:"
+          ls baked/*.png | wc -l
+          ls baked/
+
+      - name: Verify complete output (96 frames)
+        run: |
+          COUNT=$(ls baked/*.png | wc -l)
+          echo "Total: ${COUNT} / Expected: 96"
+          if [ "${COUNT}" -lt 96 ]; then
+            echo "WARNING: Only ${COUNT}/96 frames present — some groups may have failed"
           fi
 
       - name: Build atlas and rename game sprites
         run: |
           python3 blender/build_atlas.py
-          echo "Game-ready sprites:"
+          echo "Game sprites:"
           ls baked/ships/
-          echo "Atlas:"
-          ls baked/atlas-units.png baked/atlas-units.json
+          echo "Atlas files:"
+          ls -lh baked/atlas-units.png baked/atlas-units.json
 
-      - name: Upload baked sprites artifact
+      - name: Upload final game sprites artifact
         uses: actions/upload-artifact@v4
         with:
           name: norvyx-baked-sprites
@@ -92,28 +181,27 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
-      - name: Upload raw master PNGs (2048px)
+      - name: Upload all 2048px master PNGs
         uses: actions/upload-artifact@v4
         with:
-          name: norvyx-baked-masters
+          name: norvyx-baked-masters-2048
           path: baked/*.png
-          if-no-files-found: warn
-          retention-days: 7
+          if-no-files-found: error
+          retention-days: 14
 
       - name: Summary
         run: |
-          echo "## NORVYX 3D PBR Bake Results" >> $GITHUB_STEP_SUMMARY
+          echo "## NORVYX 3D PBR Bake — Final Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          BLENDER_VER=$(${BLENDER_BIN} --version | head -1)
-          echo "**Blender:** ${BLENDER_VER}" >> $GITHUB_STEP_SUMMARY
-          QUICK="${{ inputs.quick }}"
-          SIZE="2048×2048"
-          if [ "$QUICK" = "true" ]; then SIZE="1024×1024"; fi
-          echo "**Resolution:** ${SIZE}" >> $GITHUB_STEP_SUMMARY
-          TOTAL=$(ls baked/*.png 2>/dev/null | wc -l)
-          echo "**Total master PNGs:** ${TOTAL}" >> $GITHUB_STEP_SUMMARY
+          echo "| Item | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Blender | 4.2.0 LTS |" >> $GITHUB_STEP_SUMMARY
+          echo "| Resolution | 2048×2048 RGBA |" >> $GITHUB_STEP_SUMMARY
+          echo "| Engine | Cycles/CPU + OIDN denoise |" >> $GITHUB_STEP_SUMMARY
+          MASTERS=$(ls baked/*.png 2>/dev/null | wc -l)
+          echo "| Master PNGs | ${MASTERS} / 96 |" >> $GITHUB_STEP_SUMMARY
           GAME=$(ls baked/ships/*.png 2>/dev/null | wc -l)
-          echo "**Game sprites (ships/):** ${GAME}" >> $GITHUB_STEP_SUMMARY
+          echo "| Game sprites | ${GAME} |" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Game sprites produced" >> $GITHUB_STEP_SUMMARY
+          echo "### Game sprites (assets/ships/)" >> $GITHUB_STEP_SUMMARY
           ls baked/ships/ | sed 's/^/- /' >> $GITHUB_STEP_SUMMARY
