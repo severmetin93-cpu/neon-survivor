@@ -1,5 +1,5 @@
-/* NORYVX V27.1.0 — 3D PBR ship sprites integrated */
-const CACHE = "noryvx-v27-1-0";
+/* NORYVX V27.2.0 — 3D PBR sprites ortho_scale=3.5/4.5, fixed materials */
+const CACHE = "noryvx-v27-2-0";
 
 const ASSETS = [
   "./",
