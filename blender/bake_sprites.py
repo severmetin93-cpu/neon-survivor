@@ -61,6 +61,25 @@ def import_obj(path):
     bpy.context.collection.objects.link(root)
     for o in objs:
         o.parent = root
+
+    # Center ship geometry at world origin so ortho camera frames it correctly.
+    # OBJ exporters often don't center geometry; without this, ships fall outside
+    # the ortho frustum when ortho_scale is tightened.
+    coords = []
+    for o in objs:
+        mw = o.matrix_world
+        coords.extend(mw @ v.co for v in o.data.vertices)
+    if coords:
+        xs = [c[0] for c in coords]
+        ys = [c[1] for c in coords]
+        zs = [c[2] for c in coords]
+        cx = (min(xs) + max(xs)) / 2.0
+        cy = (min(ys) + max(ys)) / 2.0
+        cz = (min(zs) + max(zs)) / 2.0
+        root.location = (-cx, -cy, -cz)
+        bpy.context.view_layer.update()
+        print(f'[NORVYX] centered ship: offset=({-cx:.2f},{-cy:.2f},{-cz:.2f})')
+
     return root, objs
 
 
