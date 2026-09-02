@@ -1,0 +1,78 @@
+name: NORVYX Vanguard Fighter — Single Frame Test
+
+on:
+  workflow_dispatch:
+
+env:
+  BLENDER_URL: "https://download.blender.org/release/Blender4.2/blender-4.2.0-linux-x64.tar.xz"
+  BLENDER_DIR: "blender-4.2.0-linux-x64"
+
+jobs:
+  render:
+    name: "Render vanguard_00 — fighter prototype"
+    runs-on: ubuntu-22.04
+    timeout-minutes: 25
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y wget xvfb \
+            libxrender1 libxi6 libxkbcommon0 libsm6 libice6 libgl1 \
+            libglib2.0-0 libxext6 libxfixes3
+          pip3 install pillow
+
+      - name: Install Blender 4.2 LTS
+        run: |
+          wget -q "${{ env.BLENDER_URL }}" -O blender.tar.xz
+          tar xf blender.tar.xz
+          echo "BLENDER_BIN=${GITHUB_WORKSPACE}/${{ env.BLENDER_DIR }}/blender" >> $GITHUB_ENV
+
+      - name: Render vanguard_00 (2048×2048 RGBA)
+        run: |
+          echo "Running fighter generator..."
+          START=$(date +%s)
+          xvfb-run -a ${BLENDER_BIN} -b \
+            --python blender/gen_vanguard_fighter.py
+          END=$(date +%s)
+          echo "Render time: $((END-START))s"
+          ls -lh baked/vanguard_00.png
+
+      - name: Measure opaque fill (Pillow)
+        run: |
+          python3 - <<'PYEOF'
+          import os
+          from PIL import Image
+
+          path = 'baked/vanguard_00.png'
+          img  = Image.open(path).convert('RGBA')
+          w, h = img.size
+          alpha = list(img.getchannel('A').getdata())
+          opaque = sum(1 for a in alpha if a > 10)
+          pct    = opaque * 100.0 / (w * h)
+          kb     = os.path.getsize(path) // 1024
+          print(f'vanguard_00: {w}x{h} | {kb}KB | opaque={pct:.1f}%')
+          if pct < 5:
+              print('WARNING: very low fill — ship may be off-frame or invisible')
+          elif pct > 65:
+              print('WARNING: fill very high — ship may be cropped or too large')
+          else:
+              print('Fill looks reasonable — download artifact for visual check')
+          PYEOF
+
+      - name: Upload fighter test frame
+        uses: actions/upload-artifact@v4
+        with:
+          name: norvyx-vanguard-fighter-test
+          path: baked/vanguard_00.png
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## NORVYX Vanguard Fighter — Prototype Render" >> $GITHUB_STEP_SUMMARY
+          echo "Script: \`blender/gen_vanguard_fighter.py\`" >> $GITHUB_STEP_SUMMARY
+          ls -lh baked/vanguard_00.png 2>/dev/null >> $GITHUB_STEP_SUMMARY || echo "RENDER FAILED" >> $GITHUB_STEP_SUMMARY
