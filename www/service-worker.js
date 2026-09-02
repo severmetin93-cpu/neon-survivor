@@ -1,5 +1,5 @@
-/* NORYVX V27.0.0 — extracted CSS/JS for performance */
-const CACHE = "noryvx-v27-0-0";
+/* NORYVX V27.1.0 — 3D PBR ship sprites integrated */
+const CACHE = "noryvx-v27-1-0";
 
 const ASSETS = [
   "./",
