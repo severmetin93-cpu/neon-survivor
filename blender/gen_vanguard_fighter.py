@@ -1582,7 +1582,7 @@ def setup_lights():
 
 
 setup_world()
-setup_camera(6.4)
+setup_camera(6.9)   # fits full length (nose +2.80 → nozzle exhaust -3.23) with margin
 setup_lights()
 
 print('[VAN] Scene setup complete')
