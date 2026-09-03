@@ -1289,6 +1289,146 @@ def build_fin_root_fairings():
     return ob
 
 
+# ── PANEL SEAMS ──────────────────────────────────────────────────────────────
+# Thin raised strips that read as engineering panel breaks under Cycles lighting.
+# Strips are ~0.010 wide, raised ~0.005 above parent surface — bevel modifier
+# picks up their edges creating subtle highlight rims (real fighter panel seam).
+# Only engineering-logical locations: NO decorative long lines.
+
+def build_panel_seams():
+    bm = bmesh.new()
+
+    SEAM_W = 0.010    # strip width
+    Z_OFF  = 0.005    # raised above parent surface
+
+    def strip_along_top(xs, y_ctr, side_hw=None):
+        """Longitudinal strip on fuselage top at Y=y_ctr."""
+        va, vb = [], []
+        for x in xs:
+            zt = fuse_top(x) + Z_OFF
+            va.append(bm.verts.new((x, y_ctr - SEAM_W * 0.5, zt)))
+            vb.append(bm.verts.new((x, y_ctr + SEAM_W * 0.5, zt)))
+        for i in range(len(xs) - 1):
+            try:
+                bm.faces.new([va[i], vb[i], vb[i+1], va[i+1]])
+            except Exception:
+                pass
+
+    def strip_transverse(x_ctr, y_from, y_to, z_val):
+        """Transverse strip at X=x_ctr, spanning Y range at given Z."""
+        va = bm.verts.new((x_ctr - SEAM_W * 0.5, y_from, z_val))
+        vb = bm.verts.new((x_ctr + SEAM_W * 0.5, y_from, z_val))
+        vc = bm.verts.new((x_ctr + SEAM_W * 0.5, y_to,   z_val))
+        vd = bm.verts.new((x_ctr - SEAM_W * 0.5, y_to,   z_val))
+        try:
+            bm.faces.new([va, vb, vc, vd])
+        except Exception:
+            pass
+
+    def strip_wing_hinge(side, span, chord_frac):
+        """Wing control-surface hinge line at given chord fraction."""
+        s = side
+        va, vb = [], []
+        for (x_le, x_te, y_abs, _thick) in span:
+            chord = x_le - x_te
+            x_hinge = x_le - chord_frac * chord
+            y = s * y_abs
+            # Wing top surface Z: baseline 0.05 + slight camber
+            z_wing = 0.05 + 0.008 * (1.0 - chord_frac) + Z_OFF
+            va.append(bm.verts.new((x_hinge - SEAM_W * 0.5, y, z_wing)))
+            vb.append(bm.verts.new((x_hinge + SEAM_W * 0.5, y, z_wing)))
+        for i in range(len(span) - 1):
+            try:
+                bm.faces.new([va[i], vb[i], vb[i+1], va[i+1]])
+            except Exception:
+                pass
+
+    def rect_panel(x0, x1, y0, y1, z):
+        """Rectangular access panel outline as 4 thin strips (top of nacelle)."""
+        # 4 corners at z
+        # Front edge (X=x0)
+        for (a0, a1, b0, b1) in [
+            ((x0, y0),      (x0 + SEAM_W, y0),      (x0 + SEAM_W, y1),      (x0, y1)),        # front
+            ((x1 - SEAM_W, y0), (x1, y0),           (x1, y1),               (x1 - SEAM_W, y1)),   # rear
+            ((x0, y0),      (x1, y0),               (x1, y0 + SEAM_W),      (x0, y0 + SEAM_W)),  # inner-Y
+            ((x0, y1 - SEAM_W), (x1, y1 - SEAM_W),  (x1, y1),               (x0, y1)),        # outer-Y
+        ]:
+            va = bm.verts.new((a0[0], a0[1], z))
+            vb = bm.verts.new((a1[0], a1[1], z))
+            vc = bm.verts.new((b0[0], b0[1], z))
+            vd = bm.verts.new((b1[0], b1[1], z))
+            try:
+                bm.faces.new([va, vb, vc, vd])
+            except Exception:
+                pass
+
+    # ── 1) Nose upper panel seams (2 lines symmetric, follow chine direction) ──
+    # Runs from just aft of nose tip back to canopy front.
+    nose_xs = [2.55, 2.42, 2.28, 2.14, 2.00]
+    for side in (+1, -1):
+        y_ctr_offset = side * 0.11   # Y offset from center on nose top
+        va, vb = [], []
+        for x in nose_xs:
+            zt = fuse_top(x) + Z_OFF
+            va.append(bm.verts.new((x, y_ctr_offset - SEAM_W * 0.5 * side, zt)))
+            vb.append(bm.verts.new((x, y_ctr_offset + SEAM_W * 0.5 * side, zt)))
+        for i in range(len(nose_xs) - 1):
+            try:
+                bm.faces.new([va[i], vb[i], vb[i+1], va[i+1]])
+            except Exception:
+                pass
+
+    # ── 2) Cockpit surround transverse seam (just behind canopy tip and just ahead)
+    # Front seam: transverse line at X=2.10 (ahead of canopy front tip X=2.05)
+    strip_transverse(2.10, -0.18, 0.18, fuse_top(2.10) + Z_OFF)
+    # Rear seam: at X=0.36 (canopy rear tip), transverse across deck
+    strip_transverse(0.34, -0.12, 0.12, fuse_top(0.34) + Z_OFF + 0.010)
+
+    # ── 3) Wing root transverse seam (upper surface, close to fuselage)
+    for side in (+1, -1):
+        s = side
+        strip_transverse(-0.10, s * 0.44, s * 0.62, 0.06 + Z_OFF)
+
+    # ── 4) Wing control-surface hinge line (72% chord — flap/aileron pivot) ──
+    # SPAN reference (from build_wings): root x_LE=0.70, x_TE=-0.98 through tip
+    SPAN_REF = [
+        ( 0.70,  -0.98,  0.44), ( 0.58,  -1.02,  0.60),
+        ( 0.42,  -1.06,  0.78), ( 0.22,  -1.11,  0.98),
+        ( 0.00,  -1.16,  1.18), (-0.20,  -1.20,  1.36),
+        (-0.38,  -1.24,  1.52), (-0.54,  -1.27,  1.66),
+        (-0.68,  -1.30,  1.78), (-0.80,  -1.32,  1.86),
+        (-0.90,  -1.34,  1.92),
+    ]
+    span_thick = [(x_le, x_te, y, 0.05) for (x_le, x_te, y) in SPAN_REF]
+    for side in (+1, -1):
+        strip_wing_hinge(side, span_thick, chord_frac=0.72)
+
+    # ── 5) Engine access panel — rectangular hatch on top of each nacelle ──
+    for side in (+1, -1):
+        cy = side * 0.230
+        y0 = cy - 0.070 if side > 0 else cy - 0.070
+        y1 = cy + 0.070 if side > 0 else cy + 0.070
+        z  = fuse_top(-1.40) + 0.040 + Z_OFF   # sits on top of nacelle wrap
+        rect_panel(-1.65, -1.05, min(y0, y1), max(y0, y1), z)
+
+    # ── 6) Rear fuselage transverse seam (body → engine bay transition) ──
+    strip_transverse(-0.80, -0.42, 0.42, fuse_top(-0.80) + Z_OFF)
+
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+
+    me = bpy.data.meshes.new('seams_me')
+    bm.to_mesh(me)
+    bm.free()
+    for p in me.polygons:
+        p.use_smooth = True
+
+    ob = bpy.data.objects.new('PanelSeams', me)
+    bpy.context.collection.objects.link(ob)
+    ob.data.materials.append(M_DARK)
+    print(f'[VAN] PanelSeams: {len(me.vertices)}v {len(me.polygons)}f')
+    return ob
+
+
 # ── WING LE ACCENT STRIPS ────────────────────────────────────────────────────
 # Thin cyan-emissive strips along wing leading edges. Visible from top-down.
 
@@ -1372,6 +1512,7 @@ ob_spine                = build_dorsal_spine()      # raised dorsal ridge behind
 ob_humps                = build_engine_humps()      # full twin engine nacelle wraps (top+side)
 ob_deck                 = build_cockpit_deck()      # avionics fairing behind canopy
 ob_finfair              = build_fin_root_fairings() # triangular gussets at fin base
+ob_seams                = build_panel_seams()        # engineering panel breaks
 # LE accents removed — user directive: no neon strip on wings.
 
 print(f'[VAN] Geometry built in {time.time()-t_geom:.1f}s')
@@ -1381,7 +1522,7 @@ print(f'[VAN] Geometry built in {time.time()-t_geom:.1f}s')
 
 for ob in [ob_fuse, ob_wings, ob_fins, ob_canopy, ob_canframe,
            ob_nozhouse, ob_nozexh, ob_intakes,
-           ob_lerx, ob_spine, ob_humps, ob_deck, ob_finfair]:
+           ob_lerx, ob_spine, ob_humps, ob_deck, ob_finfair, ob_seams]:
     bev = ob.modifiers.new('Bevel', 'BEVEL')
     bev.width = 0.012
     bev.segments = 3
@@ -1404,41 +1545,44 @@ def setup_world():
     bg.inputs['Strength'].default_value = 0.08
 
 
-def setup_camera(scale=3.5):
-    bpy.ops.object.camera_add(location=(8.5, -0.1, 7.5))
+def setup_camera(scale=6.4):
+    """Top-down gameplay camera. Nose (+X) points toward BOTTOM of the frame."""
+    bpy.ops.object.camera_add(location=(0.0, 0.0, 12.0))
     cam = bpy.context.object
     cam.name = 'SpriteCamera'
     cam.data.type = 'ORTHO'
     cam.data.ortho_scale = scale
-    from mathutils import Vector
-    direction = Vector((0, 0, 0)) - cam.location
-    cam.rotation_euler = direction.to_track_quat('-Z', 'Y').to_euler()
+    # Look straight down (-Z). Rotate camera around Z by +90° so world +X → screen bottom.
+    cam.rotation_euler = (0.0, 0.0, math.pi / 2)
     bpy.context.scene.camera = cam
     return cam
 
 
-def add_light(name, loc, energy, color, size=5):
-    bpy.ops.object.light_add(type='AREA', location=loc)
+def add_light(name, loc, energy, color, size=5, ltype='AREA'):
+    bpy.ops.object.light_add(type=ltype, location=loc)
     l = bpy.context.object
     l.name = name
     l.data.energy = energy
     l.data.color  = color
-    l.data.shape  = 'DISK'
-    l.data.size   = size
+    if ltype == 'AREA':
+        l.data.shape = 'DISK'
+        l.data.size  = size
 
 
 def setup_lights():
-    # Cool cyan/blue rim keeps the cyberpunk atmosphere, but the body stays
-    # military graphite. Magenta rim is heavily reduced — only a hint.
-    add_light('Key',      ( 5, -5,  8), 1050, (0.62, 0.80, 1.00), 5)
-    add_light('RimBlue', (-4,  4,  5),  900, (0.05, 0.50, 1.00), 4)
-    add_light('RimMag',  (-2, -4,  3),  380, (1.00, 0.10, 0.40), 4)   # softer accent
-    add_light('Top',      ( 0,  0, 10),  520, (0.42, 0.58, 1.00), 3)
-    add_light('FillWarm', ( 3,  3, -4),  260, (1.00, 0.55, 0.30), 4)  # subtle warm underfill
+    # Top-down camera view. Key light rebalanced for straight-down shot.
+    # Neutral daylight primary + small cyberpunk rim accents (NOT primary color).
+    # Body reads as REAL MILITARY FIGHTER first; cyberpunk lighting second.
+    add_light('Key',       ( 4, -3,  9), 1200, (0.75, 0.85, 1.00), 5)   # neutral cool key
+    add_light('Fill',      (-3,  2,  8),  600, (0.55, 0.65, 0.85), 5)   # soft cool fill
+    add_light('TopSoft',   ( 0,  0, 12),  700, (0.65, 0.72, 0.90), 6)   # overhead soft light
+    add_light('RimBlue',   (-6,  3,  4),  420, (0.10, 0.55, 1.00), 4)   # tail-side cyan rim accent
+    add_light('RimMag',    ( 2,  6,  3),  260, (1.00, 0.15, 0.45), 4)   # side magenta rim accent
+    add_light('FillWarm',  ( 3, -2, -3),  180, (1.00, 0.55, 0.30), 4)   # subtle warm underfill
 
 
 setup_world()
-setup_camera(6.5)
+setup_camera(6.4)
 setup_lights()
 
 print('[VAN] Scene setup complete')
@@ -1449,13 +1593,13 @@ print('[VAN] Scene setup complete')
 scene = bpy.context.scene
 scene.render.engine = 'CYCLES'
 scene.cycles.device = 'CPU'
-scene.cycles.samples = 128
+scene.cycles.samples = 192                        # cleaner PBR highlights (was 128)
 scene.cycles.use_adaptive_sampling   = True
-scene.cycles.adaptive_threshold      = 0.02
-scene.cycles.adaptive_min_samples    = 16
-scene.cycles.max_bounces             = 4
-scene.cycles.diffuse_bounces         = 2
-scene.cycles.glossy_bounces          = 3
+scene.cycles.adaptive_threshold      = 0.015      # tighter noise tolerance
+scene.cycles.adaptive_min_samples    = 24
+scene.cycles.max_bounces             = 5
+scene.cycles.diffuse_bounces         = 3
+scene.cycles.glossy_bounces          = 4
 scene.cycles.transmission_bounces    = 2
 scene.cycles.shadow_bounces          = 1
 scene.cycles.volume_bounces          = 0
@@ -1488,3 +1632,38 @@ if os.path.exists(OUT_PATH):
 else:
     print('[VAN] ERROR: output file not found!')
     sys.exit(1)
+
+# ── QUALITY REPORT ───────────────────────────────────────────────────────────
+# Triangle count uses the evaluated (post-modifier) mesh from the depsgraph so
+# that bevel/weighted-normal contributions are included.
+
+deps = bpy.context.evaluated_depsgraph_get()
+mesh_count = 0
+tri_count  = 0
+vert_count = 0
+for ob in bpy.data.objects:
+    if ob.type != 'MESH':
+        continue
+    mesh_count += 1
+    eval_ob = ob.evaluated_get(deps)
+    eval_me = eval_ob.to_mesh()
+    if eval_me is None:
+        continue
+    vert_count += len(eval_me.vertices)
+    for poly in eval_me.polygons:
+        tri_count += max(0, len(poly.vertices) - 2)
+    eval_ob.to_mesh_clear()
+
+print('')
+print('══════════════════════════════════════════════════════════════')
+print('  QUALITY REPORT — VANGUARD_00 FINAL_TEST')
+print('══════════════════════════════════════════════════════════════')
+print(f'  Mesh objects   : {mesh_count}')
+print(f'  Vertices       : {vert_count}')
+print(f'  Triangles      : {tri_count}')
+print(f'  Render time    : {elapsed:.1f}s')
+print(f'  Resolution     : {scene.render.resolution_x}×{scene.render.resolution_y}')
+print(f'  Samples (max)  : {scene.cycles.samples} (adaptive)')
+print(f'  Output size    : {size_kb} KB')
+print(f'  Output path    : {OUT_PATH}')
+print('══════════════════════════════════════════════════════════════')
