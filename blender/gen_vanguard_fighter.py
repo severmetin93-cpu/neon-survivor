@@ -144,48 +144,74 @@ def resample_ring(bm, r_src, n_dst, x):
 
 
 # ── FUSELAGE ─────────────────────────────────────────────────────────────────
-# Lofted elliptical cross-sections: X+ = nose, X- = tail.
-# High-density stations (32) with 16-sided main body for organic, blended surface.
-# Mid-body ry/rz ratio widens (~2.3) → flatter blended wing-body cross-section.
-# Nose section: cz drops slightly (flatter belly, higher spine) → asymmetry.
-# Tips (nose/tail) are single verts; transition zones use 8 sides.
+# Compact modern air-superiority fighter proportions.
+# Total length: 5.85 units (was 6.8). Nose short and aggressive.
+# Center body: wide and voluminous. Rear engine bay: widest zone (twin engine housings).
+# Wingspan/length ~0.71 — F-22 class ratio.
 
 FUSE_STA = [
     # (  x,     ry,     rz,     cy,    cz,  n)
     #  ry=Y half-width  rz=Z half-height  cy=Y center  cz=Z center
-    ( 3.40,  0.000,  0.000,  0.00,  0.03,  1),   # nose tip → single vert
-    ( 3.32,  0.014,  0.010,  0.00,  0.03,  8),   # 8-sided nose transition
-    ( 3.20,  0.036,  0.024,  0.00,  0.03,  8),
-    ( 3.02,  0.072,  0.048,  0.00,  0.04,  8),
-    ( 2.80,  0.122,  0.078,  0.00,  0.04, 16),   # 8→16 transition
-    ( 2.55,  0.180,  0.108,  0.00,  0.04, 16),
-    ( 2.28,  0.238,  0.136,  0.00,  0.04, 16),   # canopy start
-    ( 2.02,  0.290,  0.158,  0.00,  0.05, 16),
-    ( 1.74,  0.334,  0.176,  0.00,  0.05, 16),   # canopy mid
-    ( 1.46,  0.368,  0.188,  0.00,  0.05, 16),
-    ( 1.18,  0.400,  0.194,  0.00,  0.05, 16),   # canopy rear
-    ( 0.90,  0.432,  0.196,  0.00,  0.04, 16),   # blended body starts widening
-    ( 0.60,  0.470,  0.194,  0.00,  0.04, 16),
-    ( 0.30,  0.508,  0.192,  0.00,  0.04, 16),
-    ( 0.00,  0.540,  0.192,  0.00,  0.04, 16),   # blended wing-root peak (ry/rz=2.8)
-    (-0.30,  0.556,  0.194,  0.00,  0.04, 16),   # widest blended body
-    (-0.60,  0.556,  0.196,  0.00,  0.04, 16),
-    (-0.90,  0.548,  0.198,  0.00,  0.04, 16),
-    (-1.20,  0.536,  0.200,  0.00,  0.04, 16),
-    (-1.50,  0.522,  0.202,  0.00,  0.04, 16),
-    (-1.78,  0.506,  0.204,  0.00,  0.05, 16),   # engine bays approach
-    (-2.02,  0.488,  0.202,  0.00,  0.05, 16),
-    (-2.24,  0.454,  0.192,  0.00,  0.05, 16),
-    (-2.44,  0.406,  0.174,  0.00,  0.04, 16),
-    (-2.62,  0.348,  0.152,  0.00,  0.04, 16),
-    (-2.78,  0.286,  0.128,  0.00,  0.03, 16),
-    (-2.92,  0.222,  0.100,  0.00,  0.03, 16),
-    (-3.06,  0.162,  0.076,  0.00,  0.02, 16),   # 16→8 transition
-    (-3.18,  0.108,  0.052,  0.00,  0.02,  8),
-    (-3.28,  0.062,  0.030,  0.00,  0.01,  8),
-    (-3.36,  0.024,  0.012,  0.00,  0.01,  8),
-    (-3.40,  0.000,  0.000,  0.00,  0.00,  1),   # tail tip → single vert
+    ( 2.80,  0.000,  0.000,  0.00,  0.02,  1),   # nose tip → single vert
+    ( 2.72,  0.020,  0.014,  0.00,  0.02,  8),
+    ( 2.62,  0.048,  0.032,  0.00,  0.02,  8),
+    ( 2.48,  0.088,  0.058,  0.00,  0.03,  8),
+    ( 2.30,  0.140,  0.088,  0.00,  0.03, 16),   # 8→16 transition
+    ( 2.10,  0.198,  0.118,  0.00,  0.04, 16),
+    ( 1.85,  0.258,  0.146,  0.00,  0.05, 16),   # canopy start
+    ( 1.60,  0.316,  0.168,  0.00,  0.05, 16),
+    ( 1.30,  0.370,  0.184,  0.00,  0.06, 16),   # canopy peak zone
+    ( 1.00,  0.418,  0.194,  0.00,  0.06, 16),
+    ( 0.70,  0.462,  0.200,  0.00,  0.06, 16),
+    ( 0.40,  0.500,  0.204,  0.00,  0.05, 16),
+    ( 0.10,  0.532,  0.206,  0.00,  0.05, 16),
+    (-0.20,  0.552,  0.208,  0.00,  0.05, 16),   # blended body center
+    (-0.50,  0.564,  0.212,  0.00,  0.05, 16),
+    (-0.80,  0.572,  0.216,  0.00,  0.05, 16),   # engine bay approach
+    (-1.10,  0.580,  0.222,  0.00,  0.06, 16),
+    (-1.40,  0.584,  0.230,  0.00,  0.06, 16),   # engine bay PEAK (widest, twin-engine housing)
+    (-1.70,  0.578,  0.236,  0.00,  0.06, 16),
+    (-1.95,  0.560,  0.238,  0.00,  0.06, 16),
+    (-2.18,  0.522,  0.230,  0.00,  0.05, 16),
+    (-2.38,  0.462,  0.212,  0.00,  0.05, 16),
+    (-2.55,  0.388,  0.186,  0.00,  0.04, 16),
+    (-2.70,  0.302,  0.152,  0.00,  0.04, 16),
+    (-2.82,  0.212,  0.114,  0.00,  0.03, 16),
+    (-2.92,  0.128,  0.072,  0.00,  0.02,  8),   # 16→8 transition
+    (-2.98,  0.062,  0.036,  0.00,  0.01,  8),
+    (-3.02,  0.024,  0.014,  0.00,  0.01,  8),
+    (-3.05,  0.000,  0.000,  0.00,  0.00,  1),   # tail tip → single vert
 ]
+
+
+def fuse_top(x):
+    """Fuselage top Z at given X, linear interpolation of FUSE_STA. Returns cz + rz."""
+    for i in range(len(FUSE_STA) - 1):
+        x0, ry0, rz0, cy0, cz0, n0 = FUSE_STA[i]
+        x1, ry1, rz1, cy1, cz1, n1 = FUSE_STA[i + 1]
+        if x1 <= x <= x0:
+            if x0 == x1:
+                t = 0.0
+            else:
+                t = (x - x1) / (x0 - x1)
+            rz = lerp(rz1, rz0, t)
+            cz = lerp(cz1, cz0, t)
+            return cz + rz
+    return 0.24
+
+
+def fuse_half_width(x):
+    """Fuselage Y half-width (ry) at given X."""
+    for i in range(len(FUSE_STA) - 1):
+        x0, ry0, rz0, cy0, cz0, n0 = FUSE_STA[i]
+        x1, ry1, rz1, cy1, cz1, n1 = FUSE_STA[i + 1]
+        if x1 <= x <= x0:
+            if x0 == x1:
+                t = 0.0
+            else:
+                t = (x - x1) / (x0 - x1)
+            return lerp(ry1, ry0, t)
+    return 0.30
 
 
 def build_fuselage():
@@ -284,19 +310,23 @@ def build_wings():
     # Span stations: (x_LE, x_TE, y_pos, thickness_root_fraction)
     # y_pos: half-span at that station. Root buries into blended body (y=0.54 fuselage edge).
     # Root chord thicker (0.155) → tapers to 0.014 at tip. Wing-root fillet added separately.
+    # Moderate swept wing — NOT a delta wing. F-22-class proportions.
+    # Wingspan 4.10 units (half=2.05, was 2.50). LE sweep ~46°. TE forward sweep ~18°.
+    # Root chord 1.45 (was 1.82). Tip chord 0.28 (was 0.76 → less blocky).
+    # Root x_LE=0.60 → sits under mid-cockpit-to-mid-fuselage.
     SPAN = [
         # x_LE    x_TE    y       thick
-        ( 0.94,  -0.88,  0.40,  0.145),   # root (buries into blended body)
-        ( 0.72,  -1.03,  0.55,  0.128),
-        ( 0.42,  -1.22,  0.78,  0.112),
-        ( 0.06,  -1.50,  1.12,  0.094),
-        (-0.30,  -1.75,  1.44,  0.078),
-        (-0.62,  -1.95,  1.72,  0.064),
-        (-0.94,  -2.13,  1.96,  0.052),
-        (-1.24,  -2.28,  2.18,  0.040),
-        (-1.48,  -2.40,  2.34,  0.028),
-        (-1.68,  -2.50,  2.44,  0.018),
-        (-1.82,  -2.58,  2.50,  0.012),   # sharp aerodynamic tip
+        ( 0.60,  -0.85,  0.42,  0.135),   # root (buries slightly into blended body)
+        ( 0.48,  -0.92,  0.58,  0.120),
+        ( 0.30,  -1.00,  0.78,  0.104),
+        ( 0.08,  -1.10,  1.00,  0.088),
+        (-0.16,  -1.18,  1.22,  0.072),
+        (-0.40,  -1.25,  1.42,  0.058),
+        (-0.62,  -1.31,  1.60,  0.046),
+        (-0.80,  -1.35,  1.76,  0.034),
+        (-0.94,  -1.38,  1.88,  0.024),
+        (-1.05,  -1.40,  1.97,  0.016),
+        (-1.12,  -1.40,  2.05,  0.010),   # sharp aerodynamic tip, chord ~0.28
     ]
 
     def half_wing(side):
@@ -424,36 +454,38 @@ def build_wings():
 def build_fins():
     bm = bmesh.new()
 
-    CANT   = 0.50   # Y/Z ratio — outward lean per unit of height
-    N_HGT  = 7     # height sections (root → tip)
-    N_CHOR = 5     # chordwise sections (LE → TE)
+    CANT   = 0.35   # Y/Z ratio — moderate outward lean (was 0.50, more upright modern stealth)
+    N_HGT  = 9     # height sections (was 7)
+    N_CHOR = 6     # chordwise sections (was 5)
 
-    # Height stations: (x_LE, x_TE, z_local, thickness)
-    # z_local: height above fuselage top (0 = root)
+    # Height stations: (x_LE, x_TE, z_local, thickness).
+    # Repositioned to sit on rear fuselage (X=-1.85 to -2.75) matching new compact body.
+    # Root thickness 0.110 (was 0.068) → sturdier, less "paper triangle" look.
     FIN_STA = [
         # x_LE    x_TE    z_loc  thick
-        (-2.28,  -3.26,  0.00,  0.068),   # root
-        (-2.40,  -3.26,  0.12,  0.062),
-        (-2.54,  -3.26,  0.26,  0.054),
-        (-2.66,  -3.26,  0.40,  0.044),
-        (-2.76,  -3.26,  0.52,  0.034),
-        (-2.84,  -3.26,  0.62,  0.024),
-        (-2.90,  -3.26,  0.68,  0.014),   # tip
+        (-1.85,  -2.75,  0.00,  0.110),   # root — thick, blends into fuselage
+        (-1.95,  -2.75,  0.14,  0.098),
+        (-2.05,  -2.75,  0.28,  0.084),
+        (-2.15,  -2.75,  0.42,  0.070),
+        (-2.24,  -2.75,  0.54,  0.056),
+        (-2.32,  -2.75,  0.64,  0.044),
+        (-2.38,  -2.75,  0.72,  0.032),
+        (-2.44,  -2.75,  0.78,  0.020),
+        (-2.48,  -2.75,  0.82,  0.010),   # tip
     ]
 
     def half_fin(side):
         s = side   # +1 or -1
-
-        # Fuselage top Z at root X position (approx)
-        fuse_top = 0.24  # conservative estimate
 
         top_rows = []
         bot_rows = []
 
         for (x_le, x_te, z_loc, thick) in FIN_STA:
             chord = x_le - x_te
-            base_y = s * (0.30 + z_loc * CANT)
-            z_abs = fuse_top + z_loc
+            # Root sits on fuselage skin — start Y offset at fuselage upper-shoulder edge.
+            # Use dynamic fuse_top(x_le) and slight outward offset scaled with height.
+            base_y = s * (0.42 + z_loc * CANT)
+            z_abs  = fuse_top(x_le) + z_loc
 
             top_row = []
             bot_row = []
@@ -560,42 +592,27 @@ def build_fins():
 
 def build_canopy():
     bm = bmesh.new()
-
-    # Approximate fuselage top Z at given X (linear interpolation of FUSE_STA)
-    def fuse_top(x):
-        for i in range(len(FUSE_STA) - 1):
-            x0, ry0, rz0, cy0, cz0, n0 = FUSE_STA[i]
-            x1, ry1, rz1, cy1, cz1, n1 = FUSE_STA[i + 1]
-            if x1 <= x <= x0:
-                if x0 == x1:
-                    t = 0.0
-                else:
-                    t = (x - x1) / (x0 - x1)
-                rz = lerp(rz1, rz0, t)
-                cz = lerp(cz1, cz0, t)
-                return cz + rz
-        return 0.19
+    # fuse_top(x) now defined at module level (shared with fins/frame).
 
     # Canopy stations: (x, Y half-width, Z height above fuselage top).
-    # Bubble profile with pronounced height (~0.20 max) for readable cockpit from top-down.
+    # Compact bubble dome — total length 1.74 units (was 2.96 → too long).
+    # Peak width 0.220, peak height 0.214 → true bubble (width ≈ height).
+    # Sits between X=1.90 (front) and X=0.16 (rear), directly behind short nose.
     CAN_STA = [
-        ( 2.30, 0.000, 0.000),   # nose tip → single vert
-        ( 2.20, 0.036, 0.014),
-        ( 2.06, 0.072, 0.038),
-        ( 1.90, 0.108, 0.072),
-        ( 1.72, 0.142, 0.108),
-        ( 1.52, 0.170, 0.140),
-        ( 1.30, 0.186, 0.166),
-        ( 1.06, 0.194, 0.184),   # bubble peak (~0.20 above fuselage)
-        ( 0.80, 0.192, 0.190),
-        ( 0.54, 0.184, 0.184),
-        ( 0.28, 0.170, 0.166),
-        ( 0.04, 0.148, 0.138),
-        (-0.18, 0.122, 0.102),
-        (-0.36, 0.092, 0.066),
-        (-0.50, 0.062, 0.036),
-        (-0.60, 0.032, 0.014),
-        (-0.66, 0.000, 0.000),   # rear taper end
+        ( 1.90, 0.000, 0.000),   # front tip
+        ( 1.82, 0.052, 0.026),
+        ( 1.70, 0.108, 0.068),
+        ( 1.55, 0.156, 0.118),
+        ( 1.38, 0.190, 0.160),
+        ( 1.20, 0.212, 0.196),
+        ( 1.00, 0.220, 0.214),   # bubble PEAK — pilot position
+        ( 0.80, 0.216, 0.212),
+        ( 0.62, 0.198, 0.188),
+        ( 0.48, 0.166, 0.154),
+        ( 0.36, 0.126, 0.110),
+        ( 0.26, 0.082, 0.064),
+        ( 0.20, 0.036, 0.022),
+        ( 0.16, 0.000, 0.000),   # rear tip
     ]
 
     N_ARC = 12  # smooth upper arc per station
@@ -731,93 +748,134 @@ def build_canopy():
 
 
 # ── ENGINE NOZZLES ───────────────────────────────────────────────────────────
-# Two circular nozzles at tail (X-), slight Y offset. Glow orange.
+# Twin nozzles at rear engine bay. Two meshes:
+#   - outer housing (gunmetal): nozzle exterior + petal-segmented rim
+#   - inner exhaust cavity (orange emissive): deep hot exhaust ring
+# Positioned to fit new short fuselage (tail X=-3.05).
 
 def build_nozzles():
-    bm = bmesh.new()
-    N_NOZ = 14
+    bm_out = bmesh.new()   # outer housing (gunmetal)
+    bm_in  = bmesh.new()   # inner cavity (orange emissive, deep)
+    N_NOZ  = 20            # smoother nozzle circumference (was 14)
 
     def make_nozzle(y_ctr):
-        R_FRONT = 0.118
-        R_REAR  = 0.096
-        Z_CTR   = 0.048
+        # Housing profile stations (X, radius). Rear = smaller (converging nozzle look).
+        R_HOUSE = 0.170    # housing front (blends with engine bay)
+        R_MID   = 0.148    # nozzle mid
+        R_LIP   = 0.130    # nozzle lip (outer rim of exit)
+        R_HOT   = 0.108    # inner exhaust ring (visible glow)
+        Z_CTR   = 0.060
 
-        pts_f = ellipse_pts(N_NOZ, R_FRONT, R_FRONT * 0.82, y_ctr, Z_CTR)
-        pts_r = ellipse_pts(N_NOZ, R_REAR,  R_REAR  * 0.72, y_ctr, Z_CTR)
+        # Outer housing: 3-ring loft
+        p_house = ellipse_pts(N_NOZ, R_HOUSE, R_HOUSE * 0.90, y_ctr, Z_CTR)
+        p_mid   = ellipse_pts(N_NOZ, R_MID,   R_MID   * 0.86, y_ctr, Z_CTR)
+        p_lip   = ellipse_pts(N_NOZ, R_LIP,   R_LIP   * 0.80, y_ctr, Z_CTR)
 
-        r_f = add_ring(bm, -2.96, pts_f)
-        r_r = add_ring(bm, -3.40, pts_r)
+        r_h = add_ring(bm_out, -2.30, p_house)
+        r_m = add_ring(bm_out, -2.70, p_mid)
+        r_l = add_ring(bm_out, -2.95, p_lip)
+        close_strip(bm_out, r_h, r_m)
+        close_strip(bm_out, r_m, r_l)
 
-        close_strip(bm, r_f, r_r)
+        # Rim closer: connect lip to inner-hot-ring position (small annular face)
+        p_hot_outer = ellipse_pts(N_NOZ, R_HOT, R_HOT * 0.80, y_ctr, Z_CTR)
+        r_ho = add_ring(bm_out, -2.97, p_hot_outer)
+        close_strip(bm_out, r_l, r_ho)
 
-        # Rear disc
-        cv = bm.verts.new((-3.40, y_ctr, Z_CTR))
-        fan_tip(bm, cv, r_r)
+        # Inner exhaust cavity — recessed deep dark chamber with orange emissive rim
+        p_hot_in = ellipse_pts(N_NOZ, R_HOT * 0.98, R_HOT * 0.78, y_ctr, Z_CTR)
+        p_deep   = ellipse_pts(N_NOZ, R_HOT * 0.55, R_HOT * 0.45, y_ctr, Z_CTR)
+        r_hi = add_ring(bm_in, -2.98, p_hot_in)
+        r_d  = add_ring(bm_in, -3.15, p_deep)
+        close_strip(bm_in, r_hi, r_d)
 
-    make_nozzle(+0.220)
-    make_nozzle(-0.220)
+        # Deep-end disc (fully closed hot core)
+        cv = bm_in.verts.new((-3.20, y_ctr, Z_CTR))
+        fan_tip(bm_in, cv, r_d)
 
-    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    make_nozzle(+0.230)
+    make_nozzle(-0.230)
 
-    me = bpy.data.meshes.new('noz_me')
-    bm.to_mesh(me)
-    bm.free()
-    for p in me.polygons:
+    bmesh.ops.recalc_face_normals(bm_out, faces=bm_out.faces)
+    bmesh.ops.recalc_face_normals(bm_in,  faces=bm_in.faces)
+
+    me_out = bpy.data.meshes.new('noz_out_me')
+    bm_out.to_mesh(me_out)
+    bm_out.free()
+    for p in me_out.polygons:
         p.use_smooth = True
 
-    ob = bpy.data.objects.new('Nozzles', me)
-    bpy.context.collection.objects.link(ob)
-    ob.data.materials.append(M_ORANGE)
-    print(f'[VAN] Nozzles: {len(me.vertices)}v {len(me.polygons)}f')
-    return ob
+    me_in = bpy.data.meshes.new('noz_in_me')
+    bm_in.to_mesh(me_in)
+    bm_in.free()
+    for p in me_in.polygons:
+        p.use_smooth = True
+
+    ob_out = bpy.data.objects.new('NozzleHousing', me_out)
+    bpy.context.collection.objects.link(ob_out)
+    ob_out.data.materials.append(M_ARMOR)     # gunmetal exterior
+
+    ob_in = bpy.data.objects.new('NozzleExhaust', me_in)
+    bpy.context.collection.objects.link(ob_in)
+    ob_in.data.materials.append(M_ORANGE)     # deep hot glow only
+
+    print(f'[VAN] NozzleHousing: {len(me_out.vertices)}v {len(me_out.polygons)}f')
+    print(f'[VAN] NozzleExhaust: {len(me_in.vertices)}v {len(me_in.polygons)}f')
+    return ob_out, ob_in
 
 
 # ── AIR INTAKES ──────────────────────────────────────────────────────────────
-# DSI-style side intakes below fuselage mid-line.
+# Side-mounted intakes on fuselage shoulder — positioned high enough to be
+# readable from top-down camera. Deep cavity with visible dark inner duct.
+# 8-point smooth trapezoidal opening (was 6-point).
 
 def build_intakes():
     bm = bmesh.new()
 
-    # Intake lip cross-section: 6-point trapezoidal shape
-    # Two intakes, mirrored in Y
-
     def make_intake(side):
         s  = side
-        CY = s * 0.400   # Y center
-        CZ = -0.035      # Z center (below mid-line)
-        W  = 0.190       # half-width
-        H  = 0.130       # half-height
+        # Position: fuselage upper-shoulder, aft of cockpit, ahead of wing root.
+        CY = s * 0.470    # Y center — on fuselage shoulder (fuselage ry at x=0.30 ≈ 0.500)
+        CZ = 0.05         # Z center — sits above mid-line, visible from top
+        W  = 0.150        # half-width
+        H  = 0.110        # half-height
 
-        # 6-point lip profile (outer shape of intake duct)
+        # 8-point smooth D-shaped intake profile (top-outer canted, bottom flat)
         def duct_pts(x, scale=1.0):
             w = W * scale
             h = H * scale
+            # Right side (s=+1): opening faces +Y outward
             return [
-                (CY,          CZ + h),          # top center
-                (CY + s*w,    CZ + h*0.55),      # top outer
-                (CY + s*w,    CZ - h*0.50),      # bot outer
-                (CY,          CZ - h),           # bot center
-                (CY - s*w*0.3, CZ - h*0.50),     # bot inner
-                (CY - s*w*0.3, CZ + h*0.55),     # top inner
+                (CY,             CZ + h),           # top center
+                (CY + s*w*0.85,  CZ + h*0.75),      # top-outer canted
+                (CY + s*w,       CZ + h*0.20),      # outer upper
+                (CY + s*w,       CZ - h*0.40),      # outer lower
+                (CY + s*w*0.75,  CZ - h*0.85),      # bottom-outer canted
+                (CY,             CZ - h),           # bottom center
+                (CY - s*w*0.20,  CZ - h*0.60),      # inner lower
+                (CY - s*w*0.20,  CZ + h*0.60),      # inner upper
             ]
 
-        lip_x  = 0.64
-        duct_x = -0.28
+        # Deep cavity: lip → duct-interior → deep dark end (0.80 units back)
+        lip_x     = 0.35     # opening front (behind cockpit)
+        duct_mid  = 0.05
+        deep_x    = -0.45    # deep interior recess
 
-        lip_ring  = add_ring(bm, lip_x,  duct_pts(lip_x))
-        duct_ring = add_ring(bm, duct_x, duct_pts(duct_x, scale=0.82))
+        lip_ring   = add_ring(bm, lip_x,    duct_pts(lip_x,    scale=1.00))
+        duct_ring1 = add_ring(bm, duct_mid, duct_pts(duct_mid, scale=0.88))
+        duct_ring2 = add_ring(bm, deep_x,   duct_pts(deep_x,   scale=0.72))
 
         bm.verts.ensure_lookup_table()
-        close_strip(bm, lip_ring, duct_ring)
+        close_strip(bm, lip_ring,   duct_ring1)
+        close_strip(bm, duct_ring1, duct_ring2)
 
-        # Outer lip frame (thin band around opening)
-        outer_pts = duct_pts(lip_x, scale=1.06)
-        outer_ring = add_ring(bm, lip_x + 0.025, outer_pts)
+        # External lip frame — thin raised bevel around the opening.
+        outer_ring = add_ring(bm, lip_x + 0.030, duct_pts(lip_x, scale=1.08))
         close_strip(bm, lip_ring, outer_ring)
 
-        # Close duct exit
-        exit_cv = bm.verts.new((duct_x, CY, CZ))
-        fan_tip(bm, exit_cv, duct_ring)
+        # Close deep duct exit — dark inner surface visible through opening
+        exit_cv = bm.verts.new((deep_x - 0.02, CY, CZ))
+        fan_tip(bm, exit_cv, duct_ring2)
 
     make_intake(+1)
     make_intake(-1)
@@ -913,8 +971,8 @@ t_geom = time.time()
 ob_fuse                 = build_fuselage()
 ob_wings                = build_wings()
 ob_fins                 = build_fins()
-ob_canopy, ob_canframe  = build_canopy()      # now returns canopy + separate metallic frame
-ob_nozzles              = build_nozzles()
+ob_canopy, ob_canframe  = build_canopy()          # canopy + separate metallic frame
+ob_nozhouse, ob_nozexh  = build_nozzles()         # housing (gunmetal) + inner cavity (orange)
 ob_intakes              = build_intakes()
 # LE accents removed — user directive: no neon strip on wings.
 
@@ -923,7 +981,8 @@ print(f'[VAN] Geometry built in {time.time()-t_geom:.1f}s')
 # ── APPLY BEVEL MODIFIERS ────────────────────────────────────────────────────
 # Micro-bevel sharpens silhouette edges.
 
-for ob in [ob_fuse, ob_wings, ob_fins, ob_canopy, ob_canframe, ob_nozzles, ob_intakes]:
+for ob in [ob_fuse, ob_wings, ob_fins, ob_canopy, ob_canframe,
+           ob_nozhouse, ob_nozexh, ob_intakes]:
     bev = ob.modifiers.new('Bevel', 'BEVEL')
     bev.width = 0.014
     bev.segments = 3
