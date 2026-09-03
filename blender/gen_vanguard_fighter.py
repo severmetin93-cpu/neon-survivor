@@ -1617,26 +1617,36 @@ scene.render.film_transparent                  = True
 scene.view_settings.view_transform             = 'AgX'
 scene.view_settings.look                       = 'AgX - Medium High Contrast'
 
-OUT_PATH = os.path.join(BAKED, 'vanguard_00.png')
-scene.render.filepath = OUT_PATH
+# ── MULTI-FRAME RENDER PIPELINE ──────────────────────────────────────────────
+# Parent every mesh to a single Empty (VanguardRoot) so we can rotate the
+# entire aircraft as one rigid body between renders. Bevel/WeightedNormal
+# modifiers remain applied per-object.
+#
+# NORVYX 8-angle convention (this project): frame_idx * 45° CCW around +Z.
+#   Frame 0: nose → screen bottom  (base gameplay pose)
+#   Frame 1: nose → screen bottom-right
+#   Frame 2: nose → screen right
+#   Frame 3: nose → screen top-right
+#   Frame 4: nose → screen top      (180° opposite of frame 0)
+#   Frame 5: nose → screen top-left
+#   Frame 6: nose → screen left
+#   Frame 7: nose → screen bottom-left
+#
+# Frames rendered are controlled by env var FRAMES (comma-separated indices).
+# Default: "0,4" for the two-angle pipeline test.
 
-print(f'[VAN] Rendering → {OUT_PATH}')
-t_render = time.time()
-bpy.ops.render.render(write_still=True)
-elapsed = time.time() - t_render
+bpy.ops.object.empty_add(location=(0.0, 0.0, 0.0))
+root_empty = bpy.context.object
+root_empty.name = 'VanguardRoot'
+for ob in list(bpy.data.objects):
+    if ob.type == 'MESH':
+        ob.parent = root_empty
 
-print(f'[VAN] Render done: {elapsed:.1f}s → {OUT_PATH}')
-if os.path.exists(OUT_PATH):
-    size_kb = os.path.getsize(OUT_PATH) // 1024
-    print(f'[VAN] File size: {size_kb} KB')
-else:
-    print('[VAN] ERROR: output file not found!')
-    sys.exit(1)
+FRAMES_ENV = os.environ.get('FRAMES', '0,4')
+FRAMES = [int(x.strip()) for x in FRAMES_ENV.split(',') if x.strip()]
+print(f'[VAN] Rendering frames: {FRAMES}')
 
-# ── QUALITY REPORT ───────────────────────────────────────────────────────────
-# Triangle count uses the evaluated (post-modifier) mesh from the depsgraph so
-# that bevel/weighted-normal contributions are included.
-
+# Pre-compute geometry stats (evaluated mesh, post-modifier) — same for all frames.
 deps = bpy.context.evaluated_depsgraph_get()
 mesh_count = 0
 tri_count  = 0
@@ -1654,16 +1664,41 @@ for ob in bpy.data.objects:
         tri_count += max(0, len(poly.vertices) - 2)
     eval_ob.to_mesh_clear()
 
+frame_results = []
+
+for frame_idx in FRAMES:
+    angle_deg = frame_idx * 45.0
+    root_empty.rotation_euler[2] = math.radians(angle_deg)
+    bpy.context.view_layer.update()
+
+    OUT_PATH = os.path.join(BAKED, f'vanguard_{frame_idx:02d}.png')
+    scene.render.filepath = OUT_PATH
+    print(f'[VAN] Rendering frame {frame_idx:02d} (Z rot {angle_deg}°) → {OUT_PATH}')
+
+    t_render = time.time()
+    bpy.ops.render.render(write_still=True)
+    elapsed = time.time() - t_render
+
+    if not os.path.exists(OUT_PATH):
+        print(f'[VAN] ERROR: frame {frame_idx:02d} output missing!')
+        sys.exit(1)
+
+    size_kb = os.path.getsize(OUT_PATH) // 1024
+    print(f'[VAN] Frame {frame_idx:02d} done: {elapsed:.1f}s → {size_kb} KB')
+    frame_results.append((frame_idx, angle_deg, elapsed, size_kb, OUT_PATH))
+
+# ── QUALITY REPORT ───────────────────────────────────────────────────────────
 print('')
 print('══════════════════════════════════════════════════════════════')
-print('  QUALITY REPORT — VANGUARD_00 FINAL_TEST')
+print('  QUALITY REPORT — VANGUARD MULTI-FRAME PIPELINE')
 print('══════════════════════════════════════════════════════════════')
 print(f'  Mesh objects   : {mesh_count}')
 print(f'  Vertices       : {vert_count}')
 print(f'  Triangles      : {tri_count}')
-print(f'  Render time    : {elapsed:.1f}s')
 print(f'  Resolution     : {scene.render.resolution_x}×{scene.render.resolution_y}')
 print(f'  Samples (max)  : {scene.cycles.samples} (adaptive)')
-print(f'  Output size    : {size_kb} KB')
-print(f'  Output path    : {OUT_PATH}')
+print(f'  Ortho scale    : {bpy.context.scene.camera.data.ortho_scale}')
+print(f'  Frames rendered: {[f[0] for f in frame_results]}')
+for (idx, deg, sec, kb, path) in frame_results:
+    print(f'    frame_{idx:02d} (Z={deg}°): {sec:.1f}s, {kb} KB, {path}')
 print('══════════════════════════════════════════════════════════════')

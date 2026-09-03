@@ -1,17 +1,23 @@
-name: NORVYX Vanguard Fighter — Single Frame Test
+name: NORVYX Vanguard Fighter — Two-Frame Pipeline Test
 
 on:
   workflow_dispatch:
+    inputs:
+      frames:
+        description: "Comma-separated frame indices (0..7, 45° increments CCW)"
+        required: false
+        default: "0,4"
 
 env:
   BLENDER_URL: "https://download.blender.org/release/Blender4.2/blender-4.2.0-linux-x64.tar.xz"
   BLENDER_DIR: "blender-4.2.0-linux-x64"
+  FRAMES: ${{ github.event.inputs.frames || '0,4' }}
 
 jobs:
   render:
-    name: "Render vanguard_00 — fighter prototype"
+    name: "Render vanguard 00 + 04 — pipeline test"
     runs-on: ubuntu-22.04
-    timeout-minutes: 25
+    timeout-minutes: 45
 
     steps:
       - uses: actions/checkout@v4
@@ -30,49 +36,119 @@ jobs:
           tar xf blender.tar.xz
           echo "BLENDER_BIN=${GITHUB_WORKSPACE}/${{ env.BLENDER_DIR }}/blender" >> $GITHUB_ENV
 
-      - name: Render vanguard_00 (2048×2048 RGBA)
+      - name: Render vanguard frames [${{ env.FRAMES }}] (2048×2048 RGBA)
         run: |
-          echo "Running fighter generator..."
+          echo "Rendering frames: ${FRAMES}"
           START=$(date +%s)
           xvfb-run -a ${BLENDER_BIN} -b \
             --python blender/gen_vanguard_fighter.py
           END=$(date +%s)
-          echo "Render time: $((END-START))s"
-          ls -lh baked/vanguard_00.png
+          echo "Total render time: $((END-START))s"
+          ls -lh baked/vanguard_*.png
 
-      - name: Measure opaque fill (Pillow)
+      - name: Verify each frame (Pillow — resolution, alpha, bbox, opacity, centering)
         run: |
           python3 - <<'PYEOF'
-          import os
+          import os, glob
           from PIL import Image
 
-          path = 'baked/vanguard_00.png'
-          img  = Image.open(path).convert('RGBA')
-          w, h = img.size
-          alpha = list(img.getchannel('A').getdata())
-          opaque = sum(1 for a in alpha if a > 10)
-          pct    = opaque * 100.0 / (w * h)
-          kb     = os.path.getsize(path) // 1024
-          print(f'vanguard_00: {w}x{h} | {kb}KB | opaque={pct:.1f}%')
-          if pct < 5:
-              print('WARNING: very low fill — ship may be off-frame or invisible')
-          elif pct > 65:
-              print('WARNING: fill very high — ship may be cropped or too large')
-          else:
-              print('Fill looks reasonable — download artifact for visual check')
+          frames_env = os.environ.get('FRAMES', '0,4')
+          indices = [int(x.strip()) for x in frames_env.split(',') if x.strip()]
+
+          any_fail = False
+          for idx in indices:
+              path = f'baked/vanguard_{idx:02d}.png'
+              if not os.path.exists(path):
+                  print(f'[FAIL] frame {idx:02d}: file missing → {path}')
+                  any_fail = True
+                  continue
+
+              img = Image.open(path)
+              mode = img.mode
+              img = img.convert('RGBA')
+              w, h = img.size
+              alpha = img.getchannel('A')
+              adata = list(alpha.getdata())
+              opaque_mask = [a > 10 for a in adata]
+              opaque = sum(opaque_mask)
+              total = w * h
+              pct = opaque * 100.0 / total
+              kb = os.path.getsize(path) // 1024
+
+              bbox = alpha.getbbox()  # (l, t, r, b) of non-zero alpha
+              if bbox:
+                  bl, bt, br, bb = bbox
+                  bw, bh = br - bl, bb - bt
+                  cx = (bl + br) / 2.0
+                  cy = (bt + bb) / 2.0
+                  off_x = cx - w / 2.0
+                  off_y = cy - h / 2.0
+
+                  # Edge clipping: count opaque pixels touching frame border
+                  top_touch  = sum(1 for x in range(w) if adata[0 * w + x] > 10)
+                  bot_touch  = sum(1 for x in range(w) if adata[(h - 1) * w + x] > 10)
+                  left_touch = sum(1 for y in range(h) if adata[y * w + 0] > 10)
+                  right_touch= sum(1 for y in range(h) if adata[y * w + (w - 1)] > 10)
+                  clip_total = top_touch + bot_touch + left_touch + right_touch
+              else:
+                  bw = bh = 0
+                  off_x = off_y = 0
+                  top_touch = bot_touch = left_touch = right_touch = clip_total = 0
+
+              print('')
+              print(f'── vanguard_{idx:02d}.png ──')
+              print(f'  file size     : {kb} KB')
+              print(f'  resolution    : {w}×{h}')
+              print(f'  color mode    : {mode} (verified RGBA)')
+              print(f'  opaque pixels : {opaque}/{total} ({pct:.2f}%)')
+              if bbox:
+                  print(f'  bounding box  : L={bl} T={bt} R={br} B={bb}  ({bw}×{bh})')
+                  print(f'  center offset : dx={off_x:+.1f} dy={off_y:+.1f} px from frame centre')
+              print(f'  edge clipping : top={top_touch} bot={bot_touch} '
+                    f'left={left_touch} right={right_touch}')
+
+              # Sanity checks
+              status = []
+              if mode not in ('RGBA', 'LA'):
+                  status.append(f'FAIL non-RGBA mode ({mode})')
+                  any_fail = True
+              if pct < 5:
+                  status.append('FAIL too little content (<5%)')
+                  any_fail = True
+              elif pct > 65:
+                  status.append('WARN very high fill (>65%)')
+              if clip_total > 20:
+                  status.append(f'FAIL edge clipping ({clip_total} border px)')
+                  any_fail = True
+              if abs(off_x) > 80 or abs(off_y) > 80:
+                  status.append(f'WARN aircraft off-centre (dx={off_x:+.0f} dy={off_y:+.0f})')
+              if not status:
+                  status.append('OK — resolution, alpha, bbox, centering, no clipping')
+              for s in status:
+                  print(f'  → {s}')
+
+          if any_fail:
+              print('\n=== OVERALL: FAIL — see per-frame diagnostics above ===')
+              raise SystemExit(1)
+          print('\n=== OVERALL: PASS — all frames meet spec ===')
           PYEOF
 
-      - name: Upload fighter test frame
+      - name: Upload vanguard frames
         uses: actions/upload-artifact@v4
         with:
-          name: norvyx-vanguard-fighter-test
-          path: baked/vanguard_00.png
+          name: norvyx-vanguard-two-frame-test
+          path: baked/vanguard_*.png
           if-no-files-found: error
           retention-days: 7
 
       - name: Summary
         if: always()
         run: |
-          echo "## NORVYX Vanguard Fighter — Prototype Render" >> $GITHUB_STEP_SUMMARY
+          echo "## NORVYX Vanguard — Two-Frame Pipeline Test" >> $GITHUB_STEP_SUMMARY
+          echo "Frames: \`${FRAMES}\`" >> $GITHUB_STEP_SUMMARY
           echo "Script: \`blender/gen_vanguard_fighter.py\`" >> $GITHUB_STEP_SUMMARY
-          ls -lh baked/vanguard_00.png 2>/dev/null >> $GITHUB_STEP_SUMMARY || echo "RENDER FAILED" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          ls -lh baked/vanguard_*.png 2>/dev/null >> $GITHUB_STEP_SUMMARY \
+            || echo "RENDER FAILED — no output PNGs" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
