@@ -82,10 +82,10 @@ M_CARBON  = mkmat('carbon',  (0.07, 0.08, 0.10), metal=0.55, rough=0.36)   # com
 M_PANEL   = mkmat('panel',   (0.13, 0.14, 0.17), metal=0.28, rough=0.48)   # matte composite panel (nose/deck)
 M_FRAME   = mkmat('frame',   (0.09, 0.10, 0.12), metal=0.88, rough=0.24)   # canopy metallic frame
 M_GLASS   = mkmat('glass',   (0.022, 0.030, 0.048), metal=0.12, rough=0.04) # dark smoked canopy — high spec
-M_CYAN    = mkmat('cyan',    (0.00, 0.08, 0.15), metal=0.14, rough=0.20,
-                  em=(0.00, 0.60, 1.00), ems=1.4)                          # small nav accent only (dimmed)
-M_ORANGE  = mkmat('orange',  (0.08, 0.05, 0.02), metal=0.90, rough=0.16,
-                  em=(1.00, 0.28, 0.02), ems=2.2)                          # nozzle interior only (dimmed)
+M_CYAN    = mkmat('cyan',    (0.00, 0.06, 0.12), metal=0.14, rough=0.22,
+                  em=(0.00, 0.55, 1.00), ems=0.7)                          # nav accent minimum
+M_ORANGE  = mkmat('orange',  (0.06, 0.04, 0.02), metal=0.90, rough=0.18,
+                  em=(1.00, 0.32, 0.05), ems=1.2)                          # nozzle interior only (minimum)
 M_INTAKE  = mkmat('dark_intake', (0.02, 0.025, 0.035), metal=0.55, rough=0.55)  # dark intake interior
 
 print('[VAN] Materials created')
@@ -311,28 +311,28 @@ def build_wings():
     N_CHORD = 10  # chordwise sections (LE → TE)    — was 7,  smoother airfoil
 
     # Span stations: (x_LE, x_TE, y_pos, thickness_root_fraction)
-    # Cranked wing planform (F-22 class):
-    #   - Root chord thick (0.170) for structural believability
-    #   - LE sweep changes at ~mid-span: aggressive inboard (~48°), slightly relaxed outboard
-    #   - Tip taper is sharp and fighter-like (not a delta)
-    #   - TE has slight forward sweep, split by material zone into flap+aileron regions
-    # Wingspan 2.05 half (4.10 total). Root x_LE=0.60 sits under mid-cockpit-to-body.
+    # Trapezoidal moderate-sweep wing (NOT delta):
+    #   - Wider root chord (1.68 units) for structural mass at root
+    #   - Slightly shorter wingspan (half=1.92, was 2.05) → more square planform
+    #   - LE sweep moderate (~42° inboard, ~38° outboard)
+    #   - Tip is BLUNTED (chord 0.32) — NOT sharp triangle
+    #   - Thicker root (0.190), moderate taper to tip (0.014)
     SPAN = [
         # x_LE    x_TE    y       thick
-        ( 0.62,  -0.86,  0.44,  0.170),   # root (buries into blended body; thickened)
-        ( 0.50,  -0.93,  0.60,  0.150),
-        ( 0.32,  -1.01,  0.80,  0.128),
-        ( 0.08,  -1.10,  1.02,  0.106),
-        (-0.18,  -1.18,  1.24,  0.084),   # inboard LE segment ends here (~48° sweep)
-        (-0.38,  -1.24,  1.44,  0.066),   # crank point — LE inflection
-        (-0.58,  -1.30,  1.62,  0.052),   # outboard LE segment (~44° sweep)
-        (-0.78,  -1.35,  1.78,  0.038),
-        (-0.94,  -1.38,  1.90,  0.026),
-        (-1.06,  -1.40,  1.99,  0.016),
-        (-1.14,  -1.40,  2.05,  0.008),   # sharp fighter-like tip
+        ( 0.70,  -0.98,  0.44,  0.190),   # root — wide chord (1.68), very thick
+        ( 0.58,  -1.02,  0.60,  0.168),
+        ( 0.42,  -1.06,  0.78,  0.146),
+        ( 0.22,  -1.11,  0.98,  0.122),
+        ( 0.00,  -1.16,  1.18,  0.098),   # inboard segment ends (~42° LE sweep)
+        (-0.20,  -1.20,  1.36,  0.076),   # crank point — LE inflection
+        (-0.38,  -1.24,  1.52,  0.058),   # outboard segment (~38° LE sweep, more relaxed)
+        (-0.54,  -1.27,  1.66,  0.044),
+        (-0.68,  -1.30,  1.78,  0.032),
+        (-0.80,  -1.32,  1.86,  0.022),
+        (-0.90,  -1.34,  1.92,  0.014),   # BLUNT tip — chord 0.44, NOT sharp triangle
     ]
-    # Control-surface split index: rear 30% of chord = flap/aileron zone
-    N_CS_START = int(N_CHORD * 0.70)  # face index at which control surface begins
+    # Control-surface split index: rear 28% of chord = flap/aileron zone
+    N_CS_START = int(N_CHORD * 0.72)  # face index at which control surface begins
 
     cs_face_indices = []   # indices of control-surface faces for material assignment
 
@@ -467,7 +467,7 @@ def build_wings():
         cy = sum(ys) / len(ys)
         # Find span station bracket by |y|
         ay = abs(cy)
-        if ay < 0.40 or ay > 2.06:
+        if ay < 0.40 or ay > 1.93:
             continue
         # Interpolate LE/TE X at this Y from SPAN
         for k in range(len(SPAN) - 1):
@@ -499,18 +499,18 @@ def build_fins():
     N_CHOR = 6     # chordwise sections (was 5)
 
     # Height stations: (x_LE, x_TE, z_local, thickness).
-    # Thicker root (0.140, was 0.110) for structural believability.
-    # Root fairing gusset (build_fin_root_fairings) provides smooth blend to fuselage.
+    # Thick root (0.160) for real structural mass; smooth taper to sharp tip.
+    # Root fairing gusset (build_fin_root_fairings) blends fin base to fuselage.
     FIN_STA = [
         # x_LE    x_TE    z_loc  thick
-        (-1.85,  -2.75,  0.00,  0.140),   # root — thick, blends into fuselage
-        (-1.94,  -2.75,  0.14,  0.124),
-        (-2.03,  -2.75,  0.28,  0.106),
-        (-2.13,  -2.75,  0.42,  0.088),
-        (-2.22,  -2.75,  0.54,  0.070),
-        (-2.30,  -2.75,  0.64,  0.054),
-        (-2.37,  -2.75,  0.72,  0.038),
-        (-2.43,  -2.75,  0.78,  0.024),
+        (-1.85,  -2.75,  0.00,  0.160),   # root — very thick, blends into fuselage
+        (-1.93,  -2.75,  0.14,  0.140),
+        (-2.02,  -2.75,  0.28,  0.118),
+        (-2.11,  -2.75,  0.42,  0.096),
+        (-2.20,  -2.75,  0.54,  0.076),
+        (-2.28,  -2.75,  0.64,  0.058),
+        (-2.35,  -2.75,  0.72,  0.042),
+        (-2.42,  -2.75,  0.78,  0.026),
         (-2.48,  -2.75,  0.82,  0.010),   # tip
     ]
 
@@ -635,27 +635,27 @@ def build_canopy():
     # fuse_top(x) now defined at module level (shared with fins/frame).
 
     # Canopy stations: (x, Y half-width, Z height above fuselage top).
-    # Compact bubble dome — total length 1.74 units (was 2.96 → too long).
-    # Peak width 0.220, peak height 0.214 → true bubble (width ≈ height).
-    # Sits between X=1.90 (front) and X=0.16 (rear), directly behind short nose.
+    # Wider, shorter, forward-shifted bubble — real fighter cockpit proportions.
+    # Length 1.55 (was 1.74), peak width 0.250 (was 0.220), peak at X=1.15 (was 1.00).
+    # Rounded front curvature — pilot silhouette must read from top-down.
     CAN_STA = [
-        ( 1.90, 0.000, 0.000),   # front tip
-        ( 1.82, 0.052, 0.026),
-        ( 1.70, 0.108, 0.068),
-        ( 1.55, 0.156, 0.118),
-        ( 1.38, 0.190, 0.160),
-        ( 1.20, 0.212, 0.196),
-        ( 1.00, 0.220, 0.214),   # bubble PEAK — pilot position
-        ( 0.80, 0.216, 0.212),
-        ( 0.62, 0.198, 0.188),
-        ( 0.48, 0.166, 0.154),
-        ( 0.36, 0.126, 0.110),
-        ( 0.26, 0.082, 0.064),
-        ( 0.20, 0.036, 0.022),
-        ( 0.16, 0.000, 0.000),   # rear tip
+        ( 2.05, 0.000, 0.000),   # front tip (further forward, closer to nose)
+        ( 1.96, 0.080, 0.042),   # rapid rise → wide, curved front
+        ( 1.85, 0.140, 0.100),
+        ( 1.70, 0.190, 0.164),
+        ( 1.52, 0.228, 0.212),
+        ( 1.32, 0.246, 0.238),
+        ( 1.15, 0.250, 0.244),   # bubble PEAK — wide, tall (width ≈ height)
+        ( 0.98, 0.244, 0.236),
+        ( 0.82, 0.222, 0.212),
+        ( 0.68, 0.184, 0.168),
+        ( 0.56, 0.136, 0.116),
+        ( 0.46, 0.086, 0.066),
+        ( 0.40, 0.038, 0.024),
+        ( 0.36, 0.000, 0.000),   # rear tip
     ]
 
-    N_ARC = 12  # smooth upper arc per station
+    N_ARC = 14  # smoother upper arc per station (was 12)
 
     can_rings = []
 
@@ -799,12 +799,12 @@ def build_nozzles():
     N_NOZ  = 20            # smoother nozzle circumference (was 14)
 
     def petal_pts(n, r, rz_ratio, y_ctr, z_ctr, petal_depth):
-        """Ellipse ring with scalloped radius — alternate vertices slightly indented.
-        Creates the visible petal segmentation of a real fighter nozzle."""
+        """Ellipse ring with scalloped radius — alternate vertices indented.
+        Creates visible petal segmentation of a real fighter thrust-vectoring nozzle."""
         pts = []
         for i in range(n):
             a = PI / 2 + PI2 * i / n
-            # Every 2nd vertex is indented (creates paired petal peaks)
+            # Deeper indent on every 2nd vertex — clearer petal peaks
             scale = 1.0 - (petal_depth if (i % 2 == 1) else 0.0)
             ry = r * scale
             rz = r * rz_ratio * scale
@@ -822,9 +822,9 @@ def build_nozzles():
         # Outer housing: 4-ring loft with petal segmentation on the last 2 rings
         p_house = ellipse_pts(N_NOZ, R_HOUSE, R_HOUSE * 0.90, y_ctr, Z_CTR)
         p_mid   = ellipse_pts(N_NOZ, R_MID,   R_MID   * 0.86, y_ctr, Z_CTR)
-        # Petal ring — visible scalloped segmentation before the lip
-        p_petal = petal_pts(N_NOZ, R_LIP + 0.010, 0.82, y_ctr, Z_CTR, 0.035)
-        p_lip   = petal_pts(N_NOZ, R_LIP,          0.80, y_ctr, Z_CTR, 0.055)
+        # Petal ring — deeper scalloped segmentation (more prominent petals)
+        p_petal = petal_pts(N_NOZ, R_LIP + 0.014, 0.82, y_ctr, Z_CTR, 0.065)
+        p_lip   = petal_pts(N_NOZ, R_LIP,          0.80, y_ctr, Z_CTR, 0.090)
 
         r_h = add_ring(bm_out, -2.30, p_house)
         r_m = add_ring(bm_out, -2.68, p_mid)
@@ -891,14 +891,15 @@ def build_intakes():
 
     def make_intake(side):
         s  = side
-        # Position: fuselage upper-shoulder, aft of cockpit, ahead of wing root.
-        # ENLARGED and DEEPER for readability from top-down camera.
-        CY = s * 0.485    # Y center — slightly further outboard on shoulder
-        CZ = 0.06         # Z center — sits above mid-line
-        W  = 0.185        # half-width  (was 0.150)
-        H  = 0.140        # half-height (was 0.110)
+        # Position: fuselage upper-shoulder — pulled slightly higher and outward
+        # so the cavity opening is clearly visible from the 3/4 elevated camera.
+        CY = s * 0.490    # Y center — outboard on shoulder
+        CZ = 0.10         # Z center — RAISED (was 0.06) — cavity mouth visible from above
+        W  = 0.200        # half-width  (was 0.185)
+        H  = 0.160        # half-height (was 0.140)
 
-        # 8-point smooth D-shaped intake profile (F-22/F-35 style caret intake)
+        # 8-point smooth D-shaped intake profile (F-22/F-35 style caret intake).
+        # The opening is at the LARGEST X (front) and faces forward+outward.
         def duct_pts(x, scale=1.0, y_ctr=None, z_ctr=None):
             w = W * scale
             h = H * scale
@@ -906,42 +907,45 @@ def build_intakes():
             cz = CZ if z_ctr is None else z_ctr
             return [
                 (cy,             cz + h),           # top center
-                (cy + s*w*0.88,  cz + h*0.78),      # top-outer canted (caret peak)
-                (cy + s*w,       cz + h*0.22),      # outer upper
-                (cy + s*w,       cz - h*0.42),      # outer lower
-                (cy + s*w*0.78,  cz - h*0.88),      # bottom-outer canted
+                (cy + s*w*0.90,  cz + h*0.80),      # top-outer canted (caret peak)
+                (cy + s*w,       cz + h*0.24),      # outer upper
+                (cy + s*w,       cz - h*0.44),      # outer lower
+                (cy + s*w*0.80,  cz - h*0.88),      # bottom-outer canted
                 (cy,             cz - h),           # bottom center
-                (cy - s*w*0.22,  cz - h*0.62),      # inner lower
-                (cy - s*w*0.22,  cz + h*0.62),      # inner upper
+                (cy - s*w*0.24,  cz - h*0.64),      # inner lower
+                (cy - s*w*0.24,  cz + h*0.64),      # inner upper
             ]
 
-        # Deeper cavity: lip (front) → duct constriction → deep dark exit (1.10 units back).
-        # Cavity narrows and tilts slightly inward (toward centerline) — realistic diffuser.
-        lip_x     = 0.42     # opening front (behind cockpit)
-        duct_x1   = 0.15
-        duct_x2   = -0.20
-        deep_x    = -0.62    # deeper interior (was -0.45)
+        # Cavity: lip → interior duct → deep dark exit.
+        # Extended forward (lip further ahead) → longer visible cavity from above.
+        lip_x     = 0.55     # opening front (further forward for visibility)
+        duct_x1   = 0.28
+        duct_x2   = 0.00
+        duct_x3   = -0.30
+        deep_x    = -0.70    # deep interior recess
 
-        # Progressive tapering + slight inward Y shift (duct routes toward engine)
+        # Progressive tapering + inward Y shift + slight downward Z (routes to engine)
         lip_ring   = add_ring(bm, lip_x,   duct_pts(lip_x,   scale=1.00))
-        duct_ring1 = add_ring(bm, duct_x1, duct_pts(duct_x1, scale=0.92, y_ctr=s*0.460))
-        duct_ring2 = add_ring(bm, duct_x2, duct_pts(duct_x2, scale=0.80, y_ctr=s*0.410))
-        duct_ring3 = add_ring(bm, deep_x,  duct_pts(deep_x,  scale=0.62, y_ctr=s*0.340, z_ctr=CZ - 0.02))
+        duct_ring1 = add_ring(bm, duct_x1, duct_pts(duct_x1, scale=0.93, y_ctr=s*0.470))
+        duct_ring2 = add_ring(bm, duct_x2, duct_pts(duct_x2, scale=0.82, y_ctr=s*0.420, z_ctr=CZ - 0.010))
+        duct_ring3 = add_ring(bm, duct_x3, duct_pts(duct_x3, scale=0.68, y_ctr=s*0.360, z_ctr=CZ - 0.030))
+        duct_ring4 = add_ring(bm, deep_x,  duct_pts(deep_x,  scale=0.54, y_ctr=s*0.300, z_ctr=CZ - 0.050))
 
         bm.verts.ensure_lookup_table()
         close_strip(bm, lip_ring,   duct_ring1)
         close_strip(bm, duct_ring1, duct_ring2)
         close_strip(bm, duct_ring2, duct_ring3)
+        close_strip(bm, duct_ring3, duct_ring4)
 
-        # External lip frame — raised bevel around the opening (thicker than before).
-        outer_ring1 = add_ring(bm, lip_x + 0.020, duct_pts(lip_x, scale=1.06))
-        outer_ring2 = add_ring(bm, lip_x + 0.045, duct_pts(lip_x, scale=1.12))
+        # External raised lip frame — visible bevel around the opening.
+        outer_ring1 = add_ring(bm, lip_x + 0.022, duct_pts(lip_x, scale=1.05))
+        outer_ring2 = add_ring(bm, lip_x + 0.048, duct_pts(lip_x, scale=1.11))
         close_strip(bm, lip_ring,    outer_ring1)
         close_strip(bm, outer_ring1, outer_ring2)
 
         # Close deep duct exit with a dark disc — reads as engine face far inside
-        exit_cv = bm.verts.new((deep_x - 0.03, s*0.340, CZ - 0.02))
-        fan_tip(bm, exit_cv, duct_ring3)
+        exit_cv = bm.verts.new((deep_x - 0.03, s*0.300, CZ - 0.050))
+        fan_tip(bm, exit_cv, duct_ring4)
 
     make_intake(+1)
     make_intake(-1)
@@ -971,15 +975,15 @@ def build_wing_root_fillet():
     bm = bmesh.new()
 
     # Chord line points along the fillet (from cockpit shoulder → wing LE root).
-    # Runs from x≈1.15 (below canopy peak) → x≈0.60 (wing LE root).
+    # Runs from x≈1.20 (below canopy peak) → x≈0.70 (new wider wing LE root).
     # Y flares from small (0.24) → wide (0.44) meeting wing root.
     LERX = [
         # (x,    y_edge,  z_upper,  z_lower)
-        ( 1.15,  0.24,   0.24,   0.05),   # front — thin at cockpit shoulder
-        ( 1.02,  0.30,   0.23,   0.03),
-        ( 0.88,  0.36,   0.21,   0.02),
-        ( 0.74,  0.40,   0.19,   0.02),
-        ( 0.62,  0.44,   0.18,   0.03),   # meets wing LE root
+        ( 1.20,  0.24,   0.24,   0.05),   # front — thin at cockpit shoulder
+        ( 1.06,  0.30,   0.23,   0.03),
+        ( 0.92,  0.36,   0.21,   0.02),
+        ( 0.80,  0.40,   0.19,   0.02),
+        ( 0.70,  0.44,   0.18,   0.03),   # meets wing LE root
     ]
 
     def make_fillet(side):
@@ -1113,68 +1117,85 @@ def build_dorsal_spine():
     return ob
 
 
-# ── ENGINE HUMPS ─────────────────────────────────────────────────────────────
-# Twin raised nacelle bumps on rear fuselage top — read as engine housings.
-# Positioned above the nozzles, matching the twin engine layout.
+# ── ENGINE NACELLES ──────────────────────────────────────────────────────────
+# Twin engine housings — raised nacelle geometry that WRAPS around the top+side
+# of the rear fuselage, visually splitting the tail into two distinct engines.
 
 def build_engine_humps():
     bm = bmesh.new()
 
-    # Hump profile: (x, y_half_width, z_height_above_fuselage)
-    HUMP = [
-        (-0.90, 0.070, 0.010),
-        (-1.15, 0.098, 0.024),
-        (-1.40, 0.116, 0.036),   # peak
-        (-1.65, 0.116, 0.036),
-        (-1.90, 0.104, 0.030),
-        (-2.10, 0.082, 0.020),
-        (-2.28, 0.052, 0.010),
-        (-2.42, 0.024, 0.004),
+    # Nacelle cross-section stations. Each station defines a partial arc
+    # (from inner-top → outer-side) that sits on the fuselage skin like a saddle.
+    # (x, top_half_width, side_z_span, top_z_offset, side_out_offset)
+    NAC = [
+        (-0.85, 0.075, 0.055, 0.012, 0.008),
+        (-1.10, 0.108, 0.100, 0.028, 0.020),
+        (-1.35, 0.130, 0.135, 0.040, 0.030),   # peak volume
+        (-1.60, 0.132, 0.150, 0.042, 0.036),
+        (-1.85, 0.126, 0.150, 0.038, 0.034),
+        (-2.05, 0.108, 0.130, 0.030, 0.028),
+        (-2.22, 0.084, 0.100, 0.020, 0.018),
+        (-2.35, 0.056, 0.065, 0.010, 0.010),
+        (-2.44, 0.028, 0.030, 0.004, 0.004),
     ]
-    HUMP_Y_CENTER = 0.230   # matches nozzle Y offset
+    Y_CENTER = 0.230   # matches nozzle Y offset
 
-    def make_hump(side):
+    N_ARC = 5   # arc points per station (top-center → outer-side)
+
+    def make_nacelle(side):
         s = side
-        cy = s * HUMP_Y_CENTER
-        top_row  = []   # inner+outer top edge of hump
-        inner    = []   # inner Y (toward centerline)
-        outer    = []   # outer Y (away from centerline)
-
-        for (x, hw, dz) in HUMP:
+        rings = []
+        for (x, hw, sv, dz_top, out) in NAC:
             z_base = fuse_top(x)
-            top_row.append(bm.verts.new((x, cy, z_base + dz)))
-            inner.append(bm.verts.new((x, cy - s * hw, z_base + dz * 0.15)))
-            outer.append(bm.verts.new((x, cy + s * hw, z_base + dz * 0.15)))
+            fh_at_x = fuse_half_width(x)
+            # Arc spans from a=0 (top-center of nacelle) to a=π/2 (outer side)
+            # Position on fuselage: nacelle top center at (Y=s*Y_CENTER, Z=z_base+dz_top)
+            # Outer edge sits on fuselage skin side (Y=s*(fh_at_x+out), Z=z_base-sv*0.4)
+            row = []
+            for k in range(N_ARC):
+                a = PI / 2 * k / (N_ARC - 1)   # 0 → π/2
+                # Elliptical arc: y offset from center, z offset above skin
+                dy = hw * math.sin(a)
+                dz = dz_top * math.cos(a) + sv * math.sin(a) * 0.0   # top-heavy
+                # But we also want it to reach outer side at a=π/2
+                # Blend: at a=0 dy=0 (top ctr); at a=π/2 dy=hw+out (outer side)
+                if k == N_ARC - 1:
+                    dy = hw + out
+                    dz = -sv * 0.35
+                y = s * Y_CENTER + s * dy
+                z = z_base + dz
+                row.append(bm.verts.new((x, y, z)))
+            rings.append(row)
 
         bm.verts.ensure_lookup_table()
 
-        n = len(HUMP)
-        for i in range(n - 1):
-            try:
-                bm.faces.new([inner[i], top_row[i], top_row[i+1], inner[i+1]])
-            except Exception:
-                pass
-            try:
-                bm.faces.new([top_row[i], outer[i], outer[i+1], top_row[i+1]])
-            except Exception:
-                pass
+        # Longitudinal strip faces
+        for i in range(len(NAC) - 1):
+            for k in range(N_ARC - 1):
+                try:
+                    bm.faces.new([
+                        rings[i][k], rings[i+1][k],
+                        rings[i+1][k+1], rings[i][k+1],
+                    ])
+                except Exception:
+                    pass
 
-    make_hump(+1)
-    make_hump(-1)
+    make_nacelle(+1)
+    make_nacelle(-1)
 
     bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=0.003)
     bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
 
-    me = bpy.data.meshes.new('humps_me')
+    me = bpy.data.meshes.new('nacelles_me')
     bm.to_mesh(me)
     bm.free()
     for p in me.polygons:
         p.use_smooth = True
 
-    ob = bpy.data.objects.new('EngineHumps', me)
+    ob = bpy.data.objects.new('EngineNacelles', me)
     bpy.context.collection.objects.link(ob)
     ob.data.materials.append(M_ARMOR2)
-    print(f'[VAN] EngineHumps: {len(me.vertices)}v {len(me.polygons)}f')
+    print(f'[VAN] EngineNacelles: {len(me.vertices)}v {len(me.polygons)}f')
     return ob
 
 
@@ -1186,12 +1207,13 @@ def build_cockpit_deck():
     bm = bmesh.new()
 
     # (x, half_width, extra_z)
+    # Canopy rear tip now X=0.36 → deck starts just behind at X=0.32.
     DECK = [
-        ( 0.30, 0.100, 0.006),   # just behind canopy rear (X=0.16)
-        ( 0.22, 0.088, 0.010),
-        ( 0.16, 0.070, 0.014),
-        ( 0.08, 0.058, 0.012),
-        ( 0.00, 0.062, 0.010),   # merges into spine start
+        ( 0.32, 0.108, 0.006),   # just behind canopy rear
+        ( 0.22, 0.092, 0.012),
+        ( 0.12, 0.074, 0.016),
+        ( 0.02, 0.062, 0.014),
+        (-0.06, 0.062, 0.010),   # merges into spine start
     ]
 
     left  = []
@@ -1347,7 +1369,7 @@ ob_nozhouse, ob_nozexh  = build_nozzles()         # housing (gunmetal) + inner c
 ob_intakes              = build_intakes()
 ob_lerx                 = build_wing_root_fillet()  # LERX / wing-root fillet
 ob_spine                = build_dorsal_spine()      # raised dorsal ridge behind canopy
-ob_humps                = build_engine_humps()      # twin nacelle bumps on rear top
+ob_humps                = build_engine_humps()      # full twin engine nacelle wraps (top+side)
 ob_deck                 = build_cockpit_deck()      # avionics fairing behind canopy
 ob_finfair              = build_fin_root_fairings() # triangular gussets at fin base
 # LE accents removed — user directive: no neon strip on wings.
@@ -1406,10 +1428,13 @@ def add_light(name, loc, energy, color, size=5):
 
 
 def setup_lights():
-    add_light('Key',      ( 5, -5,  8),  950, (0.55, 0.75, 1.00), 5)
-    add_light('RimBlue', (-4,  4,  5), 1150, (0.00, 0.45, 1.00), 4)
-    add_light('RimMag',  (-2, -4,  3),  900, (1.00, 0.03, 0.35), 4)
-    add_light('Top',      ( 0,  0, 10),  500, (0.35, 0.50, 1.00), 3)
+    # Cool cyan/blue rim keeps the cyberpunk atmosphere, but the body stays
+    # military graphite. Magenta rim is heavily reduced — only a hint.
+    add_light('Key',      ( 5, -5,  8), 1050, (0.62, 0.80, 1.00), 5)
+    add_light('RimBlue', (-4,  4,  5),  900, (0.05, 0.50, 1.00), 4)
+    add_light('RimMag',  (-2, -4,  3),  380, (1.00, 0.10, 0.40), 4)   # softer accent
+    add_light('Top',      ( 0,  0, 10),  520, (0.42, 0.58, 1.00), 3)
+    add_light('FillWarm', ( 3,  3, -4),  260, (1.00, 0.55, 0.30), 4)  # subtle warm underfill
 
 
 setup_world()
