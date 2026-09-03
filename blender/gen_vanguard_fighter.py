@@ -889,7 +889,7 @@ def setup_lights():
 
 
 setup_world()
-setup_camera(3.5)
+setup_camera(6.5)
 setup_lights()
 
 print('[VAN] Scene setup complete')
