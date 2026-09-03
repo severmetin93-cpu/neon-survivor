@@ -73,17 +73,20 @@ def mkmat(name, base, metal=0.82, rough=0.24, em=None, ems=0.0):
 
 
 # Modern military palette. Body is dark gunmetal / graphite composite, not neon.
-M_ARMOR   = mkmat('armor',   (0.18, 0.20, 0.24), metal=0.75, rough=0.32)   # gunmetal fuselage
-M_DARK    = mkmat('dark',    (0.05, 0.06, 0.08), metal=0.70, rough=0.42)   # graphite (tails, dark panels)
-M_CARBON  = mkmat('carbon',  (0.07, 0.08, 0.10), metal=0.55, rough=0.36)
-M_PANEL   = mkmat('panel',   (0.11, 0.12, 0.14), metal=0.15, rough=0.55)   # matte composite panel
-M_FRAME   = mkmat('frame',   (0.08, 0.09, 0.11), metal=0.85, rough=0.28)   # canopy metallic frame
-M_GLASS   = mkmat('glass',   (0.020, 0.028, 0.045), metal=0.10, rough=0.05)  # dark smoked canopy (no emission)
-M_CYAN    = mkmat('cyan',    (0.00, 0.11, 0.20), metal=0.14, rough=0.18,
-                  em=(0.00, 0.65, 1.00), ems=2.5)                          # small accent only
-M_ORANGE  = mkmat('orange',  (0.10, 0.06, 0.02), metal=0.90, rough=0.14,
-                  em=(1.00, 0.22, 0.00), ems=3.0)                          # nozzle interior only
-M_INTAKE  = mkmat('dark_intake', (0.03, 0.04, 0.06), metal=0.60, rough=0.42)
+# Slight region variance in metallic+roughness gives natural PBR panel differentiation
+# without needing texture maps. Neon is pulled back — used only as tiny accents.
+M_ARMOR   = mkmat('armor',   (0.19, 0.21, 0.25), metal=0.78, rough=0.30)   # main gunmetal fuselage
+M_ARMOR2  = mkmat('armor2',  (0.16, 0.18, 0.22), metal=0.72, rough=0.38)   # engine cover / rear (matte)
+M_DARK    = mkmat('dark',    (0.05, 0.06, 0.08), metal=0.68, rough=0.44)   # graphite (tails, dark panels)
+M_CARBON  = mkmat('carbon',  (0.07, 0.08, 0.10), metal=0.55, rough=0.36)   # composite (control surfaces)
+M_PANEL   = mkmat('panel',   (0.13, 0.14, 0.17), metal=0.28, rough=0.48)   # matte composite panel (nose/deck)
+M_FRAME   = mkmat('frame',   (0.09, 0.10, 0.12), metal=0.88, rough=0.24)   # canopy metallic frame
+M_GLASS   = mkmat('glass',   (0.022, 0.030, 0.048), metal=0.12, rough=0.04) # dark smoked canopy — high spec
+M_CYAN    = mkmat('cyan',    (0.00, 0.08, 0.15), metal=0.14, rough=0.20,
+                  em=(0.00, 0.60, 1.00), ems=1.4)                          # small nav accent only (dimmed)
+M_ORANGE  = mkmat('orange',  (0.08, 0.05, 0.02), metal=0.90, rough=0.16,
+                  em=(1.00, 0.28, 0.02), ems=2.2)                          # nozzle interior only (dimmed)
+M_INTAKE  = mkmat('dark_intake', (0.02, 0.025, 0.035), metal=0.55, rough=0.55)  # dark intake interior
 
 print('[VAN] Materials created')
 
@@ -308,26 +311,30 @@ def build_wings():
     N_CHORD = 10  # chordwise sections (LE → TE)    — was 7,  smoother airfoil
 
     # Span stations: (x_LE, x_TE, y_pos, thickness_root_fraction)
-    # y_pos: half-span at that station. Root buries into blended body (y=0.54 fuselage edge).
-    # Root chord thicker (0.155) → tapers to 0.014 at tip. Wing-root fillet added separately.
-    # Moderate swept wing — NOT a delta wing. F-22-class proportions.
-    # Wingspan 4.10 units (half=2.05, was 2.50). LE sweep ~46°. TE forward sweep ~18°.
-    # Root chord 1.45 (was 1.82). Tip chord 0.28 (was 0.76 → less blocky).
-    # Root x_LE=0.60 → sits under mid-cockpit-to-mid-fuselage.
+    # Cranked wing planform (F-22 class):
+    #   - Root chord thick (0.170) for structural believability
+    #   - LE sweep changes at ~mid-span: aggressive inboard (~48°), slightly relaxed outboard
+    #   - Tip taper is sharp and fighter-like (not a delta)
+    #   - TE has slight forward sweep, split by material zone into flap+aileron regions
+    # Wingspan 2.05 half (4.10 total). Root x_LE=0.60 sits under mid-cockpit-to-body.
     SPAN = [
         # x_LE    x_TE    y       thick
-        ( 0.60,  -0.85,  0.42,  0.135),   # root (buries slightly into blended body)
-        ( 0.48,  -0.92,  0.58,  0.120),
-        ( 0.30,  -1.00,  0.78,  0.104),
-        ( 0.08,  -1.10,  1.00,  0.088),
-        (-0.16,  -1.18,  1.22,  0.072),
-        (-0.40,  -1.25,  1.42,  0.058),
-        (-0.62,  -1.31,  1.60,  0.046),
-        (-0.80,  -1.35,  1.76,  0.034),
-        (-0.94,  -1.38,  1.88,  0.024),
-        (-1.05,  -1.40,  1.97,  0.016),
-        (-1.12,  -1.40,  2.05,  0.010),   # sharp aerodynamic tip, chord ~0.28
+        ( 0.62,  -0.86,  0.44,  0.170),   # root (buries into blended body; thickened)
+        ( 0.50,  -0.93,  0.60,  0.150),
+        ( 0.32,  -1.01,  0.80,  0.128),
+        ( 0.08,  -1.10,  1.02,  0.106),
+        (-0.18,  -1.18,  1.24,  0.084),   # inboard LE segment ends here (~48° sweep)
+        (-0.38,  -1.24,  1.44,  0.066),   # crank point — LE inflection
+        (-0.58,  -1.30,  1.62,  0.052),   # outboard LE segment (~44° sweep)
+        (-0.78,  -1.35,  1.78,  0.038),
+        (-0.94,  -1.38,  1.90,  0.026),
+        (-1.06,  -1.40,  1.99,  0.016),
+        (-1.14,  -1.40,  2.05,  0.008),   # sharp fighter-like tip
     ]
+    # Control-surface split index: rear 30% of chord = flap/aileron zone
+    N_CS_START = int(N_CHORD * 0.70)  # face index at which control surface begins
+
+    cs_face_indices = []   # indices of control-surface faces for material assignment
 
     def half_wing(side):
         s = side  # +1 or -1
@@ -345,18 +352,17 @@ def build_wings():
                 c = m / (N_CHORD - 1)  # 0 = LE, 1 = TE
                 x = x_le - c * chord
 
-                # Biconvex NACA-like profile
-                # Max thickness at c=0.35, zero at LE and TE
-                if c < 0.35:
-                    zf = math.sqrt(c / 0.35)
+                # Biconvex NACA-like profile — max thickness at c=0.32
+                if c < 0.32:
+                    zf = math.sqrt(c / 0.32)
                 else:
-                    zf = math.sqrt((1.0 - c) / 0.65)
+                    zf = math.sqrt((1.0 - c) / 0.68)
 
                 # Slight camber: wing surface tilted upward at LE
-                camber = 0.008 * (1.0 - c)
+                camber = 0.010 * (1.0 - c)
 
-                z_top = camber + thick * 0.55 * zf + 0.05
-                z_bot = camber - thick * 0.45 * zf + 0.05
+                z_top = camber + thick * 0.58 * zf + 0.05
+                z_bot = camber - thick * 0.42 * zf + 0.05
 
                 top_row.append(bm.verts.new((x, y, z_top)))
                 bot_row.append(bm.verts.new((x, y, z_bot)))
@@ -366,14 +372,16 @@ def build_wings():
 
         bm.verts.ensure_lookup_table()
 
-        # Top surface
+        # Top surface — track control-surface face indices for material zone
         for i in range(N_SPAN - 1):
             for m in range(N_CHORD - 1):
                 try:
-                    bm.faces.new([
+                    f = bm.faces.new([
                         top_rows[i][m],     top_rows[i + 1][m],
                         top_rows[i + 1][m + 1], top_rows[i][m + 1],
                     ])
+                    if m >= N_CS_START:
+                        cs_face_indices.append(f.index)
                 except Exception:
                     pass
 
@@ -381,10 +389,12 @@ def build_wings():
         for i in range(N_SPAN - 1):
             for m in range(N_CHORD - 1):
                 try:
-                    bm.faces.new([
+                    f = bm.faces.new([
                         bot_rows[i][m],     bot_rows[i][m + 1],
                         bot_rows[i + 1][m + 1], bot_rows[i + 1][m],
                     ])
+                    if m >= N_CS_START:
+                        cs_face_indices.append(f.index)
                 except Exception:
                     pass
 
@@ -442,7 +452,37 @@ def build_wings():
 
     ob = bpy.data.objects.new('Wings', me)
     bpy.context.collection.objects.link(ob)
-    ob.data.materials.append(M_ARMOR)
+    ob.data.materials.append(M_ARMOR)    # slot 0 — main wing skin
+    ob.data.materials.append(M_CARBON)   # slot 1 — control-surface region (rear 30% chord)
+
+    # Assign material slot 1 (M_CARBON) to control-surface faces.
+    # remove_doubles may have shifted face indices — rebuild via chord position test.
+    for poly in me.polygons:
+        # Face centroid X in chord space: sample first vertex X
+        # Simpler: test if the face is in rear portion of local chord region.
+        # We flag by checking if the average x is close to trailing edge relative to leading edge for that spanwise slice.
+        xs = [me.vertices[vi].co.x for vi in poly.vertices]
+        ys = [me.vertices[vi].co.y for vi in poly.vertices]
+        cx = sum(xs) / len(xs)
+        cy = sum(ys) / len(ys)
+        # Find span station bracket by |y|
+        ay = abs(cy)
+        if ay < 0.40 or ay > 2.06:
+            continue
+        # Interpolate LE/TE X at this Y from SPAN
+        for k in range(len(SPAN) - 1):
+            y0 = SPAN[k][2]; y1 = SPAN[k + 1][2]
+            if y0 <= ay <= y1:
+                t = (ay - y0) / (y1 - y0) if y1 != y0 else 0.0
+                x_le = lerp(SPAN[k][0], SPAN[k + 1][0], t)
+                x_te = lerp(SPAN[k][1], SPAN[k + 1][1], t)
+                chord = x_le - x_te
+                if chord > 0.0:
+                    c_norm = (x_le - cx) / chord
+                    if c_norm >= 0.70:   # rear 30% chord = control surface zone
+                        poly.material_index = 1
+                break
+
     print(f'[VAN] Wings: {len(me.vertices)}v {len(me.polygons)}f')
     return ob
 
@@ -459,18 +499,18 @@ def build_fins():
     N_CHOR = 6     # chordwise sections (was 5)
 
     # Height stations: (x_LE, x_TE, z_local, thickness).
-    # Repositioned to sit on rear fuselage (X=-1.85 to -2.75) matching new compact body.
-    # Root thickness 0.110 (was 0.068) → sturdier, less "paper triangle" look.
+    # Thicker root (0.140, was 0.110) for structural believability.
+    # Root fairing gusset (build_fin_root_fairings) provides smooth blend to fuselage.
     FIN_STA = [
         # x_LE    x_TE    z_loc  thick
-        (-1.85,  -2.75,  0.00,  0.110),   # root — thick, blends into fuselage
-        (-1.95,  -2.75,  0.14,  0.098),
-        (-2.05,  -2.75,  0.28,  0.084),
-        (-2.15,  -2.75,  0.42,  0.070),
-        (-2.24,  -2.75,  0.54,  0.056),
-        (-2.32,  -2.75,  0.64,  0.044),
-        (-2.38,  -2.75,  0.72,  0.032),
-        (-2.44,  -2.75,  0.78,  0.020),
+        (-1.85,  -2.75,  0.00,  0.140),   # root — thick, blends into fuselage
+        (-1.94,  -2.75,  0.14,  0.124),
+        (-2.03,  -2.75,  0.28,  0.106),
+        (-2.13,  -2.75,  0.42,  0.088),
+        (-2.22,  -2.75,  0.54,  0.070),
+        (-2.30,  -2.75,  0.64,  0.054),
+        (-2.37,  -2.75,  0.72,  0.038),
+        (-2.43,  -2.75,  0.78,  0.024),
         (-2.48,  -2.75,  0.82,  0.010),   # tip
     ]
 
@@ -758,39 +798,56 @@ def build_nozzles():
     bm_in  = bmesh.new()   # inner cavity (orange emissive, deep)
     N_NOZ  = 20            # smoother nozzle circumference (was 14)
 
+    def petal_pts(n, r, rz_ratio, y_ctr, z_ctr, petal_depth):
+        """Ellipse ring with scalloped radius — alternate vertices slightly indented.
+        Creates the visible petal segmentation of a real fighter nozzle."""
+        pts = []
+        for i in range(n):
+            a = PI / 2 + PI2 * i / n
+            # Every 2nd vertex is indented (creates paired petal peaks)
+            scale = 1.0 - (petal_depth if (i % 2 == 1) else 0.0)
+            ry = r * scale
+            rz = r * rz_ratio * scale
+            pts.append((y_ctr + ry * math.cos(a), z_ctr + rz * math.sin(a)))
+        return pts
+
     def make_nozzle(y_ctr):
         # Housing profile stations (X, radius). Rear = smaller (converging nozzle look).
-        R_HOUSE = 0.170    # housing front (blends with engine bay)
-        R_MID   = 0.148    # nozzle mid
-        R_LIP   = 0.130    # nozzle lip (outer rim of exit)
+        R_HOUSE = 0.175    # housing front (blends with engine bay)
+        R_MID   = 0.152    # nozzle mid
+        R_LIP   = 0.132    # nozzle lip (outer rim of exit)
         R_HOT   = 0.108    # inner exhaust ring (visible glow)
         Z_CTR   = 0.060
 
-        # Outer housing: 3-ring loft
+        # Outer housing: 4-ring loft with petal segmentation on the last 2 rings
         p_house = ellipse_pts(N_NOZ, R_HOUSE, R_HOUSE * 0.90, y_ctr, Z_CTR)
         p_mid   = ellipse_pts(N_NOZ, R_MID,   R_MID   * 0.86, y_ctr, Z_CTR)
-        p_lip   = ellipse_pts(N_NOZ, R_LIP,   R_LIP   * 0.80, y_ctr, Z_CTR)
+        # Petal ring — visible scalloped segmentation before the lip
+        p_petal = petal_pts(N_NOZ, R_LIP + 0.010, 0.82, y_ctr, Z_CTR, 0.035)
+        p_lip   = petal_pts(N_NOZ, R_LIP,          0.80, y_ctr, Z_CTR, 0.055)
 
         r_h = add_ring(bm_out, -2.30, p_house)
-        r_m = add_ring(bm_out, -2.70, p_mid)
-        r_l = add_ring(bm_out, -2.95, p_lip)
+        r_m = add_ring(bm_out, -2.68, p_mid)
+        r_p = add_ring(bm_out, -2.88, p_petal)
+        r_l = add_ring(bm_out, -2.98, p_lip)
         close_strip(bm_out, r_h, r_m)
-        close_strip(bm_out, r_m, r_l)
+        close_strip(bm_out, r_m, r_p)
+        close_strip(bm_out, r_p, r_l)
 
-        # Rim closer: connect lip to inner-hot-ring position (small annular face)
+        # Rim closer: connect lip inward to hot-ring position (small annular face)
         p_hot_outer = ellipse_pts(N_NOZ, R_HOT, R_HOT * 0.80, y_ctr, Z_CTR)
-        r_ho = add_ring(bm_out, -2.97, p_hot_outer)
+        r_ho = add_ring(bm_out, -3.00, p_hot_outer)
         close_strip(bm_out, r_l, r_ho)
 
         # Inner exhaust cavity — recessed deep dark chamber with orange emissive rim
         p_hot_in = ellipse_pts(N_NOZ, R_HOT * 0.98, R_HOT * 0.78, y_ctr, Z_CTR)
         p_deep   = ellipse_pts(N_NOZ, R_HOT * 0.55, R_HOT * 0.45, y_ctr, Z_CTR)
-        r_hi = add_ring(bm_in, -2.98, p_hot_in)
-        r_d  = add_ring(bm_in, -3.15, p_deep)
+        r_hi = add_ring(bm_in, -3.01, p_hot_in)
+        r_d  = add_ring(bm_in, -3.18, p_deep)
         close_strip(bm_in, r_hi, r_d)
 
         # Deep-end disc (fully closed hot core)
-        cv = bm_in.verts.new((-3.20, y_ctr, Z_CTR))
+        cv = bm_in.verts.new((-3.23, y_ctr, Z_CTR))
         fan_tip(bm_in, cv, r_d)
 
     make_nozzle(+0.230)
@@ -835,47 +892,56 @@ def build_intakes():
     def make_intake(side):
         s  = side
         # Position: fuselage upper-shoulder, aft of cockpit, ahead of wing root.
-        CY = s * 0.470    # Y center — on fuselage shoulder (fuselage ry at x=0.30 ≈ 0.500)
-        CZ = 0.05         # Z center — sits above mid-line, visible from top
-        W  = 0.150        # half-width
-        H  = 0.110        # half-height
+        # ENLARGED and DEEPER for readability from top-down camera.
+        CY = s * 0.485    # Y center — slightly further outboard on shoulder
+        CZ = 0.06         # Z center — sits above mid-line
+        W  = 0.185        # half-width  (was 0.150)
+        H  = 0.140        # half-height (was 0.110)
 
-        # 8-point smooth D-shaped intake profile (top-outer canted, bottom flat)
-        def duct_pts(x, scale=1.0):
+        # 8-point smooth D-shaped intake profile (F-22/F-35 style caret intake)
+        def duct_pts(x, scale=1.0, y_ctr=None, z_ctr=None):
             w = W * scale
             h = H * scale
-            # Right side (s=+1): opening faces +Y outward
+            cy = CY if y_ctr is None else y_ctr
+            cz = CZ if z_ctr is None else z_ctr
             return [
-                (CY,             CZ + h),           # top center
-                (CY + s*w*0.85,  CZ + h*0.75),      # top-outer canted
-                (CY + s*w,       CZ + h*0.20),      # outer upper
-                (CY + s*w,       CZ - h*0.40),      # outer lower
-                (CY + s*w*0.75,  CZ - h*0.85),      # bottom-outer canted
-                (CY,             CZ - h),           # bottom center
-                (CY - s*w*0.20,  CZ - h*0.60),      # inner lower
-                (CY - s*w*0.20,  CZ + h*0.60),      # inner upper
+                (cy,             cz + h),           # top center
+                (cy + s*w*0.88,  cz + h*0.78),      # top-outer canted (caret peak)
+                (cy + s*w,       cz + h*0.22),      # outer upper
+                (cy + s*w,       cz - h*0.42),      # outer lower
+                (cy + s*w*0.78,  cz - h*0.88),      # bottom-outer canted
+                (cy,             cz - h),           # bottom center
+                (cy - s*w*0.22,  cz - h*0.62),      # inner lower
+                (cy - s*w*0.22,  cz + h*0.62),      # inner upper
             ]
 
-        # Deep cavity: lip → duct-interior → deep dark end (0.80 units back)
-        lip_x     = 0.35     # opening front (behind cockpit)
-        duct_mid  = 0.05
-        deep_x    = -0.45    # deep interior recess
+        # Deeper cavity: lip (front) → duct constriction → deep dark exit (1.10 units back).
+        # Cavity narrows and tilts slightly inward (toward centerline) — realistic diffuser.
+        lip_x     = 0.42     # opening front (behind cockpit)
+        duct_x1   = 0.15
+        duct_x2   = -0.20
+        deep_x    = -0.62    # deeper interior (was -0.45)
 
-        lip_ring   = add_ring(bm, lip_x,    duct_pts(lip_x,    scale=1.00))
-        duct_ring1 = add_ring(bm, duct_mid, duct_pts(duct_mid, scale=0.88))
-        duct_ring2 = add_ring(bm, deep_x,   duct_pts(deep_x,   scale=0.72))
+        # Progressive tapering + slight inward Y shift (duct routes toward engine)
+        lip_ring   = add_ring(bm, lip_x,   duct_pts(lip_x,   scale=1.00))
+        duct_ring1 = add_ring(bm, duct_x1, duct_pts(duct_x1, scale=0.92, y_ctr=s*0.460))
+        duct_ring2 = add_ring(bm, duct_x2, duct_pts(duct_x2, scale=0.80, y_ctr=s*0.410))
+        duct_ring3 = add_ring(bm, deep_x,  duct_pts(deep_x,  scale=0.62, y_ctr=s*0.340, z_ctr=CZ - 0.02))
 
         bm.verts.ensure_lookup_table()
         close_strip(bm, lip_ring,   duct_ring1)
         close_strip(bm, duct_ring1, duct_ring2)
+        close_strip(bm, duct_ring2, duct_ring3)
 
-        # External lip frame — thin raised bevel around the opening.
-        outer_ring = add_ring(bm, lip_x + 0.030, duct_pts(lip_x, scale=1.08))
-        close_strip(bm, lip_ring, outer_ring)
+        # External lip frame — raised bevel around the opening (thicker than before).
+        outer_ring1 = add_ring(bm, lip_x + 0.020, duct_pts(lip_x, scale=1.06))
+        outer_ring2 = add_ring(bm, lip_x + 0.045, duct_pts(lip_x, scale=1.12))
+        close_strip(bm, lip_ring,    outer_ring1)
+        close_strip(bm, outer_ring1, outer_ring2)
 
-        # Close deep duct exit — dark inner surface visible through opening
-        exit_cv = bm.verts.new((deep_x - 0.02, CY, CZ))
-        fan_tip(bm, exit_cv, duct_ring2)
+        # Close deep duct exit with a dark disc — reads as engine face far inside
+        exit_cv = bm.verts.new((deep_x - 0.03, s*0.340, CZ - 0.02))
+        fan_tip(bm, exit_cv, duct_ring3)
 
     make_intake(+1)
     make_intake(-1)
@@ -893,6 +959,311 @@ def build_intakes():
     bpy.context.collection.objects.link(ob)
     ob.data.materials.append(M_INTAKE)
     print(f'[VAN] Intakes: {len(me.vertices)}v {len(me.polygons)}f')
+    return ob
+
+
+# ── WING-ROOT FILLET (LERX) ──────────────────────────────────────────────────
+# Blended leading-edge root extension — smooth aerodynamic transition between
+# fuselage shoulder and wing leading edge. Critical for reading as a real fighter
+# instead of a "wing bolted onto tube" spaceship.
+
+def build_wing_root_fillet():
+    bm = bmesh.new()
+
+    # Chord line points along the fillet (from cockpit shoulder → wing LE root).
+    # Runs from x≈1.15 (below canopy peak) → x≈0.60 (wing LE root).
+    # Y flares from small (0.24) → wide (0.44) meeting wing root.
+    LERX = [
+        # (x,    y_edge,  z_upper,  z_lower)
+        ( 1.15,  0.24,   0.24,   0.05),   # front — thin at cockpit shoulder
+        ( 1.02,  0.30,   0.23,   0.03),
+        ( 0.88,  0.36,   0.21,   0.02),
+        ( 0.74,  0.40,   0.19,   0.02),
+        ( 0.62,  0.44,   0.18,   0.03),   # meets wing LE root
+    ]
+
+    def make_fillet(side):
+        s = side
+        top_row = []
+        bot_row = []
+        inner_top = []   # inner Y edge (touches fuselage skin)
+        inner_bot = []
+
+        for (x, y, zu, zl) in LERX:
+            top_row.append(bm.verts.new((x, s * y, zu)))
+            bot_row.append(bm.verts.new((x, s * y, zl)))
+            # Inner edge sits closer to centerline (buried into fuselage)
+            iy = fuse_half_width(x) * 0.60
+            inner_top.append(bm.verts.new((x, s * iy, fuse_top(x) - 0.02)))
+            inner_bot.append(bm.verts.new((x, s * iy, fuse_top(x) - 0.10)))
+
+        bm.verts.ensure_lookup_table()
+
+        n = len(LERX)
+        for i in range(n - 1):
+            # Top skin (upper surface of the fillet)
+            try:
+                bm.faces.new([top_row[i], top_row[i+1], inner_top[i+1], inner_top[i]])
+            except Exception:
+                pass
+            # Bottom skin
+            try:
+                bm.faces.new([bot_row[i], inner_bot[i], inner_bot[i+1], bot_row[i+1]])
+            except Exception:
+                pass
+            # Outer edge (LE of the fillet)
+            try:
+                bm.faces.new([top_row[i], bot_row[i], bot_row[i+1], top_row[i+1]])
+            except Exception:
+                pass
+
+    make_fillet(+1)
+    make_fillet(-1)
+
+    bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=0.003)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+
+    me = bpy.data.meshes.new('lerx_me')
+    bm.to_mesh(me)
+    bm.free()
+    for p in me.polygons:
+        p.use_smooth = True
+
+    ob = bpy.data.objects.new('WingRootFillet', me)
+    bpy.context.collection.objects.link(ob)
+    ob.data.materials.append(M_ARMOR)
+    print(f'[VAN] WingRootFillet: {len(me.vertices)}v {len(me.polygons)}f')
+    return ob
+
+
+# ── DORSAL SPINE ─────────────────────────────────────────────────────────────
+# Raised centerline ridge running from behind cockpit to engine bay.
+# Adds visible stealth surface language (dorsal fairing) — key panel break.
+
+def build_dorsal_spine():
+    bm = bmesh.new()
+
+    # (x, half_width, extra_z)
+    SPINE = [
+        ( 0.20, 0.055, 0.008),   # just behind canopy rear tip
+        ( 0.00, 0.070, 0.014),
+        (-0.30, 0.088, 0.020),
+        (-0.60, 0.100, 0.024),
+        (-0.90, 0.108, 0.026),
+        (-1.20, 0.110, 0.026),
+        (-1.50, 0.108, 0.024),
+        (-1.80, 0.096, 0.020),
+        (-2.05, 0.076, 0.014),
+        (-2.25, 0.052, 0.008),
+        (-2.42, 0.026, 0.004),
+    ]
+
+    left  = []
+    right = []
+    for (x, hw, dz) in SPINE:
+        z = fuse_top(x) + dz
+        left.append(bm.verts.new((x, -hw, z)))
+        right.append(bm.verts.new((x,  hw, z)))
+
+    bm.verts.ensure_lookup_table()
+
+    n = len(SPINE)
+    for i in range(n - 1):
+        try:
+            bm.faces.new([left[i], right[i], right[i+1], left[i+1]])
+        except Exception:
+            pass
+
+    # Side walls down to fuselage skin (creates a sharp edge that reads as a panel break)
+    for i in range(n - 1):
+        z_fuse_i  = fuse_top(SPINE[i][0])
+        z_fuse_ip = fuse_top(SPINE[i+1][0])
+        # Right wall
+        vr_up_i  = right[i]
+        vr_up_ip = right[i+1]
+        vr_dn_i  = bm.verts.new((SPINE[i][0],   SPINE[i][1],   z_fuse_i))
+        vr_dn_ip = bm.verts.new((SPINE[i+1][0], SPINE[i+1][1], z_fuse_ip))
+        try:
+            bm.faces.new([vr_up_i, vr_dn_i, vr_dn_ip, vr_up_ip])
+        except Exception:
+            pass
+        # Left wall
+        vl_up_i  = left[i]
+        vl_up_ip = left[i+1]
+        vl_dn_i  = bm.verts.new((SPINE[i][0],   -SPINE[i][1],   z_fuse_i))
+        vl_dn_ip = bm.verts.new((SPINE[i+1][0], -SPINE[i+1][1], z_fuse_ip))
+        try:
+            bm.faces.new([vl_up_i, vl_up_ip, vl_dn_ip, vl_dn_i])
+        except Exception:
+            pass
+
+    bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=0.003)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+
+    me = bpy.data.meshes.new('spine_me')
+    bm.to_mesh(me)
+    bm.free()
+    for p in me.polygons:
+        p.use_smooth = True
+
+    ob = bpy.data.objects.new('DorsalSpine', me)
+    bpy.context.collection.objects.link(ob)
+    ob.data.materials.append(M_ARMOR2)   # slightly matte for surface variation
+    print(f'[VAN] DorsalSpine: {len(me.vertices)}v {len(me.polygons)}f')
+    return ob
+
+
+# ── ENGINE HUMPS ─────────────────────────────────────────────────────────────
+# Twin raised nacelle bumps on rear fuselage top — read as engine housings.
+# Positioned above the nozzles, matching the twin engine layout.
+
+def build_engine_humps():
+    bm = bmesh.new()
+
+    # Hump profile: (x, y_half_width, z_height_above_fuselage)
+    HUMP = [
+        (-0.90, 0.070, 0.010),
+        (-1.15, 0.098, 0.024),
+        (-1.40, 0.116, 0.036),   # peak
+        (-1.65, 0.116, 0.036),
+        (-1.90, 0.104, 0.030),
+        (-2.10, 0.082, 0.020),
+        (-2.28, 0.052, 0.010),
+        (-2.42, 0.024, 0.004),
+    ]
+    HUMP_Y_CENTER = 0.230   # matches nozzle Y offset
+
+    def make_hump(side):
+        s = side
+        cy = s * HUMP_Y_CENTER
+        top_row  = []   # inner+outer top edge of hump
+        inner    = []   # inner Y (toward centerline)
+        outer    = []   # outer Y (away from centerline)
+
+        for (x, hw, dz) in HUMP:
+            z_base = fuse_top(x)
+            top_row.append(bm.verts.new((x, cy, z_base + dz)))
+            inner.append(bm.verts.new((x, cy - s * hw, z_base + dz * 0.15)))
+            outer.append(bm.verts.new((x, cy + s * hw, z_base + dz * 0.15)))
+
+        bm.verts.ensure_lookup_table()
+
+        n = len(HUMP)
+        for i in range(n - 1):
+            try:
+                bm.faces.new([inner[i], top_row[i], top_row[i+1], inner[i+1]])
+            except Exception:
+                pass
+            try:
+                bm.faces.new([top_row[i], outer[i], outer[i+1], top_row[i+1]])
+            except Exception:
+                pass
+
+    make_hump(+1)
+    make_hump(-1)
+
+    bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=0.003)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+
+    me = bpy.data.meshes.new('humps_me')
+    bm.to_mesh(me)
+    bm.free()
+    for p in me.polygons:
+        p.use_smooth = True
+
+    ob = bpy.data.objects.new('EngineHumps', me)
+    bpy.context.collection.objects.link(ob)
+    ob.data.materials.append(M_ARMOR2)
+    print(f'[VAN] EngineHumps: {len(me.vertices)}v {len(me.polygons)}f')
+    return ob
+
+
+# ── COCKPIT DECK / SURROUND ──────────────────────────────────────────────────
+# Small raised deck panel behind cockpit — the "avionics fairing" that flows
+# from canopy rear into dorsal spine. Reinforces cockpit-fuselage transition.
+
+def build_cockpit_deck():
+    bm = bmesh.new()
+
+    # (x, half_width, extra_z)
+    DECK = [
+        ( 0.30, 0.100, 0.006),   # just behind canopy rear (X=0.16)
+        ( 0.22, 0.088, 0.010),
+        ( 0.16, 0.070, 0.014),
+        ( 0.08, 0.058, 0.012),
+        ( 0.00, 0.062, 0.010),   # merges into spine start
+    ]
+
+    left  = []
+    right = []
+    for (x, hw, dz) in DECK:
+        z = fuse_top(x) + dz
+        left.append(bm.verts.new((x, -hw, z)))
+        right.append(bm.verts.new((x,  hw, z)))
+
+    bm.verts.ensure_lookup_table()
+
+    n = len(DECK)
+    for i in range(n - 1):
+        try:
+            bm.faces.new([left[i], right[i], right[i+1], left[i+1]])
+        except Exception:
+            pass
+
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+
+    me = bpy.data.meshes.new('deck_me')
+    bm.to_mesh(me)
+    bm.free()
+    for p in me.polygons:
+        p.use_smooth = True
+
+    ob = bpy.data.objects.new('CockpitDeck', me)
+    bpy.context.collection.objects.link(ob)
+    ob.data.materials.append(M_PANEL)
+    print(f'[VAN] CockpitDeck: {len(me.vertices)}v {len(me.polygons)}f')
+    return ob
+
+
+# ── FIN ROOT FAIRINGS ────────────────────────────────────────────────────────
+# Small triangular gussets at fin root that blend fin into rear fuselage.
+
+def build_fin_root_fairings():
+    bm = bmesh.new()
+
+    # Points defining the fairing triangle at fin root (approximate fin base).
+    # Fin root x range: -1.85 to -2.75 → fairing extends slightly beyond both.
+    FAIR = [
+        (-1.75, 0.36, 0.020),   # front tip on fuselage
+        (-2.85, 0.24, 0.010),   # rear tip on fuselage
+        (-2.30, 0.42, 0.180),   # mid, rising up onto fin
+    ]
+
+    def make_fairing(side):
+        s = side
+        verts = []
+        for (x, y, dz) in FAIR:
+            verts.append(bm.verts.new((x, s * y, fuse_top(x) + dz)))
+        try:
+            bm.faces.new(verts)
+        except Exception:
+            pass
+
+    make_fairing(+1)
+    make_fairing(-1)
+
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+
+    me = bpy.data.meshes.new('finfair_me')
+    bm.to_mesh(me)
+    bm.free()
+    for p in me.polygons:
+        p.use_smooth = True
+
+    ob = bpy.data.objects.new('FinRootFairings', me)
+    bpy.context.collection.objects.link(ob)
+    ob.data.materials.append(M_DARK)
+    print(f'[VAN] FinRootFairings: {len(me.vertices)}v {len(me.polygons)}f')
     return ob
 
 
@@ -974,20 +1345,26 @@ ob_fins                 = build_fins()
 ob_canopy, ob_canframe  = build_canopy()          # canopy + separate metallic frame
 ob_nozhouse, ob_nozexh  = build_nozzles()         # housing (gunmetal) + inner cavity (orange)
 ob_intakes              = build_intakes()
+ob_lerx                 = build_wing_root_fillet()  # LERX / wing-root fillet
+ob_spine                = build_dorsal_spine()      # raised dorsal ridge behind canopy
+ob_humps                = build_engine_humps()      # twin nacelle bumps on rear top
+ob_deck                 = build_cockpit_deck()      # avionics fairing behind canopy
+ob_finfair              = build_fin_root_fairings() # triangular gussets at fin base
 # LE accents removed — user directive: no neon strip on wings.
 
 print(f'[VAN] Geometry built in {time.time()-t_geom:.1f}s')
 
 # ── APPLY BEVEL MODIFIERS ────────────────────────────────────────────────────
-# Micro-bevel sharpens silhouette edges.
+# Micro-bevel sharpens silhouette edges — panel breaks become subtly faceted.
 
 for ob in [ob_fuse, ob_wings, ob_fins, ob_canopy, ob_canframe,
-           ob_nozhouse, ob_nozexh, ob_intakes]:
+           ob_nozhouse, ob_nozexh, ob_intakes,
+           ob_lerx, ob_spine, ob_humps, ob_deck, ob_finfair]:
     bev = ob.modifiers.new('Bevel', 'BEVEL')
-    bev.width = 0.014
+    bev.width = 0.012
     bev.segments = 3
     bev.limit_method = 'ANGLE'
-    bev.angle_limit = math.radians(35)
+    bev.angle_limit = math.radians(32)
     try:
         ob.modifiers.new('WeightNorm', 'WEIGHTED_NORMAL')
     except Exception:
