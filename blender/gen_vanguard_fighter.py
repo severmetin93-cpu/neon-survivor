@@ -72,15 +72,17 @@ def mkmat(name, base, metal=0.82, rough=0.24, em=None, ems=0.0):
     return m
 
 
-M_ARMOR   = mkmat('armor',   (0.34, 0.39, 0.46), metal=0.90, rough=0.20)
-M_DARK    = mkmat('dark',    (0.04, 0.05, 0.07), metal=0.78, rough=0.34)
+# Modern military palette. Body is dark gunmetal / graphite composite, not neon.
+M_ARMOR   = mkmat('armor',   (0.18, 0.20, 0.24), metal=0.75, rough=0.32)   # gunmetal fuselage
+M_DARK    = mkmat('dark',    (0.05, 0.06, 0.08), metal=0.70, rough=0.42)   # graphite (tails, dark panels)
 M_CARBON  = mkmat('carbon',  (0.07, 0.08, 0.10), metal=0.55, rough=0.36)
-M_GLASS   = mkmat('glass',   (0.01, 0.04, 0.09), metal=0.18, rough=0.08,
-                  em=(0.00, 0.18, 0.42), ems=1.6)
+M_PANEL   = mkmat('panel',   (0.11, 0.12, 0.14), metal=0.15, rough=0.55)   # matte composite panel
+M_FRAME   = mkmat('frame',   (0.08, 0.09, 0.11), metal=0.85, rough=0.28)   # canopy metallic frame
+M_GLASS   = mkmat('glass',   (0.020, 0.028, 0.045), metal=0.10, rough=0.05)  # dark smoked canopy (no emission)
 M_CYAN    = mkmat('cyan',    (0.00, 0.11, 0.20), metal=0.14, rough=0.18,
-                  em=(0.00, 0.65, 1.00), ems=8.0)
+                  em=(0.00, 0.65, 1.00), ems=2.5)                          # small accent only
 M_ORANGE  = mkmat('orange',  (0.10, 0.06, 0.02), metal=0.90, rough=0.14,
-                  em=(1.00, 0.22, 0.00), ems=5.0)
+                  em=(1.00, 0.22, 0.00), ems=3.0)                          # nozzle interior only
 M_INTAKE  = mkmat('dark_intake', (0.03, 0.04, 0.06), metal=0.60, rough=0.42)
 
 print('[VAN] Materials created')
@@ -142,35 +144,47 @@ def resample_ring(bm, r_src, n_dst, x):
 
 
 # ── FUSELAGE ─────────────────────────────────────────────────────────────────
-# Lofted elliptical cross-sections: X+ = nose, X- = tail
-# All sections 12-sided except tips (nose=pt, tail=pt) and transition zones (8-sided)
+# Lofted elliptical cross-sections: X+ = nose, X- = tail.
+# High-density stations (32) with 16-sided main body for organic, blended surface.
+# Mid-body ry/rz ratio widens (~2.3) → flatter blended wing-body cross-section.
+# Nose section: cz drops slightly (flatter belly, higher spine) → asymmetry.
+# Tips (nose/tail) are single verts; transition zones use 8 sides.
 
 FUSE_STA = [
-    # (  x,     ry,     rz,   cy,   cz,  n)
+    # (  x,     ry,     rz,     cy,    cz,  n)
     #  ry=Y half-width  rz=Z half-height  cy=Y center  cz=Z center
-    ( 3.40,  0.000,  0.000, 0.00, 0.06,  1),   # nose tip  → single vert
-    ( 3.26,  0.026,  0.016, 0.00, 0.06,  8),
-    ( 3.06,  0.068,  0.042, 0.00, 0.07,  8),
-    ( 2.78,  0.138,  0.082, 0.00, 0.08, 12),   # 8→12 transition here
-    ( 2.44,  0.212,  0.122, 0.00, 0.08, 12),
-    ( 2.06,  0.280,  0.156, 0.00, 0.07, 12),
-    ( 1.68,  0.332,  0.176, 0.00, 0.06, 12),   # canopy zone
-    ( 1.30,  0.360,  0.186, 0.00, 0.05, 12),
-    ( 0.94,  0.378,  0.190, 0.00, 0.05, 12),
-    ( 0.58,  0.388,  0.188, 0.00, 0.05, 12),
-    ( 0.22,  0.394,  0.185, 0.00, 0.05, 12),
-    (-0.18,  0.398,  0.183, 0.00, 0.05, 12),   # wing attachment zone
-    (-0.58,  0.402,  0.184, 0.00, 0.05, 12),
-    (-0.98,  0.408,  0.188, 0.00, 0.05, 12),
-    (-1.38,  0.416,  0.194, 0.00, 0.05, 12),
-    (-1.76,  0.420,  0.198, 0.00, 0.05, 12),   # engine bays — widest
-    (-2.10,  0.412,  0.192, 0.00, 0.05, 12),
-    (-2.42,  0.372,  0.172, 0.00, 0.04, 12),
-    (-2.70,  0.306,  0.144, 0.00, 0.04, 12),
-    (-2.94,  0.226,  0.108, 0.00, 0.03, 12),
-    (-3.14,  0.142,  0.070, 0.00, 0.02,  8),   # 12→8 transition here
-    (-3.30,  0.074,  0.036, 0.00, 0.01,  8),
-    (-3.40,  0.000,  0.000, 0.00, 0.00,  1),   # tail tip → single vert
+    ( 3.40,  0.000,  0.000,  0.00,  0.03,  1),   # nose tip → single vert
+    ( 3.32,  0.014,  0.010,  0.00,  0.03,  8),   # 8-sided nose transition
+    ( 3.20,  0.036,  0.024,  0.00,  0.03,  8),
+    ( 3.02,  0.072,  0.048,  0.00,  0.04,  8),
+    ( 2.80,  0.122,  0.078,  0.00,  0.04, 16),   # 8→16 transition
+    ( 2.55,  0.180,  0.108,  0.00,  0.04, 16),
+    ( 2.28,  0.238,  0.136,  0.00,  0.04, 16),   # canopy start
+    ( 2.02,  0.290,  0.158,  0.00,  0.05, 16),
+    ( 1.74,  0.334,  0.176,  0.00,  0.05, 16),   # canopy mid
+    ( 1.46,  0.368,  0.188,  0.00,  0.05, 16),
+    ( 1.18,  0.400,  0.194,  0.00,  0.05, 16),   # canopy rear
+    ( 0.90,  0.432,  0.196,  0.00,  0.04, 16),   # blended body starts widening
+    ( 0.60,  0.470,  0.194,  0.00,  0.04, 16),
+    ( 0.30,  0.508,  0.192,  0.00,  0.04, 16),
+    ( 0.00,  0.540,  0.192,  0.00,  0.04, 16),   # blended wing-root peak (ry/rz=2.8)
+    (-0.30,  0.556,  0.194,  0.00,  0.04, 16),   # widest blended body
+    (-0.60,  0.556,  0.196,  0.00,  0.04, 16),
+    (-0.90,  0.548,  0.198,  0.00,  0.04, 16),
+    (-1.20,  0.536,  0.200,  0.00,  0.04, 16),
+    (-1.50,  0.522,  0.202,  0.00,  0.04, 16),
+    (-1.78,  0.506,  0.204,  0.00,  0.05, 16),   # engine bays approach
+    (-2.02,  0.488,  0.202,  0.00,  0.05, 16),
+    (-2.24,  0.454,  0.192,  0.00,  0.05, 16),
+    (-2.44,  0.406,  0.174,  0.00,  0.04, 16),
+    (-2.62,  0.348,  0.152,  0.00,  0.04, 16),
+    (-2.78,  0.286,  0.128,  0.00,  0.03, 16),
+    (-2.92,  0.222,  0.100,  0.00,  0.03, 16),
+    (-3.06,  0.162,  0.076,  0.00,  0.02, 16),   # 16→8 transition
+    (-3.18,  0.108,  0.052,  0.00,  0.02,  8),
+    (-3.28,  0.062,  0.030,  0.00,  0.01,  8),
+    (-3.36,  0.024,  0.012,  0.00,  0.01,  8),
+    (-3.40,  0.000,  0.000,  0.00,  0.00,  1),   # tail tip → single vert
 ]
 
 
@@ -264,22 +278,25 @@ def build_fuselage():
 def build_wings():
     bm = bmesh.new()
 
-    N_SPAN  = 9   # spanwise sections (root → tip)
-    N_CHORD = 7   # chordwise sections (LE → TE)
+    N_SPAN  = 11  # spanwise sections (root → tip)  — was 9, denser for smooth curves
+    N_CHORD = 10  # chordwise sections (LE → TE)    — was 7,  smoother airfoil
 
     # Span stations: (x_LE, x_TE, y_pos, thickness_root_fraction)
-    # y_pos: half-span at that station
+    # y_pos: half-span at that station. Root buries into blended body (y=0.54 fuselage edge).
+    # Root chord thicker (0.155) → tapers to 0.014 at tip. Wing-root fillet added separately.
     SPAN = [
         # x_LE    x_TE    y       thick
-        ( 0.94,  -0.88,  0.40,  0.130),   # root (butts against fuselage)
-        ( 0.52,  -1.18,  0.74,  0.112),
-        ( 0.06,  -1.50,  1.12,  0.092),
-        (-0.40,  -1.82,  1.52,  0.074),
-        (-0.84,  -2.10,  1.90,  0.058),
-        (-1.22,  -2.30,  2.18,  0.044),
-        (-1.52,  -2.44,  2.36,  0.032),
-        (-1.72,  -2.54,  2.46,  0.022),   # wingtip station
-        (-1.82,  -2.58,  2.50,  0.016),   # tip
+        ( 0.94,  -0.88,  0.40,  0.145),   # root (buries into blended body)
+        ( 0.72,  -1.03,  0.55,  0.128),
+        ( 0.42,  -1.22,  0.78,  0.112),
+        ( 0.06,  -1.50,  1.12,  0.094),
+        (-0.30,  -1.75,  1.44,  0.078),
+        (-0.62,  -1.95,  1.72,  0.064),
+        (-0.94,  -2.13,  1.96,  0.052),
+        (-1.24,  -2.28,  2.18,  0.040),
+        (-1.48,  -2.40,  2.34,  0.028),
+        (-1.68,  -2.50,  2.44,  0.018),
+        (-1.82,  -2.58,  2.50,  0.012),   # sharp aerodynamic tip
     ]
 
     def half_wing(side):
@@ -559,23 +576,29 @@ def build_canopy():
                 return cz + rz
         return 0.19
 
-    # Canopy stations: (x, Y half-width, Z height above fuselage top)
+    # Canopy stations: (x, Y half-width, Z height above fuselage top).
+    # Bubble profile with pronounced height (~0.20 max) for readable cockpit from top-down.
     CAN_STA = [
-        ( 2.28, 0.000, 0.000),   # nose tip
-        ( 2.12, 0.048, 0.018),
-        ( 1.88, 0.092, 0.060),
-        ( 1.60, 0.132, 0.104),
-        ( 1.28, 0.155, 0.132),
-        ( 0.96, 0.164, 0.144),
-        ( 0.66, 0.160, 0.136),
-        ( 0.38, 0.144, 0.110),
-        ( 0.12, 0.118, 0.076),
-        (-0.10, 0.084, 0.044),
-        (-0.26, 0.046, 0.016),
-        (-0.36, 0.000, 0.000),   # tail end
+        ( 2.30, 0.000, 0.000),   # nose tip → single vert
+        ( 2.20, 0.036, 0.014),
+        ( 2.06, 0.072, 0.038),
+        ( 1.90, 0.108, 0.072),
+        ( 1.72, 0.142, 0.108),
+        ( 1.52, 0.170, 0.140),
+        ( 1.30, 0.186, 0.166),
+        ( 1.06, 0.194, 0.184),   # bubble peak (~0.20 above fuselage)
+        ( 0.80, 0.192, 0.190),
+        ( 0.54, 0.184, 0.184),
+        ( 0.28, 0.170, 0.166),
+        ( 0.04, 0.148, 0.138),
+        (-0.18, 0.122, 0.102),
+        (-0.36, 0.092, 0.066),
+        (-0.50, 0.062, 0.036),
+        (-0.60, 0.032, 0.014),
+        (-0.66, 0.000, 0.000),   # rear taper end
     ]
 
-    N_ARC = 8  # points in upper arc per station
+    N_ARC = 12  # smooth upper arc per station
 
     can_rings = []
 
@@ -639,7 +662,72 @@ def build_canopy():
     bpy.context.collection.objects.link(ob)
     ob.data.materials.append(M_GLASS)
     print(f'[VAN] Canopy: {len(me.vertices)}v {len(me.polygons)}f')
-    return ob
+
+    # ── Canopy frame ─────────────────────────────────────────────────────
+    # Thin metallic band around canopy base. Traces the base perimeter with
+    # rectangular cross-section (outward + downward from base contour).
+    fbm = bmesh.new()
+    FRAME_OUT = 0.020   # extends outward from canopy base (in Y direction)
+    FRAME_DN  = 0.028   # extends downward below fuselage top
+    FRAME_UP  = 0.012   # extends upward around base (visible above canopy skin)
+
+    # Collect base perimeter points from CAN_STA (skip tip verts, use base-arc endpoints)
+    perim_R = []   # right side, nose → tail
+    perim_L = []   # left  side, tail → nose (traversed in reverse)
+    for (cx, cry, crz) in CAN_STA:
+        if cry <= 0.0:
+            continue
+        bz = fuse_top(cx)
+        perim_R.append((cx, +cry, bz))
+        perim_L.append((cx, -cry, bz))
+
+    def frame_ring(x, y_center, y_dir):
+        """Rectangular cross-section ring perpendicular to canopy skin at (x,y)."""
+        top_z = fuse_top(x)
+        return [
+            fbm.verts.new((x, y_center,                     top_z - FRAME_DN)),
+            fbm.verts.new((x, y_center + y_dir * FRAME_OUT, top_z - FRAME_DN)),
+            fbm.verts.new((x, y_center + y_dir * FRAME_OUT, top_z + FRAME_UP)),
+            fbm.verts.new((x, y_center,                     top_z + FRAME_UP)),
+        ]
+
+    def build_side_band(perim, y_dir):
+        rings = [frame_ring(x, y, y_dir) for (x, y, _) in perim]
+        fbm.verts.ensure_lookup_table()
+        for i in range(len(rings) - 1):
+            r0, r1 = rings[i], rings[i + 1]
+            for k in range(4):
+                a = r0[k]
+                b = r0[(k + 1) % 4]
+                c = r1[(k + 1) % 4]
+                d = r1[k]
+                try:
+                    fbm.faces.new([a, b, c, d])
+                except Exception:
+                    pass
+        # End caps
+        for r in (rings[0], rings[-1]):
+            try:
+                fbm.faces.new(r)
+            except Exception:
+                pass
+
+    build_side_band(perim_R, +1)
+    build_side_band(perim_L, -1)
+
+    bmesh.ops.recalc_face_normals(fbm, faces=fbm.faces)
+    fme = bpy.data.meshes.new('canopy_frame_me')
+    fbm.to_mesh(fme)
+    fbm.free()
+    for p in fme.polygons:
+        p.use_smooth = True
+
+    fob = bpy.data.objects.new('CanopyFrame', fme)
+    bpy.context.collection.objects.link(fob)
+    fob.data.materials.append(M_FRAME)
+    print(f'[VAN] CanopyFrame: {len(fme.vertices)}v {len(fme.polygons)}f')
+
+    return ob, fob
 
 
 # ── ENGINE NOZZLES ───────────────────────────────────────────────────────────
@@ -822,25 +910,25 @@ def build_le_accents():
 print('[VAN] Building geometry...')
 t_geom = time.time()
 
-ob_fuse    = build_fuselage()
-ob_wings   = build_wings()
-ob_fins    = build_fins()
-ob_canopy  = build_canopy()
-ob_nozzles = build_nozzles()
-ob_intakes = build_intakes()
-ob_accents = build_le_accents()
+ob_fuse                 = build_fuselage()
+ob_wings                = build_wings()
+ob_fins                 = build_fins()
+ob_canopy, ob_canframe  = build_canopy()      # now returns canopy + separate metallic frame
+ob_nozzles              = build_nozzles()
+ob_intakes              = build_intakes()
+# LE accents removed — user directive: no neon strip on wings.
 
 print(f'[VAN] Geometry built in {time.time()-t_geom:.1f}s')
 
 # ── APPLY BEVEL MODIFIERS ────────────────────────────────────────────────────
 # Micro-bevel sharpens silhouette edges.
 
-for ob in [ob_fuse, ob_wings, ob_fins, ob_canopy, ob_nozzles, ob_intakes]:
+for ob in [ob_fuse, ob_wings, ob_fins, ob_canopy, ob_canframe, ob_nozzles, ob_intakes]:
     bev = ob.modifiers.new('Bevel', 'BEVEL')
-    bev.width = 0.016
-    bev.segments = 2
+    bev.width = 0.014
+    bev.segments = 3
     bev.limit_method = 'ANGLE'
-    bev.angle_limit = math.radians(38)
+    bev.angle_limit = math.radians(35)
     try:
         ob.modifiers.new('WeightNorm', 'WEIGHTED_NORMAL')
     except Exception:
